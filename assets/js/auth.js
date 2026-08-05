@@ -1,114 +1,102 @@
-// assets/js/auth.js
+import { auth } from "./firebase-config.js";
 
 import {
-  auth
-} from "./firebase-config.js";
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-import {
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-// ======================
-// LOGIN
-// ======================
+// Login Function
 
-const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
 
-if (loginForm) {
 
-    loginForm.addEventListener("submit", async (e) => {
+if(loginBtn){
 
-        e.preventDefault();
+loginBtn.addEventListener("click",()=>{
 
-        const email = document.getElementById("email").value.trim();
 
-        const password = document.getElementById("password").value;
+let email = document.getElementById("email").value;
 
-        const errorBox = document.getElementById("errorMessage");
+let password = document.getElementById("password").value;
 
-        errorBox.style.display = "none";
 
-        try {
 
-            await signInWithEmailAndPassword(auth, email, password);
+signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+)
 
-            window.location.href = "dashboard.html";
+.then((userCredential)=>{
 
-        } catch (error) {
 
-            errorBox.style.display = "block";
-            errorBox.innerText = error.message;
+alert("Login Successful");
 
-        }
 
-    });
+window.location.href="dashboard.html";
 
-}
 
-// ======================
-// SESSION CHECK
-// ======================
+})
 
-onAuthStateChanged(auth, (user) => {
 
-    if (!user && window.location.pathname.includes("dashboard.html")) {
+.catch((error)=>{
 
-        window.location.href = "index.html";
 
-    }
+alert(error.message);
+
 
 });
 
-// ======================
-// LOGOUT
-// ======================
+
+});
+
+}
+
+
+
+// Logout Function
 
 const logoutBtn = document.getElementById("logoutBtn");
 
-if (logoutBtn) {
 
-    logoutBtn.addEventListener("click", async () => {
+if(logoutBtn){
 
-        await signOut(auth);
+logoutBtn.addEventListener("click",()=>{
 
-        window.location.href = "index.html";
 
-    });
+signOut(auth)
+
+.then(()=>{
+
+window.location.href="index.html";
+
+});
+
+
+});
+
+}
+
+
+
+
+// Check Login Status
+
+onAuthStateChanged(auth,(user)=>{
+
+
+if(user){
+
+console.log("User Login:", user.email);
+
+
+}else{
+
+console.log("No User Login");
 
 }
 
-// ======================
-// PASSWORD SHOW / HIDE
-// ======================
 
-const togglePassword = document.getElementById("togglePassword");
-
-if (togglePassword) {
-
-    togglePassword.addEventListener("click", () => {
-
-        const password = document.getElementById("password");
-
-        if (password.type === "password") {
-
-            password.type = "text";
-
-            togglePassword.classList.remove("fa-eye");
-
-            togglePassword.classList.add("fa-eye-slash");
-
-        } else {
-
-            password.type = "password";
-
-            togglePassword.classList.remove("fa-eye-slash");
-
-            togglePassword.classList.add("fa-eye");
-
-        }
-
-    });
-
-}
+});
