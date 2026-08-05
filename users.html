@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Users | Telethon Management</title>
+
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/dashboard.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<div class="logo">
+
+<img src="assets/images/logo.png" width="80">
+
+<h2>Telethon</h2>
+
+</div>
+
+<div class="menu">
+
+<a href="dashboard.html">
+<i class="fa fa-home"></i>
+<span>Dashboard</span>
+</a>
+
+<a href="users.html" class="active">
+<i class="fa fa-users"></i>
+<span>Users</span>
+</a>
+
+<a href="daily-entry.html">
+<i class="fa fa-file-circle-plus"></i>
+<span>Daily Entry</span>
+</a>
+
+<a href="reports.html">
+<i class="fa fa-chart-column"></i>
+<span>Reports</span>
+</a>
+
+<a href="#" id="logoutBtn">
+<i class="fa fa-right-from-bracket"></i>
+<span>Logout</span>
+</a>
+
+</div>
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<div class="topbar">
+
+<h2>Users Management</h2>
+
+</div>
+
+<div class="table-container">
+
+<div class="d-flex justify-between align-center mb-20">
+
+<h3>All Users</h3>
+
+<button class="btn btn-primary" id="addUserBtn">
+
+<i class="fa fa-plus"></i>
+
+Add User
+
+</button>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+
+<th>Email</th>
+
+<th>Role</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="usersTable">
+
+<tr>
+
+<td colspan="4" style="text-align:center">
+
+Loading...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module" src="assets/js/firebase-config.js"></script>
+<script type="module" src="assets/js/auth.js"></script>
+<script type="module" src="assets/js/users.js"></script>
+
+</body>
+
+</html>
