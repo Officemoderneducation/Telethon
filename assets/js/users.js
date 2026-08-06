@@ -1,143 +1,353 @@
-// Users Management JS
+// ======================================
+// Firebase
+// ======================================
 
-document.addEventListener("DOMContentLoaded", function () {
+import { auth, db } from "./firebase-config.js";
 
-    let users = JSON.parse(localStorage.getItem("users")) || [];
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-    const userForm = document.getElementById("userForm");
-    const userTable = document.getElementById("userTable");
-    const searchUser = document.getElementById("searchUser");
+import {
+    collection,
+    getDocs,
+    updateDoc,
+    deleteDoc,
+    doc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-    // Display Users
-    function displayUsers(data = users) {
 
-        userTable.innerHTML = "";
+// ======================================
+// Elements
+// ======================================
 
-        data.forEach((user, index) => {
+const usersTable = document.getElementById("usersTable");
+const searchUser = document.getElementById("searchUser");
+const logoutBtn = document.getElementById("logoutBtn");
 
-            userTable.innerHTML += `
+let employees = [];
+
+
+// ======================================
+// Check Login
+// ======================================
+
+onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+
+        window.location.href = "index.html";
+        return;
+
+    }
+
+    loadEmployees(user);
+
+});
+
+
+// ======================================
+// Load Employees
+// ======================================
+
+async function loadEmployees(currentUser) {
+
+    try {
+
+        usersTable.innerHTML = `
             <tr>
-                <td>${index + 1}</td>
-                <td>${user.name}</td>
-                <td>${user.email}</td>
-                <td>${user.role}</td>
-                <td>
-                    <button class="btn btn-sm btn-primary" onclick="editUser(${index})">
-                        Edit
-                    </button>
-
-                    <button class="btn btn-sm btn-danger" onclick="deleteUser(${index})">
-                        Delete
-                    </button>
+                <td colspan="8" style="text-align:center;">
+                    Loading...
                 </td>
             </tr>
-            `;
+        `;
 
-        });
-    }
+        employees = [];
 
+        const snapshot = await getDocs(
+            collection(db, "employees")
+        );
 
-    // Add User
-    if(userForm){
+        snapshot.forEach((employeeDoc) => {
 
-        userForm.addEventListener("submit", function(e){
+            employees.push({
 
-            e.preventDefault();
+                id: employeeDoc.id,
 
+                ...employeeDoc.data()
 
-            let name = document.getElementById("userName").value;
-            let email = document.getElementById("userEmail").value;
-            let role = document.getElementById("userRole").value;
-
-
-            users.push({
-                name:name,
-                email:email,
-                role:role
             });
 
-
-            localStorage.setItem("users", JSON.stringify(users));
-
-
-            userForm.reset();
-
-            displayUsers();
-
-            alert("User Added Successfully");
-
         });
+
+        displayEmployees(employees, currentUser);
 
     }
 
+    catch (error) {
+
+        console.error("Load Employees Error:", error);
+
+        usersTable.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align:center;color:red;">
+                    Failed to load employees.
+                </td>
+            </tr>
+        `;
+
+    }
+
+}
+// ======================================
+// Display Employees
+// ======================================
+
+function displayEmployees(data, currentUser) {
+
+    usersTable.innerHTML = "";
+
+    if (data.length === 0) {
+
+        usersTable.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align:center;">
+                    No Employees Found
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    data.forEach((employee) => {
+
+        const statusColor =
+            employee.status === "Approved"
+                ? "#16a34a"
+                : "#f59e0b";
+
+        const actionButton =
+            employee.status === "Pending"
+                ? `
+                <button
+                    class="btn btn-success"
+                    onclick="approveEmployee('${employee.id}')">
+                    Approve
+                </button>
+                `
+                : `
+                <button
+                    class="btn btn-secondary"
+                    disabled>
+                    Approved
+                </button>
+                `;
+
+        usersTable.innerHTML += `
+
+        <tr>
+
+            <td>${employee.employeeCode || "-"}</td>
+
+            <td>${employee.teacherName || "-"}</td>
+
+            <td>${employee.mobileNumber || "-"}</td>
+
+            <td>${employee.region || "-"}</td>
+
+            <td>${employee.state || "-"}</td>
+
+            <td>${employee.city || "-"}</td>
+
+            <td>
+                <span style="
+                    color:white;
+                    background:${statusColor};
+                    padding:5px 10px;
+                    border-radius:20px;
+                    font-size:12px;">
+                    ${employee.status}
+                </span>
+            </td>
+
+            <td>
+
+                ${actionButton}
+
+                <button
+                    class="btn btn-danger"
+                    onclick="deleteEmployee('${employee.id}')">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+// ======================================
+// Approve Employee
+// ======================================
+
+window.approveEmployee = async function (employeeId) {
+
+    if (!confirm("Approve this employee?")) {
+        return;
+    }
+
+    try {
+
+        await updateDoc(
+            doc(db, "employees", employeeId),
+            {
+                status: "Approved",
+                approvedBy: auth.currentUser.email,
+                approvedAt: serverTimestamp()
+            }
+        );
+
+        alert("Employee Approved Successfully.");
+
+        loadEmployees(auth.currentUser);
+
+    } catch (error) {
+
+        console.error("Approve Error:", error);
+
+        alert("Failed to approve employee.");
+
+    }
+
+};
 
 
-    // Delete User
-    window.deleteUser = function(index){
+// ======================================
+// Delete Employee
+// ======================================
 
-        if(confirm("Are you sure you want to delete this user?")){
+window.deleteEmployee = async function (employeeId) {
 
-            users.splice(index,1);
+    if (!confirm("Delete this employee?")) {
+        return;
+    }
 
-            localStorage.setItem(
-                "users",
-                JSON.stringify(users)
+    try {
+
+        await deleteDoc(
+            doc(db, "employees", employeeId)
+        );
+
+        alert("Employee Deleted Successfully.");
+
+        loadEmployees(auth.currentUser);
+
+    } catch (error) {
+
+        console.error("Delete Error:", error);
+
+        alert("Failed to delete employee.");
+
+    }
+
+};
+// ======================================
+// Search Employee
+// ======================================
+
+if (searchUser) {
+
+    searchUser.addEventListener("keyup", function () {
+
+        const value = this.value.toLowerCase().trim();
+
+        const filteredEmployees = employees.filter((employee) => {
+
+            return (
+
+                (employee.employeeCode || "")
+                    .toLowerCase()
+                    .includes(value)
+
+                ||
+
+                (employee.teacherName || "")
+                    .toLowerCase()
+                    .includes(value)
+
+                ||
+
+                (employee.mobileNumber || "")
+                    .toLowerCase()
+                    .includes(value)
+
+                ||
+
+                (employee.region || "")
+                    .toLowerCase()
+                    .includes(value)
+
+                ||
+
+                (employee.state || "")
+                    .toLowerCase()
+                    .includes(value)
+
+                ||
+
+                (employee.city || "")
+                    .toLowerCase()
+                    .includes(value)
+
             );
 
-            displayUsers();
+        });
+
+        displayEmployees(filteredEmployees, auth.currentUser);
+
+    });
+
+}
+
+
+// ======================================
+// Logout
+// ======================================
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener("click", async () => {
+
+        try {
+
+            await signOut(auth);
+
+            window.location.href = "index.html";
+
+        } catch (error) {
+
+            console.error("Logout Error:", error);
+
+            alert(error.message);
 
         }
 
-    }
+    });
+
+}
 
 
+// ======================================
+// Console
+// ======================================
 
-    // Edit User
-    window.editUser = function(index){
-
-        let user = users[index];
-
-
-        document.getElementById("userName").value = user.name;
-        document.getElementById("userEmail").value = user.email;
-        document.getElementById("userRole").value = user.role;
-
-
-        users.splice(index,1);
-
-        localStorage.setItem(
-            "users",
-            JSON.stringify(users)
-        );
-
-    }
-
-
-
-    // Search User
-    if(searchUser){
-
-        searchUser.addEventListener("keyup",function(){
-
-            let value = this.value.toLowerCase();
-
-
-            let filtered = users.filter(user =>
-
-                user.name.toLowerCase().includes(value) ||
-                user.email.toLowerCase().includes(value)
-
-            );
-
-
-            displayUsers(filtered);
-
-        });
-
-    }
-
-
-
-    displayUsers();
-
-});
+console.log("Users Management Loaded Successfully");
