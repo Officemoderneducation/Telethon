@@ -18,9 +18,20 @@ import {
 
 
 // ======================================
-// Check Login
+// Helper: Get Today's Date (YYYY-MM-DD)
 // ======================================
+function getTodayDateString() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
 
+
+// ======================================
+// Check Login Status
+// ======================================
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         window.location.href = "index.html";
@@ -33,7 +44,6 @@ onAuthStateChanged(auth, (user) => {
 // ======================================
 // Load Dashboard Data
 // ======================================
-
 async function loadDashboard() {
     try {
         // ---------------------------------
@@ -47,7 +57,7 @@ async function loadDashboard() {
             totalTarget += Number(data.target || 0);
         });
 
-        // Set Employees UI
+        // Set UI for Employees
         const totalUsersEl = document.getElementById("totalUsers");
         const totalTargetEl = document.getElementById("totalTarget");
 
@@ -56,9 +66,8 @@ async function loadDashboard() {
 
 
         // ---------------------------------
-        // 2. Daily Collection Data
+        // 2. Daily Collection Data & Today Filter
         // ---------------------------------
-        // Latest Date entries pehle aayengi
         const collectionRef = collection(db, "daily_entry");
         const q = query(collectionRef, orderBy("date", "desc"));
         
@@ -71,6 +80,9 @@ async function loadDashboard() {
         }
 
         let totalCollection = 0;
+        let todayCollection = 0;
+        const todayDateStr = getTodayDateString();
+
         const recentTable = document.getElementById("recentTable");
         let tableRowsHTML = "";
 
@@ -78,9 +90,15 @@ async function loadDashboard() {
             const data = doc.data();
             const amount = Number(data.amount || 0);
             
+            // Total Lifetime
             totalCollection += amount;
 
-            // Performance optimization ke liye HTML string
+            // Today's Collection
+            if (data.date === todayDateStr) {
+                todayCollection += amount;
+            }
+
+            // Build HTML Rows
             tableRowsHTML += `
                 <tr>
                     <td>${data.date || "-"}</td>
@@ -98,7 +116,12 @@ async function loadDashboard() {
             totalCollectionEl.textContent = "₹ " + totalCollection.toLocaleString("en-IN");
         }
 
-        // Render Table Once
+        const todayCollectionEl = document.getElementById("todayCollection");
+        if (todayCollectionEl) {
+            todayCollectionEl.textContent = "₹ " + todayCollection.toLocaleString("en-IN");
+        }
+
+        // Render Table Rows
         if (recentTable) {
             if (entrySnapshot.empty) {
                 recentTable.innerHTML = `
@@ -111,23 +134,17 @@ async function loadDashboard() {
             }
         }
 
-        // Console Check
-        console.log("Dashboard Metrics Loaded:", {
-            users: employeeSnapshot.size,
-            target: totalTarget,
-            collection: totalCollection
-        });
+        console.log("Dashboard Metrics Loaded Successfully.");
 
     } catch (error) {
-        console.error("Dashboard Error:", error);
+        console.error("Dashboard Loading Error:", error);
     }
 }
 
 
 // ======================================
-// Logout
+// Logout Action
 // ======================================
-
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (logoutBtn) {
