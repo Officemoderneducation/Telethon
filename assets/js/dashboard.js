@@ -1,161 +1,76 @@
 // ======================================
-// Dashboard JS - Firebase Firestore
+// Dashboard JS - Fetch & Show Live Data
 // ======================================
+import { db } from "./firebase-config.js";
+import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-import { auth, db } from "./firebase-config.js";
+// DOM Elements
+const totalAmountEl = document.getElementById("totalAmount");
+const todayAmountEl = document.getElementById("todayAmount");
+const totalEntriesCountEl = document.getElementById("totalEntriesCount");
+const entriesTableBody = document.getElementById("entriesTableBody");
 
-import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-import {
-    collection,
-    getDocs,
-    query,
-    orderBy
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-// ======================================
-// Helper: Get Today's Date (YYYY-MM-DD)
-// ======================================
-function getTodayDateString() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-
-// ======================================
-// Check Login Status
-// ======================================
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "index.html";
-        return;
-    }
-    loadDashboard();
-});
-
-
-// ======================================
-// Load Dashboard Data
-// ======================================
-async function loadDashboard() {
+// Fetch and Render Dashboard Data
+async function loadDashboardData() {
     try {
-        // ---------------------------------
-        // 1. Employees Data
-        // ---------------------------------
-        const employeeSnapshot = await getDocs(collection(db, "employees"));
-        let totalTarget = 0;
-
-        employeeSnapshot.forEach((doc) => {
-            const data = doc.data();
-            totalTarget += Number(data.target || 0);
-        });
-
-        // Set UI for Employees
-        const totalUsersEl = document.getElementById("totalUsers");
-        const totalTargetEl = document.getElementById("totalTarget");
-
-        if (totalUsersEl) totalUsersEl.textContent = employeeSnapshot.size;
-        if (totalTargetEl) totalTargetEl.textContent = "₹ " + totalTarget.toLocaleString("en-IN");
-
-
-        // ---------------------------------
-        // 2. Daily Collection Data & Today Filter
-        // ---------------------------------
-        const collectionRef = collection(db, "daily_entry");
-        const q = query(collectionRef, orderBy("date", "desc"));
-        
-        let entrySnapshot;
-        try {
-            entrySnapshot = await getDocs(q);
-        } catch (e) {
-            console.warn("Sorting failed, fetching un-ordered data:", e);
-            entrySnapshot = await getDocs(collectionRef);
-        }
+        // Query to get all entries ordered by creation time (newest first)
+        const entriesQuery = query(collection(db, "daily_entry"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(entriesQuery);
 
         let totalCollection = 0;
         let todayCollection = 0;
-        const todayDateStr = getTodayDateString();
+        let totalCount = 0;
 
-        const recentTable = document.getElementById("recentTable");
+        // Today's Date String (YYYY-MM-DD)
+        const todayStr = new Date().toISOString().split('T')[0];
+
         let tableRowsHTML = "";
 
-        entrySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const amount = Number(data.amount || 0);
-            
-            // Total Lifetime
-            totalCollection += amount;
+        if (querySnapshot.empty) {
+            entriesTableBody.innerHTML = `<tr><td colspan="7" class="no-data">Koi collection entry nahi mili.</td></tr>`;
+            return;
+        }
 
-            // Today's Collection
-            if (data.date === todayDateStr) {
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const amount = Number(data.amount) || 0;
+            totalCollection += amount;
+            totalCount++;
+
+            // Check if entry date is Today
+            if (data.date === todayStr) {
                 todayCollection += amount;
             }
 
-            // Build HTML Rows
+            // Create Row
             tableRowsHTML += `
                 <tr>
                     <td>${data.date || "-"}</td>
+                    <td><b>${data.empCode || "-"}</b></td>
                     <td>${data.teacherName || "-"}</td>
+                    <td>${data.jamiatulMadina || "-"}</td>
+                    <td>${data.city || "-"}, ${data.state || "-"}</td>
                     <td>${data.region || "-"}</td>
-                    <td>₹ ${amount.toLocaleString("en-IN")}</td>
-                    <td>${data.status || "Success"}</td>
+                    <td style="color: #28a745; font-weight: bold;">₹ ${amount.toLocaleString("en-IN")}</td>
                 </tr>
             `;
         });
 
-        // Set Collection UI
-        const totalCollectionEl = document.getElementById("totalCollection");
-        if (totalCollectionEl) {
-            totalCollectionEl.textContent = "₹ " + totalCollection.toLocaleString("en-IN");
-        }
-
-        const todayCollectionEl = document.getElementById("todayCollection");
-        if (todayCollectionEl) {
-            todayCollectionEl.textContent = "₹ " + todayCollection.toLocaleString("en-IN");
-        }
+        // Update Summary Cards
+        if (totalAmountEl) totalAmountEl.textContent = `₹ ${totalCollection.toLocaleString("en-IN")}`;
+        if (todayAmountEl) todayAmountEl.textContent = `₹ ${todayCollection.toLocaleString("en-IN")}`;
+        if (totalEntriesCountEl) totalEntriesCountEl.textContent = totalCount;
 
         // Render Table Rows
-        if (recentTable) {
-            if (entrySnapshot.empty) {
-                recentTable.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align:center;">No Records Found</td>
-                    </tr>
-                `;
-            } else {
-                recentTable.innerHTML = tableRowsHTML;
-            }
-        }
-
-        console.log("Dashboard Metrics Loaded Successfully.");
+        if (entriesTableBody) entriesTableBody.innerHTML = tableRowsHTML;
 
     } catch (error) {
-        console.error("Dashboard Loading Error:", error);
+        console.error("Dashboard Load Error:", error);
+        if (entriesTableBody) {
+            entriesTableBody.innerHTML = `<tr><td colspan="7" class="no-data" style="color:red;">Data load karne me error aaya. Console check karein.</td></tr>`;
+        }
     }
 }
 
-
-// ======================================
-// Logout Action
-// ======================================
-const logoutBtn = document.getElementById("logoutBtn");
-
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-        try {
-            await signOut(auth);
-            window.location.href = "index.html";
-        } catch (error) {
-            console.error("Logout Error:", error);
-        }
-    });
-}
-
-console.log("Dashboard Loaded Successfully");
+// Initial Load
+loadDashboardData();
