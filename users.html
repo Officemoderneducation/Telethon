@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Users | Telethon Management</title>
+<title>Employee Management | Telethon</title>
 
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/dashboard.css">
@@ -30,32 +30,34 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 
 <h2>Telethon</h2>
 
+<p>Management System</p>
+
 </div>
 
 <div class="menu">
 
 <a href="dashboard.html">
-<i class="fa fa-home"></i>
+<i class="fa-solid fa-house"></i>
 <span>Dashboard</span>
 </a>
 
 <a href="users.html" class="active">
-<i class="fa fa-users"></i>
-<span>Users</span>
+<i class="fa-solid fa-users"></i>
+<span>Employees</span>
 </a>
 
 <a href="daily-entry.html">
-<i class="fa fa-file-circle-plus"></i>
+<i class="fa-solid fa-file-circle-plus"></i>
 <span>Daily Entry</span>
 </a>
 
 <a href="reports.html">
-<i class="fa fa-chart-column"></i>
+<i class="fa-solid fa-chart-column"></i>
 <span>Reports</span>
 </a>
 
 <a href="#" id="logoutBtn">
-<i class="fa fa-right-from-bracket"></i>
+<i class="fa-solid fa-right-from-bracket"></i>
 <span>Logout</span>
 </a>
 
@@ -69,23 +71,29 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 
 <div class="topbar">
 
-<h2>Users Management</h2>
+<div>
+
+<h2>Employee Management</h2>
+
+<p>Approve and Manage Employees</p>
 
 </div>
+
+</div>
+
+<!-- Search -->
 
 <div class="table-container">
 
 <div class="d-flex justify-between align-center mb-20">
 
-<h3>All Users</h3>
+<h3>Registered Employees</h3>
 
-<button class="btn btn-primary" id="addUserBtn">
-
-<i class="fa fa-plus"></i>
-
-Add User
-
-</button>
+<input
+type="text"
+id="searchUser"
+placeholder="Search Employee..."
+style="padding:10px;width:250px;border:1px solid #ddd;border-radius:8px;">
 
 </div>
 
@@ -95,11 +103,19 @@ Add User
 
 <tr>
 
-<th>Name</th>
+<th>Employee Code</th>
 
-<th>Email</th>
+<th>Teacher Name</th>
 
-<th>Role</th>
+<th>Mobile</th>
+
+<th>Region</th>
+
+<th>State</th>
+
+<th>City</th>
+
+<th>Status</th>
 
 <th>Action</th>
 
@@ -108,12 +124,11 @@ Add User
 </thead>
 
 <tbody id="usersTable">
+  <tr>
 
-<tr>
+<td colspan="8" style="text-align:center; padding:20px;">
 
-<td colspan="4" style="text-align:center">
-
-Loading...
+Loading Employees...
 
 </td>
 
@@ -128,6 +143,8 @@ Loading...
 </div>
 
 </div>
+
+<!-- Firebase -->
 
 <script type="module" src="assets/js/firebase-config.js"></script>
 <script type="module" src="assets/js/auth.js"></script>
