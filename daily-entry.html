@@ -5,93 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Collection Entry</title>
     
-    <!-- CSS Link (Apni stylesheet yahan connect karein) -->
-    <link rel="stylesheet" href="style.css">
-    
     <style>
-        /* Basic Form Styling */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
             padding: 20px;
         }
-        .form-container {
-            max-width: 500px;
-            margin: 40px auto;
+
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 450px;
+            margin: 0 auto 20px auto;
             background: #ffffff;
-            padding: 30px;
+            padding: 12px 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .form-container h2 {
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
+
+        .user-info {
             font-weight: bold;
-            color: #555;
+            color: #333;
         }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
+
+        .logout-btn {
+            color: #dc3545;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            background: none;
             font-size: 14px;
         }
+
+        .form-container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-container h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .employee-badge {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #495057;
+        }
+
         .submit-btn {
             width: 100%;
             padding: 12px;
             background-color: #28a745;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
             font-weight: bold;
         }
+
         .submit-btn:hover {
             background-color: #218838;
         }
-        .header-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .logout-link {
-            color: #dc3545;
-            cursor: pointer;
-            text-decoration: underline;
-            font-weight: bold;
-        }
+
         #message {
             margin-top: 15px;
             text-align: center;
             font-weight: bold;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header / Logout -->
+    <!-- Header -->
     <div class="header-nav">
-        <span>Logged in Employee</span>
-        <span id="logoutBtn" class="logout-link">Logout</span>
+        <span id="userInfo" class="user-info">Loading user...</span>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
     </div>
 
-    <!-- Daily Entry Form Container -->
+    <!-- Daily Entry Form -->
     <div class="form-container">
-        <h2>Daily Collection Entry</h2>
+        <h3>Daily Collection Entry</h3>
         
+        <!-- Auto Fetched Employee Details Info -->
+        <div id="employeeBadge" class="employee-badge" style="display: none;">
+            <div id="badgeTeacher">Teacher: -</div>
+            <div id="badgeMadina">Jamiatul Madina: -</div>
+            <div id="badgeLocation">Location: -</div>
+        </div>
+
         <form id="dailyEntryForm">
             <!-- Date -->
             <div class="form-group">
@@ -99,41 +143,20 @@
                 <input type="date" id="entryDate" required>
             </div>
 
-            <!-- Teacher / Employee Name -->
-            <div class="form-group">
-                <label for="teacherName">Teacher / Employee Name</label>
-                <input type="text" id="teacherName" placeholder="Enter full name" required>
-            </div>
-
-            <!-- Region -->
-            <div class="form-group">
-                <label for="region">Region / Area</label>
-                <input type="text" id="region" placeholder="e.g. North Zone, Jaipur" required>
-            </div>
-
             <!-- Collection Amount -->
             <div class="form-group">
                 <label for="amount">Collection Amount (₹)</label>
-                <input type="number" id="amount" placeholder="Enter amount" min="0" required>
-            </div>
-
-            <!-- Status -->
-            <div class="form-group">
-                <label for="status">Payment Status</label>
-                <select id="status">
-                    <option value="Success" selected>Success</option>
-                    <option value="Pending">Pending</option>
-                </select>
+                <input type="number" id="amount" placeholder="Enter Amount" min="1" required>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" id="submitBtn" class="submit-btn">Submit Entry</button>
+            <button type="submit" id="submitBtn" class="submit-btn">Submit Collection</button>
         </form>
 
         <div id="message"></div>
     </div>
 
-    <!-- JS Script Link -->
+    <!-- JS Link -->
     <script type="module" src="daily-entry.js"></script>
 </body>
 </html>
