@@ -1,26 +1,21 @@
 // ======================================
-// Daily Entry JS - Firebase Firestore
+// Daily Entry JS - Auto Fetch Profile & Submit
 // ======================================
-
-import { auth, db } from "./firebase-config.js";
-
-import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-import {
-    doc,
-    getDoc,
-    collection,
-    addDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
+import { db } from "./firebase-config.js";
+import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 let currentEmployeeData = null;
 
-// 1. Set Today Date
+// Get Logged In Emp Code from LocalStorage
+const empCode = localStorage.getItem("loggedInEmpCode");
+
+if (!empCode) {
+    window.location.href = "index.html";
+} else {
+    loadTeacherProfile(empCode);
+}
+
+// 1. Set Today's Date
 const dateInput = document.getElementById("entryDate");
 if (dateInput) {
     const today = new Date();
@@ -30,40 +25,37 @@ if (dateInput) {
     dateInput.value = `${year}-${month}-${day}`;
 }
 
-
-// 2. Check Login & Fetch Employee Profile
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        window.location.href = "index.html";
-        return;
-    }
-
+// 2. Fetch Profile from Firestore
+async function loadTeacherProfile(empCode) {
     try {
-        // Fetch Employee data from Firestore "employees" collection using user.uid
-        const empDocRef = doc(db, "employees", user.uid);
+        const empDocRef = doc(db, "employees", empCode);
         const empDocSnap = await getDoc(empDocRef);
 
         if (empDocSnap.exists()) {
             currentEmployeeData = empDocSnap.data();
 
-            // Display Info on Screen
-            document.getElementById("userInfo").textContent = currentEmployeeData.teacherName || "Teacher";
-            document.getElementById("badgeTeacher").textContent = "Teacher: " + (currentEmployeeData.teacherName || "-");
-            document.getElementById("badgeMadina").textContent = "Jamiatul Madina: " + (currentEmployeeData.jamiatulMadina || "-");
-            document.getElementById("badgeLocation").textContent = `Location: ${currentEmployeeData.city || "-"}, ${currentEmployeeData.state || "-"}`;
-            
-            document.getElementById("employeeBadge").style.display = "block";
-        } else {
-            console.warn("Employee profile record not found in Firestore.");
-            document.getElementById("userInfo").textContent = user.email || "Employee";
+            // Render Header & Profile Badge
+            const userInfo = document.getElementById("userInfo");
+            if (userInfo) userInfo.textContent = currentEmployeeData.teacherName || "Teacher";
+
+            const badgeTeacher = document.getElementById("badgeTeacher");
+            if (badgeTeacher) badgeTeacher.textContent = "Teacher: " + (currentEmployeeData.teacherName || "-");
+
+            const badgeMadina = document.getElementById("badgeMadina");
+            if (badgeMadina) badgeMadina.textContent = "Jamiatul Madina: " + (currentEmployeeData.jamiatulMadina || "-");
+
+            const badgeLocation = document.getElementById("badgeLocation");
+            if (badgeLocation) badgeLocation.textContent = `Location: ${currentEmployeeData.city || "-"}, ${currentEmployeeData.state || "-"}`;
+
+            const badge = document.getElementById("employeeBadge");
+            if (badge) badge.style.display = "block";
         }
     } catch (err) {
-        console.error("Error fetching employee profile:", err);
+        console.error("Profile Fetch Error:", err);
     }
-});
+}
 
-
-// 3. Submit Daily Entry
+// 3. Form Submit Action
 const entryForm = document.getElementById("dailyEntryForm");
 const messageEl = document.getElementById("message");
 const submitBtn = document.getElementById("submitBtn");
@@ -74,42 +66,37 @@ if (entryForm) {
 
         submitBtn.disabled = true;
         submitBtn.textContent = "Submitting...";
-        messageEl.textContent = "";
+        if (messageEl) messageEl.textContent = "";
 
         const dateVal = document.getElementById("entryDate").value;
         const amountVal = Number(document.getElementById("amount").value);
 
         try {
-            // Prepare complete entry with profile details
-            const entryData = {
+            await addDoc(collection(db, "daily_entry"), {
                 date: dateVal,
                 amount: amountVal,
                 status: "Success",
                 createdAt: serverTimestamp(),
-                submittedByUid: auth.currentUser ? auth.currentUser.uid : "",
-                
-                // Auto attached from Employee Profile
-                teacherName: currentEmployeeData?.teacherName || "Unknown Teacher",
-                empCode: currentEmployeeData?.empCode || "",
-                region: currentEmployeeData?.region || "-",
-                state: currentEmployeeData?.state || "-",
-                city: currentEmployeeData?.city || "-",
-                jamiatulMadina: currentEmployeeData?.jamiatulMadina || "-"
-            };
+                empCode: empCode,
+                teacherName: currentEmployeeData?.teacherName || "",
+                region: currentEmployeeData?.region || "",
+                state: currentEmployeeData?.state || "",
+                city: currentEmployeeData?.city || "",
+                jamiatulMadina: currentEmployeeData?.jamiatulMadina || ""
+            });
 
-            // Save to daily_entry collection
-            await addDoc(collection(db, "daily_entry"), entryData);
-
-            messageEl.style.color = "green";
-            messageEl.textContent = "Entry Submitted Successfully!";
-
-            // Reset Amount field
+            if (messageEl) {
+                messageEl.style.color = "green";
+                messageEl.textContent = "Collection Entry Submitted Successfully!";
+            }
             document.getElementById("amount").value = "";
 
         } catch (error) {
-            console.error("Error submitting entry:", error);
-            messageEl.style.color = "red";
-            messageEl.textContent = "Failed to submit. Try again.";
+            console.error("Entry Error:", error);
+            if (messageEl) {
+                messageEl.style.color = "red";
+                messageEl.textContent = "Submission Failed. Try again.";
+            }
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = "Submit Collection";
@@ -117,16 +104,11 @@ if (entryForm) {
     });
 }
 
-
-// 4. Logout
+// 4. Logout Action
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-        try {
-            await signOut(auth);
-            window.location.href = "index.html";
-        } catch (error) {
-            console.error("Logout Error:", error);
-        }
+    logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("loggedInEmpCode");
+        window.location.href = "index.html";
     });
 }
