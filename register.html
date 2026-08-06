@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Employee Registration</title>
+    <title>Employee Registration | Telethon</title>
 
     <link rel="stylesheet" href="assets/css/register.css">
 
@@ -14,67 +14,171 @@
 
 <body>
 
-<div class="register-container">
+<div class="container">
 
     <div class="register-box">
 
-        <img src="assets/images/logo.png" class="logo" alt="Logo">
+        <div class="logo-section">
 
-        <h2>Employee Registration</h2>
+            <img src="assets/images/logo.png"
+                 alt="Logo"
+                 class="logo">
 
-        <p>Create Your Account</p>
+            <h2>Employee Registration</h2>
 
-        <select id="region">
-            <option value="">Select Region</option>
-        </select>
+            <p>Telethon Collection Management System</p>
 
-        <select id="state">
-            <option value="">Select State</option>
-        </select>
+        </div>
 
-        <select id="city">
-            <option value="">Select City</option>
-        </select>
+        <form id="registerForm">
 
-        <input
-            type="text"
-            id="jamiatulMadina"
-            placeholder="Jamiatul Madina">
+            <!-- Region -->
 
-        <input
-            type="text"
-            id="employeeCode"
-            placeholder="Employee Code">
+            <div class="input-group">
 
-        <input
-            type="text"
-            id="teacherName"
-            placeholder="Teacher Name">
+                <label>Region</label>
 
-        <input
-            type="tel"
-            id="mobileNumber"
-            placeholder="Mobile Number">
+                <select id="region" required>
 
-        <input
-            type="password"
-            id="password"
-            placeholder="Password">
+                    <option value="">Select Region</option>
 
-        <input
-            type="password"
-            id="confirmPassword"
-            placeholder="Confirm Password">
+                </select>
 
-        <button id="registerBtn">
-            Register
-        </button>
+            </div>
 
-        <p id="message"></p>
+            <!-- State -->
 
-        <a href="index.html">
-            Already have an account? Login
-        </a>
+            <div class="input-group">
+
+                <label>State</label>
+
+                <select id="state" required>
+
+                    <option value="">Select State</option>
+
+                </select>
+
+            </div>
+
+            <!-- City -->
+
+            <div class="input-group">
+
+                <label>City</label>
+
+                <select id="city" required>
+
+                    <option value="">Select City</option>
+
+                </select>
+
+            </div>
+
+            <!-- Jamiatul Madina -->
+
+            <div class="input-group">
+
+                <label>Jamiatul Madina</label>
+
+                <input
+                    type="text"
+                    id="jamiatulMadina"
+                    placeholder="Enter Jamiatul Madina Name"
+                    required>
+            </div>
+                        <!-- Employee Code -->
+
+            <div class="input-group">
+
+                <label>Employee Code</label>
+
+                <input
+                    type="text"
+                    id="employeeCode"
+                    placeholder="Enter Employee Code"
+                    required>
+
+            </div>
+
+
+            <!-- Teacher Name -->
+
+            <div class="input-group">
+
+                <label>Teacher Name</label>
+
+                <input
+                    type="text"
+                    id="teacherName"
+                    placeholder="Enter Teacher Name"
+                    required>
+
+            </div>
+
+
+            <!-- Mobile Number -->
+
+            <div class="input-group">
+
+                <label>Mobile Number</label>
+
+                <input
+                    type="tel"
+                    id="mobileNumber"
+                    maxlength="10"
+                    placeholder="Enter Mobile Number"
+                    required>
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div class="input-group">
+
+                <label>Password (4 Digits)</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    maxlength="4"
+                    inputmode="numeric"
+                    pattern="[0-9]{4}"
+                    placeholder="Create 4 Digit Password"
+                    required>
+
+            </div>
+
+
+            <!-- Confirm Password -->
+
+            <div class="input-group">
+
+                <label>Confirm Password</label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    maxlength="4"
+                    inputmode="numeric"
+                    pattern="[0-9]{4}"
+                    placeholder="Confirm Password"
+                    required>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="register-btn">
+
+                Register
+
+            </button>
+
+
+            <p id="message"></p>
+                    </form>
 
     </div>
 
