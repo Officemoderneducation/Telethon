@@ -1,67 +1,97 @@
-/* ===========================
-   Telethon Register Page
-   Part 1
-=========================== */
+/* =====================================
+   RESET
+===================================== */
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
 }
+
+
+/* =====================================
+   BODY
+===================================== */
 
 body{
-    font-family:Arial, Helvetica, sans-serif;
-    background:linear-gradient(135deg,#0f4c81,#1e88e5,#64b5f6);
-    min-height:100vh;
+
+    background:#f4f7fb;
+
     display:flex;
+
     justify-content:center;
+
     align-items:center;
+
+    min-height:100vh;
+
     padding:30px;
+
 }
 
-.register-container{
+
+/* =====================================
+   CONTAINER
+===================================== */
+
+.container{
+
     width:100%;
+
     display:flex;
+
     justify-content:center;
+
     align-items:center;
+
 }
+
+
+/* =====================================
+   REGISTER BOX
+===================================== */
 
 .register-box{
 
     width:100%;
+
     max-width:520px;
 
     background:#ffffff;
 
-    border-radius:20px;
+    border-radius:15px;
 
-    padding:40px;
+    padding:35px;
 
-    box-shadow:
-    0 10px 30px rgba(0,0,0,.15);
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
 
-    animation:fadeIn .5s ease;
+}
+
+
+/* =====================================
+   LOGO
+===================================== */
+
+.logo-section{
+
+    text-align:center;
+
+    margin-bottom:25px;
 
 }
 
 .logo{
 
-    width:60px;
-    height:60px;
+    width:90px;
 
-    display:block;
-
-    margin:0 auto 15px;
-
-    object-fit:contain;
+    margin-bottom:10px;
 
 }
 
-.register-box h2{
+.logo-section h2{
 
-    text-align:center;
-
-    color:#0f4c81;
+    color:#0d47a1;
 
     font-size:28px;
 
@@ -69,126 +99,114 @@ body{
 
 }
 
-.register-box p{
-
-    text-align:center;
+.logo-section p{
 
     color:#666;
-
-    margin-bottom:25px;
 
     font-size:15px;
 
 }
+/* =====================================
+   INPUT GROUP
+===================================== */
 
-@keyframes fadeIn{
+.input-group{
 
-from{
-
-opacity:0;
-
-transform:translateY(25px);
-
-}
-
-to{
-
-opacity:1;
-
-transform:translateY(0);
+    margin-bottom:18px;
 
 }
 
-}
-/* ===========================
-   Form Fields
-=========================== */
+.input-group label{
 
-.register-box select,
-.register-box input{
+    display:block;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#333;
+
+}
+
+
+/* =====================================
+   INPUTS
+===================================== */
+
+.input-group input,
+
+.input-group select{
 
     width:100%;
 
     height:50px;
 
-    padding:0 16px;
+    padding:0 15px;
 
-    margin-bottom:16px;
-
-    border:1px solid #d9d9d9;
+    border:1px solid #d5dbe3;
 
     border-radius:10px;
 
-    background:#fff;
+    outline:none;
 
-    font-size:15px;
+    background:#fff;
 
     color:#333;
 
-    outline:none;
+    font-size:15px;
 
     transition:.3s;
 
 }
 
-.register-box select{
 
-    cursor:pointer;
+/* Placeholder */
 
-}
-
-.register-box input::placeholder{
+.input-group input::placeholder{
 
     color:#999;
 
 }
 
-.register-box input:focus,
-.register-box select:focus{
 
-    border-color:#0f4c81;
+/* Focus Effect */
 
-    box-shadow:0 0 0 3px rgba(15,76,129,.15);
+.input-group input:focus,
 
-}
+.input-group select:focus{
 
-.register-box input:hover,
-.register-box select:hover{
+    border-color:#1565c0;
 
-    border-color:#1e88e5;
+    box-shadow:0 0 0 4px rgba(21,101,192,.15);
 
 }
 
-.register-box select{
 
-    appearance:none;
+/* Select Cursor */
 
-    -webkit-appearance:none;
+.input-group select{
 
-    -moz-appearance:none;
-
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5 8 12l6.5-6.5z'/%3E%3C/svg%3E");
-
-    background-repeat:no-repeat;
-
-    background-position:right 15px center;
-
-    background-size:14px;
-
-    padding-right:40px;
+    cursor:pointer;
 
 }
 
-.register-box input[type="password"]{
 
-    letter-spacing:1px;
+/* Disabled Dropdown */
+
+.input-group select:disabled{
+
+    background:#f2f2f2;
+
+    cursor:not-allowed;
 
 }
-/* ===========================
-   Buttons & Links
-=========================== */
+/* =====================================
+   REGISTER BUTTON
+===================================== */
 
-.register-box button{
+.register-btn{
 
     width:100%;
 
@@ -198,35 +216,42 @@ transform:translateY(0);
 
     border-radius:10px;
 
-    background:linear-gradient(135deg,#0f4c81,#1e88e5);
+    background:#1565c0;
 
     color:#fff;
 
-    font-size:16px;
+    font-size:17px;
 
-    font-weight:600;
+    font-weight:bold;
 
     cursor:pointer;
 
     transition:.3s;
 
-    margin-top:8px;
+    margin-top:10px;
 
 }
 
-.register-box button:hover{
+.register-btn:hover{
+
+    background:#0d47a1;
 
     transform:translateY(-2px);
 
-    box-shadow:0 10px 20px rgba(30,136,229,.30);
+    box-shadow:0 8px 20px rgba(21,101,192,.30);
 
 }
 
-.register-box button:active{
+.register-btn:active{
 
-    transform:scale(.98);
+    transform:translateY(0);
 
 }
+
+
+/* =====================================
+   MESSAGE
+===================================== */
 
 #message{
 
@@ -234,158 +259,32 @@ transform:translateY(0);
 
     text-align:center;
 
-    font-size:14px;
+    font-size:15px;
 
     font-weight:600;
 
-    color:#d32f2f;
+    color:#2e7d32;
 
     min-height:20px;
 
 }
 
-.register-box a{
 
-    display:block;
-
-    text-align:center;
-
-    margin-top:22px;
-
-    color:#0f4c81;
-
-    text-decoration:none;
-
-    font-weight:600;
-
-    transition:.3s;
-
-}
-
-.register-box a:hover{
-
-    color:#1565c0;
-
-    text-decoration:underline;
-
-}
-
-.register-box hr{
-
-    border:none;
-
-    height:1px;
-
-    background:#e5e5e5;
-
-    margin:25px 0;
-
-}
-/* ===========================
-   Responsive Design
-=========================== */
-
-@media (max-width:768px){
-
-    body{
-
-        padding:20px;
-
-    }
-
-    .register-box{
-
-        padding:30px 22px;
-
-        border-radius:16px;
-
-    }
-
-    .register-box h2{
-
-        font-size:24px;
-
-    }
-
-    .register-box p{
-
-        font-size:14px;
-
-    }
-
-    .register-box input,
-    .register-box select,
-    .register-box button{
-
-        height:48px;
-
-        font-size:15px;
-
-    }
-
-    .logo{
-
-        width:50px;
-
-        height:50px;
-
-    }
-
-}
-
-@media (max-width:480px){
-
-    body{
-
-        padding:15px;
-
-    }
-
-    .register-box{
-
-        padding:22px 18px;
-
-    }
-
-    .register-box h2{
-
-        font-size:22px;
-
-    }
-
-    .register-box p{
-
-        font-size:13px;
-
-    }
-
-    .register-box input,
-    .register-box select,
-    .register-box button{
-
-        height:46px;
-
-        font-size:14px;
-
-    }
-
-    .logo{
-
-        width:45px;
-
-        height:45px;
-
-    }
-
-}
-
-/* ===========================
-   Scrollbar
-=========================== */
+/* =====================================
+   SCROLLBAR
+===================================== */
 
 ::-webkit-scrollbar{
 
     width:8px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#1565c0;
+
+    border-radius:20px;
 
 }
 
@@ -395,28 +294,59 @@ transform:translateY(0);
 
 }
 
-::-webkit-scrollbar-thumb{
 
-    background:#0f4c81;
+/* =====================================
+   MOBILE RESPONSIVE
+===================================== */
 
-    border-radius:10px;
+@media(max-width:600px){
 
-}
+    body{
 
-::-webkit-scrollbar-thumb:hover{
+        padding:15px;
 
-    background:#1565c0;
+    }
 
-}
+    .register-box{
 
-/* ===========================
-   Selection
-=========================== */
+        padding:25px;
 
-::selection{
+    }
 
-    background:#1e88e5;
+    .logo{
 
-    color:#fff;
+        width:70px;
+
+    }
+
+    .logo-section h2{
+
+        font-size:24px;
+
+    }
+
+    .logo-section p{
+
+        font-size:14px;
+
+    }
+
+    .input-group input,
+
+    .input-group select{
+
+        height:46px;
+
+        font-size:14px;
+
+    }
+
+    .register-btn{
+
+        height:48px;
+
+        font-size:16px;
+
+    }
 
 }
