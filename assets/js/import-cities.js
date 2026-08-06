@@ -1,3 +1,7 @@
+// ======================================
+// Import Firebase
+// ======================================
+
 import { db } from "./firebase-config.js";
 
 import {
@@ -5,70 +9,106 @@ import {
     setDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
+// ======================================
+// Get Elements
+// ======================================
+
 const fileInput = document.getElementById("fileInput");
 const importBtn = document.getElementById("importBtn");
 const status = document.getElementById("status");
+
+
+// ======================================
+// Import Button Click
+// ======================================
 
 importBtn.addEventListener("click", () => {
 
     const file = fileInput.files[0];
 
     if (!file) {
-
         alert("Please Select CSV File");
-
         return;
-
     }
+
+    status.innerHTML = "Reading File...";
 
     const reader = new FileReader();
 
-    reader.onload = function (e) {
+    reader.onload = async function (event) {
 
-        const csv = e.target.result;
+        const csv = event.target.result;
 
         const rows = csv.split(/\r?\n/);
 
-        uploadCities(rows);
+        await uploadCities(rows);
+
+    };
+
+    reader.onerror = function () {
+
+        status.innerHTML = "❌ File Read Failed";
 
     };
 
     reader.readAsText(file);
 
 });
+
+
+// ======================================
+// Upload Cities
+// ======================================
+
 async function uploadCities(rows) {
 
-    status.innerHTML = "Uploading... Please Wait";
-
     let total = 0;
+    let skipped = 0;
+
+    status.innerHTML = "Uploading...";
 
     for (let i = 1; i < rows.length; i++) {
 
-        if (rows[i].trim() === "") continue;
+        if (rows[i].trim() === "") {
+            continue;
+        }
 
         const data = rows[i].split(",");
 
-        const region = data[0]?.trim();
+        if (data.length < 3) {
+            skipped++;
+            continue;
+        }
 
-        const state = data[1]?.trim();
+        const region = data[0].trim();
+        const state = data[1].trim();
+        const city = data[2].trim();
 
-        const city = data[2]?.trim();
+        if (!region || !state || !city) {
+            skipped++;
+            continue;
+        }
 
-        if (!region || !state || !city) continue;
+        // Create Unique Document ID
+
+        const documentId = `${region}_${state}_${city}`
+            .replace(/\s+/g, "_")
+            .replace(/[&/]/g, "_")
+            .toUpperCase();
 
         try {
 
             await setDoc(
 
-                doc(db, "cities", city),
+                doc(db, "cities", documentId),
 
                 {
 
                     name: city,
-
                     state: state,
-
-                    region: region
+                    region: region,
+                    createdAt: new Date()
 
                 }
 
@@ -76,33 +116,27 @@ async function uploadCities(rows) {
 
             total++;
 
-            status.innerHTML = `Uploading... ${total} Cities`;
+            status.innerHTML =
+                `Uploading... ${total} Cities Imported`;
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(error);
+
+            skipped++;
 
         }
 
     }
 
-    status.innerHTML = `✅ ${total} Cities Imported Successfully`;
+    status.innerHTML =
+
+        `✅ Import Completed <br><br>
+        Total Imported : ${total}<br>
+        Skipped : ${skipped}`;
+
+    alert("Cities Imported Successfully");
 
 }
-const documentId = `${region}_${state}_${city}`
-    .replace(/\s+/g, "_")
-    .replace(/[&/]/g, "_");
-
-await setDoc(
-    doc(db, "cities", documentId),
-    {
-        name: city,
-        state: state,
-        region: region,
-        createdAt: new Date()
-    }
-);
-
-total++;
-
-status.innerHTML = `Uploading... ${total} Cities`;
