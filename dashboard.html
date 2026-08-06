@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-
+    <title>Admin Dashboard - Collection Tracker</title>
     <style>
         * {
             box-sizing: border-box;
@@ -18,73 +17,68 @@
             padding: 20px;
         }
 
-        .dashboard-header {
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: #ffffff;
-            padding: 15px 20px;
+            padding: 15px 25px;
             border-radius: 8px;
-            margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
         }
 
-        .logout-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
+        .header h2 {
+            color: #2c3e50;
         }
 
-        .dashboard-grid {
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
 
-        .dashboard-card {
+        .stat-card {
             background: #ffffff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border-left: 4px solid #007bff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 5px solid #007bff;
         }
 
-        .dashboard-card h5 {
+        .stat-card.today { border-left-color: #28a745; }
+        .stat-card.count { border-left-color: #ffc107; }
+
+        .stat-card h4 {
             color: #6c757d;
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
         }
 
-        .dashboard-card h2 {
+        .stat-card p {
             font-size: 24px;
+            font-weight: bold;
             color: #333;
-            margin-bottom: 5px;
         }
 
-        .dashboard-card span {
-            font-size: 12px;
-            color: #888;
-        }
-
-        .table-section {
+        .table-container {
             background: #ffffff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .table-section h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .table-responsive {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             overflow-x: auto;
+        }
+
+        .table-container h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
         }
 
         table {
@@ -93,88 +87,78 @@
             text-align: left;
         }
 
-        table th, table td {
+        th, td {
             padding: 12px 15px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e9ecef;
         }
 
-        table th {
+        th {
             background-color: #f8f9fa;
-            color: #333;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #888;
+            padding: 20px 0;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header class="dashboard-header">
-        <h2>Admin Dashboard</h2>
-        <button id="logoutBtn" class="logout-btn">Logout</button>
-    </header>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h2>Collection Dashboard</h2>
+            <button onclick="window.location.reload()" style="padding: 8px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px;">Refresh</button>
+        </div>
 
-    <!-- Dashboard Cards Grid -->
-    <div class="dashboard-grid">
-
-        <!-- Total Target -->
-        <div class="dashboard-card">
-            <div>
-                <h5>Total Target Amount</h5>
-                <h2 id="totalTarget">₹0</h2>
-                <span>All Users Target</span>
+        <!-- Summary Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h4>Total Collection</h4>
+                <p id="totalAmount">₹ 0</p>
+            </div>
+            <div class="stat-card today">
+                <h4>Today's Collection</h4>
+                <p id="todayAmount">₹ 0</p>
+            </div>
+            <div class="stat-card count">
+                <h4>Total Entries</h4>
+                <p id="totalEntriesCount">0</p>
             </div>
         </div>
 
-        <!-- Total Collection -->
-        <div class="dashboard-card">
-            <div>
-                <h5>Total Collection Amount</h5>
-                <h2 id="totalCollection">₹0</h2>
-                <span>Lifetime Collection</span>
-            </div>
-        </div>
-
-        <!-- Today's Collection -->
-        <div class="dashboard-card">
-            <div>
-                <h5>Today's Collection</h5>
-                <h2 id="todayCollection">₹0</h2>
-                <span>Today's Total Entry</span>
-            </div>
-        </div>
-
-        <!-- Total Users -->
-        <div class="dashboard-card">
-            <div>
-                <h5>Total Users</h5>
-                <h2 id="totalUsers">0</h2>
-                <span>Registered Employees</span>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Data Table Section -->
-    <section class="table-section">
-        <h3>Recent Daily Entries</h3>
-        <div class="table-responsive">
+        <!-- Live Entries Table -->
+        <div class="table-container">
+            <h3>Recent Collection Entries</h3>
             <table>
                 <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Emp Code</th>
                         <th>Teacher Name</th>
+                        <th>Jamiatul Madina</th>
+                        <th>City / State</th>
                         <th>Region</th>
                         <th>Amount</th>
-                        <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="recentTable">
-                    <!-- Data will load here via JS -->
+                <tbody id="entriesTableBody">
+                    <tr>
+                        <td colspan="7" class="no-data">Loading entries...</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-    </section>
+    </div>
 
-    <!-- JS Module Script Connection -->
-    <script type="module" src="dashboard.js"></script>
+    <!-- Connected with js/dashboard.js -->
+    <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>
