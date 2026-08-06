@@ -192,7 +192,7 @@ if (logoutBtn) {
 
         try {
 
-            await auth.signOut();
+           await signOut(auth);
 
             window.location.href = "index.html";
 
