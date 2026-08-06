@@ -45,7 +45,7 @@ async function loadRegions() {
         '<option value="">Select Region</option>';
 
     const snapshot = await getDocs(
-        collection(db, "regions")
+        collection(db, "region")
     );
 
     snapshot.forEach((doc) => {
@@ -79,7 +79,7 @@ region.addEventListener("change", async () => {
 
 
     const q = query(
-        collection(db, "states"),
+        collection(db, "state"),
         where("region", "==", region.value)
     );
 
