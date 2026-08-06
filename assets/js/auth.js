@@ -1,102 +1,43 @@
-import { auth } from "./firebase-config.js";
+// ======================================
+// Login JS - Match Document ID (63148)
+// ======================================
+import { db } from "./firebase-config.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-import {
-    signInWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+const loginForm = document.getElementById("loginForm");
+const errorMsg = document.getElementById("errorMsg");
 
+if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-// Login Function
+        const empCode = document.getElementById("empCode").value.trim();
+        const password = document.getElementById("password").value.trim();
 
-const loginBtn = document.getElementById("loginBtn");
+        try {
+            // Document ID = Employee Code (e.g. 63148)
+            const empDocRef = doc(db, "employees", empCode);
+            const empDocSnap = await getDoc(empDocRef);
 
+            if (empDocSnap.exists()) {
+                const data = empDocSnap.data();
 
-if(loginBtn){
+                // Check Password
+                if (data.password === password) {
+                    // Store Logged In Employee Code locally
+                    localStorage.setItem("loggedInEmpCode", empCode);
 
-loginBtn.addEventListener("click",()=>{
-
-
-let email = document.getElementById("email").value;
-
-let password = document.getElementById("password").value;
-
-
-
-signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-)
-
-.then((userCredential)=>{
-
-
-alert("Login Successful");
-
-
-window.location.href="dashboard.html";
-
-
-})
-
-
-.catch((error)=>{
-
-
-alert(error.message);
-
-
-});
-
-
-});
-
+                    // Redirect to Daily Entry Page
+                    window.location.href = "daily-entry.html";
+                } else {
+                    if (errorMsg) errorMsg.textContent = "Galat Password!";
+                }
+            } else {
+                if (errorMsg) errorMsg.textContent = "Employee Code nahi mila!";
+            }
+        } catch (error) {
+            console.error("Login Error:", error);
+            if (errorMsg) errorMsg.textContent = "Login me error aaya. Dubara koshish karein.";
+        }
+    });
 }
-
-
-
-// Logout Function
-
-const logoutBtn = document.getElementById("logoutBtn");
-
-
-if(logoutBtn){
-
-logoutBtn.addEventListener("click",()=>{
-
-
-signOut(auth)
-
-.then(()=>{
-
-window.location.href="index.html";
-
-});
-
-
-});
-
-}
-
-
-
-
-// Check Login Status
-
-onAuthStateChanged(auth,(user)=>{
-
-
-if(user){
-
-console.log("User Login:", user.email);
-
-
-}else{
-
-console.log("No User Login");
-
-}
-
-
-});
