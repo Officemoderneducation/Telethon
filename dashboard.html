@@ -1,80 +1,171 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    
-    <!-- CSS Link (Apni stylesheet ka naam yahan likhein) -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+// ======================================
+// Dashboard JS - Firebase Firestore
+// ======================================
 
-    <!-- Header Section -->
-    <header class="dashboard-header">
-        <h2>Admin Dashboard</h2>
-        <button id="logoutBtn" class="logout-btn">Logout</button>
-    </header>
+import { auth, db } from "./firebase-config.js";
 
-    <!-- Main Container -->
-    <main class="dashboard-container">
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-        <!-- Dashboard Cards -->
-        <div class="dashboard-grid">
+import {
+    collection,
+    getDocs,
+    query,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-            <!-- Total Target -->
-            <div class="dashboard-card">
-                <div>
-                    <h5>Total Target Amount</h5>
-                    <h2 id="totalTarget">₹0</h2>
-                    <span>All Users Target</span>
-                </div>
-            </div>
 
-            <!-- Total Collection -->
-            <div class="dashboard-card">
-                <div>
-                    <h5>Total Collection Amount</h5>
-                    <h2 id="totalCollection">₹0</h2>
-                    <span>Today's Collection</span>
-                </div>
-            </div>
+// ======================================
+// Helper Function: Get Today's Date (YYYY-MM-DD)
+// ======================================
+function getTodayDateString() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`; // Format: 2026-08-06
+}
 
-            <!-- Total Users -->
-            <div class="dashboard-card">
-                <div>
-                    <h5>Total Users</h5>
-                    <h2 id="totalUsers">0</h2>
-                    <span>Registered Employees</span>
-                </div>
-            </div>
 
-        </div>
+// ======================================
+// Check Login
+// ======================================
 
-        <!-- Recent Activity / Daily Collection Table -->
-        <section class="table-section">
-            <h3>Recent Daily Entries</h3>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Teacher Name</th>
-                            <th>Region</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recentTable">
-                        <!-- JS se data yahan load hoga -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = "index.html";
+        return;
+    }
+    loadDashboard();
+});
 
-    </main>
 
-    <!-- Dashboard JS Module Link -->
-    <script type="module" src="dashboard.js"></script>
-</body>
-</html>
+// ======================================
+// Load Dashboard Data
+// ======================================
+
+async function loadDashboard() {
+    try {
+        // ---------------------------------
+        // 1. Employees Data
+        // ---------------------------------
+        const employeeSnapshot = await getDocs(collection(db, "employees"));
+        let totalTarget = 0;
+
+        employeeSnapshot.forEach((doc) => {
+            const data = doc.data();
+            totalTarget += Number(data.target || 0);
+        });
+
+        // Set Employees UI
+        const totalUsersEl = document.getElementById("totalUsers");
+        const totalTargetEl = document.getElementById("totalTarget");
+
+        if (totalUsersEl) totalUsersEl.textContent = employeeSnapshot.size;
+        if (totalTargetEl) totalTargetEl.textContent = "₹ " + totalTarget.toLocaleString("en-IN");
+
+
+        // ---------------------------------
+        // 2. Daily Collection Data & Today Filter
+        // ---------------------------------
+        const collectionRef = collection(db, "daily_entry");
+        const q = query(collectionRef, orderBy("date", "desc"));
+        
+        let entrySnapshot;
+        try {
+            entrySnapshot = await getDocs(q);
+        } catch (e) {
+            console.warn("Sorting failed, fetching un-ordered data:", e);
+            entrySnapshot = await getDocs(collectionRef);
+        }
+
+        let totalCollection = 0;
+        let todayCollection = 0;
+        const todayDateStr = getTodayDateString(); // Aaj ki date
+
+        const recentTable = document.getElementById("recentTable");
+        let tableRowsHTML = "";
+
+        entrySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const amount = Number(data.amount || 0);
+            
+            // 1. Total Lifetime Collection
+            totalCollection += amount;
+
+            // 2. Today's Collection Filter (Check date matches YYYY-MM-DD)
+            if (data.date === todayDateStr) {
+                todayCollection += amount;
+            }
+
+            // Performance optimization ke liye HTML string
+            tableRowsHTML += `
+                <tr>
+                    <td>${data.date || "-"}</td>
+                    <td>${data.teacherName || "-"}</td>
+                    <td>${data.region || "-"}</td>
+                    <td>₹ ${amount.toLocaleString("en-IN")}</td>
+                    <td>${data.status || "Success"}</td>
+                </tr>
+            `;
+        });
+
+        // Set Total Collection UI
+        const totalCollectionEl = document.getElementById("totalCollection");
+        if (totalCollectionEl) {
+            totalCollectionEl.textContent = "₹ " + totalCollection.toLocaleString("en-IN");
+        }
+
+        // Set Today's Collection UI
+        const todayCollectionEl = document.getElementById("todayCollection");
+        if (todayCollectionEl) {
+            todayCollectionEl.textContent = "₹ " + todayCollection.toLocaleString("en-IN");
+        }
+
+        // Render Table Once
+        if (recentTable) {
+            if (entrySnapshot.empty) {
+                recentTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align:center;">No Records Found</td>
+                    </tr>
+                `;
+            } else {
+                recentTable.innerHTML = tableRowsHTML;
+            }
+        }
+
+        // Console Check
+        console.log("Dashboard Metrics Loaded:", {
+            users: employeeSnapshot.size,
+            target: totalTarget,
+            totalCollection: totalCollection,
+            todayCollection: todayCollection
+        });
+
+    } catch (error) {
+        console.error("Dashboard Error:", error);
+    }
+}
+
+
+// ======================================
+// Logout
+// ======================================
+
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+        try {
+            await signOut(auth);
+            window.location.href = "index.html";
+        } catch (error) {
+            console.error("Logout Error:", error);
+        }
+    });
+}
+
+console.log("Dashboard Loaded Successfully");
