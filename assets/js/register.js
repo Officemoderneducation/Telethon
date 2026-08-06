@@ -35,9 +35,8 @@ const registerForm = document.getElementById("registerForm");
 const message = document.getElementById("message");
 
 
-
 // ======================================
-// Load Region
+// Load Regions
 // ======================================
 
 async function loadRegions() {
@@ -45,18 +44,21 @@ async function loadRegions() {
     try {
 
         region.innerHTML =
-        '<option value="">Select Region</option>';
+            '<option value="">Select Region</option>';
 
+        state.innerHTML =
+            '<option value="">Select State</option>';
+
+        city.innerHTML =
+            '<option value="">Select City</option>';
 
         const snapshot = await getDocs(
             collection(db, "region")
         );
 
-
-        snapshot.forEach((doc)=>{
+        snapshot.forEach((doc) => {
 
             const data = doc.data();
-
 
             region.innerHTML += `
                 <option value="${data.name}">
@@ -64,12 +66,9 @@ async function loadRegions() {
                 </option>
             `;
 
-
         });
 
-
-    }
-    catch(error){
+    } catch (error) {
 
         console.error("Region Error:", error);
 
@@ -77,308 +76,239 @@ async function loadRegions() {
 
 }
 
-
 loadRegions();
-
-
-
 // ======================================
 // Load State
 // ======================================
 
-region.addEventListener("change", async()=>{
-
+region.addEventListener("change", async () => {
 
     state.innerHTML =
-    '<option value="">Select State</option>';
-
+        '<option value="">Select State</option>';
 
     city.innerHTML =
-    '<option value="">Select City</option>';
+        '<option value="">Select City</option>';
 
-
+    if (!region.value) return;
 
     try {
 
-
         const q = query(
-
-            collection(db,"state"),
-
-            where(
-                "region",
-                "==",
-                region.value
-            )
-
+            collection(db, "state"),
+            where("region", "==", region.value)
         );
-
-
 
         const snapshot = await getDocs(q);
 
-
-
-        snapshot.forEach((doc)=>{
-
+        snapshot.forEach((doc) => {
 
             const data = doc.data();
 
-
-
             state.innerHTML += `
-
                 <option value="${data.name}">
                     ${data.name}
                 </option>
-
             `;
-
 
         });
 
+    } catch (error) {
 
-
-    }
-    catch(error){
-
-        console.error("State Error:",error);
+        console.error("State Error:", error);
 
     }
-
 
 });
-
 
 
 // ======================================
 // Load City
 // ======================================
 
-state.addEventListener("change", async()=>{
-
+state.addEventListener("change", async () => {
 
     city.innerHTML =
-    '<option value="">Select City</option>';
+        '<option value="">Select City</option>';
 
-
+    if (!state.value) return;
 
     try {
 
-
         const q = query(
-
-            collection(db,"cities"),
-
-            where(
-                "state",
-                "==",
-                state.value
-            )
-
+            collection(db, "cities"),
+            where("state", "==", state.value)
         );
-
-
 
         const snapshot = await getDocs(q);
 
-
-
-        snapshot.forEach((doc)=>{
-
+        snapshot.forEach((doc) => {
 
             const data = doc.data();
 
-
-
             city.innerHTML += `
-
                 <option value="${data.name}">
                     ${data.name}
                 </option>
-
             `;
-
 
         });
 
+    } catch (error) {
 
-
-    }
-    catch(error){
-
-        console.error("City Error:",error);
+        console.error("City Error:", error);
 
     }
-
 
 });
-
-
-
-
 // ======================================
 // Registration Submit
 // ======================================
 
-registerForm.addEventListener("submit", async(e)=>{
-
+registerForm.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
+    message.innerHTML = "";
+    message.style.color = "red";
 
-    message.innerHTML="";
+    // ==========================
+    // Password Validation
+    // ==========================
 
+    if (!/^\d{4}$/.test(password.value)) {
 
-
-    // Password Check
-
-    if(!/^\d{4}$/.test(password.value)){
-
-
-        message.style.color="red";
-
-        message.innerHTML=
-        "Password must be exactly 4 digits.";
+        message.innerHTML =
+            "Password must be exactly 4 digits.";
 
         return;
 
     }
 
+    if (password.value !== confirmPassword.value) {
 
-
-    if(password.value !== confirmPassword.value){
-
-
-        message.style.color="red";
-
-        message.innerHTML=
-        "Passwords do not match.";
+        message.innerHTML =
+            "Passwords do not match.";
 
         return;
 
     }
 
+    // ==========================
+    // Mobile Validation
+    // ==========================
 
+    if (!/^\d{10}$/.test(mobileNumber.value)) {
 
-
-    // Mobile Check
-
-    if(!/^\d{10}$/.test(mobileNumber.value)){
-
-
-        message.style.color="red";
-
-        message.innerHTML=
-        "Enter valid mobile number.";
+        message.innerHTML =
+            "Enter a valid 10 digit mobile number.";
 
         return;
 
     }
 
+    try {
 
+        // ==========================
+        // Duplicate Employee Code
+        // ==========================
 
+        const employeeQuery = query(
+            collection(db, "employees"),
+            where(
+                "employeeCode",
+                "==",
+                employeeCode.value.trim()
+            )
+        );
 
-    // Employee Duplicate Check
+        const employeeSnapshot =
+            await getDocs(employeeQuery);
 
+        if (!employeeSnapshot.empty) {
 
-    const employeeQuery = query(
+            message.innerHTML =
+                "Employee Code already exists.";
 
-        collection(db,"employees"),
+            return;
 
-        where(
-            "employeeCode",
-            "==",
-            employeeCode.value.trim()
-        )
+        }
 
-    );
+        // ==========================
+        // Duplicate Mobile Number
+        // ==========================
 
+        const mobileQuery = query(
+            collection(db, "employees"),
+            where(
+                "mobileNumber",
+                "==",
+                mobileNumber.value.trim()
+            )
+        );
 
+        const mobileSnapshot =
+            await getDocs(mobileQuery);
 
-    const employeeSnapshot =
-    await getDocs(employeeQuery);
+        if (!mobileSnapshot.empty) {
 
+            message.innerHTML =
+                "Mobile Number already registered.";
 
+            return;
 
-    if(!employeeSnapshot.empty){
+        }
 
+        // ==========================
+        // Employee Data
+        // ==========================
 
-        message.style.color="red";
+        const employeeData = {
 
-        message.innerHTML=
-        "Employee Code already exists.";
+            employeeCode:
+                employeeCode.value.trim(),
 
-        return;
+            teacherName:
+                teacherName.value.trim(),
 
-    }
+            mobileNumber:
+                mobileNumber.value.trim(),
 
+            region:
+                region.value,
 
+            state:
+                state.value,
 
+            city:
+                city.value,
 
-    // Save Employee Data
+            jamiatulMadina:
+                jamiatulMadina.value.trim(),
 
+            password:
+                password.value,
 
-    const employeeData = {
+            status:
+                "Pending",
 
+            target:
+                0,
 
-        employeeCode:
-        employeeCode.value.trim(),
+            totalCollection:
+                0,
 
+            approvedBy:
+                "",
 
-        teacherName:
-        teacherName.value.trim(),
+            approvedAt:
+                null,
 
+            createdAt:
+                serverTimestamp()
 
-        mobileNumber:
-        mobileNumber.value.trim(),
-
-
-        region:
-        region.value,
-
-
-        state:
-        state.value,
-
-
-        city:
-        city.value,
-
-
-        jamiatulMadina:
-        jamiatulMadina.value.trim(),
-
-
-        password:
-        password.value,
-
-
-        status:
-        "Pending",
-
-
-        target:
-        0,
-
-
-        totalCollection:
-        0,
-
-
-        createdAt:
-        serverTimestamp()
-
-
-    };
-
-
-
-    try{
-
+        };
 
         await setDoc(
-
 
             doc(
                 db,
@@ -386,42 +316,26 @@ registerForm.addEventListener("submit", async(e)=>{
                 employeeCode.value.trim()
             ),
 
-
             employeeData
-
 
         );
 
+        message.style.color = "green";
 
-
-        message.style.color="green";
-
-
-        message.innerHTML=
-        "Registration Successful. Waiting for Admin Approval.";
-
-
+        message.innerHTML =
+            "Registration Successful. Waiting for Admin Approval.";
 
         registerForm.reset();
 
-
-
     }
 
-    catch(error){
-
+    catch (error) {
 
         console.error(error);
 
-
-        message.style.color="red";
-
-
-        message.innerHTML=
-        error.message;
-
+        message.innerHTML =
+            error.message;
 
     }
-
 
 });
