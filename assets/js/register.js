@@ -326,6 +326,13 @@ registerForm.addEventListener("submit", async (e) => {
             "Registration Successful. Waiting for Admin Approval.";
 
         registerForm.reset();
+        region.selectedIndex = 0;
+
+state.innerHTML =
+'<option value="">Select State</option>';
+
+city.innerHTML =
+'<option value="">Select City</option>';
 
     }
 
