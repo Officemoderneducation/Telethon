@@ -35,129 +35,210 @@ const registerForm = document.getElementById("registerForm");
 const message = document.getElementById("message");
 
 
+
 // ======================================
-// Load Regions
+// Load Region
 // ======================================
 
 async function loadRegions() {
 
-    region.innerHTML =
+    try {
+
+        region.innerHTML =
         '<option value="">Select Region</option>';
 
-    const snapshot = await getDocs(
-        collection(db, "region")
-    );
 
-    snapshot.forEach((doc) => {
+        const snapshot = await getDocs(
+            collection(db, "region")
+        );
 
-        const data = doc.data();
 
-        region.innerHTML += `
-            <option value="${data.name}">
-                ${data.name}
-            </option>
-        `;
+        snapshot.forEach((doc)=>{
 
-    });
+            const data = doc.data();
+
+
+            region.innerHTML += `
+                <option value="${data.name}">
+                    ${data.name}
+                </option>
+            `;
+
+
+        });
+
+
+    }
+    catch(error){
+
+        console.error("Region Error:", error);
+
+    }
 
 }
+
 
 loadRegions();
 
 
+
 // ======================================
-// Load States
+// Load State
 // ======================================
 
-region.addEventListener("change", async () => {
+region.addEventListener("change", async()=>{
+
 
     state.innerHTML =
-        '<option value="">Select State</option>';
-
-    city.innerHTML =
-        '<option value="">Select City</option>';
-
-
-    const q = query(
-        collection(db, "state"),
-        where("region", "==", region.value)
-    );
-
-
-    const snapshot = await getDocs(q);
-
-
-    snapshot.forEach((doc) => {
-
-        const data = doc.data();
-
-        state.innerHTML += `
-            <option value="${data.name}">
-                ${data.name}
-            </option>
-        `;
-
-    });
-
-});
-
-
-// ======================================
-// Load Cities
-// ======================================
-
-state.addEventListener("change", async () => {
+    '<option value="">Select State</option>';
 
 
     city.innerHTML =
-        '<option value="">Select City</option>';
+    '<option value="">Select City</option>';
 
 
-    const q = query(
-        collection(db, "cities"),
-        where("state", "==", state.value)
-    );
+
+    try {
 
 
-    const snapshot = await getDocs(q);
+        const q = query(
+
+            collection(db,"state"),
+
+            where(
+                "region",
+                "==",
+                region.value
+            )
+
+        );
 
 
-    snapshot.forEach((doc) => {
 
-        const data = doc.data();
+        const snapshot = await getDocs(q);
 
 
-        city.innerHTML += `
-            <option value="${data.name}">
-                ${data.name}
-            </option>
-        `;
 
-    });
+        snapshot.forEach((doc)=>{
+
+
+            const data = doc.data();
+
+
+
+            state.innerHTML += `
+
+                <option value="${data.name}">
+                    ${data.name}
+                </option>
+
+            `;
+
+
+        });
+
+
+
+    }
+    catch(error){
+
+        console.error("State Error:",error);
+
+    }
 
 
 });
 
 
+
 // ======================================
-// Register Employee
+// Load City
 // ======================================
 
-registerForm.addEventListener("submit", async (e) => {
+state.addEventListener("change", async()=>{
+
+
+    city.innerHTML =
+    '<option value="">Select City</option>';
+
+
+
+    try {
+
+
+        const q = query(
+
+            collection(db,"cities"),
+
+            where(
+                "state",
+                "==",
+                state.value
+            )
+
+        );
+
+
+
+        const snapshot = await getDocs(q);
+
+
+
+        snapshot.forEach((doc)=>{
+
+
+            const data = doc.data();
+
+
+
+            city.innerHTML += `
+
+                <option value="${data.name}">
+                    ${data.name}
+                </option>
+
+            `;
+
+
+        });
+
+
+
+    }
+    catch(error){
+
+        console.error("City Error:",error);
+
+    }
+
+
+});
+
+
+
+
+// ======================================
+// Registration Submit
+// ======================================
+
+registerForm.addEventListener("submit", async(e)=>{
+
 
     e.preventDefault();
 
 
-    message.innerHTML = "";
+    message.innerHTML="";
+
 
 
     // Password Check
 
-    if (!/^\d{4}$/.test(password.value)) {
+    if(!/^\d{4}$/.test(password.value)){
 
-        message.style.color = "red";
 
-        message.innerHTML =
+        message.style.color="red";
+
+        message.innerHTML=
         "Password must be exactly 4 digits.";
 
         return;
@@ -165,12 +246,13 @@ registerForm.addEventListener("submit", async (e) => {
     }
 
 
-    if (password.value !== confirmPassword.value) {
+
+    if(password.value !== confirmPassword.value){
 
 
-        message.style.color = "red";
+        message.style.color="red";
 
-        message.innerHTML =
+        message.innerHTML=
         "Passwords do not match.";
 
         return;
@@ -179,15 +261,16 @@ registerForm.addEventListener("submit", async (e) => {
 
 
 
+
     // Mobile Check
 
-    if (!/^\d{10}$/.test(mobileNumber.value)) {
+    if(!/^\d{10}$/.test(mobileNumber.value)){
 
 
-        message.style.color = "red";
+        message.style.color="red";
 
-        message.innerHTML =
-        "Enter valid 10 digit mobile number.";
+        message.innerHTML=
+        "Enter valid mobile number.";
 
         return;
 
@@ -195,11 +278,13 @@ registerForm.addEventListener("submit", async (e) => {
 
 
 
-    // Employee Code Duplicate Check
+
+    // Employee Duplicate Check
+
 
     const employeeQuery = query(
 
-        collection(db, "employees"),
+        collection(db,"employees"),
 
         where(
             "employeeCode",
@@ -210,16 +295,18 @@ registerForm.addEventListener("submit", async (e) => {
     );
 
 
-    const employeeSnapshot = await getDocs(employeeQuery);
+
+    const employeeSnapshot =
+    await getDocs(employeeQuery);
 
 
 
-    if (!employeeSnapshot.empty) {
+    if(!employeeSnapshot.empty){
 
 
-        message.style.color = "red";
+        message.style.color="red";
 
-        message.innerHTML =
+        message.innerHTML=
         "Employee Code already exists.";
 
         return;
@@ -228,7 +315,9 @@ registerForm.addEventListener("submit", async (e) => {
 
 
 
-    // Save Data
+
+    // Save Employee Data
+
 
     const employeeData = {
 
@@ -280,14 +369,16 @@ registerForm.addEventListener("submit", async (e) => {
         createdAt:
         serverTimestamp()
 
+
     };
 
 
 
-    try {
+    try{
 
 
         await setDoc(
+
 
             doc(
                 db,
@@ -295,16 +386,18 @@ registerForm.addEventListener("submit", async (e) => {
                 employeeCode.value.trim()
             ),
 
+
             employeeData
+
 
         );
 
 
 
-        message.style.color = "green";
+        message.style.color="green";
 
 
-        message.innerHTML =
+        message.innerHTML=
         "Registration Successful. Waiting for Admin Approval.";
 
 
@@ -315,16 +408,16 @@ registerForm.addEventListener("submit", async (e) => {
 
     }
 
-    catch(error) {
+    catch(error){
 
 
         console.error(error);
 
 
-        message.style.color = "red";
+        message.style.color="red";
 
 
-        message.innerHTML =
+        message.innerHTML=
         error.message;
 
 
