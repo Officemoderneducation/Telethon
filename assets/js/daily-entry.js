@@ -10,13 +10,17 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
+    doc,
+    getDoc,
     collection,
     addDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-// 1. Set Default Date to Today (YYYY-MM-DD)
+let currentEmployeeData = null;
+
+// 1. Set Today Date
 const dateInput = document.getElementById("entryDate");
 if (dateInput) {
     const today = new Date();
@@ -27,16 +31,39 @@ if (dateInput) {
 }
 
 
-// 2. Check Auth Status (Protected Page)
-onAuthStateChanged(auth, (user) => {
+// 2. Check Login & Fetch Employee Profile
+onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        // Agar employee logged in nahi hai toh login page par bhejo
         window.location.href = "index.html";
+        return;
+    }
+
+    try {
+        // Fetch Employee data from Firestore "employees" collection using user.uid
+        const empDocRef = doc(db, "employees", user.uid);
+        const empDocSnap = await getDoc(empDocRef);
+
+        if (empDocSnap.exists()) {
+            currentEmployeeData = empDocSnap.data();
+
+            // Display Info on Screen
+            document.getElementById("userInfo").textContent = currentEmployeeData.teacherName || "Teacher";
+            document.getElementById("badgeTeacher").textContent = "Teacher: " + (currentEmployeeData.teacherName || "-");
+            document.getElementById("badgeMadina").textContent = "Jamiatul Madina: " + (currentEmployeeData.jamiatulMadina || "-");
+            document.getElementById("badgeLocation").textContent = `Location: ${currentEmployeeData.city || "-"}, ${currentEmployeeData.state || "-"}`;
+            
+            document.getElementById("employeeBadge").style.display = "block";
+        } else {
+            console.warn("Employee profile record not found in Firestore.");
+            document.getElementById("userInfo").textContent = user.email || "Employee";
+        }
+    } catch (err) {
+        console.error("Error fetching employee profile:", err);
     }
 });
 
 
-// 3. Handle Form Submission
+// 3. Submit Daily Entry
 const entryForm = document.getElementById("dailyEntryForm");
 const messageEl = document.getElementById("message");
 const submitBtn = document.getElementById("submitBtn");
@@ -45,52 +72,53 @@ if (entryForm) {
     entryForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // Loading state
         submitBtn.disabled = true;
         submitBtn.textContent = "Submitting...";
         messageEl.textContent = "";
 
-        // Form Inputs Values
         const dateVal = document.getElementById("entryDate").value;
-        const teacherNameVal = document.getElementById("teacherName").value;
-        const regionVal = document.getElementById("region").value;
         const amountVal = Number(document.getElementById("amount").value);
-        const statusVal = document.getElementById("status").value;
 
         try {
-            // Save data to Firestore "daily_entry" collection
-            await addDoc(collection(db, "daily_entry"), {
+            // Prepare complete entry with profile details
+            const entryData = {
                 date: dateVal,
-                teacherName: teacherNameVal,
-                region: regionVal,
                 amount: amountVal,
-                status: statusVal,
+                status: "Success",
                 createdAt: serverTimestamp(),
-                submittedBy: auth.currentUser ? auth.currentUser.uid : "unknown"
-            });
+                submittedByUid: auth.currentUser ? auth.currentUser.uid : "",
+                
+                // Auto attached from Employee Profile
+                teacherName: currentEmployeeData?.teacherName || "Unknown Teacher",
+                empCode: currentEmployeeData?.empCode || "",
+                region: currentEmployeeData?.region || "-",
+                state: currentEmployeeData?.state || "-",
+                city: currentEmployeeData?.city || "-",
+                jamiatulMadina: currentEmployeeData?.jamiatulMadina || "-"
+            };
 
-            // Success Message
+            // Save to daily_entry collection
+            await addDoc(collection(db, "daily_entry"), entryData);
+
             messageEl.style.color = "green";
-            messageEl.textContent = "Data Submitted Successfully!";
+            messageEl.textContent = "Entry Submitted Successfully!";
 
-            // Reset form fields (except date)
-            document.getElementById("teacherName").value = "";
-            document.getElementById("region").value = "";
+            // Reset Amount field
             document.getElementById("amount").value = "";
 
         } catch (error) {
-            console.error("Error adding entry: ", error);
+            console.error("Error submitting entry:", error);
             messageEl.style.color = "red";
-            messageEl.textContent = "Failed to submit data. Try again.";
+            messageEl.textContent = "Failed to submit. Try again.";
         } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = "Submit Entry";
+            submitBtn.textContent = "Submit Collection";
         }
     });
 }
 
 
-// 4. Logout Functionality
+// 4. Logout
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
