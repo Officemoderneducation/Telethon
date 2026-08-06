@@ -1,214 +1,123 @@
-/* ==========================================
-   DASHBOARD PAGE
-========================================== */
+import { auth, db } from "./firebase-config.js";
 
-/* Dashboard Header */
-.dashboard-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+import {
+    collection,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+// ==========================
+// Check Login
+// ==========================
+
+onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+
+        window.location.href = "index.html";
+        return;
+
+    }
+
+    loadDashboard();
+
+});
+
+
+// ==========================
+// Load Dashboard
+// ==========================
+
+async function loadDashboard() {
+
+    try {
+
+        // Employees
+
+        const employeeSnapshot = await getDocs(
+            collection(db, "employees")
+        );
+
+        let totalUsers = 0;
+        let totalTarget = 0;
+
+        employeeSnapshot.forEach((doc) => {
+
+            const data = doc.data();
+
+            totalUsers++;
+
+            totalTarget += Number(data.target || 0);
+
+        });
+
+        document.getElementById("totalUsers").textContent =
+            totalUsers;
+
+        document.getElementById("totalTarget").textContent =
+            "₹ " + totalTarget.toLocaleString("en-IN");
+
+
+
+        // Daily Entry
+
+        const entrySnapshot = await getDocs(
+            collection(db, "daily_entry")
+        );
+
+        let totalCollection = 0;
+
+        entrySnapshot.forEach((doc) => {
+
+            const data = doc.data();
+
+            totalCollection += Number(data.amount || 0);
+
+        });
+
+        document.getElementById("totalCollection").textContent =
+            "₹ " + totalCollection.toLocaleString("en-IN");
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+    }
+
 }
 
-.dashboard-header h1{
-    font-size:30px;
-    color:#1e293b;
-    font-weight:700;
-}
 
-.dashboard-header p{
-    color:#64748b;
-    margin-top:5px;
-}
+// ==========================
+// Logout
+// ==========================
 
-/* Search Box */
-.search-box{
-    position:relative;
-}
+const logoutBtn = document.getElementById("logoutBtn");
 
-.search-box input{
-    width:320px;
-    padding:12px 45px 12px 15px;
-    border:1px solid #d1d5db;
-    border-radius:10px;
-    background:#fff;
-}
+if (logoutBtn) {
 
-.search-box i{
-    position:absolute;
-    right:15px;
-    top:50%;
-    transform:translateY(-50%);
-    color:#64748b;
-}
+    logoutBtn.addEventListener("click", async () => {
 
-/* Dashboard Cards */
+        try {
 
-.dashboard-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-    margin-bottom:30px;
-}
+            await signOut(auth);
 
-.dashboard-card{
-    background:#fff;
-    border-radius:15px;
-    padding:25px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-    transition:.3s;
-    position:relative;
-    overflow:hidden;
-}
+            window.location.href = "index.html";
 
-.dashboard-card:hover{
-    transform:translateY(-5px);
-}
+        }
 
-.dashboard-card::before{
-    content:"";
-    position:absolute;
-    left:0;
-    top:0;
-    width:6px;
-    height:100%;
-    background:#2563eb;
-}
+        catch (error) {
 
-.dashboard-card h5{
-    color:#64748b;
-    font-size:15px;
-    margin-bottom:10px;
-}
+            alert(error.message);
 
-.dashboard-card h2{
-    font-size:34px;
-    color:#111827;
-    margin-bottom:10px;
-}
+        }
 
-.dashboard-card span{
-    color:#16a34a;
-    font-size:14px;
-    font-weight:600;
-}
-
-/* Chart */
-
-.chart-box{
-    background:#fff;
-    border-radius:15px;
-    padding:25px;
-    margin-bottom:30px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-}
-
-.chart-box h3{
-    margin-bottom:20px;
-}
-
-/* Recent Table */
-
-.recent-data{
-    background:#fff;
-    border-radius:15px;
-    padding:25px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-}
-
-.recent-data h3{
-    margin-bottom:20px;
-}
-
-.recent-data table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.recent-data th{
-    background:#2563eb;
-    color:#fff;
-    padding:14px;
-}
-
-.recent-data td{
-    padding:14px;
-    border-bottom:1px solid #e5e7eb;
-}
-
-.recent-data tr:hover{
-    background:#f8fafc;
-}
-
-/* Status */
-
-.status{
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:600;
-}
-
-.status.active{
-    background:#dcfce7;
-    color:#166534;
-}
-
-.status.pending{
-    background:#fef3c7;
-    color:#92400e;
-}
-
-.status.closed{
-    background:#fee2e2;
-    color:#991b1b;
-}
-
-/* Quick Actions */
-
-.quick-actions{
-    display:flex;
-    gap:15px;
-    flex-wrap:wrap;
-    margin-top:25px;
-}
-
-.quick-actions a{
-    background:#2563eb;
-    color:#fff;
-    padding:12px 20px;
-    border-radius:10px;
-    transition:.3s;
-}
-
-.quick-actions a:hover{
-    background:#1d4ed8;
-}
-
-/* Responsive */
-
-@media(max-width:768px){
-
-.dashboard-header{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:15px;
-}
-
-.search-box input{
-    width:100%;
-}
-
-.dashboard-grid{
-    grid-template-columns:1fr;
-}
-
-.quick-actions{
-    flex-direction:column;
-}
-
-.quick-actions a{
-    text-align:center;
-}
+    });
 
 }
