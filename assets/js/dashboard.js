@@ -1,5 +1,5 @@
 // ======================================
-// Dashboard JS - Part 1
+// Dashboard JS - Firebase Firestore
 // ======================================
 
 import { auth, db } from "./firebase-config.js";
@@ -33,106 +33,107 @@ onAuthStateChanged(auth, (user) => {
 });
 
 
+
 // ======================================
-// Load Dashboard
+// Load Dashboard Data
 // ======================================
 
 async function loadDashboard() {
 
     try {
 
-        // ============================
-        // Employees
-        // ============================
+
+        // =================================
+        // Employees Data
+        // =================================
 
         const employeeSnapshot = await getDocs(
             collection(db, "employees")
         );
 
+
+        let totalTarget = 0;
+
+
+        employeeSnapshot.forEach((doc)=>{
+
+
+            const data = doc.data();
+
+
+            // Total Target Calculation
+
+            totalTarget += Number(data.target || 0);
+
+
+        });
+
+
+
+        // Total Users
+
         document.getElementById("totalUsers").textContent =
             employeeSnapshot.size;
 
 
-        // ============================
-        // Approved Employees
-        // ============================
 
-        let approved = 0;
+        // Total Target Amount
 
-        employeeSnapshot.forEach((doc) => {
-
-            const data = doc.data();
-
-            if (data.status === "Approved") {
-
-                approved++;
-
-            }
-
-        });
-
-        document.getElementById("totalStudents").textContent =
-            approved;
+        document.getElementById("totalTarget").textContent =
+            "₹ " + totalTarget.toLocaleString("en-IN");
 
 
-        // ============================
-        // Total Branches
-        // ============================
 
-        const branchSet = new Set();
 
-        employeeSnapshot.forEach((doc) => {
 
-            const data = doc.data();
+        // =================================
+        // Daily Collection Data
+        // =================================
 
-            if (data.jamiatulMadina) {
-
-                branchSet.add(data.jamiatulMadina);
-
-            }
-
-        });
-
-        document.getElementById("totalBranches").textContent =
-            branchSet.size;
-                // ============================
-        // Daily Entry
-        // ============================
 
         const entrySnapshot = await getDocs(
-            collection(db, "daily_entry")
+            collection(db,"daily_entry")
         );
 
 
-        // ============================
-        // Total Collection
-        // ============================
+        let totalCollection = 0;
 
-        let total = 0;
 
         const recentTable =
             document.getElementById("recentTable");
 
-        recentTable.innerHTML = "";
+
+        if(recentTable){
+
+            recentTable.innerHTML = "";
+
+        }
+
+
 
         let hasData = false;
 
 
-        entrySnapshot.forEach((doc) => {
+
+        entrySnapshot.forEach((doc)=>{
+
 
             const data = doc.data();
 
-            total += Number(data.amount || 0);
 
-            if (!hasData) {
 
-                recentTable.innerHTML = "";
+            // Total Collection
 
-                hasData = true;
+            totalCollection += Number(data.amount || 0);
 
-            }
 
-            recentTable.innerHTML += `
+
+            // Recent Table
+
+            if(recentTable){
+
+
+                recentTable.innerHTML += `
 
                 <tr>
 
@@ -142,75 +143,149 @@ async function loadDashboard() {
 
                     <td>${data.region || "-"}</td>
 
-                    <td>₹ ${Number(data.amount || 0).toLocaleString("en-IN")}</td>
+                    <td>
+                    ₹ ${Number(data.amount || 0)
+                    .toLocaleString("en-IN")}
+                    </td>
 
-                    <td>${data.status || "Success"}</td>
+
+                    <td>
+                    ${data.status || "Success"}
+                    </td>
+
 
                 </tr>
 
-            `;
+                `;
+
+
+                hasData = true;
+
+
+            }
+
 
         });
 
 
+
+
+
+        // Total Collection Amount
+
         document.getElementById("totalCollection").textContent =
-            "₹ " + total.toLocaleString("en-IN");
+            "₹ " + totalCollection.toLocaleString("en-IN");
 
 
-        if (!hasData) {
+
+
+
+        // No Data Message
+
+        if(recentTable && !hasData){
+
 
             recentTable.innerHTML = `
 
-                <tr>
+            <tr>
 
-                    <td colspan="5" style="text-align:center;">
-                        No Records Found
-                    </td>
+            <td colspan="5" style="text-align:center;">
+            No Records Found
+            </td>
 
-                </tr>
+            </tr>
 
             `;
 
+
         }
 
-    } catch (error) {
 
-        console.error("Dashboard Error:", error);
+
+
+
+        // =================================
+        // Console Check
+        // =================================
+
+
+        console.log("Total Users:", employeeSnapshot.size);
+
+        console.log("Total Target:", totalTarget);
+
+        console.log("Total Collection:", totalCollection);
+
+
 
     }
 
+    catch(error){
+
+
+        console.error(
+            "Dashboard Error:",
+            error
+        );
+
+
+    }
+
+
 }
+
+
+
+
+
 // ======================================
 // Logout
 // ======================================
 
-const logoutBtn = document.getElementById("logoutBtn");
 
-if (logoutBtn) {
+const logoutBtn =
+document.getElementById("logoutBtn");
 
-    logoutBtn.addEventListener("click", async () => {
 
-        try {
+if(logoutBtn){
 
-           await signOut(auth);
 
-            window.location.href = "index.html";
+logoutBtn.addEventListener(
+"click",
+async()=>{
 
-        } catch (error) {
 
-            console.error("Logout Error:", error);
+    try{
 
-            alert("Logout Failed!");
 
-        }
+        await signOut(auth);
 
-    });
+
+        window.location.href =
+        "index.html";
+
+
+    }
+
+    catch(error){
+
+
+        console.error(
+            "Logout Error:",
+            error
+        );
+
+
+    }
+
+
+});
+
 
 }
 
 
-// ======================================
-// Dashboard Loaded
-// ======================================
 
-console.log("Dashboard Loaded Successfully");
+
+console.log(
+"Dashboard Loaded Successfully"
+);
