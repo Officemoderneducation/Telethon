@@ -1,53 +1,80 @@
-<!-- Dashboard Cards -->
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    
+    <!-- CSS Link (Apni stylesheet ka naam yahan likhein) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-<div class="dashboard-grid">
+    <!-- Header Section -->
+    <header class="dashboard-header">
+        <h2>Admin Dashboard</h2>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+    </header>
 
-    <!-- Total Target -->
+    <!-- Main Container -->
+    <main class="dashboard-container">
 
-    <div class="dashboard-card">
+        <!-- Dashboard Cards -->
+        <div class="dashboard-grid">
 
-        <div>
+            <!-- Total Target -->
+            <div class="dashboard-card">
+                <div>
+                    <h5>Total Target Amount</h5>
+                    <h2 id="totalTarget">₹0</h2>
+                    <span>All Users Target</span>
+                </div>
+            </div>
 
-            <h5>Total Target Amount</h5>
+            <!-- Total Collection -->
+            <div class="dashboard-card">
+                <div>
+                    <h5>Total Collection Amount</h5>
+                    <h2 id="totalCollection">₹0</h2>
+                    <span>Today's Collection</span>
+                </div>
+            </div>
 
-            <h2 id="totalTarget">₹0</h2>
-
-            <span>All Users Target</span>
+            <!-- Total Users -->
+            <div class="dashboard-card">
+                <div>
+                    <h5>Total Users</h5>
+                    <h2 id="totalUsers">0</h2>
+                    <span>Registered Employees</span>
+                </div>
+            </div>
 
         </div>
 
-    </div>
+        <!-- Recent Activity / Daily Collection Table -->
+        <section class="table-section">
+            <h3>Recent Daily Entries</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Teacher Name</th>
+                            <th>Region</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentTable">
+                        <!-- JS se data yahan load hoga -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-    <!-- Total Collection -->
+    </main>
 
-    <div class="dashboard-card">
-
-        <div>
-
-            <h5>Total Collection Amount</h5>
-
-            <h2 id="totalCollection">₹0</h2>
-
-            <span>Today's Collection</span>
-
-        </div>
-
-    </div>
-
-    <!-- Total Users -->
-
-    <div class="dashboard-card">
-
-        <div>
-
-            <h5>Total Users</h5>
-
-            <h2 id="totalUsers">0</h2>
-
-            <span>Registered Employees</span>
-
-        </div>
-
-    </div>
-
-</div>
+    <!-- Dashboard JS Module Link -->
+    <script type="module" src="dashboard.js"></script>
+</body>
+</html>
