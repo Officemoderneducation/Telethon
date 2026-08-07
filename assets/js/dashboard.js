@@ -1,5 +1,5 @@
 // ======================================
-// Dashboard JS - Live Data & Sidebar
+// Dashboard JS - Admin Dashboard
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -51,10 +51,7 @@ async function loadDashboardData() {
         let totalCount = 0;
 
 
-        // ==================================
-        // Today's Date
-        // ==================================
-
+        // Today's date
         const todayStr =
             new Date().toISOString().split("T")[0];
 
@@ -63,7 +60,7 @@ async function loadDashboardData() {
 
 
         // ==================================
-        // No Data
+        // No Entries
         // ==================================
 
         if (querySnapshot.empty) {
@@ -96,19 +93,15 @@ async function loadDashboardData() {
 
 
         // ==================================
-        // Read All Entries
+        // Process Entries
         // ==================================
 
         querySnapshot.forEach((docSnapshot) => {
 
-            const data =
-                docSnapshot.data();
+            const data = docSnapshot.data();
 
 
-            // ==================================
             // Amount
-            // ==================================
-
             const amount =
                 Number(data.amount) || 0;
 
@@ -118,76 +111,51 @@ async function loadDashboardData() {
             totalCount++;
 
 
-            // ==================================
             // Today's Collection
-            // ==================================
-
             if (data.date === todayStr) {
-
                 todayCollection += amount;
             }
 
 
-            // ==================================
             // Employee Code
-            // ==================================
-
             const employeeCode =
                 data.employeeCode ||
                 data.empCode ||
                 "-";
 
 
-            // ==================================
             // Teacher Name
-            // ==================================
-
             const teacherName =
                 data.teacherName ||
                 "-";
 
 
-            // ==================================
             // Jamiatul Madina
-            // ==================================
-
             const jamiatuMadina =
                 data.jamiatuMadina ||
                 data.jamiatulMadina ||
                 "-";
 
 
-            // ==================================
             // City
-            // ==================================
-
             const city =
                 data.city ||
                 "-";
 
 
-            // ==================================
             // State
-            // ==================================
-
             const state =
                 data.state ||
                 "-";
 
 
-            // ==================================
             // Region
-            // ==================================
-
             const region =
                 data.region ||
                 "-";
 
 
-            // ==================================
             // Date
-            // ==================================
-
             const date =
                 data.date ||
                 "-";
@@ -198,7 +166,6 @@ async function loadDashboardData() {
             // ==================================
 
             tableRowsHTML += `
-
                 <tr>
 
                     <td>
@@ -237,13 +204,12 @@ async function loadDashboardData() {
                     </td>
 
                 </tr>
-
             `;
         });
 
 
         // ==================================
-        // Update Summary Cards
+        // Update Total Collection
         // ==================================
 
         if (totalAmountEl) {
@@ -253,12 +219,20 @@ async function loadDashboardData() {
         }
 
 
+        // ==================================
+        // Update Today's Collection
+        // ==================================
+
         if (todayAmountEl) {
 
             todayAmountEl.textContent =
                 `₹ ${todayCollection.toLocaleString("en-IN")}`;
         }
 
+
+        // ==================================
+        // Update Total Entries
+        // ==================================
 
         if (totalEntriesCountEl) {
 
@@ -289,9 +263,7 @@ async function loadDashboardData() {
         if (entriesTableBody) {
 
             entriesTableBody.innerHTML = `
-
                 <tr>
-
                     <td
                         colspan="7"
                         class="no-data"
@@ -301,14 +273,10 @@ async function loadDashboardData() {
                         <br>
                         ${error.message}
                     </td>
-
                 </tr>
-
             `;
         }
-
     }
-
 }
 
 
