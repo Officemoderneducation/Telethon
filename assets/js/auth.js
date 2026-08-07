@@ -9,7 +9,6 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
@@ -43,7 +42,7 @@ if (loginForm) {
             "office.moderneducation@gmail.com"
         ) {
 
-            if (password === "admin123") {
+            if (password === "123789") {
 
                 localStorage.setItem(
                     "loggedInEmpCode",
@@ -77,7 +76,6 @@ if (loginForm) {
         errorMsg.textContent =
             "Checking Employee Code...";
 
-
         try {
 
             const employeeRef =
@@ -104,6 +102,7 @@ if (loginForm) {
                 employeeSnap.data();
 
 
+            // Password Check
             if (
                 String(data.password).trim()
                 !== password
@@ -116,6 +115,7 @@ if (loginForm) {
             }
 
 
+            // Pending Account
             if (
                 data.status === "Pending"
             ) {
@@ -127,6 +127,7 @@ if (loginForm) {
             }
 
 
+            // Teacher Login Successful
             localStorage.setItem(
                 "loggedInEmpCode",
                 loginId
@@ -136,7 +137,6 @@ if (loginForm) {
                 "userRole",
                 "teacher"
             );
-
 
             window.location.href =
                 "daily-entry.html";
