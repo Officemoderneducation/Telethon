@@ -1,44 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Telethon - Login</title>
-    <link rel="stylesheet" href="assets/css/login.css">
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            min-height: 100vh;
+            background: #f4f7fc;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+        }
+
+
+        /* ==================================
+           Login Box
+        ================================== */
+
+        .login-box {
+
+            width: 100%;
+            max-width: 400px;
+
+            background: #ffffff;
+
+            padding: 35px 30px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.10);
+        }
+
+
+        /* ==================================
+           Heading
+        ================================== */
+
+        .login-box h2 {
+
+            text-align: center;
+
+            margin-bottom: 8px;
+
+            color: #0d6efd;
+
+            font-size: 28px;
+        }
+
+
+        .login-box .subtitle {
+
+            text-align: center;
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* ==================================
+           Form Group
+        ================================== */
+
+        .form-group {
+
+            margin-bottom: 18px;
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #334155;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        /* ==================================
+           Inputs
+        ================================== */
+
+        .form-group input {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 7px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+
+        .form-group input:focus {
+
+            border-color: #0d6efd;
+
+            box-shadow:
+                0 0 0 3px rgba(13, 110, 253, 0.10);
+        }
+
+
+        /* ==================================
+           Login Button
+        ================================== */
+
+        .login-btn {
+
+            width: 100%;
+
+            padding: 13px;
+
+            background: #198754;
+
+            color: #ffffff;
+
+            border: none;
+
+            border-radius: 7px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .login-btn:hover {
+
+            background: #157347;
+        }
+
+
+        .login-btn:active {
+
+            transform: scale(0.99);
+        }
+
+
+        /* ==================================
+           Error Message
+        ================================== */
+
+        #errorMsg {
+
+            margin-top: 15px;
+
+            text-align: center;
+
+            color: #dc3545;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            min-height: 20px;
+        }
+
+
+        /* ==================================
+           Registration Link
+        ================================== */
+
+        .register-text {
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+
+        .register-text a {
+
+            color: #0d6efd;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+
+        .register-text a:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* ==================================
+           Footer
+        ================================== */
+
+        .footer {
+
+            text-align: center;
+
+            margin-top: 25px;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+        }
+
+
+        /* ==================================
+           Mobile
+        ================================== */
+
+        @media (max-width: 480px) {
+
+            .login-box {
+
+                padding: 28px 20px;
+            }
+
+            .login-box h2 {
+
+                font-size: 24px;
+            }
+        }
+
+    </style>
+
 </head>
+
+
 <body>
 
-<div class="login-container">
+
+    <!-- ==================================
+         Login Box
+    ================================== -->
+
     <div class="login-box">
-        <img src="assets/images/logo.png" alt="Logo" class="logo">
 
-        <h2>Telethon</h2>
-        <p>Fee Management System</p>
 
-        <!-- Form tag added for proper submit handling -->
+        <h2>
+            Telethon Login
+        </h2>
+
+
+        <p class="subtitle">
+            Teacher & Admin Login
+        </p>
+
+
+        <!-- ==================================
+             Login Form
+        ================================== -->
+
         <form id="loginForm">
-            <!-- ID updated to empCode -->
-            <input 
-                type="text" 
-                id="empCode" 
-                placeholder="Enter Employee Code / Admin" 
-                required>
 
-            <input 
-                type="password" 
-                id="password" 
-                placeholder="Enter Password" 
-                required>
 
-            <button type="submit" id="loginBtn">Login</button>
+            <!-- Employee Code -->
+
+            <div class="form-group">
+
+                <label for="employeeCode">
+                    Employee Code
+                </label>
+
+                <input
+                    type="text"
+                    id="employeeCode"
+                    placeholder="Enter Employee Code"
+                    autocomplete="username"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter Password"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Login Button -->
+
+            <button
+                type="submit"
+                class="login-btn"
+            >
+                Login
+            </button>
+
+
+            <!-- Error Message -->
+
+            <div id="errorMsg"></div>
+
+
         </form>
 
-        <!-- ID updated to errorMsg -->
-        <p id="errorMsg" style="margin-top: 15px; font-weight: bold; color: red;"></p>
-    </div>
-</div>
 
-<script type="module" src="assets/js/auth.js"></script>
+        <!-- ==================================
+             Registration
+        ================================== -->
+
+        <div class="register-text">
+
+            New Teacher?
+
+            <a href="register.html">
+                Register Here
+            </a>
+
+        </div>
+
+
+        <!-- Footer -->
+
+        <div class="footer">
+
+            Telethon Management System
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==================================
+         IMPORTANT:
+         Auth JS Location
+    ================================== -->
+
+    <script
+        type="module"
+        src="assets/js/auth.js"
+    ></script>
+
 
 </body>
+
 </html>
