@@ -1,32 +1,41 @@
 // ======================================
-// Dashboard JS - Admin Dashboard
+// Telethon Admin Dashboard
+// Live Firebase Collection Data
 // ======================================
 
 import { db } from "./firebase-config.js";
 
 import {
     collection,
-    getDocs,
-    query,
-    orderBy
+    getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 // ======================================
-// HTML Elements
+// Dashboard Elements
 // ======================================
 
-const totalAmountEl =
-    document.getElementById("totalAmount");
+const totalAmountEl = document.getElementById("totalAmount");
+const todayAmountEl = document.getElementById("todayAmount");
+const totalEntriesCountEl = document.getElementById("totalEntriesCount");
+const entriesTableBody = document.getElementById("entriesTableBody");
 
-const todayAmountEl =
-    document.getElementById("todayAmount");
 
-const totalEntriesCountEl =
-    document.getElementById("totalEntriesCount");
+// ======================================
+// Get Today's Date
+// India Local Date
+// ======================================
 
-const entriesTableBody =
-    document.getElementById("entriesTableBody");
+function getTodayDate() {
+
+    const today = new Date();
+
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
 
 
 // ======================================
@@ -37,33 +46,95 @@ async function loadDashboardData() {
 
     try {
 
-        const entriesQuery = query(
-            collection(db, "daily_entry"),
-            orderBy("createdAt", "desc")
-        );
+        // ----------------------------------
+        // Load Employees
+        // ----------------------------------
 
-        const querySnapshot =
-            await getDocs(entriesQuery);
-
-
-        let totalCollection = 0;
-        let todayCollection = 0;
-        let totalCount = 0;
+        const employeesSnapshot =
+            await getDocs(
+                collection(db, "employees")
+            );
 
 
-        // Today's date
-        const todayStr =
-            new Date().toISOString().split("T")[0];
+        // ----------------------------------
+        // Create Employee Map
+        // ----------------------------------
+
+        const employeesMap = {};
 
 
-        let tableRowsHTML = "";
+        employeesSnapshot.forEach((docSnap) => {
+
+            const employee = docSnap.data();
+
+            const code =
+                String(
+                    employee.employeeCode ||
+                    employee.employee_code ||
+                    docSnap.id
+                ).trim();
 
 
-        // ==================================
-        // No Entries
-        // ==================================
+            if (code) {
 
-        if (querySnapshot.empty) {
+                employeesMap[code] = employee;
+
+            }
+
+        });
+
+
+        // ----------------------------------
+        // Load Daily Entries
+        // ----------------------------------
+
+        const entriesSnapshot =
+            await getDocs(
+                collection(db, "daily_entry")
+            );
+
+
+        let entries = [];
+
+
+        entriesSnapshot.forEach((docSnap) => {
+
+            const data = docSnap.data();
+
+            entries.push({
+                id: docSnap.id,
+                ...data
+            });
+
+        });
+
+
+        // ----------------------------------
+        // Sort Newest First
+        // ----------------------------------
+
+        entries.sort((a, b) => {
+
+            const dateA =
+                a.createdAt?.toMillis
+                    ? a.createdAt.toMillis()
+                    : new Date(a.date || 0).getTime();
+
+            const dateB =
+                b.createdAt?.toMillis
+                    ? b.createdAt.toMillis()
+                    : new Date(b.date || 0).getTime();
+
+            return dateB - dateA;
+
+        });
+
+
+        // ----------------------------------
+        // Empty Check
+        // ----------------------------------
+
+        if (entries.length === 0) {
 
             if (totalAmountEl) {
                 totalAmountEl.textContent = "₹ 0";
@@ -86,95 +157,156 @@ async function loadDashboardData() {
                         </td>
                     </tr>
                 `;
+
             }
 
             return;
+
         }
 
 
         // ==================================
-        // Process Entries
+        // Calculate Totals
         // ==================================
 
-        querySnapshot.forEach((docSnapshot) => {
+        let totalCollection = 0;
+        let todayCollection = 0;
 
-            const data = docSnapshot.data();
+        const todayStr = getTodayDate();
 
 
+        // ==================================
+        // Create Table
+        // ==================================
+
+        let tableRowsHTML = "";
+
+
+        entries.forEach((data) => {
+
+
+            // ----------------------------------
             // Amount
+            // ----------------------------------
+
             const amount =
                 Number(data.amount) || 0;
 
 
             totalCollection += amount;
 
-            totalCount++;
 
-
+            // ----------------------------------
             // Today's Collection
+            // ----------------------------------
+
             if (data.date === todayStr) {
+
                 todayCollection += amount;
+
             }
 
 
+            // ----------------------------------
             // Employee Code
+            // Firebase field:
+            // employee_code
+            // ----------------------------------
+
             const employeeCode =
-                data.employeeCode ||
-                data.empCode ||
-                "-";
+                String(
+                    data.employee_code ||
+                    data.employeeCode ||
+                    ""
+                ).trim();
 
 
+            // ----------------------------------
+            // Find Employee
+            // ----------------------------------
+
+            const employee =
+                employeesMap[employeeCode] || {};
+
+
+            // ----------------------------------
             // Teacher Name
+            // First daily_entry
+            // Then employees collection
+            // ----------------------------------
+
             const teacherName =
+                data.teacher_name ||
                 data.teacherName ||
+                employee.teacherName ||
+                employee.teacher_name ||
                 "-";
 
 
+            // ----------------------------------
             // Jamiatul Madina
-            const jamiatuMadina =
-                data.jamiatuMadina ||
+            // ----------------------------------
+
+            const jamiatulMadina =
+                data.jamiatul_madina ||
                 data.jamiatulMadina ||
+                employee.jamiatulMadina ||
+                employee.jamiatul_madina ||
                 "-";
 
 
+            // ----------------------------------
             // City
+            // ----------------------------------
+
             const city =
                 data.city ||
+                employee.city ||
                 "-";
 
 
+            // ----------------------------------
             // State
+            // ----------------------------------
+
             const state =
                 data.state ||
+                employee.state ||
                 "-";
 
 
+            // ----------------------------------
             // Region
+            // ----------------------------------
+
             const region =
                 data.region ||
+                employee.region ||
                 "-";
 
 
+            // ----------------------------------
             // Date
-            const date =
-                data.date ||
-                "-";
+            // ----------------------------------
+
+            const entryDate =
+                data.date || "-";
 
 
-            // ==================================
+            // ----------------------------------
             // Table Row
-            // ==================================
+            // ----------------------------------
 
             tableRowsHTML += `
                 <tr>
 
                     <td>
-                        ${date}
+                        ${entryDate}
                     </td>
 
                     <td>
                         <b>
-                            ${employeeCode}
+                            ${employeeCode || "-"}
                         </b>
                     </td>
 
@@ -183,7 +315,7 @@ async function loadDashboardData() {
                     </td>
 
                     <td>
-                        ${jamiatuMadina}
+                        ${jamiatulMadina}
                     </td>
 
                     <td>
@@ -205,39 +337,35 @@ async function loadDashboardData() {
 
                 </tr>
             `;
+
         });
 
 
         // ==================================
-        // Update Total Collection
+        // Update Summary Cards
         // ==================================
 
         if (totalAmountEl) {
 
             totalAmountEl.textContent =
                 `₹ ${totalCollection.toLocaleString("en-IN")}`;
+
         }
 
-
-        // ==================================
-        // Update Today's Collection
-        // ==================================
 
         if (todayAmountEl) {
 
             todayAmountEl.textContent =
                 `₹ ${todayCollection.toLocaleString("en-IN")}`;
+
         }
 
-
-        // ==================================
-        // Update Total Entries
-        // ==================================
 
         if (totalEntriesCountEl) {
 
             totalEntriesCountEl.textContent =
-                totalCount;
+                entries.length;
+
         }
 
 
@@ -249,6 +377,7 @@ async function loadDashboardData() {
 
             entriesTableBody.innerHTML =
                 tableRowsHTML;
+
         }
 
 
@@ -269,14 +398,17 @@ async function loadDashboardData() {
                         class="no-data"
                         style="color:red;"
                     >
-                        Data load karne me error aaya.
+                        Dashboard data load karne me error aaya.
                         <br>
                         ${error.message}
                     </td>
                 </tr>
             `;
+
         }
+
     }
+
 }
 
 
@@ -304,13 +436,15 @@ if (logoutBtn) {
 
             window.location.href =
                 "index.html";
+
         }
     );
+
 }
 
 
 // ======================================
-// Start Dashboard
+// Load Dashboard
 // ======================================
 
 loadDashboardData();
