@@ -12,34 +12,26 @@ import {
 
 const loginForm = document.getElementById("loginForm");
 
-
 if (loginForm) {
 
     loginForm.addEventListener("submit", async function (e) {
 
         e.preventDefault();
 
-
-        const employeeCodeEl =
+        const loginInput =
             document.getElementById("employeeCode");
 
-        const passwordEl =
+        const passwordInput =
             document.getElementById("password");
 
         const errorMsg =
             document.getElementById("errorMsg");
 
-
         const loginId =
-            employeeCodeEl.value.trim();
+            loginInput.value.trim();
 
         const password =
-            passwordEl.value.trim();
-
-
-        if (errorMsg) {
-            errorMsg.textContent = "Checking login...";
-        }
+            passwordInput.value.trim();
 
 
         // ======================================
@@ -49,31 +41,42 @@ if (loginForm) {
         if (
             loginId.toLowerCase() ===
             "office.moderneducation@gmail.com"
-            &&
-            password === "admin123"
         ) {
 
-            localStorage.setItem(
-                "loggedInEmpCode",
-                "admin"
-            );
+            if (password === "admin123") {
 
-            localStorage.setItem(
-                "userRole",
-                "admin"
-            );
+                localStorage.setItem(
+                    "loggedInEmpCode",
+                    "admin"
+                );
 
+                localStorage.setItem(
+                    "userRole",
+                    "admin"
+                );
 
-            window.location.href =
-                "dashboard.html";
+                window.location.href =
+                    "dashboard.html";
 
-            return;
+                return;
+
+            } else {
+
+                errorMsg.textContent =
+                    "Admin Password Galat Hai!";
+
+                return;
+            }
         }
 
 
         // ======================================
         // TEACHER LOGIN
         // ======================================
+
+        errorMsg.textContent =
+            "Checking Employee Code...";
+
 
         try {
 
@@ -84,18 +87,14 @@ if (loginForm) {
                     loginId
                 );
 
-
             const employeeSnap =
                 await getDoc(employeeRef);
 
 
             if (!employeeSnap.exists()) {
 
-                if (errorMsg) {
-
-                    errorMsg.textContent =
-                        "Employee Code not found!";
-                }
+                errorMsg.textContent =
+                    "Employee Code not found!";
 
                 return;
             }
@@ -105,46 +104,28 @@ if (loginForm) {
                 employeeSnap.data();
 
 
-            // ======================================
-            // Password Check
-            // ======================================
-
             if (
                 String(data.password).trim()
                 !== password
             ) {
 
-                if (errorMsg) {
-
-                    errorMsg.textContent =
-                        "Wrong Password!";
-                }
+                errorMsg.textContent =
+                    "Wrong Password!";
 
                 return;
             }
 
-
-            // ======================================
-            // Pending Account
-            // ======================================
 
             if (
                 data.status === "Pending"
             ) {
 
-                if (errorMsg) {
-
-                    errorMsg.textContent =
-                        "Aapka account Admin Approval ke liye pending hai!";
-                }
+                errorMsg.textContent =
+                    "Aapka account Admin Approval ke liye pending hai!";
 
                 return;
             }
 
-
-            // ======================================
-            // Teacher Login Successful
-            // ======================================
 
             localStorage.setItem(
                 "loggedInEmpCode",
@@ -160,24 +141,17 @@ if (loginForm) {
             window.location.href =
                 "daily-entry.html";
 
-        }
 
-
-        catch (error) {
+        } catch (error) {
 
             console.error(
                 "Login Error:",
                 error
             );
 
-
-            if (errorMsg) {
-
-                errorMsg.textContent =
-                    "Login Error: " +
-                    error.message;
-            }
-
+            errorMsg.textContent =
+                "Login Error: " +
+                error.message;
         }
 
     });
