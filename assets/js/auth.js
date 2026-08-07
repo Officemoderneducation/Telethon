@@ -9,13 +9,16 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
 const loginForm = document.getElementById("loginForm");
+
 
 if (loginForm) {
 
     loginForm.addEventListener("submit", async function (e) {
 
         e.preventDefault();
+
 
         const employeeCodeEl =
             document.getElementById("employeeCode");
@@ -26,15 +29,18 @@ if (loginForm) {
         const errorMsg =
             document.getElementById("errorMsg");
 
+
         const loginId =
             employeeCodeEl.value.trim();
 
         const password =
             passwordEl.value.trim();
 
+
         if (errorMsg) {
             errorMsg.textContent = "Checking login...";
         }
+
 
         // ======================================
         // ADMIN LOGIN
@@ -57,6 +63,7 @@ if (loginForm) {
                 "admin"
             );
 
+
             window.location.href =
                 "dashboard.html";
 
@@ -71,14 +78,21 @@ if (loginForm) {
         try {
 
             const employeeRef =
-                doc(db, "employees", loginId);
+                doc(
+                    db,
+                    "employees",
+                    loginId
+                );
+
 
             const employeeSnap =
                 await getDoc(employeeRef);
 
+
             if (!employeeSnap.exists()) {
 
                 if (errorMsg) {
+
                     errorMsg.textContent =
                         "Employee Code not found!";
                 }
@@ -86,17 +100,22 @@ if (loginForm) {
                 return;
             }
 
+
             const data =
                 employeeSnap.data();
 
 
-            // Password
+            // ======================================
+            // Password Check
+            // ======================================
+
             if (
                 String(data.password).trim()
                 !== password
             ) {
 
                 if (errorMsg) {
+
                     errorMsg.textContent =
                         "Wrong Password!";
                 }
@@ -105,10 +124,16 @@ if (loginForm) {
             }
 
 
-            // Pending
-            if (data.status === "Pending") {
+            // ======================================
+            // Pending Account
+            // ======================================
+
+            if (
+                data.status === "Pending"
+            ) {
 
                 if (errorMsg) {
+
                     errorMsg.textContent =
                         "Aapka account Admin Approval ke liye pending hai!";
                 }
@@ -117,7 +142,10 @@ if (loginForm) {
             }
 
 
-            // Teacher Login
+            // ======================================
+            // Teacher Login Successful
+            // ======================================
+
             localStorage.setItem(
                 "loggedInEmpCode",
                 loginId
@@ -128,10 +156,12 @@ if (loginForm) {
                 "teacher"
             );
 
+
             window.location.href =
                 "daily-entry.html";
 
         }
+
 
         catch (error) {
 
@@ -140,11 +170,14 @@ if (loginForm) {
                 error
             );
 
+
             if (errorMsg) {
+
                 errorMsg.textContent =
                     "Login Error: " +
                     error.message;
             }
+
         }
 
     });
