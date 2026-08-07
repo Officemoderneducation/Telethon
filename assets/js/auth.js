@@ -1,5 +1,5 @@
 // ======================================
-// Login JS - Admin & Teacher Login
+// Auth JS - Admin & Teacher Login
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -22,10 +22,7 @@ if (loginForm) {
 
         try {
 
-            // ==========================
             // Default Admin Login
-            // ==========================
-
             if (empCode === "admin" && password === "admin123") {
 
                 localStorage.setItem("loggedInEmpCode", "admin");
@@ -35,10 +32,7 @@ if (loginForm) {
                 return;
             }
 
-            // ==========================
             // Firestore Employee Login
-            // ==========================
-
             const docRef = doc(db, "employees", empCode);
             const docSnap = await getDoc(docRef);
 
@@ -49,7 +43,7 @@ if (loginForm) {
 
             const user = docSnap.data();
 
-            if (String(user.password) !== password) {
+            if (String(user.password).trim() !== password) {
                 alert("Incorrect Password!");
                 return;
             }
@@ -68,11 +62,9 @@ if (loginForm) {
                 window.location.href = "daily-entry.html";
             }
 
-        } catch (err) {
-
-            console.error(err);
-            alert(err.message);
-
+        } catch (error) {
+            console.error("Login Error:", error);
+            alert(error.message);
         }
 
     });
