@@ -1,3 +1,6 @@
+// ======================================
+// Auth JS - Admin & User Login Handler
+// ======================================
 import { db } from "./firebase-config.js"; 
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -8,39 +11,56 @@ if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const empCodeInput = document.getElementById("empCode");
-        const passwordInput = document.getElementById("password");
+        const empCodeEl = document.getElementById("empCode");
+        const passwordEl = document.getElementById("password");
 
-        if (!empCodeInput || !passwordInput) {
-            console.error("Input fields not found in HTML!");
+        if (!empCodeEl || !passwordEl) {
+            if (errorMsg) errorMsg.textContent = "HTML input fields missing!";
             return;
         }
 
-        const empCode = empCodeInput.value.trim();
-        const password = passwordInput.value.trim();
+        const empCode = empCodeEl.value.trim();
+        const password = passwordEl.value.trim();
 
-        if (errorMsg) errorMsg.textContent = "Authenticating...";
+        if (errorMsg) errorMsg.textContent = "Verifying Credentials...";
 
         try {
-            // Firestore Collection: 'employees', Document ID: Employee Code (e.g., 63148)
+            // 1. Hardcoded Default Admin Login Check
+            if (empCode === "admin" && password === "admin123") {
+                localStorage.setItem("loggedInEmpCode", "admin");
+                localStorage.setItem("userRole", "admin");
+                window.location.href = "dashboard.html";
+                return;
+            }
+
+            // 2. Firestore Lookup in 'employees' Collection
             const empDocRef = doc(db, "employees", empCode);
             const empDocSnap = await getDoc(empDocRef);
 
             if (empDocSnap.exists()) {
                 const data = empDocSnap.data();
 
-                // String comparison to prevent Number/String mismatch issue
                 if (String(data.password).trim() === password) {
                     localStorage.setItem("loggedInEmpCode", empCode);
-                    window.location.href = "daily-entry.html";
+
+                    // Redirect based on Role/Status
+                    if (data.role === "admin") {
+                        localStorage.setItem("userRole", "admin");
+                        window.location.href = "dashboard.html";
+                    } else if (data.status === "Pending") {
+                        if (errorMsg) errorMsg.textContent = "Aapka account Admin Approval ke liye pending hai!";
+                    } else {
+                        localStorage.setItem("userRole", "teacher");
+                        window.location.href = "daily-entry.html";
+                    }
                 } else {
                     if (errorMsg) errorMsg.textContent = "Galat Password!";
                 }
             } else {
-                if (errorMsg) errorMsg.textContent = "Employee Code nahi mila!";
+                if (errorMsg) errorMsg.textContent = "User/Admin Code nahi mila!";
             }
         } catch (error) {
-            console.error("Login Error Details:", error);
+            console.error("Login Error:", error);
             if (errorMsg) errorMsg.textContent = "Login Fail: " + error.message;
         }
     });
