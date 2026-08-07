@@ -34,6 +34,21 @@ if (loginForm) {
 
 
         // ======================================
+        // MESSAGE FUNCTION
+        // ======================================
+
+        function showMessage(message) {
+
+            if (errorMsg) {
+                errorMsg.textContent = message;
+            } else {
+                alert(message);
+            }
+
+        }
+
+
+        // ======================================
         // ADMIN LOGIN
         // ======================================
 
@@ -61,8 +76,9 @@ if (loginForm) {
 
             } else {
 
-                errorMsg.textContent =
-                    "Admin Password Galat Hai!";
+                showMessage(
+                    "Admin Password Galat Hai!"
+                );
 
                 return;
             }
@@ -73,8 +89,10 @@ if (loginForm) {
         // TEACHER LOGIN
         // ======================================
 
-        errorMsg.textContent =
-            "Checking Employee Code...";
+        showMessage(
+            "Checking Employee Code..."
+        );
+
 
         try {
 
@@ -89,10 +107,15 @@ if (loginForm) {
                 await getDoc(employeeRef);
 
 
+            // ======================================
+            // Employee Not Found
+            // ======================================
+
             if (!employeeSnap.exists()) {
 
-                errorMsg.textContent =
-                    "Employee Code not found!";
+                showMessage(
+                    "Employee Code not found!"
+                );
 
                 return;
             }
@@ -102,32 +125,43 @@ if (loginForm) {
                 employeeSnap.data();
 
 
+            // ======================================
             // Password Check
+            // ======================================
+
             if (
                 String(data.password).trim()
                 !== password
             ) {
 
-                errorMsg.textContent =
-                    "Wrong Password!";
+                showMessage(
+                    "Wrong Password!"
+                );
 
                 return;
             }
 
 
+            // ======================================
             // Pending Account
+            // ======================================
+
             if (
                 data.status === "Pending"
             ) {
 
-                errorMsg.textContent =
-                    "Aapka account Admin Approval ke liye pending hai!";
+                showMessage(
+                    "Aapka account Admin Approval ke liye pending hai!"
+                );
 
                 return;
             }
 
 
-            // Teacher Login Successful
+            // ======================================
+            // TEACHER LOGIN SUCCESS
+            // ======================================
+
             localStorage.setItem(
                 "loggedInEmpCode",
                 loginId
@@ -137,6 +171,7 @@ if (loginForm) {
                 "userRole",
                 "teacher"
             );
+
 
             window.location.href =
                 "daily-entry.html";
@@ -149,9 +184,11 @@ if (loginForm) {
                 error
             );
 
-            errorMsg.textContent =
+            showMessage(
                 "Login Error: " +
-                error.message;
+                error.message
+            );
+
         }
 
     });
