@@ -1,7 +1,5 @@
 // ======================================
 // Telethon Admin Dashboard
-// Latest Entry Per Employee + Date
-// Missing Employee Code = Ignore
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -15,7 +13,7 @@ import {
 
 
 // ======================================
-// HTML Elements
+// Elements
 // ======================================
 
 const totalAmountEl =
@@ -32,53 +30,51 @@ const entriesTableBody =
 
 
 // ======================================
-// Today's Date
+// Today Date
 // ======================================
 
 function getTodayDate() {
 
     const today = new Date();
 
-    const year =
-        today.getFullYear();
+    const year = today.getFullYear();
 
-    const month =
-        String(today.getMonth() + 1)
-            .padStart(2, "0");
+    const month = String(
+        today.getMonth() + 1
+    ).padStart(2, "0");
 
-    const day =
-        String(today.getDate())
-            .padStart(2, "0");
+    const day = String(
+        today.getDate()
+    ).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
 }
 
 
 // ======================================
-// Load Dashboard Data
+// Load Dashboard
 // ======================================
 
 async function loadDashboardData() {
 
     try {
 
-        const entriesQuery = query(
+        const q = query(
             collection(db, "daily_entry"),
             orderBy("createdAt", "desc")
         );
 
-        const querySnapshot =
-            await getDocs(entriesQuery);
+        const snapshot = await getDocs(q);
 
 
         // ======================================
-        // Latest Entry Per Employee + Date
+        // Latest entry for Employee + Date
         // ======================================
 
         const latestEntries = new Map();
 
 
-        querySnapshot.forEach((docSnap) => {
+        snapshot.forEach((docSnap) => {
 
             const data = docSnap.data();
 
@@ -87,20 +83,26 @@ async function loadDashboardData() {
             // Employee Code
             // ======================================
 
-            const empCode =
-                String(
-                    data.employee_code ||
-                    data.empCode ||
-                    ""
-                ).trim();
+            const empCode = String(
+                data.employee_code ??
+                data.empCode ??
+                data.employeeCode ??
+                ""
+            ).trim();
 
 
             // ======================================
-            // IMPORTANT:
-            // Employee Code missing = Ignore
+            // IMPORTANT
+            // Employee Code missing / invalid
+            // entry will NOT be displayed
             // ======================================
 
-            if (!empCode) {
+            if (
+                empCode === "" ||
+                empCode === "-" ||
+                empCode.toLowerCase() === "null" ||
+                empCode.toLowerCase() === "undefined"
+            ) {
                 return;
             }
 
@@ -109,44 +111,41 @@ async function loadDashboardData() {
             // Date
             // ======================================
 
-            const date =
-                String(
-                    data.date || ""
-                ).trim();
+            const date = String(
+                data.date ?? ""
+            ).trim();
 
 
-            // Date missing = Ignore
             if (!date) {
                 return;
             }
 
 
             // ======================================
-            // Unique Key
-            // Employee Code + Date
+            // Employee + Date Unique Key
             // ======================================
 
-            const uniqueKey =
+            const key =
                 `${empCode}_${date}`;
 
 
             /*
                 createdAt DESC hai.
 
-                Isliye sabse pehle latest entry
-                milegi.
+                Isliye first entry = latest entry.
 
-                Agar same Employee Code + Date
-                ki entry already Map me hai,
-                to purani/latest ke baad wali
-                entry ko ignore karenge.
+                Same Employee + Same Date ki
+                purani entries ignore hongi.
             */
 
-            if (!latestEntries.has(uniqueKey)) {
+            if (!latestEntries.has(key)) {
 
                 latestEntries.set(
-                    uniqueKey,
-                    data
+                    key,
+                    {
+                        ...data,
+                        empCode: empCode
+                    }
                 );
 
             }
@@ -155,7 +154,7 @@ async function loadDashboardData() {
 
 
         // ======================================
-        // Calculate Totals
+        // Totals
         // ======================================
 
         let totalCollection = 0;
@@ -164,69 +163,40 @@ async function loadDashboardData() {
 
         let totalCount = 0;
 
-        const todayStr =
-            getTodayDate();
+        const today = getTodayDate();
 
-
-        let tableRowsHTML = "";
+        let rows = "";
 
 
         // ======================================
-        // No Valid Data
+        // No Valid Entries
         // ======================================
 
         if (latestEntries.size === 0) {
 
-            if (totalAmountEl) {
+            totalAmountEl.textContent = "₹ 0";
 
-                totalAmountEl.textContent =
-                    "₹ 0";
+            todayAmountEl.textContent = "₹ 0";
 
-            }
+            totalEntriesCountEl.textContent = "0";
 
-            if (todayAmountEl) {
-
-                todayAmountEl.textContent =
-                    "₹ 0";
-
-            }
-
-            if (totalEntriesCountEl) {
-
-                totalEntriesCountEl.textContent =
-                    "0";
-
-            }
-
-            if (entriesTableBody) {
-
-                entriesTableBody.innerHTML = `
-                    <tr>
-                        <td
-                            colspan="7"
-                            class="no-data"
-                        >
-                            Koi valid collection entry nahi mili.
-                        </td>
-                    </tr>
-                `;
-
-            }
+            entriesTableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="no-data">
+                        Koi valid collection entry nahi mili.
+                    </td>
+                </tr>
+            `;
 
             return;
         }
 
 
         // ======================================
-        // Create Table Rows
+        // Build Table
         // ======================================
 
         latestEntries.forEach((data) => {
-
-
-            // ======================================
-            // Amount
-            // ======================================
 
             const amount =
                 Number(data.amount) || 0;
@@ -237,11 +207,9 @@ async function loadDashboardData() {
             totalCount++;
 
 
-            // ======================================
-            // Today's Collection
-            // ======================================
+            // Today's collection
 
-            if (data.date === todayStr) {
+            if (data.date === today) {
 
                 todayCollection += amount;
 
@@ -249,16 +217,7 @@ async function loadDashboardData() {
 
 
             // ======================================
-            // Employee Code
-            // ======================================
-
-            const empCode =
-                data.employee_code ||
-                data.empCode;
-
-
-            // ======================================
-            // Teacher Name
+            // Teacher Information
             // ======================================
 
             const teacherName =
@@ -267,35 +226,19 @@ async function loadDashboardData() {
                 "-";
 
 
-            // ======================================
-            // Jamiatul Madina
-            // ======================================
-
             const jamiatulMadina =
                 data.jamiatul_madina ||
                 data.jamiatulMadina ||
                 "-";
 
 
-            // ======================================
-            // City
-            // ======================================
-
             const city =
                 data.city || "-";
 
 
-            // ======================================
-            // State
-            // ======================================
-
             const state =
                 data.state || "-";
 
-
-            // ======================================
-            // Region
-            // ======================================
 
             const region =
                 data.region || "-";
@@ -305,7 +248,7 @@ async function loadDashboardData() {
             // Table Row
             // ======================================
 
-            tableRowsHTML += `
+            rows += `
                 <tr>
 
                     <td>
@@ -313,7 +256,7 @@ async function loadDashboardData() {
                     </td>
 
                     <td>
-                        <b>${empCode}</b>
+                        <b>${data.empCode}</b>
                     </td>
 
                     <td>
@@ -348,76 +291,46 @@ async function loadDashboardData() {
 
 
         // ======================================
-        // Update Total Collection
+        // Update Cards
         // ======================================
 
-        if (totalAmountEl) {
-
-            totalAmountEl.textContent =
-                `₹ ${totalCollection.toLocaleString("en-IN")}`;
-
-        }
+        totalAmountEl.textContent =
+            `₹ ${totalCollection.toLocaleString("en-IN")}`;
 
 
-        // ======================================
-        // Update Today's Collection
-        // ======================================
-
-        if (todayAmountEl) {
-
-            todayAmountEl.textContent =
-                `₹ ${todayCollection.toLocaleString("en-IN")}`;
-
-        }
+        todayAmountEl.textContent =
+            `₹ ${todayCollection.toLocaleString("en-IN")}`;
 
 
-        // ======================================
-        // Update Total Entries
-        // ======================================
-
-        if (totalEntriesCountEl) {
-
-            totalEntriesCountEl.textContent =
-                totalCount;
-
-        }
+        totalEntriesCountEl.textContent =
+            totalCount;
 
 
         // ======================================
         // Update Table
         // ======================================
 
-        if (entriesTableBody) {
-
-            entriesTableBody.innerHTML =
-                tableRowsHTML;
-
-        }
+        entriesTableBody.innerHTML = rows;
 
 
     } catch (error) {
 
         console.error(
-            "Dashboard Load Error:",
+            "Dashboard Error:",
             error
         );
 
-
-        if (entriesTableBody) {
-
-            entriesTableBody.innerHTML = `
-                <tr>
-                    <td
-                        colspan="7"
-                        class="no-data"
-                        style="color:red;"
-                    >
-                        Data load karne me error aaya.
-                    </td>
-                </tr>
-            `;
-
-        }
+        entriesTableBody.innerHTML = `
+            <tr>
+                <td
+                    colspan="7"
+                    class="no-data"
+                    style="color:red;"
+                >
+                    Dashboard data load nahi ho saka.
+                </td>
+            </tr>
+        `;
 
     }
 
@@ -425,12 +338,11 @@ async function loadDashboardData() {
 
 
 // ======================================
-// Admin Logout
+// Logout
 // ======================================
 
 const logoutBtn =
     document.getElementById("adminLogoutBtn");
-
 
 if (logoutBtn) {
 
@@ -456,7 +368,7 @@ if (logoutBtn) {
 
 
 // ======================================
-// Start Dashboard
+// Start
 // ======================================
 
 loadDashboardData();
