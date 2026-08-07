@@ -1,353 +1,403 @@
 // ======================================
-// Firebase
+// Telethon - Teachers / Employees List
 // ======================================
 
-import { auth, db } from "./firebase-config.js";
-
-import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import { db } from "./firebase-config.js";
 
 import {
     collection,
     getDocs,
-    updateDoc,
-    deleteDoc,
     doc,
-    serverTimestamp
+    updateDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-// ======================================
-// Elements
-// ======================================
-
 const usersTable = document.getElementById("usersTable");
 const searchUser = document.getElementById("searchUser");
-const logoutBtn = document.getElementById("logoutBtn");
 
 let employees = [];
-
-
-// ======================================
-// Check Login
-// ======================================
-
-onAuthStateChanged(auth, (user) => {
-
-    if (!user) {
-
-        window.location.href = "index.html";
-        return;
-
-    }
-
-    loadEmployees(user);
-
-});
 
 
 // ======================================
 // Load Employees
 // ======================================
 
-async function loadEmployees(currentUser) {
+async function loadEmployees() {
+
+    if (!usersTable) return;
+
+    usersTable.innerHTML = `
+        <tr>
+            <td colspan="8" style="text-align:center;padding:20px;">
+                Loading Employees...
+            </td>
+        </tr>
+    `;
 
     try {
 
-        usersTable.innerHTML = `
-            <tr>
-                <td colspan="8" style="text-align:center;">
-                    Loading...
-                </td>
-            </tr>
-        `;
+        const snapshot =
+            await getDocs(
+                collection(db, "employees")
+            );
 
         employees = [];
-
-        const snapshot = await getDocs(
-            collection(db, "employees")
-        );
 
         snapshot.forEach((employeeDoc) => {
 
             employees.push({
-
                 id: employeeDoc.id,
-
                 ...employeeDoc.data()
-
             });
 
         });
 
-        displayEmployees(employees, currentUser);
+        displayEmployees(employees);
 
-    }
+    } catch (error) {
 
-    catch (error) {
-
-        console.error("Load Employees Error:", error);
+        console.error(
+            "Employees Load Error:",
+            error
+        );
 
         usersTable.innerHTML = `
             <tr>
-                <td colspan="8" style="text-align:center;color:red;">
-                    Failed to load employees.
+                <td colspan="8"
+                    style="text-align:center;padding:20px;color:red;">
+                    Employees load nahi ho rahe.
+                    <br>
+                    ${error.message}
                 </td>
             </tr>
         `;
-
     }
-
 }
+
+
 // ======================================
 // Display Employees
 // ======================================
 
-function displayEmployees(data, currentUser) {
+function displayEmployees(list) {
 
-    usersTable.innerHTML = "";
+    if (!usersTable) return;
 
-    if (data.length === 0) {
+
+    if (list.length === 0) {
 
         usersTable.innerHTML = `
             <tr>
-                <td colspan="8" style="text-align:center;">
-                    No Employees Found
+                <td colspan="8"
+                    style="text-align:center;padding:20px;">
+                    Koi Registered Teacher nahi mila.
                 </td>
             </tr>
         `;
 
         return;
-
     }
 
-    data.forEach((employee) => {
 
-        const statusColor =
-            employee.status === "Approved"
-                ? "#16a34a"
-                : "#f59e0b";
+    let html = "";
 
-        const actionButton =
-            employee.status === "Pending"
-                ? `
-                <button
-                    class="btn btn-success"
-                    onclick="approveEmployee('${employee.id}')">
-                    Approve
-                </button>
-                `
-                : `
-                <button
-                    class="btn btn-secondary"
-                    disabled>
-                    Approved
-                </button>
-                `;
 
-        usersTable.innerHTML += `
+    list.forEach((employee) => {
 
-        <tr>
+        const employeeCode =
+            employee.employee_code ||
+            employee.employeeCode ||
+            employee.id ||
+            "-";
 
-            <td>${employee.employeeCode || "-"}</td>
+        const teacherName =
+            employee.teacher_name ||
+            employee.teacherName ||
+            "-";
 
-            <td>${employee.teacherName || "-"}</td>
+        const mobile =
+            employee.mobile ||
+            "-";
 
-            <td>${employee.mobileNumber || "-"}</td>
+        const region =
+            employee.region ||
+            "-";
 
-            <td>${employee.region || "-"}</td>
+        const state =
+            employee.state ||
+            "-";
 
-            <td>${employee.state || "-"}</td>
+        const city =
+            employee.city ||
+            "-";
 
-            <td>${employee.city || "-"}</td>
+        const status =
+            employee.status ||
+            "Pending";
 
-            <td>
+
+        let statusHTML = "";
+
+
+        if (
+            String(status).toLowerCase() ===
+            "approved"
+        ) {
+
+            statusHTML = `
                 <span style="
-                    color:white;
-                    background:${statusColor};
+                    background:#d1e7dd;
+                    color:#0f5132;
                     padding:5px 10px;
                     border-radius:20px;
-                    font-size:12px;">
-                    ${employee.status}
+                    font-size:12px;
+                    font-weight:bold;
+                ">
+                    Approved
                 </span>
-            </td>
+            `;
 
-            <td>
+        } else {
 
-                ${actionButton}
+            statusHTML = `
+                <span style="
+                    background:#fff3cd;
+                    color:#664d03;
+                    padding:5px 10px;
+                    border-radius:20px;
+                    font-size:12px;
+                    font-weight:bold;
+                ">
+                    Pending
+                </span>
+            `;
+        }
 
+
+        let actionHTML = "";
+
+
+        if (
+            String(status).toLowerCase() ===
+            "approved"
+        ) {
+
+            actionHTML = `
                 <button
-                    class="btn btn-danger"
-                    onclick="deleteEmployee('${employee.id}')">
-
-                    Delete
-
+                    onclick="changeStatus('${employee.id}', 'Pending')"
+                    style="
+                        background:#ffc107;
+                        color:#000;
+                        border:none;
+                        padding:6px 10px;
+                        border-radius:5px;
+                        cursor:pointer;
+                    "
+                >
+                    Pending
                 </button>
+            `;
 
-            </td>
+        } else {
 
-        </tr>
+            actionHTML = `
+                <button
+                    onclick="changeStatus('${employee.id}', 'Approved')"
+                    style="
+                        background:#198754;
+                        color:white;
+                        border:none;
+                        padding:6px 10px;
+                        border-radius:5px;
+                        cursor:pointer;
+                    "
+                >
+                    Approve
+                </button>
+            `;
+        }
 
+
+        html += `
+            <tr>
+
+                <td>
+                    <b>${employeeCode}</b>
+                </td>
+
+                <td>
+                    ${teacherName}
+                </td>
+
+                <td>
+                    ${mobile}
+                </td>
+
+                <td>
+                    ${region}
+                </td>
+
+                <td>
+                    ${state}
+                </td>
+
+                <td>
+                    ${city}
+                </td>
+
+                <td>
+                    ${statusHTML}
+                </td>
+
+                <td>
+                    ${actionHTML}
+                </td>
+
+            </tr>
         `;
-
     });
 
+
+    usersTable.innerHTML = html;
 }
-// ======================================
-// Approve Employee
-// ======================================
-
-window.approveEmployee = async function (employeeId) {
-
-    if (!confirm("Approve this employee?")) {
-        return;
-    }
-
-    try {
-
-        await updateDoc(
-            doc(db, "employees", employeeId),
-            {
-                status: "Approved",
-                approvedBy: auth.currentUser.email,
-                approvedAt: serverTimestamp()
-            }
-        );
-
-        alert("Employee Approved Successfully.");
-
-        loadEmployees(auth.currentUser);
-
-    } catch (error) {
-
-        console.error("Approve Error:", error);
-
-        alert("Failed to approve employee.");
-
-    }
-
-};
 
 
 // ======================================
-// Delete Employee
-// ======================================
-
-window.deleteEmployee = async function (employeeId) {
-
-    if (!confirm("Delete this employee?")) {
-        return;
-    }
-
-    try {
-
-        await deleteDoc(
-            doc(db, "employees", employeeId)
-        );
-
-        alert("Employee Deleted Successfully.");
-
-        loadEmployees(auth.currentUser);
-
-    } catch (error) {
-
-        console.error("Delete Error:", error);
-
-        alert("Failed to delete employee.");
-
-    }
-
-};
-// ======================================
-// Search Employee
+// Search Employees
 // ======================================
 
 if (searchUser) {
 
-    searchUser.addEventListener("keyup", function () {
+    searchUser.addEventListener(
+        "input",
+        function () {
 
-        const value = this.value.toLowerCase().trim();
+            const search =
+                this.value
+                    .trim()
+                    .toLowerCase();
 
-        const filteredEmployees = employees.filter((employee) => {
 
-            return (
+            const filtered =
+                employees.filter((employee) => {
 
-                (employee.employeeCode || "")
-                    .toLowerCase()
-                    .includes(value)
+                    return (
 
-                ||
+                        String(
+                            employee.employee_code ||
+                            employee.employeeCode ||
+                            employee.id ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
 
-                (employee.teacherName || "")
-                    .toLowerCase()
-                    .includes(value)
+                        ||
 
-                ||
+                        String(
+                            employee.teacher_name ||
+                            employee.teacherName ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
 
-                (employee.mobileNumber || "")
-                    .toLowerCase()
-                    .includes(value)
+                        ||
 
-                ||
+                        String(
+                            employee.mobile ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
 
-                (employee.region || "")
-                    .toLowerCase()
-                    .includes(value)
+                        ||
 
-                ||
+                        String(
+                            employee.region ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
 
-                (employee.state || "")
-                    .toLowerCase()
-                    .includes(value)
+                        ||
 
-                ||
+                        String(
+                            employee.state ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
 
-                (employee.city || "")
-                    .toLowerCase()
-                    .includes(value)
+                        ||
 
+                        String(
+                            employee.city ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+                    );
+                });
+
+
+            displayEmployees(filtered);
+        }
+    );
+}
+
+
+// ======================================
+// Change Employee Status
+// ======================================
+
+window.changeStatus = async function (
+    employeeId,
+    newStatus
+) {
+
+    try {
+
+        const employeeRef =
+            doc(
+                db,
+                "employees",
+                employeeId
             );
 
-        });
 
-        displayEmployees(filteredEmployees, auth.currentUser);
+        await updateDoc(
+            employeeRef,
+            {
+                status: newStatus
+            }
+        );
 
-    });
 
-}
+        alert(
+            "Employee status updated successfully!"
+        );
 
 
-// ======================================
-// Logout
-// ======================================
+        loadEmployees();
 
-if (logoutBtn) {
+    } catch (error) {
 
-    logoutBtn.addEventListener("click", async () => {
+        console.error(
+            "Status Update Error:",
+            error
+        );
 
-        try {
-
-            await signOut(auth);
-
-            window.location.href = "index.html";
-
-        } catch (error) {
-
-            console.error("Logout Error:", error);
-
-            alert(error.message);
-
-        }
-
-    });
-
-}
+        alert(
+            "Status update nahi ho saka: " +
+            error.message
+        );
+    }
+};
 
 
 // ======================================
-// Console
+// Start
 // ======================================
 
-console.log("Users Management Loaded Successfully");
+loadEmployees();
