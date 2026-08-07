@@ -1,6 +1,7 @@
 // ======================================
 // Telethon Admin Dashboard
 // Latest Entry Per Employee + Date
+// Missing Employee Code = Ignore
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -17,29 +18,37 @@ import {
 // HTML Elements
 // ======================================
 
-const totalAmountEl = document.getElementById("totalAmount");
-const todayAmountEl = document.getElementById("todayAmount");
-const totalEntriesCountEl = document.getElementById("totalEntriesCount");
-const entriesTableBody = document.getElementById("entriesTableBody");
+const totalAmountEl =
+    document.getElementById("totalAmount");
+
+const todayAmountEl =
+    document.getElementById("todayAmount");
+
+const totalEntriesCountEl =
+    document.getElementById("totalEntriesCount");
+
+const entriesTableBody =
+    document.getElementById("entriesTableBody");
 
 
 // ======================================
-// Get Today's Date
+// Today's Date
 // ======================================
 
 function getTodayDate() {
 
     const today = new Date();
 
-    const year = today.getFullYear();
+    const year =
+        today.getFullYear();
 
-    const month = String(
-        today.getMonth() + 1
-    ).padStart(2, "0");
+    const month =
+        String(today.getMonth() + 1)
+            .padStart(2, "0");
 
-    const day = String(
-        today.getDate()
-    ).padStart(2, "0");
+    const day =
+        String(today.getDate())
+            .padStart(2, "0");
 
     return `${year}-${month}-${day}`;
 }
@@ -63,8 +72,7 @@ async function loadDashboardData() {
 
 
         // ======================================
-        // Store Latest Entry
-        // Employee Code + Date
+        // Latest Entry Per Employee + Date
         // ======================================
 
         const latestEntries = new Map();
@@ -75,7 +83,10 @@ async function loadDashboardData() {
             const data = docSnap.data();
 
 
+            // ======================================
             // Employee Code
+            // ======================================
+
             const empCode =
                 String(
                     data.employee_code ||
@@ -84,15 +95,35 @@ async function loadDashboardData() {
                 ).trim();
 
 
+            // ======================================
+            // IMPORTANT:
+            // Employee Code missing = Ignore
+            // ======================================
+
+            if (!empCode) {
+                return;
+            }
+
+
+            // ======================================
             // Date
+            // ======================================
+
             const date =
                 String(
                     data.date || ""
                 ).trim();
 
 
+            // Date missing = Ignore
+            if (!date) {
+                return;
+            }
+
+
             // ======================================
             // Unique Key
+            // Employee Code + Date
             // ======================================
 
             const uniqueKey =
@@ -100,13 +131,15 @@ async function loadDashboardData() {
 
 
             /*
-                Query createdAt DESC hai.
+                createdAt DESC hai.
 
-                Isliye sabse pehle jo entry milegi
-                woh sabse latest entry hogi.
+                Isliye sabse pehle latest entry
+                milegi.
 
-                Map me agar already entry hai,
-                to usko dobara add nahi karenge.
+                Agar same Employee Code + Date
+                ki entry already Map me hai,
+                to purani/latest ke baad wali
+                entry ko ignore karenge.
             */
 
             if (!latestEntries.has(uniqueKey)) {
@@ -139,10 +172,31 @@ async function loadDashboardData() {
 
 
         // ======================================
-        // No Data
+        // No Valid Data
         // ======================================
 
         if (latestEntries.size === 0) {
+
+            if (totalAmountEl) {
+
+                totalAmountEl.textContent =
+                    "₹ 0";
+
+            }
+
+            if (todayAmountEl) {
+
+                todayAmountEl.textContent =
+                    "₹ 0";
+
+            }
+
+            if (totalEntriesCountEl) {
+
+                totalEntriesCountEl.textContent =
+                    "0";
+
+            }
 
             if (entriesTableBody) {
 
@@ -152,23 +206,11 @@ async function loadDashboardData() {
                             colspan="7"
                             class="no-data"
                         >
-                            Koi collection entry nahi mili.
+                            Koi valid collection entry nahi mili.
                         </td>
                     </tr>
                 `;
 
-            }
-
-            if (totalAmountEl) {
-                totalAmountEl.textContent = "₹ 0";
-            }
-
-            if (todayAmountEl) {
-                todayAmountEl.textContent = "₹ 0";
-            }
-
-            if (totalEntriesCountEl) {
-                totalEntriesCountEl.textContent = "0";
             }
 
             return;
@@ -176,7 +218,7 @@ async function loadDashboardData() {
 
 
         // ======================================
-        // Create Table
+        // Create Table Rows
         // ======================================
 
         latestEntries.forEach((data) => {
@@ -212,8 +254,7 @@ async function loadDashboardData() {
 
             const empCode =
                 data.employee_code ||
-                data.empCode ||
-                "-";
+                data.empCode;
 
 
             // ======================================
@@ -268,7 +309,7 @@ async function loadDashboardData() {
                 <tr>
 
                     <td>
-                        ${data.date || "-"}
+                        ${data.date}
                     </td>
 
                     <td>
@@ -307,7 +348,7 @@ async function loadDashboardData() {
 
 
         // ======================================
-        // Update Summary Cards
+        // Update Total Collection
         // ======================================
 
         if (totalAmountEl) {
@@ -318,6 +359,10 @@ async function loadDashboardData() {
         }
 
 
+        // ======================================
+        // Update Today's Collection
+        // ======================================
+
         if (todayAmountEl) {
 
             todayAmountEl.textContent =
@@ -325,6 +370,10 @@ async function loadDashboardData() {
 
         }
 
+
+        // ======================================
+        // Update Total Entries
+        // ======================================
 
         if (totalEntriesCountEl) {
 
@@ -407,7 +456,7 @@ if (logoutBtn) {
 
 
 // ======================================
-// Load Dashboard
+// Start Dashboard
 // ======================================
 
 loadDashboardData();
