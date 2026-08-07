@@ -17,23 +17,33 @@ if (loginForm) {
 
         e.preventDefault();
 
-        const employeeCodeEl = document.getElementById("employeeCode");
-        const passwordEl = document.getElementById("password");
+        const employeeCodeEl =
+            document.getElementById("employeeCode");
 
-        if (!employeeCodeEl || !passwordEl) {
-            alert("Login fields not found!");
-            return;
+        const passwordEl =
+            document.getElementById("password");
+
+        const errorMsg =
+            document.getElementById("errorMsg");
+
+        const loginId =
+            employeeCodeEl.value.trim();
+
+        const password =
+            passwordEl.value.trim();
+
+        if (errorMsg) {
+            errorMsg.textContent = "Checking login...";
         }
-
-        const loginId = employeeCodeEl.value.trim();
-        const password = passwordEl.value.trim();
 
         // ======================================
         // ADMIN LOGIN
         // ======================================
 
         if (
-            loginId.toLowerCase() === "office.moderneducation@gmail.com" &&
+            loginId.toLowerCase() ===
+            "office.moderneducation@gmail.com"
+            &&
             password === "admin123"
         ) {
 
@@ -47,7 +57,8 @@ if (loginForm) {
                 "admin"
             );
 
-            window.location.href = "dashboard.html";
+            window.location.href =
+                "dashboard.html";
 
             return;
         }
@@ -59,40 +70,52 @@ if (loginForm) {
 
         try {
 
-            const employeeRef = doc(
-                db,
-                "employees",
-                loginId
-            );
+            const employeeRef =
+                doc(db, "employees", loginId);
 
-            const employeeSnap = await getDoc(employeeRef);
+            const employeeSnap =
+                await getDoc(employeeRef);
 
             if (!employeeSnap.exists()) {
 
-                alert("Employee Code not found!");
+                if (errorMsg) {
+                    errorMsg.textContent =
+                        "Employee Code not found!";
+                }
+
                 return;
             }
 
-            const data = employeeSnap.data();
+            const data =
+                employeeSnap.data();
 
-            // Password check
+
+            // Password
             if (
-                String(data.password).trim() !== password
+                String(data.password).trim()
+                !== password
             ) {
 
-                alert("Wrong Password!");
+                if (errorMsg) {
+                    errorMsg.textContent =
+                        "Wrong Password!";
+                }
+
                 return;
             }
 
-            // Pending account
+
+            // Pending
             if (data.status === "Pending") {
 
-                alert(
-                    "Aapka account Admin Approval ke liye pending hai!"
-                );
+                if (errorMsg) {
+                    errorMsg.textContent =
+                        "Aapka account Admin Approval ke liye pending hai!";
+                }
 
                 return;
             }
+
 
             // Teacher Login
             localStorage.setItem(
@@ -105,19 +128,23 @@ if (loginForm) {
                 "teacher"
             );
 
-            window.location.href = "daily-entry.html";
+            window.location.href =
+                "daily-entry.html";
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "Login Error:",
                 error
             );
 
-            alert(
-                "Login Error: " +
-                error.message
-            );
+            if (errorMsg) {
+                errorMsg.textContent =
+                    "Login Error: " +
+                    error.message;
+            }
         }
 
     });
