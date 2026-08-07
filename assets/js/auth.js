@@ -1,5 +1,5 @@
 // ======================================
-// Auth JS - Admin & Teacher Login
+// Telethon - Admin & Teacher Login
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -17,38 +17,54 @@ if (loginForm) {
 
         e.preventDefault();
 
-        const empCodeEl = document.getElementById("employeeCode");
+        const employeeCodeEl = document.getElementById("employeeCode");
         const passwordEl = document.getElementById("password");
 
-        if (!empCodeEl || !passwordEl) {
+        if (!employeeCodeEl || !passwordEl) {
             alert("Login fields not found!");
             return;
         }
 
-        const empCode = empCodeEl.value.trim();
+        const loginId = employeeCodeEl.value.trim();
         const password = passwordEl.value.trim();
 
         // ======================================
-        // 1. ADMIN LOGIN
+        // ADMIN LOGIN
         // ======================================
 
-        if (empCode === "admin" && password === "admin123") {
+        if (
+            loginId.toLowerCase() === "office.moderneducation@gmail.com" &&
+            password === "admin123"
+        ) {
 
-            localStorage.setItem("loggedInEmpCode", "admin");
-            localStorage.setItem("userRole", "admin");
+            localStorage.setItem(
+                "loggedInEmpCode",
+                "admin"
+            );
+
+            localStorage.setItem(
+                "userRole",
+                "admin"
+            );
 
             window.location.href = "dashboard.html";
 
             return;
         }
 
+
         // ======================================
-        // 2. TEACHER LOGIN
+        // TEACHER LOGIN
         // ======================================
 
         try {
 
-            const employeeRef = doc(db, "employees", empCode);
+            const employeeRef = doc(
+                db,
+                "employees",
+                loginId
+            );
+
             const employeeSnap = await getDoc(employeeRef);
 
             if (!employeeSnap.exists()) {
@@ -60,7 +76,9 @@ if (loginForm) {
             const data = employeeSnap.data();
 
             // Password check
-            if (String(data.password).trim() !== password) {
+            if (
+                String(data.password).trim() !== password
+            ) {
 
                 alert("Wrong Password!");
                 return;
@@ -69,21 +87,37 @@ if (loginForm) {
             // Pending account
             if (data.status === "Pending") {
 
-                alert("Aapka account Admin Approval ke liye pending hai!");
+                alert(
+                    "Aapka account Admin Approval ke liye pending hai!"
+                );
+
                 return;
             }
 
-            // Approved teacher
-            localStorage.setItem("loggedInEmpCode", empCode);
-            localStorage.setItem("userRole", "teacher");
+            // Teacher Login
+            localStorage.setItem(
+                "loggedInEmpCode",
+                loginId
+            );
+
+            localStorage.setItem(
+                "userRole",
+                "teacher"
+            );
 
             window.location.href = "daily-entry.html";
 
         } catch (error) {
 
-            console.error("Login Error:", error);
+            console.error(
+                "Login Error:",
+                error
+            );
 
-            alert("Login Error: " + error.message);
+            alert(
+                "Login Error: " +
+                error.message
+            );
         }
 
     });
