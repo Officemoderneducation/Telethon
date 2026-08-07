@@ -13,58 +13,77 @@ const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
 
-    loginForm.addEventListener("submit", async (e) => {
+    loginForm.addEventListener("submit", async function (e) {
 
         e.preventDefault();
 
-        const empCode = document.getElementById("employeeCode").value.trim();
-        const password = document.getElementById("password").value.trim();
+        const empCodeEl = document.getElementById("employeeCode");
+        const passwordEl = document.getElementById("password");
+
+        if (!empCodeEl || !passwordEl) {
+            alert("Login fields not found!");
+            return;
+        }
+
+        const empCode = empCodeEl.value.trim();
+        const password = passwordEl.value.trim();
+
+        // ======================================
+        // 1. ADMIN LOGIN
+        // ======================================
+
+        if (empCode === "admin" && password === "admin123") {
+
+            localStorage.setItem("loggedInEmpCode", "admin");
+            localStorage.setItem("userRole", "admin");
+
+            window.location.href = "dashboard.html";
+
+            return;
+        }
+
+        // ======================================
+        // 2. TEACHER LOGIN
+        // ======================================
 
         try {
 
-            // Default Admin Login
-            if (empCode === "admin" && password === "admin123") {
+            const employeeRef = doc(db, "employees", empCode);
+            const employeeSnap = await getDoc(employeeRef);
 
-                localStorage.setItem("loggedInEmpCode", "admin");
-                localStorage.setItem("userRole", "admin");
+            if (!employeeSnap.exists()) {
 
-                window.location.href = "dashboard.html";
-                return;
-            }
-
-            // Firestore Employee Login
-            const docRef = doc(db, "employees", empCode);
-            const docSnap = await getDoc(docRef);
-
-            if (!docSnap.exists()) {
                 alert("Employee Code not found!");
                 return;
             }
 
-            const user = docSnap.data();
+            const data = employeeSnap.data();
 
-            if (String(user.password).trim() !== password) {
-                alert("Incorrect Password!");
+            // Password check
+            if (String(data.password).trim() !== password) {
+
+                alert("Wrong Password!");
                 return;
             }
 
-            if (user.status === "Pending") {
-                alert("Your account is waiting for Admin Approval.");
+            // Pending account
+            if (data.status === "Pending") {
+
+                alert("Aapka account Admin Approval ke liye pending hai!");
                 return;
             }
 
+            // Approved teacher
             localStorage.setItem("loggedInEmpCode", empCode);
-            localStorage.setItem("userRole", user.role || "teacher");
+            localStorage.setItem("userRole", "teacher");
 
-            if (user.role === "admin") {
-                window.location.href = "dashboard.html";
-            } else {
-                window.location.href = "daily-entry.html";
-            }
+            window.location.href = "daily-entry.html";
 
         } catch (error) {
+
             console.error("Login Error:", error);
-            alert(error.message);
+
+            alert("Login Error: " + error.message);
         }
 
     });
