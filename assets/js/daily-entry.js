@@ -53,7 +53,7 @@ if (entryDate) {
 
 
 // ======================================
-// Employee Data
+// Current Employee
 // ======================================
 
 let currentEmployee = null;
@@ -63,36 +63,19 @@ let currentEmployee = null;
 // Check Login
 // ======================================
 
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, async () => {
 
     try {
 
-        // Firebase Authentication user
-        if (user) {
+        const empCode =
+            localStorage.getItem("loggedInEmpCode");
 
-            const empCode =
-                localStorage.getItem("loggedInEmpCode");
-
-            if (!empCode) {
-                window.location.href = "login.html";
-                return;
-            }
-
-            await loadEmployee(empCode);
-
-        } else {
-
-            // Your current login system also uses localStorage
-            const empCode =
-                localStorage.getItem("loggedInEmpCode");
-
-            if (!empCode) {
-                window.location.href = "login.html";
-                return;
-            }
-
-            await loadEmployee(empCode);
+        if (!empCode) {
+            window.location.href = "login.html";
+            return;
         }
+
+        await loadEmployee(empCode);
 
     } catch (error) {
 
@@ -145,20 +128,20 @@ async function loadEmployee(empCode) {
 
 
         // ==================================
-        // Header
+        // Header - Teacher Name
         // ==================================
 
         if (userInfo) {
 
             userInfo.textContent =
-                data.teacher_name ||
-                data.name ||
+                data.teacherName ||
+                data.employeeCode ||
                 empCode;
         }
 
 
         // ==================================
-        // Employee Badge
+        // Show Employee Badge
         // ==================================
 
         if (employeeBadge) {
@@ -166,28 +149,39 @@ async function loadEmployee(empCode) {
         }
 
 
+        // ==================================
+        // Teacher Name
+        // ==================================
+
         if (badgeTeacher) {
 
             badgeTeacher.textContent =
                 "Teacher: " +
                 (
-                    data.teacher_name ||
-                    data.name ||
+                    data.teacherName ||
                     "-"
                 );
         }
 
+
+        // ==================================
+        // Jamiatul Madina
+        // ==================================
 
         if (badgeMadina) {
 
             badgeMadina.textContent =
                 "Jamiatul Madina: " +
                 (
-                    data.jamiatul_madina ||
+                    data.jamiatuMadina ||
                     "-"
                 );
         }
 
+
+        // ==================================
+        // Location
+        // ==================================
 
         if (badgeLocation) {
 
@@ -311,23 +305,22 @@ if (dailyEntryForm) {
             try {
 
                 // ==================================
-                // Save to Firestore
+                // Save Daily Entry
                 // ==================================
 
                 await addDoc(
                     collection(db, "daily_entry"),
                     {
 
-                        employee_code:
+                        employeeCode:
                             currentEmployee.employeeCode,
 
-                        teacher_name:
-                            currentEmployee.teacher_name ||
-                            currentEmployee.name ||
+                        teacherName:
+                            currentEmployee.teacherName ||
                             "",
 
-                        jamiatul_madina:
-                            currentEmployee.jamiatul_madina ||
+                        jamiatuMadina:
+                            currentEmployee.jamiatuMadina ||
                             "",
 
                         city:
@@ -355,7 +348,7 @@ if (dailyEntryForm) {
 
 
                 // ==================================
-                // Success
+                // Success Message
                 // ==================================
 
                 showMessage(
@@ -364,13 +357,8 @@ if (dailyEntryForm) {
                 );
 
 
-                // Clear amount
+                // Clear Amount
                 amount.value = "";
-
-
-                // Keep today's date
-                entryDate.value =
-                    selectedDate;
 
 
             } catch (error) {
