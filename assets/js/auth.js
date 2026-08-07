@@ -25,7 +25,7 @@ if (loginForm) {
         if (errorMsg) errorMsg.textContent = "Verifying Credentials...";
 
         try {
-            // 1. Hardcoded Default Admin Login Check
+            // 1. Default Admin Login Check (Employee Code = admin, Password = admin123)
             if (empCode === "admin" && password === "admin123") {
                 localStorage.setItem("loggedInEmpCode", "admin");
                 localStorage.setItem("userRole", "admin");
@@ -40,10 +40,11 @@ if (loginForm) {
             if (empDocSnap.exists()) {
                 const data = empDocSnap.data();
 
+                // String comparison to handle both string and number passwords
                 if (String(data.password).trim() === password) {
                     localStorage.setItem("loggedInEmpCode", empCode);
 
-                    // Redirect based on Role/Status
+                    // Check Approval Status and Role
                     if (data.role === "admin") {
                         localStorage.setItem("userRole", "admin");
                         window.location.href = "dashboard.html";
