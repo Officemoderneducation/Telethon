@@ -1,75 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Telethoon - Login</title>
-
-
-<link rel="stylesheet" href="assets/css/login.css">
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telethon - Login</title>
+    <link rel="stylesheet" href="assets/css/login.css">
 </head>
-
-
 <body>
 
-
 <div class="login-container">
-
-
     <div class="login-box">
+        <img src="assets/images/logo.png" alt="Logo" class="logo">
 
+        <h2>Telethon</h2>
+        <p>Fee Management System</p>
 
-        <img src="assets/images/logo.png" 
-        alt="Logo"
-        class="logo">
+        <!-- Form tag added for proper submit handling -->
+        <form id="loginForm">
+            <!-- ID updated to empCode -->
+            <input 
+                type="text" 
+                id="empCode" 
+                placeholder="Enter Employee Code / Admin" 
+                required>
 
+            <input 
+                type="password" 
+                id="password" 
+                placeholder="Enter Password" 
+                required>
 
-        <h2>
-            Telethoon
-        </h2>
+            <button type="submit" id="loginBtn">Login</button>
+        </form>
 
-        <p>
-            Fee Management System
-        </p>
-
-
-        <input 
-        type="email" 
-        id="email" 
-        placeholder="Enter Email">
-
-
-        <input 
-        type="password" 
-        id="password" 
-        placeholder="Enter Password">
-
-
-        <button id="loginBtn">
-            Login
-        </button>
-
-
-        <p id="message"></p>
-
-
+        <!-- ID updated to errorMsg -->
+        <p id="errorMsg" style="margin-top: 15px; font-weight: bold; color: red;"></p>
     </div>
-
-
 </div>
 
-
-
-<!-- index.html ke last me </body> tag se pehle -->
 <script type="module" src="./js/auth.js"></script>
 
-
 </body>
-
 </html>
