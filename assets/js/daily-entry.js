@@ -168,16 +168,19 @@ async function loadEmployee(empCode) {
         // Jamiatul Madina
         // ==================================
 
-        if (badgeMadina) {
+if (badgeMadina) {
 
-            badgeMadina.textContent =
-                "Jamiatul Madina: " +
-                (
-                    data.jamiatuMadina ||
-                    "-"
-                );
-        }
+    const madinaName =
+        data.jamiatuMadina ||
+        data.jamiatulMadina ||
+        data.jamiatul_madina ||
+        data.jamiatulMadinah ||
+        "";
 
+    badgeMadina.textContent =
+        "Jamiatul Madina: " +
+        (madinaName || "-");
+}
 
         // ==================================
         // Location
