@@ -1,5 +1,6 @@
 // ======================================
 // Telethon - Teachers / Employees List
+// Firebase Firestore
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -19,7 +20,7 @@ let employees = [];
 
 
 // ======================================
-// Load Employees
+// Load Employees From Firebase
 // ======================================
 
 async function loadEmployees() {
@@ -28,18 +29,17 @@ async function loadEmployees() {
 
     usersTable.innerHTML = `
         <tr>
-            <td colspan="8" style="text-align:center;padding:20px;">
-                Loading Employees...
+            <td colspan="9" class="loading-cell">
+                Loading Teachers...
             </td>
         </tr>
     `;
 
     try {
 
-        const snapshot =
-            await getDocs(
-                collection(db, "employees")
-            );
+        const snapshot = await getDocs(
+            collection(db, "employees")
+        );
 
         employees = [];
 
@@ -63,9 +63,8 @@ async function loadEmployees() {
 
         usersTable.innerHTML = `
             <tr>
-                <td colspan="8"
-                    style="text-align:center;padding:20px;color:red;">
-                    Employees load nahi ho rahe.
+                <td colspan="9" class="error-cell">
+                    Teachers load nahi ho rahe.
                     <br>
                     ${error.message}
                 </td>
@@ -88,8 +87,7 @@ function displayEmployees(list) {
 
         usersTable.innerHTML = `
             <tr>
-                <td colspan="8"
-                    style="text-align:center;padding:20px;">
+                <td colspan="9" class="empty-cell">
                     Koi Registered Teacher nahi mila.
                 </td>
             </tr>
@@ -104,37 +102,58 @@ function displayEmployees(list) {
 
     list.forEach((employee) => {
 
+        // ==================================
+        // Firebase Fields
+        // ==================================
+
         const employeeCode =
-            employee.employee_code ||
             employee.employeeCode ||
+            employee.employee_code ||
             employee.id ||
             "-";
 
+
         const teacherName =
-            employee.teacher_name ||
             employee.teacherName ||
+            employee.teacher_name ||
             "-";
 
+
         const mobile =
+            employee.mobileNumber ||
             employee.mobile ||
             "-";
+
 
         const region =
             employee.region ||
             "-";
 
+
         const state =
             employee.state ||
             "-";
+
 
         const city =
             employee.city ||
             "-";
 
+
+        const jamiatulMadina =
+            employee.jamiatulMadina ||
+            employee.jamiatul_madina ||
+            "-";
+
+
         const status =
             employee.status ||
             "Pending";
 
+
+        // ==================================
+        // Status Badge
+        // ==================================
 
         let statusHTML = "";
 
@@ -145,14 +164,7 @@ function displayEmployees(list) {
         ) {
 
             statusHTML = `
-                <span style="
-                    background:#d1e7dd;
-                    color:#0f5132;
-                    padding:5px 10px;
-                    border-radius:20px;
-                    font-size:12px;
-                    font-weight:bold;
-                ">
+                <span class="status-badge approved">
                     Approved
                 </span>
             `;
@@ -160,19 +172,16 @@ function displayEmployees(list) {
         } else {
 
             statusHTML = `
-                <span style="
-                    background:#fff3cd;
-                    color:#664d03;
-                    padding:5px 10px;
-                    border-radius:20px;
-                    font-size:12px;
-                    font-weight:bold;
-                ">
+                <span class="status-badge pending">
                     Pending
                 </span>
             `;
         }
 
+
+        // ==================================
+        // Action Button
+        // ==================================
 
         let actionHTML = "";
 
@@ -184,15 +193,8 @@ function displayEmployees(list) {
 
             actionHTML = `
                 <button
+                    class="action-btn pending-btn"
                     onclick="changeStatus('${employee.id}', 'Pending')"
-                    style="
-                        background:#ffc107;
-                        color:#000;
-                        border:none;
-                        padding:6px 10px;
-                        border-radius:5px;
-                        cursor:pointer;
-                    "
                 >
                     Pending
                 </button>
@@ -202,15 +204,8 @@ function displayEmployees(list) {
 
             actionHTML = `
                 <button
+                    class="action-btn approve-btn"
                     onclick="changeStatus('${employee.id}', 'Approved')"
-                    style="
-                        background:#198754;
-                        color:white;
-                        border:none;
-                        padding:6px 10px;
-                        border-radius:5px;
-                        cursor:pointer;
-                    "
                 >
                     Approve
                 </button>
@@ -218,11 +213,15 @@ function displayEmployees(list) {
         }
 
 
+        // ==================================
+        // Table Row
+        // ==================================
+
         html += `
             <tr>
 
-                <td>
-                    <b>${employeeCode}</b>
+                <td class="employee-code">
+                    ${employeeCode}
                 </td>
 
                 <td>
@@ -263,7 +262,7 @@ function displayEmployees(list) {
 
 
 // ======================================
-// Search Employees
+// Search Teachers
 // ======================================
 
 if (searchUser) {
@@ -281,62 +280,68 @@ if (searchUser) {
             const filtered =
                 employees.filter((employee) => {
 
-                    return (
-
+                    const employeeCode =
                         String(
-                            employee.employee_code ||
                             employee.employeeCode ||
+                            employee.employee_code ||
                             employee.id ||
                             ""
-                        )
-                        .toLowerCase()
-                        .includes(search)
+                        ).toLowerCase();
 
-                        ||
 
+                    const teacherName =
                         String(
-                            employee.teacher_name ||
                             employee.teacherName ||
+                            employee.teacher_name ||
                             ""
-                        )
-                        .toLowerCase()
-                        .includes(search)
+                        ).toLowerCase();
 
-                        ||
 
+                    const mobile =
                         String(
+                            employee.mobileNumber ||
                             employee.mobile ||
                             ""
-                        )
-                        .toLowerCase()
-                        .includes(search)
+                        ).toLowerCase();
 
-                        ||
 
+                    const region =
                         String(
                             employee.region ||
                             ""
-                        )
-                        .toLowerCase()
-                        .includes(search)
+                        ).toLowerCase();
 
-                        ||
 
+                    const state =
                         String(
                             employee.state ||
                             ""
-                        )
-                        .toLowerCase()
-                        .includes(search)
+                        ).toLowerCase();
 
-                        ||
 
+                    const city =
                         String(
                             employee.city ||
                             ""
-                        )
-                        .toLowerCase()
-                        .includes(search)
+                        ).toLowerCase();
+
+
+                    const jamiatulMadina =
+                        String(
+                            employee.jamiatulMadina ||
+                            employee.jamiatul_madina ||
+                            ""
+                        ).toLowerCase();
+
+
+                    return (
+                        employeeCode.includes(search) ||
+                        teacherName.includes(search) ||
+                        mobile.includes(search) ||
+                        region.includes(search) ||
+                        state.includes(search) ||
+                        city.includes(search) ||
+                        jamiatulMadina.includes(search)
                     );
                 });
 
@@ -348,13 +353,22 @@ if (searchUser) {
 
 
 // ======================================
-// Change Employee Status
+// Change Teacher Status
 // ======================================
 
 window.changeStatus = async function (
     employeeId,
     newStatus
 ) {
+
+    const confirmation = confirm(
+        `Teacher status "${newStatus}" karna hai?`
+    );
+
+    if (!confirmation) {
+        return;
+    }
+
 
     try {
 
@@ -375,11 +389,11 @@ window.changeStatus = async function (
 
 
         alert(
-            "Employee status updated successfully!"
+            `Teacher status ${newStatus} ho gaya.`
         );
 
 
-        loadEmployees();
+        await loadEmployees();
 
     } catch (error) {
 
@@ -389,7 +403,7 @@ window.changeStatus = async function (
         );
 
         alert(
-            "Status update nahi ho saka: " +
+            "Status update nahi ho saka.\n\n" +
             error.message
         );
     }
