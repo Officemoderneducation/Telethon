@@ -1,0 +1,760 @@
+/* =========================================
+   RESET
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #172033;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    width: 265px;
+    height: 100vh;
+
+    background: #0f172a;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+
+/* Logo */
+
+.logo {
+    text-align: center;
+    padding: 20px 10px 18px;
+
+    border-bottom: 1px solid #29344b;
+}
+
+.logo img {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+}
+
+.logo h2 {
+    margin-top: 5px;
+
+    color: #38bdf8;
+
+    font-size: 21px;
+}
+
+.logo p {
+    margin-top: 3px;
+
+    color: #cbd5e1;
+
+    font-size: 13px;
+}
+
+
+/* Menu */
+
+.menu {
+    padding-top: 15px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    width: 100%;
+
+    padding: 13px 20px;
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+}
+
+.menu a i {
+    width: 20px;
+
+    text-align: center;
+
+    font-size: 16px;
+}
+
+.menu a:hover {
+    background: #1e293b;
+    color: white;
+}
+
+.menu a.active {
+    background: #2563eb;
+
+    color: white;
+
+    font-weight: bold;
+}
+
+
+/* Logout */
+
+.logout {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 15px 20px;
+
+    color: #ef4444;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    margin-bottom: 15px;
+}
+
+.logout:hover {
+    background: #1e293b;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.main-content {
+    margin-left: 265px;
+
+    width: calc(100% - 265px);
+
+    min-height: 100vh;
+
+    padding: 24px;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================
+   PAGE HEADER
+========================================= */
+
+.page-header {
+    background: white;
+
+    border-radius: 10px;
+
+    padding: 20px 25px;
+
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.page-header h1 {
+    font-size: 25px;
+
+    margin-bottom: 5px;
+}
+
+.page-header p {
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+/* =========================================
+   FILTER CARD
+========================================= */
+
+.filter-card {
+    background: white;
+
+    border-radius: 10px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06);
+
+    margin-bottom: 14px;
+}
+
+.filter-grid {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr 1fr 1fr auto;
+
+    gap: 16px;
+
+    align-items: end;
+}
+
+.filter-group label {
+    display: block;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    margin-bottom: 7px;
+
+    color: #1e293b;
+}
+
+.filter-group select {
+    width: 100%;
+
+    height: 44px;
+
+    padding: 0 12px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 7px;
+
+    background: white;
+
+    color: #1e293b;
+
+    font-size: 14px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+.filter-group select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 2px rgba(37, 99, 235, 0.10);
+}
+
+
+/* Buttons */
+
+.filter-buttons {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    min-width: 130px;
+}
+
+.apply-btn,
+.reset-btn {
+    height: 44px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    border: none;
+
+    padding: 0 16px;
+}
+
+.apply-btn {
+    background: #2563eb;
+
+    color: white;
+}
+
+.apply-btn:hover {
+    background: #1d4ed8;
+}
+
+.reset-btn {
+    background: white;
+
+    color: #2563eb;
+
+    border: 1px solid #cbd5e1;
+}
+
+.reset-btn:hover {
+    background: #f1f5f9;
+}
+
+
+/* =========================================
+   SELECTED INFO
+========================================= */
+
+.selected-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    background: #f0fdf4;
+
+    border: 1px solid #d1fae5;
+
+    border-radius: 9px;
+
+    padding: 16px 20px;
+
+    margin-bottom: 18px;
+}
+
+.success-icon {
+    width: 40px;
+
+    height: 40px;
+
+    min-width: 40px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 18px;
+}
+
+.selected-info span {
+    display: block;
+
+    color: #166534;
+
+    font-size: 13px;
+
+    margin-bottom: 3px;
+}
+
+.selected-info strong {
+    font-size: 18px;
+
+    color: #172033;
+}
+
+
+/* =========================================
+   SUMMARY CARDS
+========================================= */
+
+.summary-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 18px;
+}
+
+.summary-card {
+    background: white;
+
+    border-radius: 10px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    min-height: 120px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06);
+
+    border-bottom: 4px solid #2563eb;
+}
+
+.summary-card.target-card {
+    border-bottom-color: #3b82f6;
+}
+
+.summary-card.collection-card {
+    border-bottom-color: #16a34a;
+}
+
+.summary-card.remaining-card {
+    border-bottom-color: #f59e0b;
+}
+
+.summary-card.percentage-card {
+    border-bottom-color: #7c3aed;
+}
+
+.summary-icon {
+    width: 55px;
+
+    height: 55px;
+
+    min-width: 55px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+.collection-card .summary-icon {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.remaining-card .summary-icon {
+    background: #fef3c7;
+    color: #f59e0b;
+}
+
+.percentage-card .summary-icon {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.summary-card span {
+    display: block;
+
+    color: #475569;
+
+    font-size: 14px;
+
+    margin-bottom: 7px;
+}
+
+.summary-card strong {
+    display: block;
+
+    font-size: 23px;
+
+    color: #172033;
+}
+
+
+/* =========================================
+   DETAILS CARD
+========================================= */
+
+.details-card {
+    background: white;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06);
+
+    overflow: hidden;
+}
+
+.details-header {
+    padding: 18px 20px;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.details-header h2 {
+    font-size: 18px;
+
+    margin-bottom: 4px;
+}
+
+.details-header h2 i {
+    margin-right: 7px;
+
+    color: #2563eb;
+}
+
+.details-header p {
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+
+    min-width: 1250px;
+
+    border-collapse: collapse;
+
+    font-size: 13px;
+}
+
+thead th {
+    background: #f8fafc;
+
+    color: #172033;
+
+    font-weight: bold;
+
+    padding: 13px 10px;
+
+    text-align: left;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    white-space: nowrap;
+}
+
+tbody td {
+    padding: 13px 10px;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    white-space: nowrap;
+
+    color: #334155;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+tfoot td {
+    padding: 15px 10px;
+
+    background: #eff6ff;
+
+    font-weight: bold;
+
+    color: #172033;
+
+    border-top: 1px solid #dbeafe;
+
+    white-space: nowrap;
+}
+
+
+/* Employee Code */
+
+.employee-code {
+    color: #2563eb;
+
+    font-weight: bold;
+}
+
+
+/* Amount */
+
+.target-amount {
+    font-weight: bold;
+
+    color: #172033;
+}
+
+.collection-amount {
+    font-weight: bold;
+
+    color: #16a34a;
+}
+
+.remaining-amount {
+    font-weight: bold;
+
+    color: #ea580c;
+}
+
+
+/* Percentage */
+
+.percentage-badge {
+    display: inline-block;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    background: #dcfce7;
+
+    color: #15803d;
+
+    font-weight: bold;
+}
+
+.percentage-badge.medium {
+    background: #fef3c7;
+
+    color: #b45309;
+}
+
+.percentage-badge.low {
+    background: #fee2e2;
+
+    color: #dc2626;
+}
+
+
+/* Loading */
+
+.loading,
+.no-data {
+    text-align: center;
+
+    padding: 30px !important;
+
+    color: #64748b;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer-note {
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    padding: 20px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1200px) {
+
+    .filter-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .filter-buttons {
+        flex-direction: row;
+
+        grid-column: span 2;
+    }
+
+    .apply-btn,
+    .reset-btn {
+        flex: 1;
+    }
+
+    .summary-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .sidebar {
+        width: 220px;
+    }
+
+    .main-content {
+        margin-left: 220px;
+
+        width: calc(100% - 220px);
+
+        padding: 15px;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-buttons {
+        grid-column: auto;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .sidebar {
+        position: relative;
+
+        width: 100%;
+
+        height: auto;
+    }
+
+    .main-content {
+        margin-left: 0;
+
+        width: 100%;
+    }
+
+    body {
+        display: block;
+    }
+
+}
