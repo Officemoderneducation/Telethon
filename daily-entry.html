@@ -1,11 +1,27 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Collection Entry</title>
-    
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Daily Collection | Telethon</title>
+
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -13,150 +29,628 @@
             font-family: Arial, sans-serif;
         }
 
+
         body {
-            background-color: #f4f6f9;
-            padding: 20px;
+            display: flex;
+            min-height: 100vh;
+            background: #f4f6f9;
+            overflow: hidden;
         }
+
+
+        /* =====================================
+           SIDEBAR
+        ====================================== */
+
+        .sidebar {
+            width: 225px;
+            height: 100vh;
+
+            background: #1e293b;
+            color: #ffffff;
+
+            flex-shrink: 0;
+
+            position: sticky;
+            top: 0;
+
+            overflow-y: auto;
+        }
+
+
+        /* Logo */
+
+        .sidebar .logo-section {
+            text-align: center;
+            padding: 18px 10px 20px;
+            border-bottom: 1px solid #334155;
+        }
+
+
+        .sidebar .logo-section img {
+            width: 75px;
+            height: 75px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 8px;
+        }
+
+
+        .sidebar .logo-section h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #38bdf8;
+        }
+
+
+        .sidebar .logo-section p {
+            margin-top: 7px;
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+
+
+        /* Menu */
+
+        .sidebar .menu {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .sidebar .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 12px 20px;
+
+            color: #cbd5e1;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .sidebar .menu a i {
+            width: 18px;
+            text-align: center;
+        }
+
+
+        .sidebar .menu a:hover {
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+
+        /* Active Daily Collection */
+
+        .sidebar .menu a.active {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+
+        /* Logout */
+
+        .sidebar .menu a:last-child {
+            margin-top: 15px;
+            color: #ef4444;
+        }
+
+
+        .sidebar .menu a:last-child:hover {
+            background: #0f172a;
+        }
+
+
+        /* =====================================
+           MAIN AREA
+        ====================================== */
+
+        .main-area {
+            flex: 1;
+            min-width: 0;
+
+            height: 100vh;
+
+            padding: 20px 30px;
+
+            overflow-y: auto;
+        }
+
+
+        /* =====================================
+           HEADER
+        ====================================== */
 
         .header-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 450px;
+
+            max-width: 650px;
+
             margin: 0 auto 20px auto;
+
             background: #ffffff;
+
             padding: 12px 20px;
+
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+            box-shadow:
+                0 2px 5px rgba(0,0,0,0.05);
         }
+
 
         .user-info {
             font-weight: bold;
             color: #333;
         }
 
+
         .logout-btn {
             color: #dc3545;
+
             cursor: pointer;
+
             font-weight: bold;
+
             border: none;
+
             background: none;
+
             font-size: 14px;
         }
 
+
+        /* =====================================
+           FORM
+        ====================================== */
+
         .form-container {
-            max-width: 450px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 650px;
+
+            margin: 0 auto 30px auto;
+
             background: #ffffff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+
+            padding: 30px;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.08);
         }
+
 
         .form-container h3 {
             margin-bottom: 20px;
+
             color: #2c3e50;
+
             text-align: center;
+
+            font-size: 22px;
         }
+
 
         .form-group {
             margin-bottom: 18px;
         }
 
+
         .form-group label {
             display: block;
+
             margin-bottom: 6px;
+
             font-weight: bold;
+
             color: #555;
+
             font-size: 14px;
         }
 
+
         .form-group input {
             width: 100%;
+
             padding: 12px;
+
             border: 1px solid #ccc;
+
             border-radius: 6px;
+
             font-size: 15px;
         }
 
+
         .form-group input:focus {
             outline: none;
+
             border-color: #007bff;
+
+            box-shadow:
+                0 0 0 3px rgba(0,123,255,0.08);
         }
+
+
+        /* Employee Details */
 
         .employee-badge {
             background-color: #e9ecef;
-            padding: 10px;
+
+            padding: 12px;
+
             border-radius: 6px;
-            margin-bottom: 15px;
+
+            margin-bottom: 18px;
+
             font-size: 13px;
+
             color: #495057;
+
+            line-height: 1.7;
         }
+
+
+        /* Submit */
 
         .submit-btn {
             width: 100%;
+
             padding: 12px;
+
             background-color: #28a745;
+
             color: white;
+
             border: none;
+
             border-radius: 6px;
+
             font-size: 16px;
+
             cursor: pointer;
+
             font-weight: bold;
         }
+
 
         .submit-btn:hover {
             background-color: #218838;
         }
 
+
         #message {
             margin-top: 15px;
+
             text-align: center;
+
             font-weight: bold;
+
             font-size: 14px;
+
+            min-height: 20px;
         }
+
+
+        /* =====================================
+           MOBILE
+        ====================================== */
+
+        @media (max-width: 700px) {
+
+            body {
+                flex-direction: column;
+                overflow: auto;
+            }
+
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                min-height: auto;
+                position: relative;
+            }
+
+
+            .sidebar .logo-section {
+                padding: 12px;
+            }
+
+
+            .sidebar .logo-section img {
+                width: 55px;
+                height: 55px;
+            }
+
+
+            .sidebar .menu {
+                margin-top: 0;
+            }
+
+
+            .sidebar .menu a {
+                padding: 10px 15px;
+            }
+
+
+            .main-area {
+                height: auto;
+                padding: 15px;
+                overflow: visible;
+            }
+
+
+            .header-nav {
+                max-width: 100%;
+            }
+
+
+            .form-container {
+                max-width: 100%;
+                padding: 25px 20px;
+            }
+
+        }
+
     </style>
+
 </head>
+
+
 <body>
 
-    <!-- Header -->
-    <div class="header-nav">
-        <span id="userInfo" class="user-info">Loading user...</span>
-        <button id="logoutBtn" class="logout-btn">Logout</button>
-    </div>
 
-    <!-- Daily Entry Form -->
-    <div class="form-container">
-        <h3>Daily Collection Entry</h3>
-        
-        <!-- Auto Fetched Employee Details Info -->
-        <div id="employeeBadge" class="employee-badge" style="display: none;">
-            <div id="badgeTeacher">Teacher: -</div>
-            <div id="badgeMadina">Jamiatul Madina: -</div>
-            <div id="badgeLocation">Location: -</div>
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <div class="sidebar">
+
+
+        <!-- Logo -->
+
+        <div class="logo-section">
+
+            <img
+                src="assets/images/logo.png"
+                alt="Telethon Logo"
+            >
+
+            <h2>Telethon</h2>
+
+            <p>Management System</p>
+
         </div>
 
-        <form id="dailyEntryForm">
-            <!-- Date -->
-            <div class="form-group">
-                <label for="entryDate">Date</label>
-                <input type="date" id="entryDate" required>
-            </div>
 
-            <!-- Collection Amount -->
-            <div class="form-group">
-                <label for="amount">Collection Amount (₹)</label>
-                <input type="number" id="amount" placeholder="Enter Amount" min="1" required>
-            </div>
+        <!-- Menu -->
 
-            <!-- Submit Button -->
-            <button type="submit" id="submitBtn" class="submit-btn">Submit Collection</button>
-        </form>
+        <div class="menu">
 
-        <div id="message"></div>
+
+            <a href="dashboard.html">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a href="register.html">
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                <span>Registration Form</span>
+
+            </a>
+
+
+            <a href="users.html">
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>Teachers List</span>
+
+            </a>
+
+
+            <a
+                href="daily-entry.html"
+                class="active"
+            >
+
+                <i class="fa-solid fa-file-circle-plus"></i>
+
+                <span>Daily Collection</span>
+
+            </a>
+
+
+            <a href="all-entry.html">
+
+                <i class="fa-solid fa-list"></i>
+
+                <span>All Entry</span>
+
+            </a>
+
+
+            <a href="reports.html">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <span>Reports</span>
+
+            </a>
+
+
+            <a
+                href="#"
+                id="logoutBtn"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </a>
+
+
+        </div>
+
     </div>
 
-    <!-- JS Link -->
-    <script type="module" src="assets/js/daily-entry.js?v=3"></script>
+
+    <!-- =====================================
+         MAIN AREA
+    ====================================== -->
+
+    <div class="main-area">
+
+
+        <!-- Header -->
+
+        <div class="header-nav">
+
+            <span
+                id="userInfo"
+                class="user-info"
+            >
+                Loading user...
+            </span>
+
+
+            <button
+                id="logoutBtnTop"
+                class="logout-btn"
+                type="button"
+            >
+                Logout
+            </button>
+
+        </div>
+
+
+        <!-- =====================================
+             DAILY ENTRY FORM
+        ====================================== -->
+
+        <div class="form-container">
+
+
+            <h3>
+                Daily Collection Entry
+            </h3>
+
+
+            <!-- Employee Details -->
+
+            <div
+                id="employeeBadge"
+                class="employee-badge"
+                style="display: none;"
+            >
+
+                <div id="badgeTeacher">
+                    Teacher: -
+                </div>
+
+                <div id="badgeMadina">
+                    Jamiatul Madina: -
+                </div>
+
+                <div id="badgeLocation">
+                    Location: -
+                </div>
+
+            </div>
+
+
+            <form id="dailyEntryForm">
+
+
+                <!-- Date -->
+
+                <div class="form-group">
+
+                    <label for="entryDate">
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="entryDate"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Amount -->
+
+                <div class="form-group">
+
+                    <label for="amount">
+                        Collection Amount (₹)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        placeholder="Enter Amount"
+                        min="1"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Submit -->
+
+                <button
+                    type="submit"
+                    id="submitBtn"
+                    class="submit-btn"
+                >
+                    Submit Collection
+                </button>
+
+
+            </form>
+
+
+            <div id="message"></div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================
+         EXISTING DAILY ENTRY JS
+         DO NOT CHANGE
+    ====================================== -->
+
+    <script
+        type="module"
+        src="assets/js/daily-entry.js?v=3"
+    ></script>
+
+
 </body>
+
 </html>
