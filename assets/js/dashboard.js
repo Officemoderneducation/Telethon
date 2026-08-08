@@ -1,4 +1,17 @@
 // ======================================
+// ADMIN ONLY ACCESS
+// ======================================
+
+const userRole = localStorage.getItem("userRole");
+
+if (userRole !== "admin") {
+
+    localStorage.removeItem("loggedInEmpCode");
+    localStorage.removeItem("userRole");
+
+    window.location.href = "index.html";
+}
+// ======================================
 // Telethon Dashboard
 // Latest Entry Per Employee + Date
 // ======================================
