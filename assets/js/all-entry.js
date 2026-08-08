@@ -1,5 +1,11 @@
 // ======================================
 // Telethon - All Collection Entries
+// Filters:
+// Region
+// State
+// City
+// Employee Code
+// Date
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -28,139 +34,46 @@ const todayAmountEl =
 const totalEntriesEl =
     document.getElementById("allEntriesCount");
 
-const searchInput =
-    document.getElementById("searchAllEntry");
+
+const filterRegion =
+    document.getElementById("filterRegion");
+
+const filterState =
+    document.getElementById("filterState");
+
+const filterCity =
+    document.getElementById("filterCity");
+
+const filterEmployeeCode =
+    document.getElementById("filterEmployeeCode");
+
+const filterDate =
+    document.getElementById("filterDate");
+
+const resetFiltersBtn =
+    document.getElementById("resetFilters");
 
 
 // ======================================
-// Store All Entries
+// Data
 // ======================================
 
 let allEntries = [];
 
 
 // ======================================
-// Store Employees
-// ======================================
-
-let employeesMap = {};
-
-
-// ======================================
-// Load Employees
-// ======================================
-
-async function loadEmployees() {
-
-    try {
-
-        const employeesSnapshot =
-            await getDocs(
-                collection(db, "employees")
-            );
-
-
-        employeesMap = {};
-
-
-        employeesSnapshot.forEach((docSnapshot) => {
-
-            const data = docSnapshot.data();
-
-
-            const employeeCode =
-                String(
-                    data.employee_code ||
-                    data.employeeCode ||
-                    data.empCode ||
-                    docSnapshot.id ||
-                    ""
-                )
-                .trim()
-                .toLowerCase();
-
-
-            if (employeeCode) {
-
-                employeesMap[employeeCode] = {
-
-                    employeeCode:
-                        data.employee_code ||
-                        data.employeeCode ||
-                        data.empCode ||
-                        docSnapshot.id,
-
-                    teacherName:
-                        data.teacher_name ||
-                        data.teacherName ||
-                        data.name ||
-                        "-",
-
-                    jamiatulMadina:
-                        data.jamiatul_madina ||
-                        data.jamiatulMadina ||
-                        "-",
-
-                    city:
-                        data.city ||
-                        "-",
-
-                    state:
-                        data.state ||
-                        "-",
-
-                    region:
-                        data.region ||
-                        "-"
-
-                };
-
-            }
-
-        });
-
-
-        console.log(
-            "Employees Loaded:",
-            Object.keys(employeesMap).length
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Employees Load Error:",
-            error
-        );
-
-    }
-
-}
-
-
-// ======================================
-// Load All Entries
+// Load Entries
 // ======================================
 
 async function loadAllEntries() {
 
     try {
 
-
-        // First load employees
-
-        await loadEmployees();
-
-
-        // ==================================
-        // Get Daily Entries
-        // ==================================
-
-        const entriesQuery = query(
-            collection(db, "daily_entry"),
-            orderBy("createdAt", "desc")
-        );
+        const entriesQuery =
+            query(
+                collection(db, "daily_entry"),
+                orderBy("createdAt", "desc")
+            );
 
 
         const snapshot =
@@ -170,38 +83,29 @@ async function loadAllEntries() {
         allEntries = [];
 
 
-        snapshot.forEach((docSnapshot) => {
+        snapshot.forEach(
+            (docSnapshot) => {
 
-            const data =
-                docSnapshot.data();
+                allEntries.push({
 
+                    id: docSnapshot.id,
 
-            allEntries.push({
+                    ...docSnapshot.data()
 
-                id: docSnapshot.id,
+                });
 
-                ...data
-
-            });
-
-        });
+            }
+        );
 
 
-        // ==================================
-        // Update Summary
-        // ==================================
-
-        updateSummary();
+        // Load Region dropdown
+        loadRegions();
 
 
-        // ==================================
-        // Display Entries
-        // ==================================
-
-        displayEntries(allEntries);
+        // Display
+        applyFilters();
 
     }
-
 
     catch (error) {
 
@@ -217,13 +121,11 @@ async function loadAllEntries() {
 
                 <tr>
 
-                    <td
-                        colspan="10"
+                    <td colspan="10"
                         class="no-data"
-                        style="color:red;"
-                    >
+                        style="color:red;">
 
-                        All entries load nahi ho paayi.
+                        Entries load nahi ho paayi.
 
                         <br><br>
 
@@ -243,93 +145,416 @@ async function loadAllEntries() {
 
 
 // ======================================
-// Get Employee Details
+// Load Regions
 // ======================================
 
-function getEmployeeDetails(data) {
+function loadRegions() {
+
+    if (!filterRegion) {
+        return;
+    }
 
 
-    // ==================================
-    // Employee Code
-    // ==================================
+    const regions =
+        [
+            ...new Set(
 
-    const employeeCode = String(
+                allEntries
 
-        data.employee_code ||
-        data.employeeCode ||
-        data.empCode ||
-        data.employee_code_id ||
-        ""
+                    .map(
+                        entry =>
+                            String(
+                                entry.region || ""
+                            ).trim()
+                    )
 
-    ).trim();
+                    .filter(Boolean)
 
-
-    // ==================================
-    // Search Employee Collection
-    // ==================================
-
-    const employeeKey =
-        employeeCode.toLowerCase();
+            )
+        ];
 
 
-    const employee =
-        employeesMap[employeeKey];
+    regions.sort();
 
 
-    // ==================================
-    // Return Combined Data
-    // ==================================
+    filterRegion.innerHTML = `
 
-    return {
+        <option value="">
+            All Regions
+        </option>
 
-        employeeCode:
-            employeeCode ||
-            employee?.employeeCode ||
-            "-",
+    `;
 
 
-        teacherName:
-            data.teacher_name ||
-            data.teacherName ||
-            employee?.teacherName ||
-            "-",
+    regions.forEach(
+        regionName => {
 
+            filterRegion.innerHTML += `
 
-        jamiatulMadina:
-            data.jamiatul_madina ||
-            data.jamiatulMadina ||
-            employee?.jamiatulMadina ||
-            "-",
+                <option value="${escapeHTML(regionName)}">
 
+                    ${escapeHTML(regionName)}
 
-        city:
-            data.city ||
-            employee?.city ||
-            "-",
+                </option>
 
+            `;
 
-        state:
-            data.state ||
-            employee?.state ||
-            "-",
-
-
-        region:
-            data.region ||
-            employee?.region ||
-            "-"
-
-    };
+        }
+    );
 
 }
 
 
 // ======================================
-// Update Summary
+// Load States
 // ======================================
 
-function updateSummary() {
+function loadStates() {
 
+    if (!filterState) {
+        return;
+    }
+
+
+    const selectedRegion =
+        filterRegion.value;
+
+
+    let states =
+        allEntries.map(
+            entry =>
+                String(
+                    entry.state || ""
+                ).trim()
+        );
+
+
+    if (selectedRegion) {
+
+        states =
+            allEntries
+
+                .filter(
+                    entry =>
+                        String(
+                            entry.region || ""
+                        ).trim()
+                        === selectedRegion
+                )
+
+                .map(
+                    entry =>
+                        String(
+                            entry.state || ""
+                        ).trim()
+                );
+
+    }
+
+
+    states =
+        [
+            ...new Set(
+                states.filter(Boolean)
+            )
+        ];
+
+
+    states.sort();
+
+
+    filterState.innerHTML = `
+
+        <option value="">
+            All States
+        </option>
+
+    `;
+
+
+    states.forEach(
+        stateName => {
+
+            filterState.innerHTML += `
+
+                <option value="${escapeHTML(stateName)}">
+
+                    ${escapeHTML(stateName)}
+
+                </option>
+
+            `;
+
+        }
+    );
+
+
+    filterState.disabled =
+        states.length === 0;
+
+
+    loadCities();
+
+}
+
+
+// ======================================
+// Load Cities
+// ======================================
+
+function loadCities() {
+
+    if (!filterCity) {
+        return;
+    }
+
+
+    const selectedRegion =
+        filterRegion.value;
+
+    const selectedState =
+        filterState.value;
+
+
+    let entries =
+        allEntries;
+
+
+    if (selectedRegion) {
+
+        entries =
+            entries.filter(
+                entry =>
+                    String(
+                        entry.region || ""
+                    ).trim()
+                    === selectedRegion
+            );
+
+    }
+
+
+    if (selectedState) {
+
+        entries =
+            entries.filter(
+                entry =>
+                    String(
+                        entry.state || ""
+                    ).trim()
+                    === selectedState
+            );
+
+    }
+
+
+    const cities =
+        [
+            ...new Set(
+
+                entries
+
+                    .map(
+                        entry =>
+                            String(
+                                entry.city || ""
+                            ).trim()
+                    )
+
+                    .filter(Boolean)
+
+            )
+        ];
+
+
+    cities.sort();
+
+
+    filterCity.innerHTML = `
+
+        <option value="">
+            All Cities
+        </option>
+
+    `;
+
+
+    cities.forEach(
+        cityName => {
+
+            filterCity.innerHTML += `
+
+                <option value="${escapeHTML(cityName)}">
+
+                    ${escapeHTML(cityName)}
+
+                </option>
+
+            `;
+
+        }
+    );
+
+
+    filterCity.disabled =
+        cities.length === 0;
+
+}
+
+
+// ======================================
+// Apply Filters
+// ======================================
+
+function applyFilters() {
+
+    const selectedRegion =
+        filterRegion
+            ? filterRegion.value.trim()
+            : "";
+
+
+    const selectedState =
+        filterState
+            ? filterState.value.trim()
+            : "";
+
+
+    const selectedCity =
+        filterCity
+            ? filterCity.value.trim()
+            : "";
+
+
+    const selectedEmployeeCode =
+        filterEmployeeCode
+            ? filterEmployeeCode.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const selectedDate =
+        filterDate
+            ? filterDate.value
+            : "";
+
+
+    const filtered =
+        allEntries.filter(
+            entry => {
+
+
+                const entryRegion =
+                    String(
+                        entry.region || ""
+                    ).trim();
+
+
+                const entryState =
+                    String(
+                        entry.state || ""
+                    ).trim();
+
+
+                const entryCity =
+                    String(
+                        entry.city || ""
+                    ).trim();
+
+
+                const entryEmployeeCode =
+                    String(
+                        entry.employee_code ||
+                        entry.employeeCode ||
+                        entry.empCode ||
+                        ""
+                    )
+                    .trim()
+                    .toLowerCase();
+
+
+                const entryDate =
+                    String(
+                        entry.date || ""
+                    ).trim();
+
+
+                // Region
+                if (
+                    selectedRegion &&
+                    entryRegion !== selectedRegion
+                ) {
+
+                    return false;
+
+                }
+
+
+                // State
+                if (
+                    selectedState &&
+                    entryState !== selectedState
+                ) {
+
+                    return false;
+
+                }
+
+
+                // City
+                if (
+                    selectedCity &&
+                    entryCity !== selectedCity
+                ) {
+
+                    return false;
+
+                }
+
+
+                // Employee Code
+                if (
+                    selectedEmployeeCode &&
+                    !entryEmployeeCode.includes(
+                        selectedEmployeeCode
+                    )
+                ) {
+
+                    return false;
+
+                }
+
+
+                // Date
+                if (
+                    selectedDate &&
+                    entryDate !== selectedDate
+                ) {
+
+                    return false;
+
+                }
+
+
+                return true;
+
+            }
+        );
+
+
+    updateSummary(filtered);
+
+    displayEntries(filtered);
+
+}
+
+
+// ======================================
+// Summary
+// ======================================
+
+function updateSummary(entries) {
 
     let totalAmount = 0;
 
@@ -342,23 +567,38 @@ function updateSummary() {
             .split("T")[0];
 
 
-    allEntries.forEach((data) => {
+    entries.forEach(
+        entry => {
+
+            const amount =
+                Number(
+                    entry.amount
+                ) || 0;
 
 
-        const amount =
-            Number(data.amount) || 0;
+            totalAmount += amount;
 
 
-        totalAmount += amount;
+            if (
+                String(
+                    entry.date || ""
+                ) === today
+            ) {
 
+                todayAmount += amount;
 
-        if (data.date === today) {
-
-            todayAmount += amount;
+            }
 
         }
+    );
 
-    });
+
+    if (totalEntriesEl) {
+
+        totalEntriesEl.textContent =
+            entries.length;
+
+    }
 
 
     if (totalAmountEl) {
@@ -376,14 +616,6 @@ function updateSummary() {
 
     }
 
-
-    if (totalEntriesEl) {
-
-        totalEntriesEl.textContent =
-            allEntries.length;
-
-    }
-
 }
 
 
@@ -392,7 +624,6 @@ function updateSummary() {
 // ======================================
 
 function displayEntries(entries) {
-
 
     if (!tableBody) {
         return;
@@ -405,10 +636,8 @@ function displayEntries(entries) {
 
             <tr>
 
-                <td
-                    colspan="10"
-                    class="no-data"
-                >
+                <td colspan="10"
+                    class="no-data">
 
                     Koi entry nahi mili.
 
@@ -426,240 +655,326 @@ function displayEntries(entries) {
     let html = "";
 
 
-    entries.forEach((data, index) => {
+    entries.forEach(
+        (data, index) => {
 
 
-        // ==================================
-        // Basic Fields
-        // ==================================
-
-        const date =
-            data.date || "-";
+            const date =
+                data.date || "-";
 
 
-        const employee =
-            getEmployeeDetails(data);
+            const employeeCode =
+                data.employee_code ||
+                data.employeeCode ||
+                data.empCode ||
+                "-";
 
 
-        const amount =
-            Number(data.amount) || 0;
+            const teacherName =
+                data.teacher_name ||
+                data.teacherName ||
+                "-";
 
 
-        // ==================================
-        // Created At
-        // ==================================
-
-        let entryTime = "-";
-
-
-        if (
-            data.createdAt &&
-            typeof data.createdAt.toDate === "function"
-        ) {
-
-            const createdDate =
-                data.createdAt.toDate();
+            const jamiatulMadina =
+                data.jamiatul_madina ||
+                data.jamiatulMadina ||
+                "-";
 
 
-            entryTime =
-                createdDate.toLocaleString(
-                    "en-IN",
-                    {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit"
-                    }
-                );
+            const city =
+                data.city || "-";
+
+
+            const state =
+                data.state || "-";
+
+
+            const region =
+                data.region || "-";
+
+
+            const amount =
+                Number(
+                    data.amount
+                ) || 0;
+
+
+            // ==================================
+            // Entry Time
+            // ==================================
+
+            let entryTime = "-";
+
+
+            if (
+                data.createdAt &&
+                typeof data.createdAt.toDate ===
+                "function"
+            ) {
+
+                entryTime =
+                    data.createdAt
+                        .toDate()
+                        .toLocaleString(
+                            "en-IN",
+                            {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit"
+                            }
+                        );
+
+            }
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(date)}
+                    </td>
+
+                    <td class="emp-code">
+                        ${escapeHTML(employeeCode)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(teacherName)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(jamiatulMadina)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(city)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(state)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(region)}
+                    </td>
+
+                    <td class="amount">
+                        ₹ ${amount.toLocaleString("en-IN")}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(entryTime)}
+                    </td>
+
+                </tr>
+
+            `;
 
         }
+    );
 
 
-        // ==================================
-        // Table Row
-        // ==================================
-
-        html += `
-
-            <tr>
-
-                <td>
-                    ${index + 1}
-                </td>
-
-
-                <td>
-                    ${date}
-                </td>
-
-
-                <td class="emp-code">
-                    ${employee.employeeCode}
-                </td>
-
-
-                <td>
-                    ${employee.teacherName}
-                </td>
-
-
-                <td>
-                    ${employee.jamiatulMadina}
-                </td>
-
-
-                <td>
-                    ${employee.city}
-                </td>
-
-
-                <td>
-                    ${employee.state}
-                </td>
-
-
-                <td>
-                    ${employee.region}
-                </td>
-
-
-                <td class="amount">
-                    ₹ ${amount.toLocaleString("en-IN")}
-                </td>
-
-
-                <td>
-                    ${entryTime}
-                </td>
-
-            </tr>
-
-        `;
-
-    });
-
-
-    tableBody.innerHTML = html;
+    tableBody.innerHTML =
+        html;
 
 }
 
 
 // ======================================
-// Search
+// Region Change
 // ======================================
 
-if (searchInput) {
+if (filterRegion) {
 
-
-    searchInput.addEventListener(
-        "input",
+    filterRegion.addEventListener(
+        "change",
         function () {
 
+            // State refresh
+            loadStates();
 
-            const search =
-                this.value
-                    .trim()
-                    .toLowerCase();
-
-
-            if (!search) {
-
-                displayEntries(allEntries);
-
-                return;
-
-            }
-
-
-            const filtered =
-                allEntries.filter((data) => {
-
-
-                    const employee =
-                        getEmployeeDetails(data);
-
-
-                    const employeeCode =
-                        String(
-                            employee.employeeCode || ""
-                        ).toLowerCase();
-
-
-                    const teacherName =
-                        String(
-                            employee.teacherName || ""
-                        ).toLowerCase();
-
-
-                    const jamiatulMadina =
-                        String(
-                            employee.jamiatulMadina || ""
-                        ).toLowerCase();
-
-
-                    const city =
-                        String(
-                            employee.city || ""
-                        ).toLowerCase();
-
-
-                    const state =
-                        String(
-                            employee.state || ""
-                        ).toLowerCase();
-
-
-                    const region =
-                        String(
-                            employee.region || ""
-                        ).toLowerCase();
-
-
-                    const date =
-                        String(
-                            data.date || ""
-                        ).toLowerCase();
-
-
-                    return (
-
-                        employeeCode.includes(search)
-
-                        ||
-
-                        teacherName.includes(search)
-
-                        ||
-
-                        jamiatulMadina.includes(search)
-
-                        ||
-
-                        city.includes(search)
-
-                        ||
-
-                        state.includes(search)
-
-                        ||
-
-                        region.includes(search)
-
-                        ||
-
-                        date.includes(search)
-
-                    );
-
-                });
-
-
-            displayEntries(filtered);
+            // Filter apply
+            applyFilters();
 
         }
     );
+
+}
+
+
+// ======================================
+// State Change
+// ======================================
+
+if (filterState) {
+
+    filterState.addEventListener(
+        "change",
+        function () {
+
+            // City refresh
+            loadCities();
+
+            // Filter apply
+            applyFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// City Change
+// ======================================
+
+if (filterCity) {
+
+    filterCity.addEventListener(
+        "change",
+        function () {
+
+            applyFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Employee Code Search
+// ======================================
+
+if (filterEmployeeCode) {
+
+    filterEmployeeCode.addEventListener(
+        "input",
+        function () {
+
+            applyFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Date Filter
+// ======================================
+
+if (filterDate) {
+
+    filterDate.addEventListener(
+        "change",
+        function () {
+
+            applyFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Reset Filters
+// ======================================
+
+if (resetFiltersBtn) {
+
+    resetFiltersBtn.addEventListener(
+        "click",
+        function () {
+
+            if (filterRegion) {
+                filterRegion.value = "";
+            }
+
+            if (filterState) {
+
+                filterState.innerHTML = `
+
+                    <option value="">
+                        All States
+                    </option>
+
+                `;
+
+                filterState.disabled =
+                    true;
+
+            }
+
+            if (filterCity) {
+
+                filterCity.innerHTML = `
+
+                    <option value="">
+                        All Cities
+                    </option>
+
+                `;
+
+                filterCity.disabled =
+                    true;
+
+            }
+
+            if (filterEmployeeCode) {
+                filterEmployeeCode.value = "";
+            }
+
+            if (filterDate) {
+                filterDate.value = "";
+            }
+
+
+            applyFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Escape HTML
+// ======================================
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -674,11 +989,9 @@ const logoutBtn =
 
 if (logoutBtn) {
 
-
     logoutBtn.addEventListener(
         "click",
         function (e) {
-
 
             e.preventDefault();
 
@@ -686,7 +999,6 @@ if (logoutBtn) {
             localStorage.removeItem(
                 "loggedInEmpCode"
             );
-
 
             localStorage.removeItem(
                 "userRole"
@@ -703,7 +1015,7 @@ if (logoutBtn) {
 
 
 // ======================================
-// Start
+// START
 // ======================================
 
 loadAllEntries();
