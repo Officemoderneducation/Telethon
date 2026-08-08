@@ -1,5 +1,6 @@
 // ======================================
-// Telethon Admin Dashboard
+// Telethon Dashboard
+// Latest Entry Per Employee + Date
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -13,7 +14,7 @@ import {
 
 
 // ======================================
-// Elements
+// HTML Elements
 // ======================================
 
 const totalAmountEl =
@@ -30,121 +31,96 @@ const entriesTableBody =
 
 
 // ======================================
-// Today Date
-// ======================================
-
-function getTodayDate() {
-
-    const today = new Date();
-
-    const year = today.getFullYear();
-
-    const month = String(
-        today.getMonth() + 1
-    ).padStart(2, "0");
-
-    const day = String(
-        today.getDate()
-    ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-}
-
-
-// ======================================
-// Load Dashboard
+// Load Dashboard Data
 // ======================================
 
 async function loadDashboardData() {
 
     try {
 
-        const q = query(
+        // --------------------------------------
+        // Get Daily Entries
+        // --------------------------------------
+
+        const entriesQuery = query(
             collection(db, "daily_entry"),
             orderBy("createdAt", "desc")
         );
 
-        const snapshot = await getDocs(q);
+        const querySnapshot =
+            await getDocs(entriesQuery);
 
 
-        // ======================================
-        // Latest entry for Employee + Date
-        // ======================================
+        // --------------------------------------
+        // Store Latest Entry
+        // --------------------------------------
+        //
+        // Key:
+        // Employee Code + Date
+        //
+        // Example:
+        // 63147_2026-08-07
+        //
+        // Only latest entry will remain.
+        // --------------------------------------
 
         const latestEntries = new Map();
 
 
-        snapshot.forEach((docSnap) => {
+        querySnapshot.forEach((docSnapshot) => {
 
-            const data = docSnap.data();
-
-
-            // ======================================
-            // Employee Code
-            // ======================================
-
-            const empCode = String(
-                data.employee_code ??
-                data.empCode ??
-                data.employeeCode ??
-                ""
-            ).trim();
+            const data = docSnapshot.data();
 
 
-            // ======================================
-            // IMPORTANT
-            // Employee Code missing / invalid
-            // entry will NOT be displayed
-            // ======================================
+            // ----------------------------------
+            // Actual Firestore Field Names
+            // ----------------------------------
 
-            if (
-                empCode === "" ||
-                empCode === "-" ||
-                empCode.toLowerCase() === "null" ||
-                empCode.toLowerCase() === "undefined"
-            ) {
+            const employeeCode =
+                String(data.employee_code || "").trim();
+
+            const date =
+                String(data.date || "").trim();
+
+
+            // ----------------------------------
+            // Employee Code MUST exist
+            // ----------------------------------
+
+            if (!employeeCode) {
                 return;
             }
 
 
-            // ======================================
-            // Date
-            // ======================================
-
-            const date = String(
-                data.date ?? ""
-            ).trim();
-
+            // ----------------------------------
+            // Date MUST exist
+            // ----------------------------------
 
             if (!date) {
                 return;
             }
 
 
-            // ======================================
-            // Employee + Date Unique Key
-            // ======================================
+            // ----------------------------------
+            // Unique Key
+            // ----------------------------------
 
-            const key =
-                `${empCode}_${date}`;
+            const uniqueKey =
+                `${employeeCode}_${date}`;
 
 
-            /*
-                createdAt DESC hai.
+            // ----------------------------------
+            // Because query is createdAt DESC,
+            // first entry is the latest one.
+            // ----------------------------------
 
-                Isliye first entry = latest entry.
-
-                Same Employee + Same Date ki
-                purani entries ignore hongi.
-            */
-
-            if (!latestEntries.has(key)) {
+            if (!latestEntries.has(uniqueKey)) {
 
                 latestEntries.set(
-                    key,
+                    uniqueKey,
                     {
-                        ...data,
-                        empCode: empCode
+                        id: docSnapshot.id,
+                        data: data
                     }
                 );
 
@@ -154,49 +130,100 @@ async function loadDashboardData() {
 
 
         // ======================================
-        // Totals
+        // Convert Map to Array
         // ======================================
 
-        let totalCollection = 0;
-
-        let todayCollection = 0;
-
-        let totalCount = 0;
-
-        const today = getTodayDate();
-
-        let rows = "";
+        const entries =
+            Array.from(latestEntries.values());
 
 
         // ======================================
-        // No Valid Entries
+        // Sort Latest Entries by Date
         // ======================================
 
-        if (latestEntries.size === 0) {
+        entries.sort((a, b) => {
 
-            totalAmountEl.textContent = "₹ 0";
+            const dateA =
+                new Date(a.data.date);
 
-            todayAmountEl.textContent = "₹ 0";
+            const dateB =
+                new Date(b.data.date);
 
-            totalEntriesCountEl.textContent = "0";
+            return dateB - dateA;
 
-            entriesTableBody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="no-data">
-                        Koi valid collection entry nahi mili.
-                    </td>
-                </tr>
-            `;
+        });
+
+
+        // ======================================
+        // No Data
+        // ======================================
+
+        if (entries.length === 0) {
+
+            if (totalAmountEl) {
+                totalAmountEl.textContent = "₹ 0";
+            }
+
+            if (todayAmountEl) {
+                todayAmountEl.textContent = "₹ 0";
+            }
+
+            if (totalEntriesCountEl) {
+                totalEntriesCountEl.textContent = "0";
+            }
+
+            if (entriesTableBody) {
+
+                entriesTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="no-data">
+                            Koi collection entry nahi mili.
+                        </td>
+                    </tr>
+                `;
+
+            }
 
             return;
         }
 
 
         // ======================================
-        // Build Table
+        // Calculate Totals
         // ======================================
 
-        latestEntries.forEach((data) => {
+        let totalCollection = 0;
+
+        let todayCollection = 0;
+
+
+        // ======================================
+        // Today's Date
+        // ======================================
+
+        const todayStr =
+            new Date().toISOString().split("T")[0];
+
+
+        // ======================================
+        // Table HTML
+        // ======================================
+
+        let tableRowsHTML = "";
+
+
+        // ======================================
+        // Create Table
+        // ======================================
+
+        entries.forEach((entry) => {
+
+            const data = entry.data;
+
+
+            // ----------------------------------
+            // Amount
+            // ----------------------------------
 
             const amount =
                 Number(data.amount) || 0;
@@ -204,59 +231,58 @@ async function loadDashboardData() {
 
             totalCollection += amount;
 
-            totalCount++;
 
+            // ----------------------------------
+            // Today's Collection
+            // ----------------------------------
 
-            // Today's collection
-
-            if (data.date === today) {
+            if (data.date === todayStr) {
 
                 todayCollection += amount;
 
             }
 
 
-            // ======================================
-            // Teacher Information
-            // ======================================
+            // ----------------------------------
+            // Actual Firestore Fields
+            // ----------------------------------
+
+            const employeeCode =
+                data.employee_code || "-";
 
             const teacherName =
-                data.teacher_name ||
-                data.teacherName ||
-                "-";
-
+                data.teacher_name || "-";
 
             const jamiatulMadina =
-                data.jamiatul_madina ||
-                data.jamiatulMadina ||
-                "-";
-
+                data.jamiatul_madina || "-";
 
             const city =
                 data.city || "-";
 
-
             const state =
                 data.state || "-";
-
 
             const region =
                 data.region || "-";
 
+            const date =
+                data.date || "-";
 
-            // ======================================
+
+            // ==================================
             // Table Row
-            // ======================================
+            // ==================================
 
-            rows += `
+            tableRowsHTML += `
+
                 <tr>
 
                     <td>
-                        ${data.date}
+                        ${date}
                     </td>
 
                     <td>
-                        <b>${data.empCode}</b>
+                        <b>${employeeCode}</b>
                     </td>
 
                     <td>
@@ -285,6 +311,7 @@ async function loadDashboardData() {
                     </td>
 
                 </tr>
+
             `;
 
         });
@@ -294,43 +321,73 @@ async function loadDashboardData() {
         // Update Cards
         // ======================================
 
-        totalAmountEl.textContent =
-            `₹ ${totalCollection.toLocaleString("en-IN")}`;
+        if (totalAmountEl) {
+
+            totalAmountEl.textContent =
+                `₹ ${totalCollection.toLocaleString("en-IN")}`;
+
+        }
 
 
-        todayAmountEl.textContent =
-            `₹ ${todayCollection.toLocaleString("en-IN")}`;
+        if (todayAmountEl) {
+
+            todayAmountEl.textContent =
+                `₹ ${todayCollection.toLocaleString("en-IN")}`;
+
+        }
 
 
-        totalEntriesCountEl.textContent =
-            totalCount;
+        if (totalEntriesCountEl) {
+
+            totalEntriesCountEl.textContent =
+                entries.length;
+
+        }
 
 
         // ======================================
         // Update Table
         // ======================================
 
-        entriesTableBody.innerHTML = rows;
+        if (entriesTableBody) {
+
+            entriesTableBody.innerHTML =
+                tableRowsHTML;
+
+        }
 
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
-            "Dashboard Error:",
+            "Dashboard Load Error:",
             error
         );
 
-        entriesTableBody.innerHTML = `
-            <tr>
-                <td
-                    colspan="7"
-                    class="no-data"
-                    style="color:red;"
-                >
-                    Dashboard data load nahi ho saka.
-                </td>
-            </tr>
-        `;
+
+        if (entriesTableBody) {
+
+            entriesTableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="no-data"
+                        style="color:red;"
+                    >
+                        Data load karne me error aaya.
+                        <br>
+                        ${error.message}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
 
     }
 
@@ -338,11 +395,12 @@ async function loadDashboardData() {
 
 
 // ======================================
-// Logout
+// Admin Logout
 // ======================================
 
 const logoutBtn =
     document.getElementById("adminLogoutBtn");
+
 
 if (logoutBtn) {
 
@@ -368,7 +426,7 @@ if (logoutBtn) {
 
 
 // ======================================
-// Start
+// Load Dashboard
 // ======================================
 
 loadDashboardData();
