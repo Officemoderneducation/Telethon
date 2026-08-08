@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>All Entries | Telethon</title>
+
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+
+        body {
+            background: #f4f7fc;
+            min-height: 100vh;
+        }
+
+
+        /* =====================================
+           Layout
+        ===================================== */
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+
+        /* =====================================
+           Sidebar
+        ===================================== */
+
+        .sidebar {
+            width: 225px;
+            min-height: 100vh;
+            background: #1e293b;
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+
+        .logo {
+            text-align: center;
+            padding: 20px 10px;
+            border-bottom: 1px solid #334155;
+        }
+
+
+        .logo img {
+            display: block;
+            margin: 0 auto 8px;
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+        }
+
+
+        .logo h2 {
+            color: #38bdf8;
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+
+        .logo p {
+            color: #cbd5e1;
+            font-size: 12px;
+        }
+
+
+        .menu {
+            padding-top: 15px;
+        }
+
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 13px 20px;
+
+            color: #cbd5e1;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .menu a i {
+            width: 18px;
+            text-align: center;
+        }
+
+
+        .menu a:hover {
+            background: #0f172a;
+            color: white;
+        }
+
+
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+
+        .menu a.logout {
+            color: #f87171;
+            margin-top: 10px;
+        }
+
+
+        /* =====================================
+           Main Content
+        ===================================== */
+
+        .main {
+            margin-left: 225px;
+            width: calc(100% - 225px);
+            padding: 25px;
+        }
+
+
+        /* =====================================
+           Topbar
+        ===================================== */
+
+        .topbar {
+            background: white;
+
+            padding: 18px 22px;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.08);
+
+            margin-bottom: 20px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .topbar h2 {
+            color: #0f172a;
+            font-size: 23px;
+        }
+
+
+        .topbar p {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+
+        .refresh-btn {
+            background: #2563eb;
+            color: white;
+
+            border: none;
+
+            padding: 9px 16px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+        }
+
+
+        .refresh-btn:hover {
+            background: #1d4ed8;
+        }
+
+
+        /* =====================================
+           Summary Cards
+        ===================================== */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .stat-card {
+            background: white;
+
+            padding: 18px;
+
+            border-radius: 9px;
+
+            border-left: 4px solid #2563eb;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+
+        .stat-card.today {
+            border-left-color: #10b981;
+        }
+
+
+        .stat-card.entries {
+            border-left-color: #f59e0b;
+        }
+
+
+        .stat-card h4 {
+            color: #64748b;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 6px;
+        }
+
+
+        .stat-card p {
+            color: #0f172a;
+
+            font-size: 22px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================
+           Table Container
+        ===================================== */
+
+        .table-container {
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.07);
+        }
+
+
+        .table-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .table-header h3 {
+            color: #0f172a;
+
+            font-size: 18px;
+        }
+
+
+        .search-box {
+            width: 280px;
+
+            padding: 10px 12px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 7px;
+
+            outline: none;
+
+            font-size: 13px;
+        }
+
+
+        .search-box:focus {
+            border-color: #2563eb;
+        }
+
+
+        /* =====================================
+           Table
+        ===================================== */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1050px;
+        }
+
+
+        th {
+            background: #f1f5f9;
+
+            color: #334155;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            padding: 12px 13px;
+
+            text-align: left;
+
+            white-space: nowrap;
+        }
+
+
+        td {
+            padding: 12px 13px;
+
+            border-bottom:
+                1px solid #e2e8f0;
+
+            color: #334155;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+
+        .amount {
+            color: #059669;
+
+            font-weight: 700;
+        }
+
+
+        .emp-code {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+
+        .no-data {
+            text-align: center;
+
+            padding: 25px;
+
+            color: #94a3b8;
+        }
+
+
+        /* =====================================
+           Mobile
+        ===================================== */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .sidebar {
+                width: 70px;
+            }
+
+            .logo h2,
+            .logo p,
+            .menu a span {
+                display: none;
+            }
+
+            .logo img {
+                width: 45px;
+                height: 45px;
+            }
+
+            .menu a {
+                justify-content: center;
+                padding: 15px 5px;
+            }
+
+            .main {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 12px;
+            }
+
+            .topbar {
+                padding: 15px;
+            }
+
+            .topbar h2 {
+                font-size: 18px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="wrapper">
+
+
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <div class="sidebar">
+
+        <div>
+
+
+            <!-- Logo -->
+
+            <div class="logo">
+
+                <img
+                    src="assets/images/logo.png"
+                    alt="Telethon Logo"
+                >
+
+                <h2>
+                    Telethon
+                </h2>
+
+                <p>
+                    Management System
+                </p>
+
+            </div>
+
+
+            <!-- Menu -->
+
+            <div class="menu">
+
+
+                <a href="dashboard.html">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    <span>
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <a href="register.html">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    <span>
+                        Registration Form
+                    </span>
+
+                </a>
+
+
+                <a href="users.html">
+
+                    <i class="fa-solid fa-users"></i>
+
+                    <span>
+                        Teacher List
+                    </span>
+
+                </a>
+
+
+                <a href="daily-entry.html">
+
+                    <i class="fa-solid fa-file-circle-plus"></i>
+
+                    <span>
+                        Daily Collection
+                    </span>
+
+                </a>
+
+
+                <!-- ACTIVE -->
+
+                <a
+                    href="all-entry.html"
+                    class="active"
+                >
+
+                    <i class="fa-solid fa-list"></i>
+
+                    <span>
+                        All Entry
+                    </span>
+
+                </a>
+
+
+                <a href="reports.html">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    <span>
+                        Reports
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    id="logoutBtn"
+                    class="logout"
+                >
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    <span>
+                        Logout
+                    </span>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <div class="main">
+
+
+        <!-- Topbar -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h2>
+                    All Collection Entries
+                </h2>
+
+                <p>
+                    All daily collection entries from Firebase
+                </p>
+
+            </div>
+
+
+            <button
+                class="refresh-btn"
+                onclick="window.location.reload()"
+            >
+                <i class="fa-solid fa-rotate"></i>
+                Refresh
+            </button>
+
+        </div>
+
+
+        <!-- =================================
+             SUMMARY
+        ================================== -->
+
+        <div class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <h4>
+                    Total Collection
+                </h4>
+
+                <p id="allTotalAmount">
+                    ₹ 0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card today">
+
+                <h4>
+                    Today's Collection
+                </h4>
+
+                <p id="allTodayAmount">
+                    ₹ 0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card entries">
+
+                <h4>
+                    Total Entries
+                </h4>
+
+                <p id="allEntriesCount">
+                    0
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================
+             ALL ENTRIES TABLE
+        ================================== -->
+
+        <div class="table-container">
+
+
+            <div class="table-header">
+
+                <h3>
+                    All Collection Entries
+                </h3>
+
+
+                <input
+                    type="text"
+                    id="searchAllEntry"
+                    class="search-box"
+                    placeholder="Search Employee / Teacher / City..."
+                >
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Employee Code
+                            </th>
+
+                            <th>
+                                Teacher Name
+                            </th>
+
+                            <th>
+                                Jamiatul Madina
+                            </th>
+
+                            <th>
+                                City
+                            </th>
+
+                            <th>
+                                State
+                            </th>
+
+                            <th>
+                                Region
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Entry Time
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="allEntriesTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="10"
+                                class="no-data"
+                            >
+                                Loading all entries...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================
+     Firebase / JS
+====================================== -->
+
+<script
+    type="module"
+    src="assets/js/all-entry.js"
+></script>
+
+
+</body>
+
+</html>
