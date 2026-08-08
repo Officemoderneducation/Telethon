@@ -584,27 +584,26 @@ if (targetForm) {
 
                 await setDoc(
 
-                    doc(
-                        db,
-                        "employees",
-                        employee.id
-                    ),
+    doc(
+        db,
+        "employees",
+        employee.id
+    ),
 
-                    {
+    {
 
-                        targetAmount:
-                            target
+        target: target,
+        targetAmount: target
 
-                    },
+    },
 
-                    {
+    {
 
-                        merge: true
+        merge: true
 
-                    }
+    }
 
-                );
-
+);
 
                 // Update Local Data
 
