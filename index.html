@@ -376,17 +376,28 @@
 
 
     </div>
+<!-- ==================================
+     CLEAR PREVIOUS LOGIN SESSION
+================================== -->
+
+<script>
+
+    localStorage.removeItem("loggedInEmpCode");
+
+    localStorage.removeItem("userRole");
+
+</script>
 
 
-    <!-- ==================================
-         IMPORTANT:
-         Auth JS Location
-    ================================== -->
+<!-- ==================================
+     IMPORTANT:
+     Auth JS Location
+================================== -->
 
-    <script
-        type="module"
-        src="assets/js/auth.js"
-    ></script>
+<script
+    type="module"
+    src="assets/js/auth.js"
+></script>
 
 
 </body>
