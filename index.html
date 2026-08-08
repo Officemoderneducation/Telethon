@@ -24,24 +24,30 @@
 
 
         body {
+
             min-height: 100vh;
+
             background: #f4f7fc;
 
             display: flex;
+
             justify-content: center;
+
             align-items: center;
 
             padding: 20px;
+
         }
 
 
         /* ==================================
-           Login Box
+           LOGIN BOX
         ================================== */
 
         .login-box {
 
             width: 100%;
+
             max-width: 400px;
 
             background: #ffffff;
@@ -52,11 +58,12 @@
 
             box-shadow:
                 0 8px 25px rgba(0, 0, 0, 0.10);
+
         }
 
 
         /* ==================================
-           Heading
+           HEADING
         ================================== */
 
         .login-box h2 {
@@ -68,6 +75,7 @@
             color: #0d6efd;
 
             font-size: 28px;
+
         }
 
 
@@ -80,16 +88,18 @@
             font-size: 14px;
 
             margin-bottom: 25px;
+
         }
 
 
         /* ==================================
-           Form Group
+           FORM GROUP
         ================================== */
 
         .form-group {
 
             margin-bottom: 18px;
+
         }
 
 
@@ -104,11 +114,12 @@
             font-size: 14px;
 
             font-weight: bold;
+
         }
 
 
         /* ==================================
-           Inputs
+           INPUT
         ================================== */
 
         .form-group input {
@@ -126,6 +137,7 @@
             outline: none;
 
             transition: 0.2s;
+
         }
 
 
@@ -135,11 +147,12 @@
 
             box-shadow:
                 0 0 0 3px rgba(13, 110, 253, 0.10);
+
         }
 
 
         /* ==================================
-           Login Button
+           LOGIN BUTTON
         ================================== */
 
         .login-btn {
@@ -163,23 +176,35 @@
             cursor: pointer;
 
             transition: 0.2s;
+
         }
 
 
         .login-btn:hover {
 
             background: #157347;
+
+        }
+
+
+        .login-btn:disabled {
+
+            background: #94a3b8;
+
+            cursor: not-allowed;
+
         }
 
 
         .login-btn:active {
 
             transform: scale(0.99);
+
         }
 
 
         /* ==================================
-           Error Message
+           ERROR / MESSAGE
         ================================== */
 
         #errorMsg {
@@ -195,11 +220,12 @@
             font-weight: bold;
 
             min-height: 20px;
+
         }
 
 
         /* ==================================
-           Registration Link
+           REGISTER
         ================================== */
 
         .register-text {
@@ -211,6 +237,7 @@
             color: #64748b;
 
             font-size: 14px;
+
         }
 
 
@@ -221,17 +248,19 @@
             text-decoration: none;
 
             font-weight: bold;
+
         }
 
 
         .register-text a:hover {
 
             text-decoration: underline;
+
         }
 
 
         /* ==================================
-           Footer
+           FOOTER
         ================================== */
 
         .footer {
@@ -243,11 +272,12 @@
             color: #94a3b8;
 
             font-size: 12px;
+
         }
 
 
         /* ==================================
-           Mobile
+           MOBILE
         ================================== */
 
         @media (max-width: 480px) {
@@ -255,12 +285,15 @@
             .login-box {
 
                 padding: 28px 20px;
+
             }
 
             .login-box h2 {
 
                 font-size: 24px;
+
             }
+
         }
 
     </style>
@@ -272,7 +305,7 @@
 
 
     <!-- ==================================
-         Login Box
+         LOGIN BOX
     ================================== -->
 
     <div class="login-box">
@@ -289,13 +322,13 @@
 
 
         <!-- ==================================
-             Login Form
+             LOGIN FORM
         ================================== -->
 
         <form id="loginForm">
 
 
-            <!-- Employee Code -->
+            <!-- Employee Code / Admin Email -->
 
             <div class="form-group">
 
@@ -338,12 +371,15 @@
             <button
                 type="submit"
                 class="login-btn"
+                id="loginBtn"
             >
+
                 Login
+
             </button>
 
 
-            <!-- Error Message -->
+            <!-- Message -->
 
             <div id="errorMsg"></div>
 
@@ -352,7 +388,7 @@
 
 
         <!-- ==================================
-             Registration
+             REGISTRATION
         ================================== -->
 
         <div class="register-text">
@@ -366,7 +402,9 @@
         </div>
 
 
-        <!-- Footer -->
+        <!-- ==================================
+             FOOTER
+        ================================== -->
 
         <div class="footer">
 
@@ -376,28 +414,16 @@
 
 
     </div>
-<!-- ==================================
-     CLEAR PREVIOUS LOGIN SESSION
-================================== -->
-
-<script>
-
-    localStorage.removeItem("loggedInEmpCode");
-
-    localStorage.removeItem("userRole");
-
-</script>
 
 
-<!-- ==================================
-     IMPORTANT:
-     Auth JS Location
-================================== -->
+    <!-- ==================================
+         AUTH JAVASCRIPT
+    ================================== -->
 
-<script
-    type="module"
-    src="assets/js/auth.js"
-></script>
+    <script
+        type="module"
+        src="assets/js/auth.js"
+    ></script>
 
 
 </body>
