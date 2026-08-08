@@ -1,0 +1,476 @@
+/* =========================================
+   Target Management
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+/* =========================================
+   Main
+========================================= */
+
+.main {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    background: #f4f7fb;
+}
+
+
+/* =========================================
+   Topbar
+========================================= */
+
+.topbar {
+    background: #ffffff;
+    padding: 22px 28px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.topbar h2 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 24px;
+}
+
+.topbar p {
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   Target Form Card
+========================================= */
+
+.target-form-card {
+    margin: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+}
+
+.card-title {
+    margin-bottom: 22px;
+}
+
+.card-title h3 {
+    margin: 0;
+    color: #1e293b;
+}
+
+.card-title h3 i {
+    color: #2563eb;
+    margin-right: 8px;
+}
+
+.card-title p {
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   Form
+========================================= */
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #334155;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font-size: 14px;
+    background: #ffffff;
+    outline: none;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+
+/* =========================================
+   Employee Preview
+========================================= */
+
+.employee-preview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.employee-preview div {
+    padding: 8px;
+}
+
+.employee-preview span {
+    display: block;
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.employee-preview strong {
+    display: block;
+    color: #1e293b;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   Save Button
+========================================= */
+
+.save-target-btn {
+    border: none;
+    background: #2563eb;
+    color: #ffffff;
+    padding: 12px 22px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.save-target-btn:hover {
+    background: #1d4ed8;
+}
+
+.save-target-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   Message
+========================================= */
+
+#targetMessage {
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   Summary Cards
+========================================= */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(180px, 1fr));
+
+    gap: 18px;
+
+    margin: 0 25px 25px;
+}
+
+.summary-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.summary-icon {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+.users-icon {
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.target-icon {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.collection-icon {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.remaining-icon {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.summary-card span {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.summary-card strong {
+    display: block;
+    color: #1e293b;
+    font-size: 20px;
+}
+
+
+/* =========================================
+   Table Card
+========================================= */
+
+.table-card {
+    margin: 0 25px 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    overflow: hidden;
+}
+
+.table-header {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.table-header h3 {
+    margin: 0;
+    color: #1e293b;
+}
+
+.table-header h3 i {
+    color: #2563eb;
+    margin-right: 7px;
+}
+
+.table-header p {
+    margin-top: 4px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+#targetSearch {
+    width: 280px;
+    padding: 11px 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    outline: none;
+}
+
+#targetSearch:focus {
+    border-color: #2563eb;
+}
+
+
+/* =========================================
+   Table
+========================================= */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 1250px;
+    border-collapse: collapse;
+}
+
+thead th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 13px 12px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+tbody td {
+    padding: 13px 12px;
+    font-size: 13px;
+    color: #334155;
+    border-bottom: 1px solid #edf2f7;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================================
+   Amounts
+========================================= */
+
+.target-amount {
+    color: #7c3aed;
+    font-weight: bold;
+}
+
+.collection-amount {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.remaining-amount {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.remaining-zero {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   Percentage
+========================================= */
+
+.percentage-box {
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.progress-container {
+    width: 90px;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 10px;
+}
+
+
+/* =========================================
+   Edit Button
+========================================= */
+
+.edit-btn {
+    border: none;
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 7px 11px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.edit-btn:hover {
+    background: #dbeafe;
+}
+
+
+/* =========================================
+   Loading
+========================================= */
+
+.loading,
+.no-data {
+    text-align: center;
+    padding: 30px !important;
+    color: #64748b;
+}
+
+
+/* =========================================
+   Mobile
+========================================= */
+
+@media (max-width: 900px) {
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .employee-preview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .table-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    #targetSearch {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .target-form-card,
+    .table-card {
+        margin: 15px;
+    }
+
+    .summary-grid {
+        margin: 0 15px 15px;
+        grid-template-columns: 1fr;
+    }
+
+    .employee-preview {
+        grid-template-columns: 1fr;
+    }
+
+}
