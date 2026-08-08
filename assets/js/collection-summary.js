@@ -134,7 +134,11 @@ async function loadData() {
                     "-",
 
                 target:
-                    Number(data.target) || 0
+    Number(
+        data.targetAmount ??
+        data.target ??
+        0
+    )
 
             });
 
