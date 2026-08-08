@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Target Management | Telethon</title>
+
+
+    <!-- Main CSS -->
+    <link rel="stylesheet"
+          href="assets/css/style.css">
+
+
+    <!-- Target Management CSS -->
+    <link rel="stylesheet"
+          href="assets/css/target-management.css">
+
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+
+<body>
+
+
+<div class="wrapper">
+
+
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <div class="sidebar">
+
+
+        <div class="logo">
+
+            <img src="assets/images/logo.png"
+                 width="80"
+                 alt="Telethon Logo">
+
+            <h2>Telethon</h2>
+
+            <p>Management System</p>
+
+        </div>
+
+
+        <div class="menu">
+
+
+            <a href="dashboard.html">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a href="register.html">
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                <span>Registration Form</span>
+
+            </a>
+
+
+            <a href="users.html">
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>Teachers List</span>
+
+            </a>
+
+
+            <a href="daily-entry.html">
+
+                <i class="fa-solid fa-file-circle-plus"></i>
+
+                <span>Daily Collection</span>
+
+            </a>
+
+
+            <a href="all-entry.html">
+
+                <i class="fa-solid fa-list"></i>
+
+                <span>All Entry</span>
+
+            </a>
+
+
+            <!-- Target Management -->
+
+            <a href="target-management.html"
+               class="active">
+
+                <i class="fa-solid fa-bullseye"></i>
+
+                <span>Target Management</span>
+
+            </a>
+
+
+            <a href="reports.html">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <span>Reports</span>
+
+            </a>
+
+
+            <a href="#"
+               id="logoutBtn">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </a>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <div class="main">
+
+
+        <!-- Topbar -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h2>Target Management</h2>
+
+                <p>
+                    Teacher Target & Collection Management
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================
+             TARGET SET FORM
+        ====================================== -->
+
+        <div class="target-form-card">
+
+
+            <div class="card-title">
+
+                <div>
+
+                    <h3>
+
+                        <i class="fa-solid fa-bullseye"></i>
+
+                        Set Teacher Target
+
+                    </h3>
+
+                    <p>
+                        Select Employee and set monthly target
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <form id="targetForm">
+
+
+                <!-- Employee -->
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+
+                        <label for="employeeSelect">
+
+                            Employee
+
+                        </label>
+
+
+                        <select
+                            id="employeeSelect"
+                            required>
+
+                            <option value="">
+
+                                Loading Employees...
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Target -->
+
+                    <div class="form-group">
+
+                        <label for="targetAmount">
+
+                            Target Amount (₹)
+
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="targetAmount"
+                            min="0"
+                            placeholder="Enter Target Amount"
+                            required>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- Selected Employee Details -->
+
+                <div id="employeePreview"
+                     class="employee-preview"
+                     style="display:none;">
+
+
+                    <div>
+
+                        <span>Region</span>
+
+                        <strong id="previewRegion">-</strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>State</span>
+
+                        <strong id="previewState">-</strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>City</span>
+
+                        <strong id="previewCity">-</strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Jamiatul Madina</span>
+
+                        <strong id="previewMadina">-</strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Employee Code</span>
+
+                        <strong id="previewCode">-</strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Teacher Name</span>
+
+                        <strong id="previewTeacher">-</strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="save-target-btn"
+                    id="saveTargetBtn">
+
+                    <i class="fa-solid fa-save"></i>
+
+                    Save Target
+
+                </button>
+
+
+                <div id="targetMessage"></div>
+
+
+            </form>
+
+        </div>
+
+
+
+        <!-- =====================================
+             SUMMARY
+        ====================================== -->
+
+        <div class="summary-grid">
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon users-icon">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Total Teachers</span>
+
+                    <strong id="totalTeachers">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon target-icon">
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Total Target</span>
+
+                    <strong id="totalTarget">
+
+                        ₹ 0
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon collection-icon">
+
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Total Collection</span>
+
+                    <strong id="totalCollection">
+
+                        ₹ 0
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon remaining-icon">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Remaining Target</span>
+
+                    <strong id="totalRemaining">
+
+                        ₹ 0
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================
+             TEACHER TARGET TABLE
+        ====================================== -->
+
+        <div class="table-card">
+
+
+            <div class="table-header">
+
+
+                <div>
+
+                    <h3>
+
+                        <i class="fa-solid fa-list-check"></i>
+
+                        Teacher Targets
+
+                    </h3>
+
+                    <p>
+                        Target and collection details
+                    </p>
+
+                </div>
+
+
+                <input
+                    type="text"
+                    id="targetSearch"
+                    placeholder="Search Teacher / Employee Code...">
+
+            </div>
+
+
+
+            <div class="table-wrapper">
+
+
+                <table>
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Region</th>
+
+                            <th>State</th>
+
+                            <th>City</th>
+
+                            <th>Jamiatul Madina</th>
+
+                            <th>Employee Code</th>
+
+                            <th>Teacher Name</th>
+
+                            <th>Target</th>
+
+                            <th>Total Collection</th>
+
+                            <th>Remaining Target</th>
+
+                            <th>Percentage</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="targetTableBody">
+
+
+                        <tr>
+
+                            <td colspan="12"
+                                class="loading">
+
+                                Loading Teachers...
+
+                            </td>
+
+                        </tr>
+
+
+                    </tbody>
+
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================
+     JAVASCRIPT
+====================================== -->
+
+<script type="module"
+        src="assets/js/target-management.js"></script>
+
+
+</body>
+
+</html>
