@@ -1,5 +1,5 @@
 // ======================================
-// Telethon - Admin & Teacher Login
+// Telethon - Secure Admin & Teacher Login
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -34,7 +34,7 @@ if (loginForm) {
 
 
         // ======================================
-        // MESSAGE FUNCTION
+        // Message
         // ======================================
 
         function showMessage(message) {
@@ -49,6 +49,20 @@ if (loginForm) {
 
 
         // ======================================
+        // Empty Validation
+        // ======================================
+
+        if (!loginId || !password) {
+
+            showMessage(
+                "Employee Code / Admin Email aur Password enter karein."
+            );
+
+            return;
+        }
+
+
+        // ======================================
         // ADMIN LOGIN
         // ======================================
 
@@ -59,6 +73,7 @@ if (loginForm) {
 
             if (password === "123789") {
 
+                // Admin session
                 localStorage.setItem(
                     "loggedInEmpCode",
                     "admin"
@@ -69,6 +84,7 @@ if (loginForm) {
                     "admin"
                 );
 
+                // Admin → Dashboard
                 window.location.href =
                     "dashboard.html";
 
@@ -103,6 +119,7 @@ if (loginForm) {
                     loginId
                 );
 
+
             const employeeSnap =
                 await getDoc(employeeRef);
 
@@ -130,7 +147,7 @@ if (loginForm) {
             // ======================================
 
             if (
-                String(data.password).trim()
+                String(data.password || "").trim()
                 !== password
             ) {
 
@@ -143,11 +160,12 @@ if (loginForm) {
 
 
             // ======================================
-            // Pending Account
+            // Account Approval Check
             // ======================================
 
             if (
-                data.status === "Pending"
+                String(data.status || "").toLowerCase()
+                !== "approved"
             ) {
 
                 showMessage(
@@ -173,11 +191,13 @@ if (loginForm) {
             );
 
 
+            // Teacher ko ONLY Daily Collection
             window.location.href =
                 "daily-entry.html";
 
+        }
 
-        } catch (error) {
+        catch (error) {
 
             console.error(
                 "Login Error:",
