@@ -40,12 +40,122 @@ let allEntries = [];
 
 
 // ======================================
+// Store Employees
+// ======================================
+
+let employeesMap = {};
+
+
+// ======================================
+// Load Employees
+// ======================================
+
+async function loadEmployees() {
+
+    try {
+
+        const employeesSnapshot =
+            await getDocs(
+                collection(db, "employees")
+            );
+
+
+        employeesMap = {};
+
+
+        employeesSnapshot.forEach((docSnapshot) => {
+
+            const data = docSnapshot.data();
+
+
+            const employeeCode =
+                String(
+                    data.employee_code ||
+                    data.employeeCode ||
+                    data.empCode ||
+                    docSnapshot.id ||
+                    ""
+                )
+                .trim()
+                .toLowerCase();
+
+
+            if (employeeCode) {
+
+                employeesMap[employeeCode] = {
+
+                    employeeCode:
+                        data.employee_code ||
+                        data.employeeCode ||
+                        data.empCode ||
+                        docSnapshot.id,
+
+                    teacherName:
+                        data.teacher_name ||
+                        data.teacherName ||
+                        data.name ||
+                        "-",
+
+                    jamiatulMadina:
+                        data.jamiatul_madina ||
+                        data.jamiatulMadina ||
+                        "-",
+
+                    city:
+                        data.city ||
+                        "-",
+
+                    state:
+                        data.state ||
+                        "-",
+
+                    region:
+                        data.region ||
+                        "-"
+
+                };
+
+            }
+
+        });
+
+
+        console.log(
+            "Employees Loaded:",
+            Object.keys(employeesMap).length
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Employees Load Error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ======================================
 // Load All Entries
 // ======================================
 
 async function loadAllEntries() {
 
     try {
+
+
+        // First load employees
+
+        await loadEmployees();
+
+
+        // ==================================
+        // Get Daily Entries
+        // ==================================
 
         const entriesQuery = query(
             collection(db, "daily_entry"),
@@ -90,8 +200,8 @@ async function loadAllEntries() {
 
         displayEntries(allEntries);
 
-
     }
+
 
     catch (error) {
 
@@ -133,10 +243,93 @@ async function loadAllEntries() {
 
 
 // ======================================
+// Get Employee Details
+// ======================================
+
+function getEmployeeDetails(data) {
+
+
+    // ==================================
+    // Employee Code
+    // ==================================
+
+    const employeeCode = String(
+
+        data.employee_code ||
+        data.employeeCode ||
+        data.empCode ||
+        data.employee_code_id ||
+        ""
+
+    ).trim();
+
+
+    // ==================================
+    // Search Employee Collection
+    // ==================================
+
+    const employeeKey =
+        employeeCode.toLowerCase();
+
+
+    const employee =
+        employeesMap[employeeKey];
+
+
+    // ==================================
+    // Return Combined Data
+    // ==================================
+
+    return {
+
+        employeeCode:
+            employeeCode ||
+            employee?.employeeCode ||
+            "-",
+
+
+        teacherName:
+            data.teacher_name ||
+            data.teacherName ||
+            employee?.teacherName ||
+            "-",
+
+
+        jamiatulMadina:
+            data.jamiatul_madina ||
+            data.jamiatulMadina ||
+            employee?.jamiatulMadina ||
+            "-",
+
+
+        city:
+            data.city ||
+            employee?.city ||
+            "-",
+
+
+        state:
+            data.state ||
+            employee?.state ||
+            "-",
+
+
+        region:
+            data.region ||
+            employee?.region ||
+            "-"
+
+    };
+
+}
+
+
+// ======================================
 // Update Summary
 // ======================================
 
 function updateSummary() {
+
 
     let totalAmount = 0;
 
@@ -150,6 +343,7 @@ function updateSummary() {
 
 
     allEntries.forEach((data) => {
+
 
         const amount =
             Number(data.amount) || 0;
@@ -199,6 +393,7 @@ function updateSummary() {
 
 function displayEntries(entries) {
 
+
     if (!tableBody) {
         return;
     }
@@ -214,7 +409,9 @@ function displayEntries(entries) {
                     colspan="10"
                     class="no-data"
                 >
+
                     Koi entry nahi mili.
+
                 </td>
 
             </tr>
@@ -233,35 +430,15 @@ function displayEntries(entries) {
 
 
         // ==================================
-        // Firestore Fields
+        // Basic Fields
         // ==================================
 
         const date =
             data.date || "-";
 
 
-        const employeeCode =
-            data.employee_code || "-";
-
-
-        const teacherName =
-            data.teacher_name || "-";
-
-
-        const jamiatulMadina =
-            data.jamiatul_madina || "-";
-
-
-        const city =
-            data.city || "-";
-
-
-        const state =
-            data.state || "-";
-
-
-        const region =
-            data.region || "-";
+        const employee =
+            getEmployeeDetails(data);
 
 
         const amount =
@@ -319,32 +496,32 @@ function displayEntries(entries) {
 
 
                 <td class="emp-code">
-                    ${employeeCode}
+                    ${employee.employeeCode}
                 </td>
 
 
                 <td>
-                    ${teacherName}
+                    ${employee.teacherName}
                 </td>
 
 
                 <td>
-                    ${jamiatulMadina}
+                    ${employee.jamiatulMadina}
                 </td>
 
 
                 <td>
-                    ${city}
+                    ${employee.city}
                 </td>
 
 
                 <td>
-                    ${state}
+                    ${employee.state}
                 </td>
 
 
                 <td>
-                    ${region}
+                    ${employee.region}
                 </td>
 
 
@@ -375,9 +552,11 @@ function displayEntries(entries) {
 
 if (searchInput) {
 
+
     searchInput.addEventListener(
         "input",
         function () {
+
 
             const search =
                 this.value
@@ -398,33 +577,43 @@ if (searchInput) {
                 allEntries.filter((data) => {
 
 
+                    const employee =
+                        getEmployeeDetails(data);
+
+
                     const employeeCode =
                         String(
-                            data.employee_code || ""
+                            employee.employeeCode || ""
                         ).toLowerCase();
 
 
                     const teacherName =
                         String(
-                            data.teacher_name || ""
+                            employee.teacherName || ""
+                        ).toLowerCase();
+
+
+                    const jamiatulMadina =
+                        String(
+                            employee.jamiatulMadina || ""
                         ).toLowerCase();
 
 
                     const city =
                         String(
-                            data.city || ""
+                            employee.city || ""
                         ).toLowerCase();
 
 
                     const state =
                         String(
-                            data.state || ""
+                            employee.state || ""
                         ).toLowerCase();
 
 
                     const region =
                         String(
-                            data.region || ""
+                            employee.region || ""
                         ).toLowerCase();
 
 
@@ -441,6 +630,10 @@ if (searchInput) {
                         ||
 
                         teacherName.includes(search)
+
+                        ||
+
+                        jamiatulMadina.includes(search)
 
                         ||
 
@@ -481,9 +674,11 @@ const logoutBtn =
 
 if (logoutBtn) {
 
+
     logoutBtn.addEventListener(
         "click",
         function (e) {
+
 
             e.preventDefault();
 
