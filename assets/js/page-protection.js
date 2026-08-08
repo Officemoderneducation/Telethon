@@ -2,6 +2,7 @@
 // Telethon - Page Protection
 // ======================================
 
+// Login information
 const userRole =
     localStorage.getItem("userRole");
 
@@ -10,7 +11,7 @@ const loggedInEmpCode =
 
 
 // ======================================
-// Login Check
+// LOGIN CHECK
 // ======================================
 
 if (!loggedInEmpCode || !userRole) {
@@ -21,24 +22,31 @@ if (!loggedInEmpCode || !userRole) {
 
 
 // ======================================
-// Teacher Protection
+// CURRENT PAGE
+// ======================================
+
+const currentPage =
+    window.location.pathname
+        .split("/")
+        .pop()
+        .toLowerCase();
+
+
+// ======================================
+// TEACHER PROTECTION
 // ======================================
 
 if (userRole === "teacher") {
 
-    const currentPage =
-        window.location.pathname
-            .split("/")
-            .pop()
-            .toLowerCase();
-
-
     // Teacher ko sirf Daily Collection page
-    // access karne ki permission hai
+    // access karne ki permission hai.
 
     const allowedTeacherPage =
         "daily-entry.html";
 
+
+    // Agar Teacher kisi bhi doosre page
+    // ko open kare to Daily Collection par bhej do.
 
     if (
         currentPage !== allowedTeacherPage &&
@@ -46,8 +54,9 @@ if (userRole === "teacher") {
         currentPage !== ""
     ) {
 
-        window.location.href =
-            "daily-entry.html";
+        window.location.replace(
+            "daily-entry.html"
+        );
 
     }
 
@@ -55,12 +64,11 @@ if (userRole === "teacher") {
 
 
 // ======================================
-// Admin Protection
+// ADMIN PROTECTION
 // ======================================
 
 if (userRole === "admin") {
 
-    // Admin ko pages access karne ki permission hai.
+    // Admin ko Admin pages access karne ki permission hai.
 
-    // Koi extra restriction nahi.
 }
