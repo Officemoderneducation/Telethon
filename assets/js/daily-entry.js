@@ -1,13 +1,8 @@
 // ======================================
-// Daily Entry JS
+// Telethon - Daily Entry JS
 // ======================================
 
-import { auth, db } from "./firebase-config.js";
-
-import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import { db } from "./firebase-config.js";
 
 import {
     doc,
@@ -22,19 +17,41 @@ import {
 // HTML Elements
 // ======================================
 
-const userInfo = document.getElementById("userInfo");
-const logoutBtn = document.getElementById("logoutBtn");
+const userInfo =
+    document.getElementById("userInfo");
 
-const employeeBadge = document.getElementById("employeeBadge");
-const badgeTeacher = document.getElementById("badgeTeacher");
-const badgeMadina = document.getElementById("badgeMadina");
-const badgeLocation = document.getElementById("badgeLocation");
+const logoutBtn =
+    document.getElementById("logoutBtn");
 
-const dailyEntryForm = document.getElementById("dailyEntryForm");
-const entryDate = document.getElementById("entryDate");
-const amount = document.getElementById("amount");
-const submitBtn = document.getElementById("submitBtn");
-const message = document.getElementById("message");
+const logoutBtnTop =
+    document.getElementById("logoutBtnTop");
+
+const employeeBadge =
+    document.getElementById("employeeBadge");
+
+const badgeTeacher =
+    document.getElementById("badgeTeacher");
+
+const badgeMadina =
+    document.getElementById("badgeMadina");
+
+const badgeLocation =
+    document.getElementById("badgeLocation");
+
+const dailyEntryForm =
+    document.getElementById("dailyEntryForm");
+
+const entryDate =
+    document.getElementById("entryDate");
+
+const amount =
+    document.getElementById("amount");
+
+const submitBtn =
+    document.getElementById("submitBtn");
+
+const message =
+    document.getElementById("message");
 
 
 // ======================================
@@ -43,12 +60,22 @@ const message = document.getElementById("message");
 
 const today = new Date();
 
-const year = today.getFullYear();
-const month = String(today.getMonth() + 1).padStart(2, "0");
-const day = String(today.getDate()).padStart(2, "0");
+const year =
+    today.getFullYear();
+
+const month =
+    String(today.getMonth() + 1)
+        .padStart(2, "0");
+
+const day =
+    String(today.getDate())
+        .padStart(2, "0");
 
 if (entryDate) {
-    entryDate.value = `${year}-${month}-${day}`;
+
+    entryDate.value =
+        `${year}-${month}-${day}`;
+
 }
 
 
@@ -63,30 +90,89 @@ let currentEmployee = null;
 // Check Login
 // ======================================
 
-onAuthStateChanged(auth, async () => {
+async function checkLogin() {
 
     try {
 
         const empCode =
-            localStorage.getItem("loggedInEmpCode");
+            localStorage.getItem(
+                "loggedInEmpCode"
+            );
 
-        if (!empCode) {
-            window.location.href = "login.html";
+        const userRole =
+            localStorage.getItem(
+                "userRole"
+            );
+
+
+        // ==================================
+        // No Login
+        // ==================================
+
+        if (!empCode || !userRole) {
+
+            window.location.href =
+                "index.html";
+
             return;
+
         }
+
+
+        // ==================================
+        // Admin ko Daily Entry par allow nahi
+        // ==================================
+
+        if (userRole === "admin") {
+
+            window.location.href =
+                "dashboard.html";
+
+            return;
+
+        }
+
+
+        // ==================================
+        // Sirf Teacher allowed
+        // ==================================
+
+        if (userRole !== "teacher") {
+
+            localStorage.clear();
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        // ==================================
+        // Load Teacher
+        // ==================================
 
         await loadEmployee(empCode);
 
+
     } catch (error) {
 
-        console.error("Authentication Error:", error);
+        console.error(
+            "Authentication Error:",
+            error
+        );
 
         if (userInfo) {
-            userInfo.textContent = "Error loading user";
+
+            userInfo.textContent =
+                "Error loading user";
+
         }
+
     }
 
-});
+}
 
 
 // ======================================
@@ -97,18 +183,25 @@ async function loadEmployee(empCode) {
 
     try {
 
-        const employeeRef = doc(
-            db,
-            "employees",
-            empCode
-        );
+        const employeeRef =
+            doc(
+                db,
+                "employees",
+                empCode
+            );
 
-        const employeeSnap = await getDoc(employeeRef);
+
+        const employeeSnap =
+            await getDoc(employeeRef);
+
 
         if (!employeeSnap.exists()) {
 
             if (userInfo) {
-                userInfo.textContent = "Employee not found";
+
+                userInfo.textContent =
+                    "Employee not found";
+
             }
 
             console.error(
@@ -117,13 +210,21 @@ async function loadEmployee(empCode) {
             );
 
             return;
+
         }
 
-        const data = employeeSnap.data();
+
+        const data =
+            employeeSnap.data();
+
 
         currentEmployee = {
-            employeeCode: empCode,
+
+            employeeCode:
+                empCode,
+
             ...data
+
         };
 
 
@@ -134,18 +235,24 @@ async function loadEmployee(empCode) {
         if (userInfo) {
 
             userInfo.textContent =
+                data.teacher_name ||
                 data.teacherName ||
+                data.employee_code ||
                 data.employeeCode ||
                 empCode;
+
         }
 
 
         // ==================================
-        // Show Employee Badge
+        // Employee Badge
         // ==================================
 
         if (employeeBadge) {
-            employeeBadge.style.display = "block";
+
+            employeeBadge.style.display =
+                "block";
+
         }
 
 
@@ -158,9 +265,11 @@ async function loadEmployee(empCode) {
             badgeTeacher.textContent =
                 "Teacher: " +
                 (
+                    data.teacher_name ||
                     data.teacherName ||
                     "-"
                 );
+
         }
 
 
@@ -168,19 +277,24 @@ async function loadEmployee(empCode) {
         // Jamiatul Madina
         // ==================================
 
-if (badgeMadina) {
+        if (badgeMadina) {
 
-    const madinaName =
-        data.jamiatuMadina ||
-        data.jamiatulMadina ||
-        data.jamiatul_madina ||
-        data.jamiatulMadinah ||
-        "";
+            const madinaName =
+                data.jamiatul_madina ||
+                data.jamiatuMadina ||
+                data.jamiatulMadina ||
+                data.jamiatulMadinah ||
+                "";
 
-    badgeMadina.textContent =
-        "Jamiatul Madina: " +
-        (madinaName || "-");
-}
+            badgeMadina.textContent =
+                "Jamiatul Madina: " +
+                (
+                    madinaName ||
+                    "-"
+                );
+
+        }
+
 
         // ==================================
         // Location
@@ -190,17 +304,33 @@ if (badgeMadina) {
 
             const locationParts = [];
 
+
             if (data.city) {
-                locationParts.push(data.city);
+
+                locationParts.push(
+                    data.city
+                );
+
             }
+
 
             if (data.state) {
-                locationParts.push(data.state);
+
+                locationParts.push(
+                    data.state
+                );
+
             }
 
+
             if (data.region) {
-                locationParts.push(data.region);
+
+                locationParts.push(
+                    data.region
+                );
+
             }
+
 
             badgeLocation.textContent =
                 "Location: " +
@@ -209,6 +339,7 @@ if (badgeMadina) {
                         ? locationParts.join(", ")
                         : "-"
                 );
+
         }
 
 
@@ -219,11 +350,16 @@ if (badgeMadina) {
             error
         );
 
+
         if (userInfo) {
+
             userInfo.textContent =
                 "Unable to load employee";
+
         }
+
     }
+
 }
 
 
@@ -235,7 +371,7 @@ if (dailyEntryForm) {
 
     dailyEntryForm.addEventListener(
         "submit",
-        async (e) => {
+        async function (e) {
 
             e.preventDefault();
 
@@ -252,6 +388,7 @@ if (dailyEntryForm) {
                 );
 
                 return;
+
             }
 
 
@@ -262,8 +399,11 @@ if (dailyEntryForm) {
             const selectedDate =
                 entryDate.value;
 
+
             const collectionAmount =
-                Number(amount.value);
+                Number(
+                    amount.value
+                );
 
 
             // ==================================
@@ -278,6 +418,7 @@ if (dailyEntryForm) {
                 );
 
                 return;
+
             }
 
 
@@ -292,6 +433,7 @@ if (dailyEntryForm) {
                 );
 
                 return;
+
             }
 
 
@@ -299,10 +441,15 @@ if (dailyEntryForm) {
             // Disable Button
             // ==================================
 
-            submitBtn.disabled = true;
+            if (submitBtn) {
 
-            submitBtn.textContent =
-                "Saving...";
+                submitBtn.disabled =
+                    true;
+
+                submitBtn.textContent =
+                    "Saving...";
+
+            }
 
 
             try {
@@ -312,18 +459,28 @@ if (dailyEntryForm) {
                 // ==================================
 
                 await addDoc(
-                    collection(db, "daily_entry"),
+                    collection(
+                        db,
+                        "daily_entry"
+                    ),
                     {
 
-                        employeeCode:
+                        // IMPORTANT:
+                        // Dashboard / Target code ke saath
+                        // same field names rakhe gaye hain.
+
+                        employee_code:
                             currentEmployee.employeeCode,
 
-                        teacherName:
+                        teacher_name:
+                            currentEmployee.teacher_name ||
                             currentEmployee.teacherName ||
                             "",
 
-                        jamiatuMadina:
+                        jamiatul_madina:
+                            currentEmployee.jamiatul_madina ||
                             currentEmployee.jamiatuMadina ||
+                            currentEmployee.jamiatulMadina ||
                             "",
 
                         city:
@@ -346,12 +503,13 @@ if (dailyEntryForm) {
 
                         createdAt:
                             serverTimestamp()
+
                     }
                 );
 
 
                 // ==================================
-                // Success Message
+                // Success
                 // ==================================
 
                 showMessage(
@@ -361,7 +519,13 @@ if (dailyEntryForm) {
 
 
                 // Clear Amount
-                amount.value = "";
+
+                if (amount) {
+
+                    amount.value =
+                        "";
+
+                }
 
 
             } catch (error) {
@@ -371,62 +535,113 @@ if (dailyEntryForm) {
                     error
                 );
 
+
                 showMessage(
                     "Failed to save: " +
                     error.message,
                     "error"
                 );
 
+
             } finally {
 
-                submitBtn.disabled = false;
+                if (submitBtn) {
 
-                submitBtn.textContent =
-                    "Submit Collection";
+                    submitBtn.disabled =
+                        false;
+
+                    submitBtn.textContent =
+                        "Submit Collection";
+
+                }
+
             }
 
         }
     );
+
 }
 
 
 // ======================================
-// Logout
+// LOGOUT FUNCTION
+// ======================================
+
+function logoutTeacher() {
+
+    // Remove login information
+
+    localStorage.removeItem(
+        "loggedInEmpCode"
+    );
+
+    localStorage.removeItem(
+        "userRole"
+    );
+
+
+    // Extra safety:
+    // Remove any old login values
+
+    localStorage.removeItem(
+        "adminLoggedIn"
+    );
+
+    localStorage.removeItem(
+        "teacherLoggedIn"
+    );
+
+
+    // ==================================
+    // IMPORTANT
+    // Logout ke baad MAIN login page
+    // open hoga
+    // ==================================
+
+    window.location.replace(
+        "index.html"
+    );
+
+}
+
+
+// ======================================
+// Sidebar Logout
 // ======================================
 
 if (logoutBtn) {
 
     logoutBtn.addEventListener(
         "click",
-        async () => {
+        function (e) {
 
-            try {
+            e.preventDefault();
 
-                await signOut(auth);
-
-            } catch (error) {
-
-                console.error(
-                    "Firebase Logout Error:",
-                    error
-                );
-
-            } finally {
-
-                localStorage.removeItem(
-                    "loggedInEmpCode"
-                );
-
-                localStorage.removeItem(
-                    "userRole"
-                );
-
-                window.location.href =
-                    "login.html";
-            }
+            logoutTeacher();
 
         }
     );
+
+}
+
+
+// ======================================
+// Top Logout
+// ======================================
+
+if (logoutBtnTop) {
+
+    logoutBtnTop.addEventListener(
+        "click",
+        function (e) {
+
+            e.preventDefault();
+
+            logoutTeacher();
+
+        }
+    );
+
 }
 
 
@@ -434,20 +649,39 @@ if (logoutBtn) {
 // Show Message
 // ======================================
 
-function showMessage(text, type) {
+function showMessage(
+    text,
+    type
+) {
 
     if (!message) {
+
         return;
+
     }
 
-    message.textContent = text;
+
+    message.textContent =
+        text;
+
 
     if (type === "success") {
 
-        message.style.color = "green";
+        message.style.color =
+            "green";
 
     } else {
 
-        message.style.color = "red";
+        message.style.color =
+            "red";
+
     }
+
 }
+
+
+// ======================================
+// START
+// ======================================
+
+checkLogin();
