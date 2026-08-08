@@ -5,482 +5,288 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <title>All Entries | Telethon</title>
+    <title>All Entry | Telethon</title>
 
-
-    <!-- Google Font -->
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
+    <!-- Main CSS -->
+    <link rel="stylesheet"
+          href="assets/css/style.css">
 
     <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    >
-
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
 
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
-
 
         body {
-            background: #f4f7fc;
-            min-height: 100vh;
+            margin: 0;
+            background: #f4f6f9;
         }
 
-
-        /* =====================================
-           Layout
-        ===================================== */
-
-        .wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-
-
-        /* =====================================
-           Sidebar
-        ===================================== */
-
-        .sidebar {
-            width: 225px;
-            min-height: 100vh;
-            background: #1e293b;
-            color: white;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 100;
-        }
-
-
-        .logo {
-            text-align: center;
-            padding: 20px 10px;
-            border-bottom: 1px solid #334155;
-        }
-
-
-        .logo img {
-            display: block;
-            margin: 0 auto 8px;
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-        }
-
-
-        .logo h2 {
-            color: #38bdf8;
-            font-size: 20px;
-            margin-bottom: 3px;
-        }
-
-
-        .logo p {
-            color: #cbd5e1;
-            font-size: 12px;
-        }
-
-
-        .menu {
-            padding-top: 15px;
-        }
-
-
-        .menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-
-            padding: 13px 20px;
-
-            color: #cbd5e1;
-
-            text-decoration: none;
-
-            font-size: 14px;
-
-            transition: 0.2s;
-        }
-
-
-        .menu a i {
-            width: 18px;
-            text-align: center;
-        }
-
-
-        .menu a:hover {
-            background: #0f172a;
-            color: white;
-        }
-
-
-        .menu a.active {
-            background: #2563eb;
-            color: white;
-        }
-
-
-        .menu a.logout {
-            color: #f87171;
-            margin-top: 10px;
-        }
-
-
-        /* =====================================
-           Main Content
-        ===================================== */
+        /* ==============================
+           MAIN
+        ============================== */
 
         .main {
-            margin-left: 225px;
-            width: calc(100% - 225px);
+            margin-left: 250px;
             padding: 25px;
+            min-height: 100vh;
+            overflow-x: auto;
         }
-
-
-        /* =====================================
-           Topbar
-        ===================================== */
 
         .topbar {
-            background: white;
-
-            padding: 18px 22px;
-
-            border-radius: 10px;
-
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.08);
-
+            background: #ffffff;
+            padding: 20px 25px;
+            border-radius: 12px;
             margin-bottom: 20px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
-
 
         .topbar h2 {
-            color: #0f172a;
-            font-size: 23px;
+            margin: 0 0 5px;
+            color: #1e293b;
         }
-
 
         .topbar p {
+            margin: 0;
             color: #64748b;
-            font-size: 13px;
-            margin-top: 3px;
+            font-size: 14px;
         }
 
 
-        .refresh-btn {
-            background: #2563eb;
-            color: white;
+        /* ==============================
+           FILTER CARD
+        ============================== */
 
-            border: none;
-
-            padding: 9px 16px;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-            font-size: 13px;
-        }
-
-
-        .refresh-btn:hover {
-            background: #1d4ed8;
-        }
-
-
-        /* =====================================
-           Summary Cards
-        ===================================== */
-
-        .stats-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 18px;
-
-            margin-bottom: 20px;
-        }
-
-
-        .stat-card {
-            background: white;
-
-            padding: 18px;
-
-            border-radius: 9px;
-
-            border-left: 4px solid #2563eb;
-
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
-        }
-
-
-        .stat-card.today {
-            border-left-color: #10b981;
-        }
-
-
-        .stat-card.entries {
-            border-left-color: #f59e0b;
-        }
-
-
-        .stat-card h4 {
-            color: #64748b;
-
-            font-size: 12px;
-
-            text-transform: uppercase;
-
-            margin-bottom: 6px;
-        }
-
-
-        .stat-card p {
-            color: #0f172a;
-
-            font-size: 22px;
-
-            font-weight: 700;
-        }
-
-
-        /* =====================================
-           Table Container
-        ===================================== */
-
-        .table-container {
-            background: white;
-
+        .filter-card {
+            background: #ffffff;
             padding: 20px;
-
-            border-radius: 10px;
-
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.07);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
-        .table-header {
+        .filter-title {
             display: flex;
-
-            justify-content: space-between;
-
             align-items: center;
-
-            gap: 15px;
-
+            gap: 10px;
             margin-bottom: 18px;
         }
 
+        .filter-title h3 {
+            margin: 0;
+            color: #1e293b;
+        }
+
+        .filter-title i {
+            color: #2563eb;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(5, minmax(150px, 1fr));
+
+            gap: 15px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            height: 42px;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+        }
+
+
+        /* ==============================
+           BUTTONS
+        ============================== */
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .reset-btn {
+            height: 42px;
+            padding: 0 20px;
+            border: none;
+            border-radius: 7px;
+            background: #64748b;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+
+        /* ==============================
+           SUMMARY
+        ============================== */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: #ffffff;
+            padding: 18px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .summary-card span {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .summary-card strong {
+            font-size: 23px;
+            color: #1e293b;
+        }
+
+
+        /* ==============================
+           TABLE
+        ============================== */
+
+        .table-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
 
         .table-header h3 {
-            color: #0f172a;
-
-            font-size: 18px;
+            margin: 0;
+            color: #1e293b;
         }
-
-
-        .search-box {
-            width: 280px;
-
-            padding: 10px 12px;
-
-            border: 1px solid #cbd5e1;
-
-            border-radius: 7px;
-
-            outline: none;
-
-            font-size: 13px;
-        }
-
-
-        .search-box:focus {
-            border-color: #2563eb;
-        }
-
-
-        /* =====================================
-           Table
-        ===================================== */
 
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
         }
 
-
         table {
             width: 100%;
-
+            min-width: 1200px;
             border-collapse: collapse;
-
-            min-width: 1050px;
         }
 
+        th,
+        td {
+            padding: 11px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            white-space: nowrap;
+            font-size: 13px;
+        }
 
         th {
-            background: #f1f5f9;
-
-            color: #334155;
-
-            font-size: 13px;
-
-            font-weight: 600;
-
-            padding: 12px 13px;
-
-            text-align: left;
-
-            white-space: nowrap;
+            background: #f8fafc;
+            color: #475569;
+            font-weight: bold;
         }
 
-
-        td {
-            padding: 12px 13px;
-
-            border-bottom:
-                1px solid #e2e8f0;
-
-            color: #334155;
-
-            font-size: 13px;
-
-            white-space: nowrap;
-        }
-
-
-        tbody tr:hover {
+        tr:hover {
             background: #f8fafc;
         }
 
+        .emp-code {
+            font-weight: bold;
+            color: #2563eb;
+        }
 
         .amount {
+            font-weight: bold;
             color: #059669;
-
-            font-weight: 700;
         }
-
-
-        .emp-code {
-            font-weight: 700;
-            color: #0f172a;
-        }
-
 
         .no-data {
             text-align: center;
-
             padding: 25px;
-
             color: #94a3b8;
         }
 
 
-        /* =====================================
-           Mobile
-        ===================================== */
+        /* ==============================
+           MOBILE
+        ============================== */
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
 
-            .sidebar {
-                width: 200px;
+            .filter-grid {
+                grid-template-columns:
+                    repeat(3, 1fr);
             }
+
+        }
+
+        @media (max-width: 800px) {
 
             .main {
-                margin-left: 200px;
-                width: calc(100% - 200px);
+                margin-left: 0;
+                padding: 15px;
             }
 
-            .stats-grid {
+            .filter-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .summary-grid {
                 grid-template-columns: 1fr;
             }
 
         }
 
+        @media (max-width: 500px) {
 
-        @media (max-width: 650px) {
-
-            .sidebar {
-                width: 70px;
-            }
-
-            .logo h2,
-            .logo p,
-            .menu a span {
-                display: none;
-            }
-
-            .logo img {
-                width: 45px;
-                height: 45px;
-            }
-
-            .menu a {
-                justify-content: center;
-                padding: 15px 5px;
-            }
-
-            .main {
-                margin-left: 70px;
-                width: calc(100% - 70px);
-                padding: 12px;
-            }
-
-            .topbar {
-                padding: 15px;
-            }
-
-            .topbar h2 {
-                font-size: 18px;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-
-            .table-header {
-                flex-direction: column;
-                align-items: stretch;
+            .filter-grid {
+                grid-template-columns: 1fr;
             }
 
         }
@@ -493,320 +299,347 @@
 <body>
 
 
-<div class="wrapper">
+<!-- =====================================
+     SIDEBAR
+====================================== -->
+
+<div class="sidebar">
+
+    <div class="logo">
+
+        <img src="assets/images/logo.png"
+             width="80"
+             alt="Telethon Logo">
+
+        <h2>Telethon</h2>
+
+        <p>Management System</p>
+
+    </div>
+
+
+    <div class="menu">
+
+        <a href="dashboard.html">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="register.html">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Registration Form</span>
+        </a>
+
+        <a href="users.html">
+            <i class="fa-solid fa-users"></i>
+            <span>Teachers List</span>
+        </a>
+
+        <a href="daily-entry.html">
+            <i class="fa-solid fa-file-circle-plus"></i>
+            <span>Daily Collection</span>
+        </a>
+
+        <a href="all-entry.html"
+           class="active">
+            <i class="fa-solid fa-list"></i>
+            <span>All Entry</span>
+        </a>
+
+        <a href="target-management.html">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Target Management</span>
+        </a>
+
+        <a href="reports.html">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Reports</span>
+        </a>
+
+        <a href="#"
+           id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================
+     MAIN
+====================================== -->
+
+<div class="main">
+
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <h2>
+            All Collection Entries
+        </h2>
+
+        <p>
+            Filter and view all teacher collection entries
+        </p>
+
+    </div>
+
 
 
     <!-- =====================================
-         SIDEBAR
+         FILTERS
     ====================================== -->
 
-    <div class="sidebar">
+    <div class="filter-card">
 
-        <div>
+        <div class="filter-title">
+
+            <i class="fa-solid fa-filter"></i>
+
+            <h3>
+                Filter Entries
+            </h3>
+
+        </div>
 
 
-            <!-- Logo -->
+        <div class="filter-grid">
 
-            <div class="logo">
 
-                <img
-                    src="assets/images/logo.png"
-                    alt="Telethon Logo"
-                >
+            <!-- Region -->
 
-                <h2>
-                    Telethon
-                </h2>
+            <div class="filter-group">
 
-                <p>
-                    Management System
-                </p>
+                <label for="filterRegion">
+                    Region
+                </label>
+
+                <select id="filterRegion">
+
+                    <option value="">
+                        All Regions
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- State -->
+
+            <div class="filter-group">
+
+                <label for="filterState">
+                    State
+                </label>
+
+                <select id="filterState"
+                        disabled>
+
+                    <option value="">
+                        All States
+                    </option>
+
+                </select>
 
             </div>
 
 
-            <!-- Menu -->
+            <!-- City -->
 
-            <div class="menu">
+            <div class="filter-group">
 
+                <label for="filterCity">
+                    City
+                </label>
 
-                <a href="dashboard.html">
+                <select id="filterCity"
+                        disabled>
 
-                    <i class="fa-solid fa-house"></i>
+                    <option value="">
+                        All Cities
+                    </option>
 
-                    <span>
-                        Dashboard
-                    </span>
-
-                </a>
-
-
-                <a href="register.html">
-
-                    <i class="fa-solid fa-user-plus"></i>
-
-                    <span>
-                        Registration Form
-                    </span>
-
-                </a>
-
-
-                <a href="users.html">
-
-                    <i class="fa-solid fa-users"></i>
-
-                    <span>
-                        Teacher List
-                    </span>
-
-                </a>
-
-
-                <a href="daily-entry.html">
-
-                    <i class="fa-solid fa-file-circle-plus"></i>
-
-                    <span>
-                        Daily Collection
-                    </span>
-
-                </a>
-
-
-                <!-- ACTIVE -->
-
-                <a
-                    href="all-entry.html"
-                    class="active"
-                >
-
-                    <i class="fa-solid fa-list"></i>
-
-                    <span>
-                        All Entry
-                    </span>
-
-                </a>
-
-
-                <a href="reports.html">
-
-                    <i class="fa-solid fa-chart-column"></i>
-
-                    <span>
-                        Reports
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="#"
-                    id="logoutBtn"
-                    class="logout"
-                >
-
-                    <i class="fa-solid fa-right-from-bracket"></i>
-
-                    <span>
-                        Logout
-                    </span>
-
-                </a>
-
+                </select>
 
             </div>
+
+
+            <!-- Employee Code -->
+
+            <div class="filter-group">
+
+                <label for="filterEmployeeCode">
+                    Employee Code
+                </label>
+
+                <input
+                    type="text"
+                    id="filterEmployeeCode"
+                    placeholder="Enter Employee Code">
+
+            </div>
+
+
+            <!-- Date -->
+
+            <div class="filter-group">
+
+                <label for="filterDate">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="filterDate">
+
+            </div>
+
+
+        </div>
+
+
+        <div class="filter-buttons">
+
+            <button
+                type="button"
+                id="resetFilters"
+                class="reset-btn">
+
+                <i class="fa-solid fa-rotate-left"></i>
+
+                Reset Filters
+
+            </button>
 
         </div>
 
     </div>
 
 
+
     <!-- =====================================
-         MAIN CONTENT
+         SUMMARY
     ====================================== -->
 
-    <div class="main">
+    <div class="summary-grid">
 
 
-        <!-- Topbar -->
+        <div class="summary-card">
 
-        <div class="topbar">
+            <span>
+                Showing Entries
+            </span>
 
-            <div>
-
-                <h2>
-                    All Collection Entries
-                </h2>
-
-                <p>
-                    All daily collection entries from Firebase
-                </p>
-
-            </div>
-
-
-            <button
-                class="refresh-btn"
-                onclick="window.location.reload()"
-            >
-                <i class="fa-solid fa-rotate"></i>
-                Refresh
-            </button>
+            <strong id="allEntriesCount">
+                0
+            </strong>
 
         </div>
 
 
-        <!-- =================================
-             SUMMARY
-        ================================== -->
+        <div class="summary-card">
 
-        <div class="stats-grid">
+            <span>
+                Total Collection
+            </span>
 
-
-            <div class="stat-card">
-
-                <h4>
-                    Total Collection
-                </h4>
-
-                <p id="allTotalAmount">
-                    ₹ 0
-                </p>
-
-            </div>
-
-
-            <div class="stat-card today">
-
-                <h4>
-                    Today's Collection
-                </h4>
-
-                <p id="allTodayAmount">
-                    ₹ 0
-                </p>
-
-            </div>
-
-
-            <div class="stat-card entries">
-
-                <h4>
-                    Total Entries
-                </h4>
-
-                <p id="allEntriesCount">
-                    0
-                </p>
-
-            </div>
-
+            <strong id="allTotalAmount">
+                ₹ 0
+            </strong>
 
         </div>
 
 
-        <!-- =================================
-             ALL ENTRIES TABLE
-        ================================== -->
+        <div class="summary-card">
 
-        <div class="table-container">
+            <span>
+                Today's Collection
+            </span>
 
-
-            <div class="table-header">
-
-                <h3>
-                    All Collection Entries
-                </h3>
-
-
-                <input
-                    type="text"
-                    id="searchAllEntry"
-                    class="search-box"
-                    placeholder="Search Employee / Teacher / City..."
-                >
-
-            </div>
-
-
-            <div class="table-wrapper">
-
-                <table>
-
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                #
-                            </th>
-
-                            <th>
-                                Date
-                            </th>
-
-                            <th>
-                                Employee Code
-                            </th>
-
-                            <th>
-                                Teacher Name
-                            </th>
-
-                            <th>
-                                Jamiatul Madina
-                            </th>
-
-                            <th>
-                                City
-                            </th>
-
-                            <th>
-                                State
-                            </th>
-
-                            <th>
-                                Region
-                            </th>
-
-                            <th>
-                                Amount
-                            </th>
-
-                            <th>
-                                Entry Time
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="allEntriesTableBody">
-
-                        <tr>
-
-                            <td
-                                colspan="10"
-                                class="no-data"
-                            >
-                                Loading all entries...
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-
-                </table>
-
-            </div>
+            <strong id="allTodayAmount">
+                ₹ 0
+            </strong>
 
         </div>
 
+
+    </div>
+
+
+
+    <!-- =====================================
+         TABLE
+    ====================================== -->
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h3>
+                Collection Entries
+            </h3>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Date</th>
+
+                        <th>Employee Code</th>
+
+                        <th>Teacher Name</th>
+
+                        <th>Jamiatul Madina</th>
+
+                        <th>City</th>
+
+                        <th>State</th>
+
+                        <th>Region</th>
+
+                        <th>Amount</th>
+
+                        <th>Entry Time</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="allEntriesTableBody">
+
+                    <tr>
+
+                        <td colspan="10"
+                            class="no-data">
+
+                            Loading entries...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
@@ -814,14 +647,15 @@
 </div>
 
 
+
 <!-- =====================================
-     Firebase / JS
+     JAVASCRIPT
 ====================================== -->
 
 <script
     type="module"
-    src="assets/js/all-entry.js"
-></script>
+    src="assets/js/all-entry.js">
+</script>
 
 
 </body>
