@@ -2,13 +2,21 @@
 // Telethon - Daily Entry JS
 // ======================================
 
-import { db } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
     doc,
     getDoc,
     addDoc,
     collection,
+    query,
+    where,
+    getDocs,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -55,6 +63,23 @@ const message =
 
 
 // ======================================
+// PERFORMANCE SUMMARY ELEMENTS
+// ======================================
+
+const totalCollectionElement =
+    document.getElementById("totalCollection");
+
+const targetAmountElement =
+    document.getElementById("targetAmount");
+
+const remainingTargetElement =
+    document.getElementById("remainingTarget");
+
+const collectionPercentageElement =
+    document.getElementById("collectionPercentage");
+
+
+// ======================================
 // Set Today's Date
 // ======================================
 
@@ -75,7 +100,6 @@ if (entryDate) {
 
     entryDate.value =
         `${year}-${month}-${day}`;
-
 }
 
 
@@ -90,7 +114,7 @@ let currentEmployee = null;
 // Check Login
 // ======================================
 
-async function checkLogin() {
+onAuthStateChanged(auth, async () => {
 
     try {
 
@@ -99,61 +123,24 @@ async function checkLogin() {
                 "loggedInEmpCode"
             );
 
-        const userRole =
-            localStorage.getItem(
-                "userRole"
-            );
 
-
-        // ==================================
-        // No Login
-        // ==================================
-
-        if (!empCode || !userRole) {
+        if (!empCode) {
 
             window.location.href =
-                "index.html";
+                "login.html";
 
             return;
-
         }
 
-
-        // ==================================
-        // Admin ko Daily Entry par allow nahi
-        // ==================================
-
-        if (userRole === "admin") {
-
-            window.location.href =
-                "dashboard.html";
-
-            return;
-
-        }
-
-
-        // ==================================
-        // Sirf Teacher allowed
-        // ==================================
-
-        if (userRole !== "teacher") {
-
-            localStorage.clear();
-
-            window.location.href =
-                "index.html";
-
-            return;
-
-        }
-
-
-        // ==================================
-        // Load Teacher
-        // ==================================
 
         await loadEmployee(empCode);
+
+
+        // ==================================
+        // Load Performance
+        // ==================================
+
+        await loadPerformance(empCode);
 
 
     } catch (error) {
@@ -163,16 +150,16 @@ async function checkLogin() {
             error
         );
 
+
         if (userInfo) {
 
             userInfo.textContent =
                 "Error loading user";
-
         }
 
     }
 
-}
+});
 
 
 // ======================================
@@ -201,7 +188,6 @@ async function loadEmployee(empCode) {
 
                 userInfo.textContent =
                     "Employee not found";
-
             }
 
             console.error(
@@ -210,7 +196,6 @@ async function loadEmployee(empCode) {
             );
 
             return;
-
         }
 
 
@@ -235,12 +220,10 @@ async function loadEmployee(empCode) {
         if (userInfo) {
 
             userInfo.textContent =
-                data.teacher_name ||
                 data.teacherName ||
-                data.employee_code ||
+                data.teacher_name ||
                 data.employeeCode ||
                 empCode;
-
         }
 
 
@@ -252,7 +235,6 @@ async function loadEmployee(empCode) {
 
             employeeBadge.style.display =
                 "block";
-
         }
 
 
@@ -265,11 +247,10 @@ async function loadEmployee(empCode) {
             badgeTeacher.textContent =
                 "Teacher: " +
                 (
-                    data.teacher_name ||
                     data.teacherName ||
+                    data.teacher_name ||
                     "-"
                 );
-
         }
 
 
@@ -280,11 +261,12 @@ async function loadEmployee(empCode) {
         if (badgeMadina) {
 
             const madinaName =
-                data.jamiatul_madina ||
                 data.jamiatuMadina ||
                 data.jamiatulMadina ||
+                data.jamiatul_madina ||
                 data.jamiatulMadinah ||
                 "";
+
 
             badgeMadina.textContent =
                 "Jamiatul Madina: " +
@@ -292,7 +274,6 @@ async function loadEmployee(empCode) {
                     madinaName ||
                     "-"
                 );
-
         }
 
 
@@ -310,7 +291,6 @@ async function loadEmployee(empCode) {
                 locationParts.push(
                     data.city
                 );
-
             }
 
 
@@ -319,7 +299,6 @@ async function loadEmployee(empCode) {
                 locationParts.push(
                     data.state
                 );
-
             }
 
 
@@ -328,7 +307,6 @@ async function loadEmployee(empCode) {
                 locationParts.push(
                     data.region
                 );
-
             }
 
 
@@ -339,7 +317,6 @@ async function loadEmployee(empCode) {
                         ? locationParts.join(", ")
                         : "-"
                 );
-
         }
 
 
@@ -355,11 +332,250 @@ async function loadEmployee(empCode) {
 
             userInfo.textContent =
                 "Unable to load employee";
-
         }
 
     }
 
+}
+
+
+// ======================================
+// LOAD PERFORMANCE
+// ======================================
+
+async function loadPerformance(empCode) {
+
+    try {
+
+        console.log(
+            "Loading performance for:",
+            empCode
+        );
+
+
+        // ==================================
+        // GET EMPLOYEE TARGET
+        // ==================================
+
+        const employeeRef =
+            doc(
+                db,
+                "employees",
+                empCode
+            );
+
+
+        const employeeSnap =
+            await getDoc(employeeRef);
+
+
+        let target = 0;
+
+
+        if (employeeSnap.exists()) {
+
+            const employeeData =
+                employeeSnap.data();
+
+
+            // Support multiple possible field names
+
+            target =
+                Number(
+                    employeeData.targetAmount ??
+                    employeeData.target ??
+                    employeeData.target_amount ??
+                    employeeData.Target ??
+                    0
+                );
+
+
+            console.log(
+                "Employee Target:",
+                target
+            );
+
+        }
+
+
+        // ==================================
+        // GET TOTAL COLLECTION
+        // ==================================
+
+        const dailyEntryQuery =
+            query(
+                collection(
+                    db,
+                    "daily_entry"
+                ),
+                where(
+                    "employeeCode",
+                    "==",
+                    empCode
+                )
+            );
+
+
+        const dailyEntrySnapshot =
+            await getDocs(
+                dailyEntryQuery
+            );
+
+
+        let totalCollection = 0;
+
+
+        dailyEntrySnapshot.forEach(
+            (entryDoc) => {
+
+                const data =
+                    entryDoc.data();
+
+
+                totalCollection +=
+                    Number(
+                        data.amount || 0
+                    );
+
+            }
+        );
+
+
+        console.log(
+            "Total Collection:",
+            totalCollection
+        );
+
+
+        // ==================================
+        // REMAINING TARGET
+        // ==================================
+
+        let remainingTarget =
+            target - totalCollection;
+
+
+        if (remainingTarget < 0) {
+
+            remainingTarget = 0;
+        }
+
+
+        // ==================================
+        // PERCENTAGE
+        // ==================================
+
+        let percentage = 0;
+
+
+        if (target > 0) {
+
+            percentage =
+                (
+                    totalCollection /
+                    target
+                ) * 100;
+        }
+
+
+        // Maximum 100% display
+
+        if (percentage > 100) {
+
+            percentage = 100;
+        }
+
+
+        // ==================================
+        // SHOW VALUES
+        // ==================================
+
+        if (totalCollectionElement) {
+
+            totalCollectionElement.textContent =
+                "₹ " +
+                formatNumber(
+                    totalCollection
+                );
+        }
+
+
+        if (targetAmountElement) {
+
+            targetAmountElement.textContent =
+                "₹ " +
+                formatNumber(
+                    target
+                );
+        }
+
+
+        if (remainingTargetElement) {
+
+            remainingTargetElement.textContent =
+                "₹ " +
+                formatNumber(
+                    remainingTarget
+                );
+        }
+
+
+        if (collectionPercentageElement) {
+
+            collectionPercentageElement.textContent =
+                percentage.toFixed(2) +
+                "%";
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Performance Loading Error:",
+            error
+        );
+
+
+        if (totalCollectionElement) {
+
+            totalCollectionElement.textContent =
+                "₹ 0";
+        }
+
+
+        if (targetAmountElement) {
+
+            targetAmountElement.textContent =
+                "₹ 0";
+        }
+
+
+        if (remainingTargetElement) {
+
+            remainingTargetElement.textContent =
+                "₹ 0";
+        }
+
+
+        if (collectionPercentageElement) {
+
+            collectionPercentageElement.textContent =
+                "0%";
+        }
+
+    }
+
+}
+
+
+// ======================================
+// Number Formatting
+// ======================================
+
+function formatNumber(number) {
+
+    return Number(number || 0)
+        .toLocaleString("en-IN");
 }
 
 
@@ -371,7 +587,7 @@ if (dailyEntryForm) {
 
     dailyEntryForm.addEventListener(
         "submit",
-        async function (e) {
+        async (e) => {
 
             e.preventDefault();
 
@@ -388,7 +604,6 @@ if (dailyEntryForm) {
                 );
 
                 return;
-
             }
 
 
@@ -418,7 +633,6 @@ if (dailyEntryForm) {
                 );
 
                 return;
-
             }
 
 
@@ -433,7 +647,6 @@ if (dailyEntryForm) {
                 );
 
                 return;
-
             }
 
 
@@ -441,15 +654,10 @@ if (dailyEntryForm) {
             // Disable Button
             // ==================================
 
-            if (submitBtn) {
+            submitBtn.disabled = true;
 
-                submitBtn.disabled =
-                    true;
-
-                submitBtn.textContent =
-                    "Saving...";
-
-            }
+            submitBtn.textContent =
+                "Saving...";
 
 
             try {
@@ -465,22 +673,18 @@ if (dailyEntryForm) {
                     ),
                     {
 
-                        // IMPORTANT:
-                        // Dashboard / Target code ke saath
-                        // same field names rakhe gaye hain.
-
-                        employee_code:
+                        employeeCode:
                             currentEmployee.employeeCode,
 
-                        teacher_name:
-                            currentEmployee.teacher_name ||
+                        teacherName:
                             currentEmployee.teacherName ||
+                            currentEmployee.teacher_name ||
                             "",
 
-                        jamiatul_madina:
-                            currentEmployee.jamiatul_madina ||
+                        jamiatuMadina:
                             currentEmployee.jamiatuMadina ||
                             currentEmployee.jamiatulMadina ||
+                            currentEmployee.jamiatul_madina ||
                             "",
 
                         city:
@@ -509,7 +713,7 @@ if (dailyEntryForm) {
 
 
                 // ==================================
-                // Success
+                // Success Message
                 // ==================================
 
                 showMessage(
@@ -520,12 +724,16 @@ if (dailyEntryForm) {
 
                 // Clear Amount
 
-                if (amount) {
+                amount.value = "";
 
-                    amount.value =
-                        "";
 
-                }
+                // ==================================
+                // REFRESH PERFORMANCE
+                // ==================================
+
+                await loadPerformance(
+                    currentEmployee.employeeCode
+                );
 
 
             } catch (error) {
@@ -542,19 +750,12 @@ if (dailyEntryForm) {
                     "error"
                 );
 
-
             } finally {
 
-                if (submitBtn) {
+                submitBtn.disabled = false;
 
-                    submitBtn.disabled =
-                        false;
-
-                    submitBtn.textContent =
-                        "Submit Collection";
-
-                }
-
+                submitBtn.textContent =
+                    "Submit Collection";
             }
 
         }
@@ -564,43 +765,35 @@ if (dailyEntryForm) {
 
 
 // ======================================
-// LOGOUT FUNCTION
+// Logout Function
 // ======================================
 
-function logoutTeacher() {
+async function logoutUser() {
 
-    // Remove login information
+    try {
 
-    localStorage.removeItem(
-        "loggedInEmpCode"
-    );
+        await signOut(auth);
 
-    localStorage.removeItem(
-        "userRole"
-    );
+    } catch (error) {
 
+        console.error(
+            "Firebase Logout Error:",
+            error
+        );
 
-    // Extra safety:
-    // Remove any old login values
+    } finally {
 
-    localStorage.removeItem(
-        "adminLoggedIn"
-    );
+        localStorage.removeItem(
+            "loggedInEmpCode"
+        );
 
-    localStorage.removeItem(
-        "teacherLoggedIn"
-    );
+        localStorage.removeItem(
+            "userRole"
+        );
 
-
-    // ==================================
-    // IMPORTANT
-    // Logout ke baad MAIN login page
-    // open hoga
-    // ==================================
-
-    window.location.replace(
-        "index.html"
-    );
+        window.location.href =
+            "login.html";
+    }
 
 }
 
@@ -613,11 +806,11 @@ if (logoutBtn) {
 
     logoutBtn.addEventListener(
         "click",
-        function (e) {
+        async (e) => {
 
             e.preventDefault();
 
-            logoutTeacher();
+            await logoutUser();
 
         }
     );
@@ -633,11 +826,9 @@ if (logoutBtnTop) {
 
     logoutBtnTop.addEventListener(
         "click",
-        function (e) {
+        async () => {
 
-            e.preventDefault();
-
-            logoutTeacher();
+            await logoutUser();
 
         }
     );
@@ -649,15 +840,11 @@ if (logoutBtnTop) {
 // Show Message
 // ======================================
 
-function showMessage(
-    text,
-    type
-) {
+function showMessage(text, type) {
 
     if (!message) {
 
         return;
-
     }
 
 
@@ -674,14 +861,6 @@ function showMessage(
 
         message.style.color =
             "red";
-
     }
 
 }
-
-
-// ======================================
-// START
-// ======================================
-
-checkLogin();
