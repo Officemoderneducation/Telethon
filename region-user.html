@@ -12,20 +12,12 @@
 
 <title>Region Users Panel | Telethon</title>
 
-
-<!-- Font Awesome -->
-
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 >
 
-
 <style>
-
-/* ======================================
-   RESET
-====================================== */
 
 * {
     margin: 0;
@@ -34,594 +26,352 @@
     font-family: Arial, sans-serif;
 }
 
-
-/* ======================================
-   BODY
-====================================== */
-
 body {
-
     min-height: 100vh;
-
     background: #f4f6f9;
-
     color: #1e293b;
 }
-
 
 /* ======================================
    SIDEBAR
 ====================================== */
 
 .sidebar {
-
     width: 235px;
-
     min-height: 100vh;
-
     background: #0f172a;
-
     color: white;
-
     position: fixed;
-
     left: 0;
-
     top: 0;
-
     bottom: 0;
-
     z-index: 1000;
 }
 
-
-/* Logo */
-
 .logo {
-
     height: 178px;
-
     padding: 20px 15px;
-
     text-align: center;
-
     border-bottom: 1px solid #263247;
 }
 
-
 .logo img {
-
     width: 80px;
-
     height: 80px;
-
     object-fit: contain;
-
     margin-bottom: 5px;
 }
-
 
 .logo h2 {
-
     font-size: 20px;
-
     color: #38bdf8;
-
     margin-bottom: 5px;
 }
 
-
 .logo p {
-
     font-size: 13px;
-
     color: #cbd5e1;
 }
 
-
-/* Menu */
-
 .menu {
-
     padding-top: 15px;
 }
 
-
 .menu a {
-
     display: flex;
-
     align-items: center;
-
     gap: 12px;
-
     width: 100%;
-
     padding: 13px 22px;
-
     color: #cbd5e1;
-
     text-decoration: none;
-
     font-size: 14px;
-
     transition: 0.2s;
 }
 
-
 .menu a i {
-
     width: 18px;
-
     text-align: center;
 }
 
-
 .menu a:hover {
-
     background: #1e293b;
-
     color: white;
 }
-
 
 .menu a.active {
-
     background: #2563eb;
-
     color: white;
 }
-
 
 /* ======================================
    MAIN
 ====================================== */
 
 .main {
-
     margin-left: 235px;
-
     width: calc(100% - 235px);
-
     min-height: 100vh;
-
     padding: 24px;
 }
-
 
 /* ======================================
    TOPBAR
 ====================================== */
 
 .topbar {
-
     background: white;
-
     border-radius: 10px;
-
     padding: 20px 24px;
-
     margin-bottom: 20px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-
 .topbar h2 {
-
     font-size: 24px;
-
     color: #0f172a;
-
     margin-bottom: 5px;
 }
 
-
 .topbar p {
-
     color: #64748b;
-
     font-size: 14px;
 }
 
-
 /* ======================================
-   FILTER PANEL
+   FILTER
 ====================================== */
 
 .filter-container {
-
     background: white;
-
     border-radius: 10px;
-
     padding: 20px;
-
     margin-bottom: 20px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-
 .filter-title {
-
     font-size: 18px;
-
     font-weight: bold;
-
     color: #0f172a;
-
     margin-bottom: 18px;
 }
 
-
 .filter-grid {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
 }
 
-
 .filter-group label {
-
     display: block;
-
     margin-bottom: 6px;
-
     font-size: 13px;
-
     font-weight: bold;
-
     color: #475569;
 }
 
-
-.filter-group select,
-.filter-group input {
-
+.filter-group select {
     width: 100%;
-
     padding: 11px 12px;
-
     border: 1px solid #cbd5e1;
-
     border-radius: 7px;
-
     background: white;
-
     font-size: 14px;
-
     outline: none;
 }
 
-
-.filter-group select:focus,
-.filter-group input:focus {
-
+.filter-group select:focus {
     border-color: #2563eb;
-
-    box-shadow:
-        0 0 0 3px rgba(37,99,235,0.10);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
 }
 
-
 /* ======================================
-   FILTER BUTTONS
+   BUTTONS
 ====================================== */
 
 .filter-buttons {
-
     display: flex;
-
     gap: 10px;
-
     margin-top: 18px;
 }
 
-
-.apply-btn {
-
+.apply-btn,
+.reset-btn {
     border: none;
-
     padding: 10px 18px;
-
     border-radius: 6px;
-
-    background: #2563eb;
-
     color: white;
-
     cursor: pointer;
-
     font-size: 13px;
-
     font-weight: bold;
 }
 
+.apply-btn {
+    background: #2563eb;
+}
 
 .apply-btn:hover {
-
     background: #1d4ed8;
 }
 
-
 .reset-btn {
-
-    border: none;
-
-    padding: 10px 18px;
-
-    border-radius: 6px;
-
     background: #64748b;
-
-    color: white;
-
-    cursor: pointer;
-
-    font-size: 13px;
-
-    font-weight: bold;
 }
 
-
 .reset-btn:hover {
-
     background: #475569;
 }
 
-
 /* ======================================
-   SUMMARY CARDS
+   SUMMARY
 ====================================== */
 
 .summary-grid {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
-
     margin-bottom: 20px;
 }
 
-
 .summary-card {
-
     background: white;
-
     padding: 18px;
-
     border-radius: 10px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-
 .summary-title {
-
     font-size: 13px;
-
     color: #64748b;
-
     margin-bottom: 8px;
 }
 
-
 .summary-value {
-
     font-size: 23px;
-
     font-weight: bold;
-
     color: #0f172a;
 }
-
-
-/* ======================================
-   TABLE CONTAINER
-====================================== */
-
-.table-container {
-
-    background: white;
-
-    border-radius: 10px;
-
-    padding: 20px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.06);
-}
-
-
-/* Table Header */
-
-.table-header {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 15px;
-
-    margin-bottom: 18px;
-}
-
-
-.table-header h3 {
-
-    font-size: 18px;
-
-    color: #0f172a;
-}
-
-
-.search-box {
-
-    width: 280px;
-
-    max-width: 100%;
-
-    padding: 10px 13px;
-
-    border: 1px solid #cbd5e1;
-
-    border-radius: 7px;
-
-    outline: none;
-
-    font-size: 14px;
-}
-
-
-.search-box:focus {
-
-    border-color: #2563eb;
-}
-
 
 /* ======================================
    TABLE
 ====================================== */
 
+.table-container {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.table-header h3 {
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.search-box {
+    width: 280px;
+    max-width: 100%;
+    padding: 10px 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-box:focus {
+    border-color: #2563eb;
+}
+
 .table-wrapper {
-
     width: 100%;
-
     overflow-x: auto;
-
     border: 1px solid #e2e8f0;
-
     border-radius: 7px;
 }
 
-
 table {
-
     width: 100%;
-
-    min-width: 1000px;
-
+    min-width: 1050px;
     border-collapse: collapse;
 }
 
-
 th {
-
     background: #2563eb;
-
     color: white;
-
     padding: 13px 14px;
-
     text-align: left;
-
     font-size: 13px;
-
     white-space: nowrap;
 }
-
 
 td {
-
     padding: 13px 14px;
-
-    border-bottom:
-        1px solid #e2e8f0;
-
+    border-bottom: 1px solid #e2e8f0;
     font-size: 14px;
-
     color: #334155;
-
     white-space: nowrap;
 }
 
-
 tbody tr:hover {
-
     background: #f8fafc;
 }
 
+.employee-code {
+    font-weight: bold;
+    color: #1d4ed8;
+}
 
 /* ======================================
    STATUS
 ====================================== */
 
 .status-badge {
-
     display: inline-block;
-
     padding: 5px 11px;
-
     border-radius: 20px;
-
     font-size: 12px;
-
     font-weight: bold;
 }
 
-
 .status-badge.approved {
-
     background: #d1e7dd;
-
     color: #0f5132;
 }
 
-
 .status-badge.pending {
-
     background: #fff3cd;
-
     color: #664d03;
 }
 
-
 /* ======================================
-   LOADING / EMPTY / ERROR
+   LOADING
 ====================================== */
 
 .loading-cell,
 .empty-cell,
 .error-cell {
-
     text-align: center;
-
     padding: 30px !important;
-
     font-size: 14px;
 }
 
-
-.loading-cell {
-
-    color: #64748b;
-}
-
-
+.loading-cell,
 .empty-cell {
-
     color: #64748b;
 }
-
 
 .error-cell {
-
     color: #dc3545;
 }
-
 
 /* ======================================
    MOBILE
@@ -630,128 +380,85 @@ tbody tr:hover {
 @media (max-width: 900px) {
 
     .filter-grid {
-
-        grid-template-columns:
-            repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
-
 
     .summary-grid {
-
-        grid-template-columns:
-            repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
-
 }
-
 
 @media (max-width: 768px) {
 
     .sidebar {
-
         width: 190px;
     }
 
-
     .main {
-
         margin-left: 190px;
-
         width: calc(100% - 190px);
-
         padding: 15px;
     }
 
-
     .table-header {
-
         flex-direction: column;
-
         align-items: stretch;
     }
 
-
     .search-box {
-
         width: 100%;
     }
-
 }
-
 
 @media (max-width: 550px) {
 
     .sidebar {
-
         width: 70px;
     }
 
-
     .main {
-
         margin-left: 70px;
-
         width: calc(100% - 70px);
-
         padding: 10px;
     }
 
-
     .logo {
-
         height: 100px;
-
         padding: 10px 5px;
     }
 
-
     .logo img {
-
         width: 45px;
-
         height: 45px;
     }
-
 
     .logo h2,
     .logo p,
     .menu a span {
-
         display: none;
     }
 
-
     .menu a {
-
         justify-content: center;
-
         padding: 15px 5px;
     }
 
-
     .filter-grid {
-
         grid-template-columns: 1fr;
     }
-
 
     .summary-grid {
-
         grid-template-columns: 1fr;
     }
 
-
     .filter-buttons {
-
         flex-direction: column;
     }
-
 }
 
 </style>
 
 </head>
-
 
 <body>
 
@@ -761,7 +468,6 @@ tbody tr:hover {
 ====================================== -->
 
 <div class="sidebar">
-
 
     <div class="logo">
 
@@ -778,7 +484,6 @@ tbody tr:hover {
 
 
     <div class="menu">
-
 
         <a href="dashboard.html">
 
@@ -857,11 +562,9 @@ tbody tr:hover {
 
         </a>
 
-
     </div>
 
 </div>
-
 
 
 <!-- ======================================
@@ -871,8 +574,6 @@ tbody tr:hover {
 <div class="main">
 
 
-    <!-- TOPBAR -->
-
     <div class="topbar">
 
         <h2>
@@ -880,11 +581,10 @@ tbody tr:hover {
         </h2>
 
         <p>
-            Region aur State ke hisaab se data access manage karein
+            Region aur State ke hisaab se data view karein
         </p>
 
     </div>
-
 
 
     <!-- ==================================
@@ -892,7 +592,6 @@ tbody tr:hover {
     ================================== -->
 
     <div class="filter-container">
-
 
         <div class="filter-title">
 
@@ -906,11 +605,11 @@ tbody tr:hover {
         <div class="filter-grid">
 
 
-            <!-- Region -->
+            <!-- REGION -->
 
             <div class="filter-group">
 
-                <label for="filterRegion">
+                <label>
                     Region
                 </label>
 
@@ -925,11 +624,11 @@ tbody tr:hover {
             </div>
 
 
-            <!-- State -->
+            <!-- STATE -->
 
             <div class="filter-group">
 
-                <label for="filterState">
+                <label>
                     State
                 </label>
 
@@ -944,11 +643,11 @@ tbody tr:hover {
             </div>
 
 
-            <!-- City -->
+            <!-- CITY -->
 
             <div class="filter-group">
 
-                <label for="filterCity">
+                <label>
                     City
                 </label>
 
@@ -963,11 +662,11 @@ tbody tr:hover {
             </div>
 
 
-            <!-- Status -->
+            <!-- STATUS -->
 
             <div class="filter-group">
 
-                <label for="filterStatus">
+                <label>
                     Status
                 </label>
 
@@ -989,15 +688,10 @@ tbody tr:hover {
 
             </div>
 
-
         </div>
 
 
-
-        <!-- Buttons -->
-
         <div class="filter-buttons">
-
 
             <button
                 type="button"
@@ -1024,11 +718,9 @@ tbody tr:hover {
 
             </button>
 
-
         </div>
 
     </div>
-
 
 
     <!-- ==================================
@@ -1101,9 +793,7 @@ tbody tr:hover {
 
         </div>
 
-
     </div>
-
 
 
     <!-- ==================================
@@ -1114,7 +804,6 @@ tbody tr:hover {
 
 
         <div class="table-header">
-
 
             <h3>
                 Teachers Data
@@ -1129,16 +818,12 @@ tbody tr:hover {
                 autocomplete="off"
             >
 
-
         </div>
-
 
 
         <div class="table-wrapper">
 
-
             <table>
-
 
                 <thead>
 
@@ -1202,18 +887,13 @@ tbody tr:hover {
 
                 </tbody>
 
-
             </table>
-
 
         </div>
 
-
     </div>
 
-
 </div>
-
 
 
 <!-- ======================================
@@ -1234,7 +914,6 @@ tbody tr:hover {
 
 const logoutBtn =
     document.getElementById("logoutBtn");
-
 
 if (logoutBtn) {
 
