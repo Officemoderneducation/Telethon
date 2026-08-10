@@ -13,10 +13,20 @@ import {
     deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const usersTable = document.getElementById("usersTable");
-const searchUser = document.getElementById("searchUser");
+
+// ======================================
+// HTML Elements
+// ======================================
+
+const usersTable =
+    document.getElementById("usersTable");
+
+const searchUser =
+    document.getElementById("searchUser");
+
 
 let employees = [];
+
 
 // ======================================
 // Load Employees From Firebase
@@ -24,34 +34,57 @@ let employees = [];
 
 async function loadEmployees() {
 
-    if (!usersTable) return;
+    if (!usersTable) {
+        return;
+    }
+
 
     usersTable.innerHTML = `
         <tr>
-            <td colspan="9" class="loading-cell">
+            <td
+                colspan="8"
+                class="loading-cell"
+            >
                 Loading Teachers...
             </td>
         </tr>
     `;
 
+
     try {
 
-        const snapshot = await getDocs(
-            collection(db, "employees")
-        );
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "employees"
+                )
+            );
+
 
         employees = [];
 
-        snapshot.forEach((employeeDoc) => {
 
-            employees.push({
-                id: employeeDoc.id,
-                ...employeeDoc.data()
-            });
+        snapshot.forEach(
+            (employeeDoc) => {
 
-        });
+                employees.push({
 
-        displayEmployees(employees);
+                    id:
+                        employeeDoc.id,
+
+                    ...employeeDoc.data()
+
+                });
+
+            }
+        );
+
+
+        displayEmployees(
+            employees
+        );
+
 
     } catch (error) {
 
@@ -60,16 +93,22 @@ async function loadEmployees() {
             error
         );
 
+
         usersTable.innerHTML = `
             <tr>
-                <td colspan="9" class="error-cell">
+                <td
+                    colspan="8"
+                    class="error-cell"
+                >
                     Teachers load nahi ho rahe.
-                    <br>
+                    <br><br>
                     ${error.message}
                 </td>
             </tr>
         `;
+
     }
+
 }
 
 
@@ -79,13 +118,23 @@ async function loadEmployees() {
 
 function displayEmployees(list) {
 
-    if (!usersTable) return;
+    if (!usersTable) {
+        return;
+    }
+
+
+    // ==================================
+    // No Data
+    // ==================================
 
     if (list.length === 0) {
 
         usersTable.innerHTML = `
             <tr>
-                <td colspan="9" class="empty-cell">
+                <td
+                    colspan="8"
+                    class="empty-cell"
+                >
                     Koi Registered Teacher nahi mila.
                 </td>
             </tr>
@@ -98,176 +147,229 @@ function displayEmployees(list) {
     let html = "";
 
 
-    list.forEach((employee) => {
+    // ==================================
+    // Loop Employees
+    // ==================================
 
-        // ==================================
-        // Firebase Fields
-        // ==================================
-
-        const employeeCode =
-            employee.employeeCode ||
-            employee.employee_code ||
-            employee.id ||
-            "-";
+    list.forEach(
+        (employee) => {
 
 
-        const teacherName =
-            employee.teacherName ||
-            employee.teacher_name ||
-            "-";
+            // ==================================
+            // Employee Code
+            // ==================================
+
+            const employeeCode =
+                employee.employeeCode ||
+                employee.employee_code ||
+                employee.id ||
+                "-";
 
 
-        const mobile =
-            employee.mobileNumber ||
-            employee.mobile ||
-            "-";
+            // ==================================
+            // Teacher Name
+            // ==================================
+
+            const teacherName =
+                employee.teacherName ||
+                employee.teacher_name ||
+                "-";
 
 
-        const region =
-            employee.region ||
-            "-";
+            // ==================================
+            // Mobile
+            // ==================================
+
+            const mobile =
+                employee.mobileNumber ||
+                employee.mobile ||
+                "-";
 
 
-        const state =
-            employee.state ||
-            "-";
+            // ==================================
+            // Region
+            // ==================================
+
+            const region =
+                employee.region ||
+                "-";
 
 
-        const city =
-            employee.city ||
-            "-";
+            // ==================================
+            // State
+            // ==================================
+
+            const state =
+                employee.state ||
+                "-";
 
 
-        const status =
-            employee.status ||
-            "Pending";
+            // ==================================
+            // City
+            // ==================================
+
+            const city =
+                employee.city ||
+                "-";
 
 
-        // ==================================
-        // Status Badge
-        // ==================================
+            // ==================================
+            // Status
+            // ==================================
 
-        let statusHTML = "";
+            const status =
+                employee.status ||
+                "Pending";
 
 
-        if (
-            String(status).toLowerCase() ===
-            "approved"
-        ) {
+            // ==================================
+            // Status Badge
+            // ==================================
 
-            statusHTML = `
-                <span class="status-badge approved">
-                    Approved
-                </span>
+            let statusHTML = "";
+
+
+            if (
+                String(status).toLowerCase() ===
+                "approved"
+            ) {
+
+                statusHTML = `
+                    <span
+                        class="status-badge approved"
+                    >
+                        Approved
+                    </span>
+                `;
+
+            } else {
+
+                statusHTML = `
+                    <span
+                        class="status-badge pending"
+                    >
+                        Pending
+                    </span>
+                `;
+
+            }
+
+
+            // ==================================
+            // Action Buttons
+            // ==================================
+
+            let actionHTML = "";
+
+
+            if (
+                String(status).toLowerCase() ===
+                "approved"
+            ) {
+
+                actionHTML = `
+
+                    <button
+                        class="action-btn pending-btn"
+                        onclick="changeStatus('${employee.id}', 'Pending')"
+                    >
+                        Pending
+                    </button>
+
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteTeacher('${employee.id}')"
+                    >
+                        Delete
+                    </button>
+
+                `;
+
+            } else {
+
+                actionHTML = `
+
+                    <button
+                        class="action-btn approve-btn"
+                        onclick="changeStatus('${employee.id}', 'Approved')"
+                    >
+                        Approve
+                    </button>
+
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteTeacher('${employee.id}')"
+                    >
+                        Delete
+                    </button>
+
+                `;
+
+            }
+
+
+            // ==================================
+            // Table Row
+            // ==================================
+
+            html += `
+
+                <tr>
+
+
+                    <td class="employee-code">
+                        ${employeeCode}
+                    </td>
+
+
+                    <td>
+                        ${teacherName}
+                    </td>
+
+
+                    <td>
+                        ${mobile}
+                    </td>
+
+
+                    <td>
+                        ${region}
+                    </td>
+
+
+                    <td>
+                        ${state}
+                    </td>
+
+
+                    <td>
+                        ${city}
+                    </td>
+
+
+                    <td>
+                        ${statusHTML}
+                    </td>
+
+
+                    <td>
+                        ${actionHTML}
+                    </td>
+
+
+                </tr>
+
             `;
 
-        } else {
-
-            statusHTML = `
-                <span class="status-badge pending">
-                    Pending
-                </span>
-            `;
         }
+    );
 
 
-        // ==================================
-        // Status Button
-        // ==================================
+    usersTable.innerHTML =
+        html;
 
-        let statusButtonHTML = "";
-
-
-        if (
-            String(status).toLowerCase() ===
-            "approved"
-        ) {
-
-            statusButtonHTML = `
-                <button
-                    class="action-btn pending-btn"
-                    onclick="changeStatus('${employee.id}', 'Pending')"
-                >
-                    Pending
-                </button>
-            `;
-
-        } else {
-
-            statusButtonHTML = `
-                <button
-                    class="action-btn approve-btn"
-                    onclick="changeStatus('${employee.id}', 'Approved')"
-                >
-                    Approve
-                </button>
-            `;
-        }
-
-
-        // ==================================
-        // Delete Button
-        // ==================================
-
-        const deleteButtonHTML = `
-            <button
-                class="action-btn delete-btn"
-                onclick="deleteTeacher('${employee.id}', '${employeeCode}')"
-            >
-                Delete
-            </button>
-        `;
-
-
-        // ==================================
-        // Table Row
-        // ==================================
-
-        html += `
-            <tr>
-
-                <td class="employee-code">
-                    ${employeeCode}
-                </td>
-
-                <td>
-                    ${teacherName}
-                </td>
-
-                <td>
-                    ${mobile}
-                </td>
-
-                <td>
-                    ${region}
-                </td>
-
-                <td>
-                    ${state}
-                </td>
-
-                <td>
-                    ${city}
-                </td>
-
-                <td>
-                    ${statusHTML}
-                </td>
-
-                <td>
-
-                    ${statusButtonHTML}
-
-                    ${deleteButtonHTML}
-
-                </td>
-
-            </tr>
-        `;
-    });
-
-
-    usersTable.innerHTML = html;
 }
 
 
@@ -281,75 +383,111 @@ if (searchUser) {
         "input",
         function () {
 
+
             const search =
                 this.value
                     .trim()
                     .toLowerCase();
 
 
+            // ==================================
+            // Filter
+            // ==================================
+
             const filtered =
-                employees.filter((employee) => {
-
-                    const employeeCode =
-                        String(
-                            employee.employeeCode ||
-                            employee.employee_code ||
-                            employee.id ||
-                            ""
-                        ).toLowerCase();
+                employees.filter(
+                    (employee) => {
 
 
-                    const teacherName =
-                        String(
-                            employee.teacherName ||
-                            employee.teacher_name ||
-                            ""
-                        ).toLowerCase();
+                        const employeeCode =
+                            String(
+                                employee.employeeCode ||
+                                employee.employee_code ||
+                                employee.id ||
+                                ""
+                            ).toLowerCase();
 
 
-                    const mobile =
-                        String(
-                            employee.mobileNumber ||
-                            employee.mobile ||
-                            ""
-                        ).toLowerCase();
+                        const teacherName =
+                            String(
+                                employee.teacherName ||
+                                employee.teacher_name ||
+                                ""
+                            ).toLowerCase();
 
 
-                    const region =
-                        String(
-                            employee.region ||
-                            ""
-                        ).toLowerCase();
+                        const mobile =
+                            String(
+                                employee.mobileNumber ||
+                                employee.mobile ||
+                                ""
+                            ).toLowerCase();
 
 
-                    const state =
-                        String(
-                            employee.state ||
-                            ""
-                        ).toLowerCase();
+                        const region =
+                            String(
+                                employee.region ||
+                                ""
+                            ).toLowerCase();
 
 
-                    const city =
-                        String(
-                            employee.city ||
-                            ""
-                        ).toLowerCase();
+                        const state =
+                            String(
+                                employee.state ||
+                                ""
+                            ).toLowerCase();
 
 
-                    return (
-                        employeeCode.includes(search) ||
-                        teacherName.includes(search) ||
-                        mobile.includes(search) ||
-                        region.includes(search) ||
-                        state.includes(search) ||
-                        city.includes(search)
-                    );
-                });
+                        const city =
+                            String(
+                                employee.city ||
+                                ""
+                            ).toLowerCase();
 
 
-            displayEmployees(filtered);
+                        return (
+
+                            employeeCode
+                                .includes(search)
+
+                            ||
+
+                            teacherName
+                                .includes(search)
+
+                            ||
+
+                            mobile
+                                .includes(search)
+
+                            ||
+
+                            region
+                                .includes(search)
+
+                            ||
+
+                            state
+                                .includes(search)
+
+                            ||
+
+                            city
+                                .includes(search)
+
+                        );
+
+                    }
+                );
+
+
+            displayEmployees(
+                filtered
+            );
+
         }
     );
+
 }
 
 
@@ -357,124 +495,206 @@ if (searchUser) {
 // Change Teacher Status
 // ======================================
 
-window.changeStatus = async function (
-    employeeId,
-    newStatus
-) {
-
-    const confirmation = confirm(
-        `Teacher status "${newStatus}" karna hai?`
-    );
-
-    if (!confirmation) {
-        return;
-    }
+window.changeStatus =
+    async function (
+        employeeId,
+        newStatus
+    ) {
 
 
-    try {
-
-        const employeeRef =
-            doc(
-                db,
-                "employees",
-                employeeId
+        const confirmation =
+            confirm(
+                `Teacher status "${newStatus}" karna hai?`
             );
 
 
-        await updateDoc(
-            employeeRef,
-            {
-                status: newStatus
-            }
-        );
+        if (!confirmation) {
+            return;
+        }
 
 
-        alert(
-            `Teacher status ${newStatus} ho gaya.`
-        );
+        try {
 
 
-        await loadEmployees();
+            // ==================================
+            // Employee Reference
+            // ==================================
 
-    } catch (error) {
-
-        console.error(
-            "Status Update Error:",
-            error
-        );
-
-        alert(
-            "Status update nahi ho saka.\n\n" +
-            error.message
-        );
-    }
-};
+            const employeeRef =
+                doc(
+                    db,
+                    "employees",
+                    employeeId
+                );
 
 
-// ======================================
-// DELETE TEACHER
-// ======================================
+            // ==================================
+            // Update Status
+            // ==================================
 
-window.deleteTeacher = async function (
-    employeeId,
-    employeeCode
-) {
-
-    const confirmation = confirm(
-        `Employee Code: ${employeeCode}\n\n` +
-        `Is teacher ko permanently DELETE karna hai?\n\n` +
-        `Ye action undo nahi kiya ja sakta.`
-    );
-
-
-    if (!confirmation) {
-        return;
-    }
-
-
-    try {
-
-        const employeeRef =
-            doc(
-                db,
-                "employees",
-                employeeId
+            await updateDoc(
+                employeeRef,
+                {
+                    status:
+                        newStatus
+                }
             );
 
 
+            // ==================================
+            // Success
+            // ==================================
+
+            alert(
+                `Teacher status ${newStatus} ho gaya.`
+            );
+
+
+            // ==================================
+            // Reload List
+            // ==================================
+
+            await loadEmployees();
+
+
+        } catch (error) {
+
+
+            console.error(
+                "Status Update Error:",
+                error
+            );
+
+
+            alert(
+                "Status update nahi ho saka.\n\n" +
+                error.message
+            );
+
+        }
+
+    };
+
+
+// ======================================
+// Delete Teacher
+// ======================================
+
+window.deleteTeacher =
+    async function (
+        employeeId
+    ) {
+
+
         // ==================================
-        // Delete From Firebase
+        // Find Employee
         // ==================================
 
-        await deleteDoc(employeeRef);
+        const employee =
+            employees.find(
+                (item) =>
+                    item.id ===
+                    employeeId
+            );
 
 
-        alert(
-            `Teacher ${employeeCode} successfully deleted.`
-        );
+        const teacherName =
+            employee?.teacherName ||
+            employee?.teacher_name ||
+            "this Teacher";
+
+
+        const employeeCode =
+            employee?.employeeCode ||
+            employee?.employee_code ||
+            employeeId;
 
 
         // ==================================
-        // Reload Teachers List
+        // Confirmation
         // ==================================
 
-        await loadEmployees();
+        const confirmation =
+            confirm(
+
+                "WARNING!\n\n" +
+
+                `Teacher: ${teacherName}\n` +
+
+                `Employee Code: ${employeeCode}\n\n` +
+
+                "Kya aap is Teacher ko permanently DELETE karna chahte hain?\n\n" +
+
+                "Ye data Firebase se permanently delete ho jayega."
+
+            );
 
 
-    } catch (error) {
-
-        console.error(
-            "Delete Teacher Error:",
-            error
-        );
+        if (!confirmation) {
+            return;
+        }
 
 
-        alert(
-            "Teacher delete nahi ho saka.\n\n" +
-            error.message
-        );
-    }
-};
+        try {
+
+
+            // ==================================
+            // Employee Reference
+            // ==================================
+
+            const employeeRef =
+                doc(
+                    db,
+                    "employees",
+                    employeeId
+                );
+
+
+            // ==================================
+            // Delete From Firebase
+            // ==================================
+
+            await deleteDoc(
+                employeeRef
+            );
+
+
+            // ==================================
+            // Success
+            // ==================================
+
+            alert(
+                "Teacher successfully delete ho gaya."
+            );
+
+
+            // ==================================
+            // Reload Teachers
+            // ==================================
+
+            await loadEmployees();
+
+
+        } catch (error) {
+
+
+            console.error(
+                "Delete Teacher Error:",
+                error
+            );
+
+
+            alert(
+
+                "Teacher delete nahi ho saka.\n\n" +
+
+                error.message
+
+            );
+
+        }
+
+    };
 
 
 // ======================================
