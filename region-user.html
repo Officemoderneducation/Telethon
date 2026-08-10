@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>Region User Dashboard | Telethon</title>
+<title>Region Users Panel | Telethon</title>
 
 
 <!-- Font Awesome -->
@@ -46,7 +46,6 @@ body {
     background: #f4f6f9;
 
     color: #1e293b;
-
 }
 
 
@@ -58,7 +57,7 @@ body {
 
     width: 235px;
 
-    height: 100vh;
+    min-height: 100vh;
 
     background: #0f172a;
 
@@ -72,16 +71,11 @@ body {
 
     bottom: 0;
 
-    overflow-y: auto;
-
     z-index: 1000;
-
 }
 
 
-/* ======================================
-   LOGO
-====================================== */
+/* Logo */
 
 .logo {
 
@@ -92,7 +86,6 @@ body {
     text-align: center;
 
     border-bottom: 1px solid #263247;
-
 }
 
 
@@ -105,7 +98,6 @@ body {
     object-fit: contain;
 
     margin-bottom: 5px;
-
 }
 
 
@@ -116,7 +108,6 @@ body {
     color: #38bdf8;
 
     margin-bottom: 5px;
-
 }
 
 
@@ -125,18 +116,14 @@ body {
     font-size: 13px;
 
     color: #cbd5e1;
-
 }
 
 
-/* ======================================
-   MENU
-====================================== */
+/* Menu */
 
 .menu {
 
     padding-top: 15px;
-
 }
 
 
@@ -159,7 +146,6 @@ body {
     font-size: 14px;
 
     transition: 0.2s;
-
 }
 
 
@@ -168,7 +154,6 @@ body {
     width: 18px;
 
     text-align: center;
-
 }
 
 
@@ -177,7 +162,6 @@ body {
     background: #1e293b;
 
     color: white;
-
 }
 
 
@@ -186,7 +170,6 @@ body {
     background: #2563eb;
 
     color: white;
-
 }
 
 
@@ -203,7 +186,6 @@ body {
     min-height: 100vh;
 
     padding: 24px;
-
 }
 
 
@@ -223,7 +205,6 @@ body {
 
     box-shadow:
         0 2px 8px rgba(0,0,0,0.06);
-
 }
 
 
@@ -234,7 +215,6 @@ body {
     color: #0f172a;
 
     margin-bottom: 5px;
-
 }
 
 
@@ -243,75 +223,162 @@ body {
     color: #64748b;
 
     font-size: 14px;
-
 }
 
 
 /* ======================================
-   ACCESS INFORMATION
+   FILTER PANEL
 ====================================== */
 
-.access-box {
+.filter-container {
 
     background: white;
 
     border-radius: 10px;
 
-    padding: 18px 20px;
+    padding: 20px;
 
     margin-bottom: 20px;
 
     box-shadow:
         0 2px 8px rgba(0,0,0,0.06);
-
 }
 
 
-.access-title {
+.filter-title {
 
-    font-size: 14px;
+    font-size: 18px;
 
     font-weight: bold;
 
-    color: #64748b;
+    color: #0f172a;
 
-    margin-bottom: 12px;
-
+    margin-bottom: 18px;
 }
 
 
-.access-details {
+.filter-grid {
 
-    display: flex;
+    display: grid;
 
-    flex-wrap: wrap;
+    grid-template-columns:
+        repeat(4, 1fr);
 
-    gap: 10px;
-
+    gap: 15px;
 }
 
 
-.access-badge {
+.filter-group label {
 
-    background: #eff6ff;
+    display: block;
 
-    color: #1d4ed8;
-
-    border: 1px solid #bfdbfe;
-
-    padding: 8px 14px;
-
-    border-radius: 20px;
+    margin-bottom: 6px;
 
     font-size: 13px;
 
     font-weight: bold;
 
+    color: #475569;
+}
+
+
+.filter-group select,
+.filter-group input {
+
+    width: 100%;
+
+    padding: 11px 12px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 7px;
+
+    background: white;
+
+    font-size: 14px;
+
+    outline: none;
+}
+
+
+.filter-group select:focus,
+.filter-group input:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37,99,235,0.10);
 }
 
 
 /* ======================================
-   SUMMARY GRID
+   FILTER BUTTONS
+====================================== */
+
+.filter-buttons {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+
+.apply-btn {
+
+    border: none;
+
+    padding: 10px 18px;
+
+    border-radius: 6px;
+
+    background: #2563eb;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+.apply-btn:hover {
+
+    background: #1d4ed8;
+}
+
+
+.reset-btn {
+
+    border: none;
+
+    padding: 10px 18px;
+
+    border-radius: 6px;
+
+    background: #64748b;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+.reset-btn:hover {
+
+    background: #475569;
+}
+
+
+/* ======================================
+   SUMMARY CARDS
 ====================================== */
 
 .summary-grid {
@@ -324,7 +391,6 @@ body {
     gap: 15px;
 
     margin-bottom: 20px;
-
 }
 
 
@@ -332,36 +398,12 @@ body {
 
     background: white;
 
-    border-radius: 10px;
+    padding: 18px;
 
-    padding: 20px;
+    border-radius: 10px;
 
     box-shadow:
         0 2px 8px rgba(0,0,0,0.06);
-
-    border-left: 4px solid #2563eb;
-
-}
-
-
-.summary-card.collection {
-
-    border-left-color: #198754;
-
-}
-
-
-.summary-card.remaining {
-
-    border-left-color: #f59e0b;
-
-}
-
-
-.summary-card.percentage {
-
-    border-left-color: #7c3aed;
-
 }
 
 
@@ -372,20 +414,16 @@ body {
     color: #64748b;
 
     margin-bottom: 8px;
-
-    font-weight: bold;
-
 }
 
 
 .summary-value {
 
-    font-size: 24px;
+    font-size: 23px;
 
     font-weight: bold;
 
     color: #0f172a;
-
 }
 
 
@@ -403,13 +441,10 @@ body {
 
     box-shadow:
         0 2px 8px rgba(0,0,0,0.06);
-
-    width: 100%;
-
-    overflow: hidden;
-
 }
 
+
+/* Table Header */
 
 .table-header {
 
@@ -422,7 +457,6 @@ body {
     gap: 15px;
 
     margin-bottom: 18px;
-
 }
 
 
@@ -431,13 +465,8 @@ body {
     font-size: 18px;
 
     color: #0f172a;
-
 }
 
-
-/* ======================================
-   SEARCH
-====================================== */
 
 .search-box {
 
@@ -445,7 +474,7 @@ body {
 
     max-width: 100%;
 
-    padding: 11px 14px;
+    padding: 10px 13px;
 
     border: 1px solid #cbd5e1;
 
@@ -454,22 +483,17 @@ body {
     outline: none;
 
     font-size: 14px;
-
 }
 
 
 .search-box:focus {
 
     border-color: #2563eb;
-
-    box-shadow:
-        0 0 0 3px rgba(37,99,235,0.10);
-
 }
 
 
 /* ======================================
-   TABLE WRAPPER
+   TABLE
 ====================================== */
 
 .table-wrapper {
@@ -481,24 +505,16 @@ body {
     border: 1px solid #e2e8f0;
 
     border-radius: 7px;
-
 }
 
-
-/* ======================================
-   TABLE
-====================================== */
 
 table {
 
     width: 100%;
 
-    min-width: 950px;
+    min-width: 1000px;
 
     border-collapse: collapse;
-
-    background: white;
-
 }
 
 
@@ -515,7 +531,6 @@ th {
     font-size: 13px;
 
     white-space: nowrap;
-
 }
 
 
@@ -523,118 +538,88 @@ td {
 
     padding: 13px 14px;
 
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom:
+        1px solid #e2e8f0;
 
     font-size: 14px;
 
     color: #334155;
 
     white-space: nowrap;
-
 }
 
 
 tbody tr:hover {
 
     background: #f8fafc;
-
-}
-
-
-tbody tr:last-child td {
-
-    border-bottom: none;
-
 }
 
 
 /* ======================================
-   AMOUNTS
+   STATUS
 ====================================== */
 
-.target-amount {
-
-    font-weight: bold;
-
-    color: #1d4ed8;
-
-}
-
-
-.collection-amount {
-
-    font-weight: bold;
-
-    color: #198754;
-
-}
-
-
-.remaining-amount {
-
-    font-weight: bold;
-
-    color: #dc3545;
-
-}
-
-
-/* ======================================
-   PERCENTAGE
-====================================== */
-
-.percentage {
+.status-badge {
 
     display: inline-block;
 
-    padding: 5px 10px;
+    padding: 5px 11px;
 
     border-radius: 20px;
-
-    background: #ede9fe;
-
-    color: #6d28d9;
 
     font-size: 12px;
 
     font-weight: bold;
+}
 
+
+.status-badge.approved {
+
+    background: #d1e7dd;
+
+    color: #0f5132;
+}
+
+
+.status-badge.pending {
+
+    background: #fff3cd;
+
+    color: #664d03;
 }
 
 
 /* ======================================
-   LOADING / EMPTY
+   LOADING / EMPTY / ERROR
 ====================================== */
 
 .loading-cell,
-.empty-cell {
+.empty-cell,
+.error-cell {
 
     text-align: center;
 
     padding: 30px !important;
 
+    font-size: 14px;
+}
+
+
+.loading-cell {
+
     color: #64748b;
-
 }
 
 
-/* ======================================
-   LOGOUT
-====================================== */
+.empty-cell {
 
-.logout-link {
-
-    margin-top: 15px;
-
-    color: #f87171 !important;
-
+    color: #64748b;
 }
 
 
-.logout-link:hover {
+.error-cell {
 
-    background: #1e293b !important;
-
+    color: #dc3545;
 }
 
 
@@ -644,11 +629,17 @@ tbody tr:last-child td {
 
 @media (max-width: 900px) {
 
+    .filter-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
     .summary-grid {
 
         grid-template-columns:
             repeat(2, 1fr);
-
     }
 
 }
@@ -659,7 +650,6 @@ tbody tr:last-child td {
     .sidebar {
 
         width: 190px;
-
     }
 
 
@@ -670,7 +660,6 @@ tbody tr:last-child td {
         width: calc(100% - 190px);
 
         padding: 15px;
-
     }
 
 
@@ -679,14 +668,12 @@ tbody tr:last-child td {
         flex-direction: column;
 
         align-items: stretch;
-
     }
 
 
     .search-box {
 
         width: 100%;
-
     }
 
 }
@@ -697,7 +684,6 @@ tbody tr:last-child td {
     .sidebar {
 
         width: 70px;
-
     }
 
 
@@ -708,7 +694,6 @@ tbody tr:last-child td {
         width: calc(100% - 70px);
 
         padding: 10px;
-
     }
 
 
@@ -717,7 +702,6 @@ tbody tr:last-child td {
         height: 100px;
 
         padding: 10px 5px;
-
     }
 
 
@@ -726,7 +710,6 @@ tbody tr:last-child td {
         width: 45px;
 
         height: 45px;
-
     }
 
 
@@ -735,7 +718,6 @@ tbody tr:last-child td {
     .menu a span {
 
         display: none;
-
     }
 
 
@@ -744,38 +726,24 @@ tbody tr:last-child td {
         justify-content: center;
 
         padding: 15px 5px;
+    }
 
+
+    .filter-grid {
+
+        grid-template-columns: 1fr;
     }
 
 
     .summary-grid {
 
-        grid-template-columns:
-            1fr 1fr;
-
-        gap: 10px;
-
+        grid-template-columns: 1fr;
     }
 
 
-    .summary-card {
-
-        padding: 15px 10px;
-
-    }
-
-
-    .summary-value {
-
-        font-size: 18px;
-
-    }
-
-
-    .access-details {
+    .filter-buttons {
 
         flex-direction: column;
-
     }
 
 }
@@ -795,8 +763,6 @@ tbody tr:last-child td {
 <div class="sidebar">
 
 
-    <!-- Logo -->
-
     <div class="logo">
 
         <img
@@ -804,20 +770,68 @@ tbody tr:last-child td {
             alt="Telethon Logo"
         >
 
-        <h2>
-            Telethon
-        </h2>
+        <h2>Telethon</h2>
 
-        <p>
-            Region User Panel
-        </p>
+        <p>Management System</p>
 
     </div>
 
 
-    <!-- Menu -->
-
     <div class="menu">
+
+
+        <a href="dashboard.html">
+
+            <i class="fa-solid fa-house"></i>
+
+            <span>Dashboard</span>
+
+        </a>
+
+
+        <a href="register.html">
+
+            <i class="fa-solid fa-user-plus"></i>
+
+            <span>Registration Form</span>
+
+        </a>
+
+
+        <a href="users.html">
+
+            <i class="fa-solid fa-users"></i>
+
+            <span>Teachers List</span>
+
+        </a>
+
+
+        <a href="daily-entry.html">
+
+            <i class="fa-solid fa-file-circle-plus"></i>
+
+            <span>Daily Collection</span>
+
+        </a>
+
+
+        <a href="all-entry.html">
+
+            <i class="fa-solid fa-list"></i>
+
+            <span>All Entry</span>
+
+        </a>
+
+
+        <a href="reports.html">
+
+            <i class="fa-solid fa-chart-column"></i>
+
+            <span>Reports</span>
+
+        </a>
 
 
         <a
@@ -825,37 +839,9 @@ tbody tr:last-child td {
             class="active"
         >
 
-            <i class="fa-solid fa-house"></i>
+            <i class="fa-solid fa-user-shield"></i>
 
-            <span>
-                Dashboard
-            </span>
-
-        </a>
-
-
-        <a
-            href="all-entry.html"
-        >
-
-            <i class="fa-solid fa-list"></i>
-
-            <span>
-                Collection Entry
-            </span>
-
-        </a>
-
-
-        <a
-            href="reports.html"
-        >
-
-            <i class="fa-solid fa-chart-column"></i>
-
-            <span>
-                Reports
-            </span>
+            <span>Region Users</span>
 
         </a>
 
@@ -863,14 +849,11 @@ tbody tr:last-child td {
         <a
             href="#"
             id="logoutBtn"
-            class="logout-link"
         >
 
             <i class="fa-solid fa-right-from-bracket"></i>
 
-            <span>
-                Logout
-            </span>
+            <span>Logout</span>
 
         </a>
 
@@ -880,6 +863,7 @@ tbody tr:last-child td {
 </div>
 
 
+
 <!-- ======================================
      MAIN
 ====================================== -->
@@ -887,94 +871,222 @@ tbody tr:last-child td {
 <div class="main">
 
 
-    <!-- ==================================
-         TOPBAR
-    ================================== -->
+    <!-- TOPBAR -->
 
     <div class="topbar">
 
         <h2>
-            Region / State Dashboard
+            Region / State Users
         </h2>
 
         <p>
-            Telethon Performance Management
+            Region aur State ke hisaab se data access manage karein
         </p>
 
     </div>
 
 
+
     <!-- ==================================
-         ACCESS INFORMATION
+         FILTER PANEL
     ================================== -->
 
-    <div class="access-box">
+    <div class="filter-container">
 
-        <div class="access-title">
-            Your Assigned Access
+
+        <div class="filter-title">
+
+            <i class="fa-solid fa-filter"></i>
+
+            Data Filters
+
         </div>
 
 
-        <div class="access-details">
+        <div class="filter-grid">
 
-            <span
-                class="access-badge"
-                id="userRegion"
+
+            <!-- Region -->
+
+            <div class="filter-group">
+
+                <label for="filterRegion">
+                    Region
+                </label>
+
+                <select id="filterRegion">
+
+                    <option value="">
+                        All Regions
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- State -->
+
+            <div class="filter-group">
+
+                <label for="filterState">
+                    State
+                </label>
+
+                <select id="filterState">
+
+                    <option value="">
+                        All States
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- City -->
+
+            <div class="filter-group">
+
+                <label for="filterCity">
+                    City
+                </label>
+
+                <select id="filterCity">
+
+                    <option value="">
+                        All Cities
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Status -->
+
+            <div class="filter-group">
+
+                <label for="filterStatus">
+                    Status
+                </label>
+
+                <select id="filterStatus">
+
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option value="Approved">
+                        Approved
+                    </option>
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- Buttons -->
+
+        <div class="filter-buttons">
+
+
+            <button
+                type="button"
+                id="applyFilter"
+                class="apply-btn"
             >
-                Region: Loading...
-            </span>
+
+                <i class="fa-solid fa-filter"></i>
+
+                Apply Filter
+
+            </button>
 
 
-            <span
-                class="access-badge"
-                id="userState"
+            <button
+                type="button"
+                id="resetFilter"
+                class="reset-btn"
             >
-                State: Loading...
-            </span>
 
+                <i class="fa-solid fa-rotate-left"></i>
 
-            <span
-                class="access-badge"
-                id="userName"
-            >
-                User: Loading...
-            </span>
+                Reset
+
+            </button>
+
 
         </div>
 
     </div>
 
 
+
     <!-- ==================================
-         SUMMARY CARDS
+         SUMMARY
     ================================== -->
 
     <div class="summary-grid">
 
 
-        <!-- Target -->
-
         <div class="summary-card">
 
             <div class="summary-title">
-                Total Target
+                Total Teachers
             </div>
 
             <div
                 class="summary-value"
-                id="totalTarget"
+                id="totalTeachers"
             >
-                ₹ 0
+                0
             </div>
 
         </div>
 
 
-        <!-- Collection -->
+        <div class="summary-card">
 
-        <div
-            class="summary-card collection"
-        >
+            <div class="summary-title">
+                Approved
+            </div>
+
+            <div
+                class="summary-value"
+                id="approvedTeachers"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-title">
+                Pending
+            </div>
+
+            <div
+                class="summary-value"
+                id="pendingTeachers"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
 
             <div class="summary-title">
                 Total Collection
@@ -990,47 +1102,8 @@ tbody tr:last-child td {
         </div>
 
 
-        <!-- Remaining -->
-
-        <div
-            class="summary-card remaining"
-        >
-
-            <div class="summary-title">
-                Remaining Target
-            </div>
-
-            <div
-                class="summary-value"
-                id="remainingTarget"
-            >
-                ₹ 0
-            </div>
-
-        </div>
-
-
-        <!-- Percentage -->
-
-        <div
-            class="summary-card percentage"
-        >
-
-            <div class="summary-title">
-                Achievement
-            </div>
-
-            <div
-                class="summary-value"
-                id="achievementPercentage"
-            >
-                0%
-            </div>
-
-        </div>
-
-
     </div>
+
 
 
     <!-- ==================================
@@ -1042,8 +1115,9 @@ tbody tr:last-child td {
 
         <div class="table-header">
 
+
             <h3>
-                Teachers Performance
+                Teachers Data
             </h3>
 
 
@@ -1055,7 +1129,9 @@ tbody tr:last-child td {
                 autocomplete="off"
             >
 
+
         </div>
+
 
 
         <div class="table-wrapper">
@@ -1069,7 +1145,15 @@ tbody tr:last-child td {
                     <tr>
 
                         <th>
-                            S.No.
+                            Employee Code
+                        </th>
+
+                        <th>
+                            Teacher Name
+                        </th>
+
+                        <th>
+                            Mobile
                         </th>
 
                         <th>
@@ -1085,15 +1169,7 @@ tbody tr:last-child td {
                         </th>
 
                         <th>
-                            Jamiatul Madina
-                        </th>
-
-                        <th>
-                            Employee Code
-                        </th>
-
-                        <th>
-                            Teacher Name
+                            Status
                         </th>
 
                         <th>
@@ -1104,28 +1180,22 @@ tbody tr:last-child td {
                             Collection
                         </th>
 
-                        <th>
-                            Remaining
-                        </th>
-
-                        <th>
-                            %
-                        </th>
-
                     </tr>
 
                 </thead>
 
 
-                <tbody id="regionUserTable">
+                <tbody id="usersTable">
 
                     <tr>
 
                         <td
-                            colspan="11"
+                            colspan="9"
                             class="loading-cell"
                         >
-                            Loading Data...
+
+                            Loading Teachers...
+
                         </td>
 
                     </tr>
@@ -1138,29 +1208,21 @@ tbody tr:last-child td {
 
         </div>
 
+
     </div>
 
 
 </div>
 
 
+
 <!-- ======================================
-     Firebase Config
+     REGION USERS JS
 ====================================== -->
 
 <script
     type="module"
-    src="assets/js/firebase-config.js"
-></script>
-
-
-<!-- ======================================
-     REGION USER JS
-====================================== -->
-
-<script
-    type="module"
-    src="assets/js/region-user.js"
+    src="assets/js/region-users.js"
 ></script>
 
 
@@ -1182,21 +1244,13 @@ if (logoutBtn) {
 
             e.preventDefault();
 
-
             localStorage.removeItem(
                 "loggedInEmpCode"
             );
 
-
             localStorage.removeItem(
                 "userRole"
             );
-
-
-            localStorage.removeItem(
-                "regionUser"
-            );
-
 
             window.location.href =
                 "index.html";
