@@ -726,18 +726,303 @@ employeeCode / userCode`
 
 function hasEmployeeAccess(employee) {
 
+// ======================================
+// Check Employee Access
+// ======================================
+
+function hasEmployeeAccess(employee) {
+
     // ==================================
     // ADMIN
     // ==================================
 
-    if (
-        currentUserRole === "admin"
-    ) {
-
+    if (currentUserRole === "admin") {
         return true;
-
     }
 
+
+    // ==================================
+    // No Access Rules
+    // ==================================
+
+    if (
+        !Array.isArray(accessRules) ||
+        accessRules.length === 0
+    ) {
+        console.warn(
+            "No Access Rules Found"
+        );
+
+        return false;
+    }
+
+
+    // ==================================
+    // Employee Region
+    // ==================================
+
+    const employeeRegion = normalize(
+        employee.region ||
+        employee.regionName ||
+        employee.region_name ||
+        ""
+    );
+
+
+    // ==================================
+    // Employee State
+    // ==================================
+
+    const employeeState = normalize(
+        employee.state ||
+        employee.stateName ||
+        employee.state_name ||
+        ""
+    );
+
+
+    console.log(
+        "Checking Employee Access:",
+        {
+            employeeCode: getEmployeeCode(employee),
+            employeeRegion: employeeRegion,
+            employeeState: employeeState
+        }
+    );
+
+
+    // ==================================
+    // Check Access Rules
+    // ==================================
+
+    return accessRules.some(
+        (rule) => {
+
+            if (!rule) {
+                return false;
+            }
+
+
+            // ==================================
+            // Region
+            // ==================================
+
+            const assignedRegion = normalize(
+                rule.region ||
+                rule.assignedRegion ||
+                rule.regionName ||
+                rule.region_name ||
+                ""
+            );
+
+
+            console.log(
+                "Access Rule:",
+                rule,
+                "Assigned Region:",
+                assignedRegion
+            );
+
+
+            // ==================================
+            // Region Match
+            // ==================================
+
+            if (
+                assignedRegion &&
+                assignedRegion !== employeeRegion
+            ) {
+
+                return false;
+
+            }
+
+
+            // ==================================
+            // Full Region
+            // ==================================
+
+            const fullRegion =
+                rule.fullRegion === true ||
+
+                normalize(
+                    rule.fullRegion
+                ) === "true" ||
+
+                normalize(
+                    rule.fullRegion
+                ) === "yes" ||
+
+                normalize(
+                    rule.accessType
+                ) === "full" ||
+
+                normalize(
+                    rule.type
+                ) === "full";
+
+
+            if (fullRegion) {
+
+                return true;
+
+            }
+
+
+            // ==================================
+            // Get States
+            // ==================================
+
+            let states = [];
+
+
+            // Array
+            if (
+                Array.isArray(
+                    rule.states
+                )
+            ) {
+
+                states =
+                    rule.states;
+
+            }
+
+
+            // Single State
+            else if (
+                typeof rule.states ===
+                "string"
+            ) {
+
+                states = [
+                    rule.states
+                ];
+
+            }
+
+
+            // selectedStates
+            else if (
+                Array.isArray(
+                    rule.selectedStates
+                )
+            ) {
+
+                states =
+                    rule.selectedStates;
+
+            }
+
+
+            // assignedStates
+            else if (
+                Array.isArray(
+                    rule.assignedStates
+                )
+            ) {
+
+                states =
+                    rule.assignedStates;
+
+            }
+
+
+            // state
+            else if (
+                rule.state
+            ) {
+
+                states = [
+                    rule.state
+                ];
+
+            }
+
+
+            // stateName
+            else if (
+                rule.stateName
+            ) {
+
+                states = [
+                    rule.stateName
+                ];
+
+            }
+
+
+            // ==================================
+            // No State Restriction
+            // ==================================
+
+            if (
+                states.length === 0
+            ) {
+
+                console.log(
+                    "Region matched, no state restriction"
+                );
+
+                return true;
+
+            }
+
+
+            // ==================================
+            // Check State
+            // ==================================
+
+            const stateMatch =
+                states.some(
+                    (state) => {
+
+                        const normalizedState =
+                            normalize(state);
+
+
+                        // All States
+                        if (
+                            normalizedState === "*" ||
+                            normalizedState === "all" ||
+                            normalizedState === "all states"
+                        ) {
+
+                            return true;
+
+                        }
+
+
+                        return (
+                            normalizedState ===
+                            employeeState
+                        );
+
+                    }
+                );
+
+
+            console.log(
+                "State Check:",
+                {
+                    employeeState:
+                        employeeState,
+
+                    allowedStates:
+                        states,
+
+                    stateMatch:
+                        stateMatch
+                }
+            );
+
+
+            return stateMatch;
+
+        }
+    );
+
+}
 
     // ==================================
     // No Access Rules
