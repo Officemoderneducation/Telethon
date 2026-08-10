@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Region User Management | Telethon</title>
+
+
+    <!-- Font Awesome -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <style>
+
+        /* ======================================
+           RESET
+        ====================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* ======================================
+           BODY
+        ====================================== */
+
+        body {
+
+            min-height: 100vh;
+
+            background: #f4f6f9;
+
+            color: #1e293b;
+        }
+
+
+        /* ======================================
+           SIDEBAR
+        ====================================== */
+
+        .sidebar {
+
+            width: 235px;
+
+            min-height: 100vh;
+
+            background: #0f172a;
+
+            color: white;
+
+            position: fixed;
+
+            left: 0;
+
+            top: 0;
+
+            bottom: 0;
+
+            z-index: 1000;
+
+            overflow-y: auto;
+        }
+
+
+        /* ======================================
+           LOGO
+        ====================================== */
+
+        .logo {
+
+            height: 178px;
+
+            padding: 20px 15px;
+
+            text-align: center;
+
+            border-bottom: 1px solid #263247;
+        }
+
+
+        .logo img {
+
+            width: 80px;
+
+            height: 80px;
+
+            object-fit: contain;
+
+            margin-bottom: 5px;
+        }
+
+
+        .logo h2 {
+
+            font-size: 20px;
+
+            color: #38bdf8;
+
+            margin-bottom: 5px;
+        }
+
+
+        .logo p {
+
+            font-size: 13px;
+
+            color: #cbd5e1;
+        }
+
+
+        /* ======================================
+           MENU
+        ====================================== */
+
+        .menu {
+
+            padding-top: 15px;
+        }
+
+
+        .menu a {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            width: 100%;
+
+            padding: 13px 22px;
+
+            color: #cbd5e1;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .menu a i {
+
+            width: 18px;
+
+            text-align: center;
+        }
+
+
+        .menu a:hover {
+
+            background: #1e293b;
+
+            color: white;
+        }
+
+
+        .menu a.active {
+
+            background: #2563eb;
+
+            color: white;
+        }
+
+
+        /* ======================================
+           MAIN
+        ====================================== */
+
+        .main {
+
+            margin-left: 235px;
+
+            width: calc(100% - 235px);
+
+            min-height: 100vh;
+
+            padding: 24px;
+        }
+
+
+        /* ======================================
+           TOPBAR
+        ====================================== */
+
+        .topbar {
+
+            background: white;
+
+            border-radius: 10px;
+
+            padding: 20px 24px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+        }
+
+
+        .topbar h2 {
+
+            font-size: 24px;
+
+            color: #0f172a;
+
+            margin-bottom: 5px;
+        }
+
+
+        .topbar p {
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+
+        /* ======================================
+           FORM CARD
+        ====================================== */
+
+        .form-card {
+
+            background: white;
+
+            border-radius: 10px;
+
+            padding: 22px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+        }
+
+
+        .form-card h3 {
+
+            font-size: 18px;
+
+            color: #0f172a;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* ======================================
+           FORM GRID
+        ====================================== */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 16px;
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .form-group label {
+
+            margin-bottom: 6px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            color: #334155;
+        }
+
+
+        .form-group input,
+        .form-group select {
+
+            width: 100%;
+
+            padding: 11px 12px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            outline: none;
+
+            background: white;
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(37,99,235,0.10);
+        }
+
+
+        /* ======================================
+           BUTTON
+        ====================================== */
+
+        .form-actions {
+
+            margin-top: 20px;
+        }
+
+
+        .save-btn {
+
+            border: none;
+
+            background: #198754;
+
+            color: white;
+
+            padding: 11px 22px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        .save-btn:hover {
+
+            background: #157347;
+        }
+
+
+        .save-btn:disabled {
+
+            background: #94a3b8;
+
+            cursor: not-allowed;
+        }
+
+
+        /* ======================================
+           MESSAGE
+        ====================================== */
+
+        #message {
+
+            margin-top: 12px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            min-height: 20px;
+        }
+
+
+        /* ======================================
+           USERS TABLE
+        ====================================== */
+
+        .table-card {
+
+            background: white;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+        }
+
+
+        .table-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .table-header h3 {
+
+            font-size: 18px;
+
+            color: #0f172a;
+        }
+
+
+        .search-box {
+
+            width: 280px;
+
+            max-width: 100%;
+
+            padding: 10px 13px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 6px;
+
+            outline: none;
+
+            font-size: 14px;
+        }
+
+
+        .search-box:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(37,99,235,0.10);
+        }
+
+
+        .table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 7px;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            min-width: 950px;
+
+            border-collapse: collapse;
+        }
+
+
+        th {
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 12px;
+
+            text-align: left;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+
+        td {
+
+            padding: 12px;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            font-size: 13px;
+
+            color: #334155;
+
+            white-space: nowrap;
+        }
+
+
+        tbody tr:hover {
+
+            background: #f8fafc;
+        }
+
+
+        /* ======================================
+           STATUS
+        ====================================== */
+
+        .status-badge {
+
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: bold;
+        }
+
+
+        .status-active {
+
+            background: #d1e7dd;
+
+            color: #0f5132;
+        }
+
+
+        .status-inactive {
+
+            background: #f8d7da;
+
+            color: #842029;
+        }
+
+
+        /* ======================================
+           ACTION BUTTONS
+        ====================================== */
+
+        .action-btn {
+
+            border: none;
+
+            padding: 6px 10px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            margin-right: 4px;
+        }
+
+
+        .edit-btn {
+
+            background: #0d6efd;
+
+            color: white;
+        }
+
+
+        .edit-btn:hover {
+
+            background: #0b5ed7;
+        }
+
+
+        .delete-btn {
+
+            background: #dc3545;
+
+            color: white;
+        }
+
+
+        .delete-btn:hover {
+
+            background: #b02a37;
+        }
+
+
+        /* ======================================
+           LOADING
+        ====================================== */
+
+        .loading-cell,
+        .empty-cell,
+        .error-cell {
+
+            text-align: center;
+
+            padding: 30px !important;
+        }
+
+
+        .loading-cell,
+        .empty-cell {
+
+            color: #64748b;
+        }
+
+
+        .error-cell {
+
+            color: #dc3545;
+        }
+
+
+        /* ======================================
+           MOBILE
+        ====================================== */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+
+                width: 190px;
+            }
+
+
+            .main {
+
+                margin-left: 190px;
+
+                width: calc(100% - 190px);
+
+                padding: 15px;
+            }
+
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .table-header {
+
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+
+            .search-box {
+
+                width: 100%;
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            .sidebar {
+
+                width: 70px;
+            }
+
+
+            .main {
+
+                margin-left: 70px;
+
+                width: calc(100% - 70px);
+
+                padding: 10px;
+            }
+
+
+            .logo {
+
+                height: 100px;
+
+                padding: 10px 5px;
+            }
+
+
+            .logo img {
+
+                width: 45px;
+
+                height: 45px;
+            }
+
+
+            .logo h2,
+            .logo p,
+            .menu a span {
+
+                display: none;
+            }
+
+
+            .menu a {
+
+                justify-content: center;
+
+                padding: 15px 5px;
+            }
+
+
+            .menu a i {
+
+                font-size: 17px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ======================================
+     SIDEBAR
+====================================== -->
+
+<div class="sidebar">
+
+
+    <div class="logo">
+
+        <img
+            src="assets/images/logo.png"
+            alt="Telethon Logo"
+        >
+
+        <h2>Telethon</h2>
+
+        <p>Management System</p>
+
+    </div>
+
+
+    <div class="menu">
+
+
+        <a href="dashboard.html">
+
+            <i class="fa-solid fa-house"></i>
+
+            <span>Dashboard</span>
+
+        </a>
+
+
+        <a href="register.html">
+
+            <i class="fa-solid fa-user-plus"></i>
+
+            <span>Registration Form</span>
+
+        </a>
+
+
+        <a href="users.html">
+
+            <i class="fa-solid fa-users"></i>
+
+            <span>Teachers List</span>
+
+        </a>
+
+
+        <a href="daily-entry.html">
+
+            <i class="fa-solid fa-file-circle-plus"></i>
+
+            <span>Daily Collection</span>
+
+        </a>
+
+
+        <a href="all-entry.html">
+
+            <i class="fa-solid fa-list"></i>
+
+            <span>All Entry</span>
+
+        </a>
+
+
+        <a href="reports.html">
+
+            <i class="fa-solid fa-chart-column"></i>
+
+            <span>Reports</span>
+
+        </a>
+
+
+        <!-- REGION USER MANAGEMENT -->
+
+        <a
+            href="region-user-management.html"
+            class="active"
+        >
+
+            <i class="fa-solid fa-user-shield"></i>
+
+            <span>Region Users</span>
+
+        </a>
+
+
+        <a
+            href="#"
+            id="logoutBtn"
+        >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            <span>Logout</span>
+
+        </a>
+
+
+    </div>
+
+</div>
+
+
+<!-- ======================================
+     MAIN
+====================================== -->
+
+<div class="main">
+
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <h2>
+            Region / State User Management
+        </h2>
+
+        <p>
+            Create users and assign Region & State access
+        </p>
+
+    </div>
+
+
+    <!-- ==================================
+         CREATE USER
+    ================================== -->
+
+    <div class="form-card">
+
+
+        <h3>
+            <i class="fa-solid fa-user-plus"></i>
+            Create New Region User
+        </h3>
+
+
+        <form id="regionUserForm">
+
+
+            <div class="form-grid">
+
+
+                <!-- User Name -->
+
+                <div class="form-group">
+
+                    <label for="userName">
+                        User Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="userName"
+                        placeholder="Enter User Name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- User Code -->
+
+                <div class="form-group">
+
+                    <label for="userCode">
+                        User Code
+                    </label>
+
+                    <input
+                        type="text"
+                        id="userCode"
+                        placeholder="Enter User Code"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Mobile -->
+
+                <div class="form-group">
+
+                    <label for="mobile">
+                        Mobile Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="mobile"
+                        placeholder="Enter Mobile Number"
+                        maxlength="10"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter Password"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Region -->
+
+                <div class="form-group">
+
+                    <label for="region">
+                        Region
+                    </label>
+
+                    <select
+                        id="region"
+                        required
+                    >
+
+                        <option value="">
+                            Select Region
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- State -->
+
+                <div class="form-group">
+
+                    <label for="state">
+                        State
+                    </label>
+
+                    <select
+                        id="state"
+                        required
+                    >
+
+                        <option value="">
+                            Select State
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="form-group">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select id="status">
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    id="saveUserBtn"
+                    class="save-btn"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save User
+
+                </button>
+
+            </div>
+
+
+            <div id="message"></div>
+
+
+        </form>
+
+    </div>
+
+
+    <!-- ==================================
+         USER LIST
+    ================================== -->
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h3>
+
+                <i class="fa-solid fa-users-gear"></i>
+
+                Region Users
+
+            </h3>
+
+
+            <input
+                type="text"
+                id="searchUser"
+                class="search-box"
+                placeholder="Search User..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            User Code
+                        </th>
+
+                        <th>
+                            User Name
+                        </th>
+
+                        <th>
+                            Mobile
+                        </th>
+
+                        <th>
+                            Region
+                        </th>
+
+                        <th>
+                            State
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="regionUsersTable">
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="loading-cell"
+                        >
+
+                            Loading Users...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- ======================================
+     FIREBASE CONFIG
+====================================== -->
+
+<script
+    type="module"
+    src="assets/js/firebase-config.js"
+></script>
+
+
+<!-- ======================================
+     REGION USER MANAGEMENT JS
+====================================== -->
+
+<script
+    type="module"
+    src="assets/js/region-user-management.js"
+></script>
+
+
+<!-- ======================================
+     LOGOUT
+====================================== -->
+
+<script>
+
+    const logoutBtn =
+        document.getElementById("logoutBtn");
+
+
+    if (logoutBtn) {
+
+        logoutBtn.addEventListener(
+            "click",
+            function (e) {
+
+                e.preventDefault();
+
+
+                localStorage.removeItem(
+                    "loggedInEmpCode"
+                );
+
+
+                localStorage.removeItem(
+                    "userRole"
+                );
+
+
+                window.location.href =
+                    "index.html";
+
+            }
+        );
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
