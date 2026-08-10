@@ -487,11 +487,11 @@ async function loadRegionUser() {
         try {
 
             const userRef =
-                doc(
-                    db,
-                    "regionUsers",
-                    loggedInUser
-                );
+    doc(
+        db,
+        "region_users",
+        loggedInUser
+    );
 
 
             const userSnap =
