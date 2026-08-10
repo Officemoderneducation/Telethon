@@ -440,17 +440,17 @@ async function loadRegionUser() {
     try {
 
         const q =
-            query(
-                collection(
-                    db,
-                    "regionUsers"
-                ),
-                where(
-                    "employeeCode",
-                    "==",
-                    loggedInUser
-                )
-            );
+    query(
+        collection(
+            db,
+            "region_users"
+        ),
+        where(
+            "userCode",
+            "==",
+            loggedInUser
+        )
+    );
 
 
         const snapshot =
