@@ -10,22 +10,15 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Region User Panel | Telethon</title>
-
+    <title>Region User | Telethon</title>
 
     <!-- Font Awesome -->
-
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
-
     <style>
-
-        /* ======================================
-           RESET
-        ====================================== */
 
         * {
             margin: 0;
@@ -34,156 +27,99 @@
             font-family: Arial, sans-serif;
         }
 
-
-        /* ======================================
-           BODY
-        ====================================== */
-
         body {
-
-            min-height: 100vh;
-
             background: #f4f6f9;
-
             color: #1e293b;
+            min-height: 100vh;
         }
 
+        /* =========================
+           TOPBAR
+        ========================= */
 
-        /* ======================================
-           TOP NAVBAR
-        ====================================== */
-
-        .navbar {
-
-            height: 77px;
-
-            width: 100%;
-
+        .topbar-main {
+            height: 76px;
             background: #0f172a;
-
             color: white;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
-            padding: 0 28px;
+            padding: 0 26px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.15);
+                0 2px 8px rgba(0,0,0,0.12);
         }
 
-
-        /* Logo Area */
-
         .brand {
-
             display: flex;
-
             align-items: center;
-
             gap: 12px;
         }
 
-
         .brand img {
-
             width: 48px;
-
             height: 48px;
-
             object-fit: contain;
         }
 
-
         .brand-text h2 {
-
             font-size: 18px;
-
             color: #38bdf8;
-
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
-
         .brand-text p {
-
             font-size: 12px;
-
             color: #cbd5e1;
         }
 
-
-        /* User Area */
-
         .user-area {
-
             display: flex;
-
             align-items: center;
-
-            gap: 15px;
+            gap: 16px;
         }
 
-
-        .user-name {
-
-            font-size: 13px;
-
+        #regionUserInfoTop {
+            font-size: 14px;
             color: #e2e8f0;
-
-            font-weight: 500;
         }
-
 
         .logout-btn {
-
             border: none;
-
-            background: #dc3545;
-
+            background: #ef3340;
             color: white;
 
-            padding: 9px 15px;
+            padding: 10px 16px;
 
             border-radius: 6px;
 
             cursor: pointer;
 
-            font-size: 13px;
-
             font-weight: bold;
         }
 
-
         .logout-btn:hover {
-
-            background: #b02a37;
+            background: #dc2626;
         }
 
-
-        /* ======================================
+        /* =========================
            MAIN
-        ====================================== */
+        ========================= */
 
         .main {
-
             width: 100%;
-
-            padding: 21px;
+            min-height: calc(100vh - 76px);
+            padding: 22px;
         }
 
-
-        /* ======================================
-           TOPBAR
-        ====================================== */
+        /* =========================
+           TITLE
+        ========================= */
 
         .topbar {
-
             background: white;
-
             border-radius: 10px;
 
             padding: 22px;
@@ -194,31 +130,45 @@
                 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
         .topbar h2 {
-
             font-size: 24px;
-
             color: #0f172a;
-
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
-
 
         .topbar p {
-
-            font-size: 14px;
-
             color: #64748b;
+            font-size: 14px;
         }
 
+        /* =========================
+           REGION USER INFO
+        ========================= */
 
-        /* ======================================
-           FILTER PANEL
-        ====================================== */
+        .region-user-info {
+            background: #ecfdf5;
+            border: 1px solid #bbf7d0;
+
+            padding: 14px 18px;
+
+            border-radius: 8px;
+
+            margin-bottom: 18px;
+
+            color: #166534;
+
+            font-size: 14px;
+        }
+
+        .region-user-info strong {
+            font-size: 16px;
+        }
+
+        /* =========================
+           FILTER
+        ========================= */
 
         .filter-panel {
-
             background: white;
 
             border-radius: 10px;
@@ -231,21 +181,16 @@
                 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
         .filter-title {
-
             font-size: 17px;
-
             font-weight: bold;
 
-            color: #0f172a;
+            margin-bottom: 16px;
 
-            margin-bottom: 15px;
+            color: #0f172a;
         }
 
-
         .filters {
-
             display: grid;
 
             grid-template-columns:
@@ -254,9 +199,7 @@
             gap: 12px;
         }
 
-
         .filter-group label {
-
             display: block;
 
             margin-bottom: 6px;
@@ -268,10 +211,8 @@
             color: #475569;
         }
 
-
         .filter-group select,
         .filter-group input {
-
             width: 100%;
 
             padding: 10px 12px;
@@ -287,10 +228,8 @@
             font-size: 14px;
         }
 
-
         .filter-group select:focus,
         .filter-group input:focus {
-
             border-color: #2563eb;
 
             box-shadow:
@@ -298,19 +237,7 @@
                 rgba(37,99,235,0.10);
         }
 
-
-        /* Search */
-
-        .search-group {
-
-            grid-column: span 1;
-        }
-
-
-        /* Buttons */
-
         .filter-buttons {
-
             display: flex;
 
             gap: 10px;
@@ -318,9 +245,7 @@
             margin-top: 15px;
         }
 
-
         .filter-btn {
-
             border: none;
 
             padding: 10px 18px;
@@ -329,186 +254,34 @@
 
             cursor: pointer;
 
-            font-size: 13px;
-
             font-weight: bold;
+
+            font-size: 13px;
         }
 
-
         .apply-btn {
-
             background: #2563eb;
-
             color: white;
         }
 
-
         .apply-btn:hover {
-
             background: #1d4ed8;
         }
 
-
         .reset-btn {
-
             background: #e2e8f0;
-
             color: #334155;
         }
 
-
         .reset-btn:hover {
-
             background: #cbd5e1;
         }
 
-
-        /* ======================================
-           SUMMARY CARDS
-        ====================================== */
-
-        .summary-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 16px;
-
-            margin-bottom: 18px;
-        }
-
-
-        .summary-card {
-
-            background: white;
-
-            border-radius: 10px;
-
-            padding: 18px;
-
-            min-height: 105px;
-
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
-
-            position: relative;
-
-            overflow: hidden;
-        }
-
-
-        .summary-card::after {
-
-            content: "";
-
-            position: absolute;
-
-            left: 0;
-
-            right: 0;
-
-            bottom: 0;
-
-            height: 3px;
-
-            background: #2563eb;
-        }
-
-
-        .summary-card.collection::after {
-
-            background: #16a34a;
-        }
-
-
-        .summary-card.remaining::after {
-
-            background: #f59e0b;
-        }
-
-
-        .summary-card.achievement::after {
-
-            background: #7c3aed;
-        }
-
-
-        .summary-title {
-
-            font-size: 13px;
-
-            color: #64748b;
-
-            margin-bottom: 8px;
-        }
-
-
-        .summary-value {
-
-            font-size: 23px;
-
-            font-weight: bold;
-
-            color: #0f172a;
-        }
-
-
-        .summary-icon {
-
-            float: right;
-
-            width: 40px;
-
-            height: 40px;
-
-            border-radius: 50%;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background: #eff6ff;
-
-            color: #2563eb;
-
-            font-size: 18px;
-        }
-
-
-        .collection .summary-icon {
-
-            background: #dcfce7;
-
-            color: #16a34a;
-        }
-
-
-        .remaining .summary-icon {
-
-            background: #fef3c7;
-
-            color: #f59e0b;
-        }
-
-
-        .achievement .summary-icon {
-
-            background: #f3e8ff;
-
-            color: #7c3aed;
-        }
-
-
-        /* ======================================
-           TABLE CONTAINER
-        ====================================== */
+        /* =========================
+           TABLE
+        ========================= */
 
         .table-container {
-
             background: white;
 
             border-radius: 10px;
@@ -519,9 +292,7 @@
                 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
         .table-header {
-
             display: flex;
 
             justify-content: space-between;
@@ -531,29 +302,19 @@
             margin-bottom: 18px;
         }
 
-
         .table-header h3 {
-
             font-size: 18px;
 
             color: #0f172a;
         }
 
-
         .result-count {
-
             font-size: 13px;
 
             color: #64748b;
         }
 
-
-        /* ======================================
-           TABLE
-        ====================================== */
-
         .table-wrapper {
-
             width: 100%;
 
             overflow-x: auto;
@@ -563,21 +324,17 @@
             border-radius: 7px;
         }
 
-
         table {
-
             width: 100%;
 
-            min-width: 1250px;
+            min-width: 1350px;
 
             border-collapse: collapse;
 
             background: white;
         }
 
-
         th {
-
             background: #2563eb;
 
             color: white;
@@ -588,14 +345,10 @@
 
             font-size: 13px;
 
-            font-weight: bold;
-
             white-space: nowrap;
         }
 
-
         td {
-
             padding: 13px 14px;
 
             border-bottom:
@@ -608,101 +361,39 @@
             white-space: nowrap;
         }
 
-
         tbody tr:hover {
-
             background: #f8fafc;
         }
 
-
-        tbody tr:last-child td {
-
-            border-bottom: none;
-        }
-
-
-        /* Employee Code */
-
         .employee-code {
-
             font-weight: bold;
 
             color: #1d4ed8;
         }
 
-
-        /* ======================================
-           MONEY
-        ====================================== */
-
-        .target-amount {
-
+        .target {
             color: #0f172a;
-
-            font-weight: 600;
-        }
-
-
-        .collection-amount {
-
-            color: #16a34a;
-
-            font-weight: 600;
-        }
-
-
-        .remaining-amount {
-
-            color: #f97316;
-
-            font-weight: 600;
-        }
-
-
-        /* ======================================
-           PERCENTAGE
-        ====================================== */
-
-        .percentage-badge {
-
-            display: inline-block;
-
-            padding: 5px 10px;
-
-            border-radius: 20px;
-
-            background: #fee2e2;
-
-            color: #dc2626;
-
-            font-size: 12px;
 
             font-weight: bold;
         }
 
+        .collection {
+            color: #059669;
 
-        .percentage-badge.good {
-
-            background: #dcfce7;
-
-            color: #15803d;
+            font-weight: bold;
         }
 
+        .remaining {
+            color: #ea580c;
 
-        .percentage-badge.medium {
-
-            background: #fef3c7;
-
-            color: #a16207;
+            font-weight: bold;
         }
 
-
-        /* ======================================
+        /* =========================
            STATUS
-        ====================================== */
+        ========================= */
 
         .status-badge {
-
             display: inline-block;
 
             padding: 5px 11px;
@@ -714,161 +405,126 @@
             font-weight: bold;
         }
 
-
-        .status-badge.approved {
-
+        .approved {
             background: #d1e7dd;
 
             color: #0f5132;
         }
 
-
-        .status-badge.pending {
-
+        .pending {
             background: #fff3cd;
 
             color: #664d03;
         }
 
+        /* =========================
+           PERCENTAGE
+        ========================= */
 
-        /* ======================================
-           TOTAL ROW
-        ====================================== */
+        .percentage-badge {
+            display: inline-block;
 
-        .total-row {
+            padding: 5px 10px;
 
-            background: #eff6ff;
+            border-radius: 20px;
 
             font-weight: bold;
+
+            font-size: 12px;
         }
 
-
-        .total-row td {
-
-            color: #0f172a;
-
-            border-top:
-                2px solid #bfdbfe;
+        .percentage-low {
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
+        .percentage-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
 
-        /* ======================================
-           LOADING / EMPTY / ERROR
-        ====================================== */
+        .percentage-good {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .percentage-complete {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
 
         .loading-cell,
         .empty-cell,
         .error-cell {
-
             text-align: center;
 
-            padding: 30px !important;
-
-            font-size: 14px;
+            padding: 35px !important;
         }
-
 
         .loading-cell {
-
             color: #64748b;
         }
-
 
         .empty-cell {
-
             color: #64748b;
         }
 
-
         .error-cell {
-
-            color: #dc3545;
+            color: #dc2626;
         }
 
-
-        /* ======================================
+        /* =========================
            MOBILE
-        ====================================== */
+        ========================= */
 
         @media (max-width: 1000px) {
 
             .filters {
-
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-
-
-            .summary-grid {
-
                 grid-template-columns:
                     repeat(2, 1fr);
             }
 
         }
 
+        @media (max-width: 650px) {
 
-        @media (max-width: 600px) {
+            .topbar-main {
+                height: auto;
 
-            .navbar {
+                padding: 12px 15px;
 
-                padding: 0 12px;
+                flex-direction: column;
+
+                gap: 10px;
+
+                align-items: flex-start;
             }
 
+            .user-area {
+                width: 100%;
 
-            .brand-text h2 {
-
-                font-size: 16px;
+                justify-content:
+                    space-between;
             }
-
-
-            .brand-text p {
-
-                font-size: 10px;
-            }
-
-
-            .brand img {
-
-                width: 42px;
-
-                height: 42px;
-            }
-
-
-            .user-name {
-
-                display: none;
-            }
-
 
             .main {
-
                 padding: 12px;
             }
 
+            .filters {
+                grid-template-columns: 1fr;
+            }
 
             .topbar h2 {
-
                 font-size: 20px;
             }
 
-
-            .filters {
-
-                grid-template-columns: 1fr;
-            }
-
-
-            .summary-grid {
-
-                grid-template-columns: 1fr;
-            }
-
-
-            .filter-panel,
-            .table-container {
-
+            .table-container,
+            .filter-panel {
                 padding: 12px;
             }
 
@@ -882,58 +538,231 @@
 <body>
 
 
-    <!-- ======================================
-         NAVBAR
-    ====================================== -->
+<!-- ======================================
+     TOP HEADER
+====================================== -->
 
-    <div class="navbar">
+<header class="topbar-main">
+
+    <div class="brand">
+
+        <img
+            src="assets/images/logo.png"
+            alt="Telethon Logo"
+        >
+
+        <div class="brand-text">
+
+            <h2>Telethon</h2>
+
+            <p>
+                Region User Panel
+            </p>
+
+        </div>
+
+    </div>
 
 
-        <!-- BRAND -->
+    <div class="user-area">
 
-        <div class="brand">
+        <span id="regionUserInfoTop">
+            Region User
+        </span>
 
-            <img
-                src="assets/images/logo.png"
-                alt="Telethon Logo"
-            >
+        <button
+            type="button"
+            id="logoutBtn"
+            class="logout-btn"
+        >
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </button>
 
-            <div class="brand-text">
+    </div>
 
-                <h2>
-                    Telethon
-                </h2>
+</header>
 
-                <p>
-                    Region User Panel
-                </p>
 
-            </div>
+<!-- ======================================
+     MAIN
+====================================== -->
+
+<main class="main">
+
+
+    <!-- TITLE -->
+
+    <div class="topbar">
+
+        <h2>
+            Collection Summary
+        </h2>
+
+        <p>
+            Aapko sirf assigned Region / State ka data dikhaya ja raha hai.
+        </p>
+
+    </div>
+
+
+    <!-- REGION USER INFO -->
+
+    <div
+        id="regionUserInfo"
+        class="region-user-info"
+    >
+        Loading Region User...
+    </div>
+
+
+    <!-- ==================================
+         FILTER PANEL
+    ================================== -->
+
+    <div class="filter-panel">
+
+        <div class="filter-title">
+
+            <i class="fa-solid fa-filter"></i>
+
+            Filter Teachers
 
         </div>
 
 
-        <!-- USER -->
+        <div class="filters">
 
-        <div class="user-area">
 
-            <span
-                id="regionUserName"
-                class="user-name"
+            <!-- REGION -->
+
+            <div class="filter-group">
+
+                <label for="regionFilter">
+                    Region
+                </label>
+
+                <select id="regionFilter">
+
+                    <option value="">
+                        All Regions
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- STATE -->
+
+            <div class="filter-group">
+
+                <label for="stateFilter">
+                    State
+                </label>
+
+                <select id="stateFilter">
+
+                    <option value="">
+                        All States
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CITY -->
+
+            <div class="filter-group">
+
+                <label for="cityFilter">
+                    City
+                </label>
+
+                <select id="cityFilter">
+
+                    <option value="">
+                        All Cities
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="filter-group">
+
+                <label for="statusFilter">
+                    Status
+                </label>
+
+                <select id="statusFilter">
+
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option value="Approved">
+                        Approved
+                    </option>
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div class="filter-group">
+
+                <label for="searchFilter">
+                    Search
+                </label>
+
+                <input
+                    type="text"
+                    id="searchFilter"
+                    placeholder="Teacher / Employee Code / Mobile"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <div class="filter-buttons">
+
+            <button
+                type="button"
+                id="applyFilter"
+                class="filter-btn apply-btn"
             >
-                Region User
-            </span>
+
+                <i class="fa-solid fa-filter"></i>
+
+                Apply Filter
+
+            </button>
 
 
             <button
                 type="button"
-                id="logoutBtn"
-                class="logout-btn"
+                id="resetFilter"
+                class="filter-btn reset-btn"
             >
 
-                <i class="fa-solid fa-right-from-bracket"></i>
+                <i class="fa-solid fa-rotate-left"></i>
 
-                Logout
+                Reset
 
             </button>
 
@@ -942,449 +771,119 @@
     </div>
 
 
+    <!-- ==================================
+         TEACHERS TABLE
+    ================================== -->
 
-    <!-- ======================================
-         MAIN
-    ====================================== -->
-
-    <div class="main">
+    <div class="table-container">
 
 
-        <!-- ==================================
-             TOPBAR
-        ================================== -->
+        <div class="table-header">
 
-        <div class="topbar">
+            <h3>
+                Teachers Data
+            </h3>
 
-            <h2>
-                Collection Summary
-            </h2>
-
-            <p id="assignmentInfo">
-                Aapko assign ki gayi Region / State ka data dikhaya ja raha hai.
-            </p>
+            <span
+                id="resultCount"
+                class="result-count"
+            >
+                Loading...
+            </span>
 
         </div>
 
 
+        <div class="table-wrapper">
 
-        <!-- ==================================
-             FILTER PANEL
-        ================================== -->
+            <table>
 
-        <div class="filter-panel">
+                <thead>
 
+                    <tr>
 
-            <div class="filter-title">
+                        <th>
+                            Employee Code
+                        </th>
 
-                <i class="fa-solid fa-filter"></i>
+                        <th>
+                            Teacher Name
+                        </th>
 
-                Filter Teachers
+                        <th>
+                            Mobile
+                        </th>
 
-            </div>
+                        <th>
+                            Region
+                        </th>
 
+                        <th>
+                            State
+                        </th>
 
+                        <th>
+                            City
+                        </th>
 
-            <div class="filters">
+                        <th>
+                            Target
+                        </th>
 
+                        <th>
+                            Total Collection
+                        </th>
 
-                <!-- REGION -->
+                        <th>
+                            Remaining Target
+                        </th>
 
-                <div class="filter-group">
+                        <th>
+                            Percentage
+                        </th>
 
-                    <label for="regionFilter">
-                        Region
-                    </label>
+                        <th>
+                            Status
+                        </th>
 
-                    <select id="regionFilter">
+                    </tr>
 
-                        <option value="">
-                            All Regions
-                        </option>
+                </thead>
 
-                    </select>
 
-                </div>
+                <tbody id="regionUsersTable">
 
+                    <tr>
 
+                        <td
+                            colspan="11"
+                            class="loading-cell"
+                        >
+                            Loading Teachers...
+                        </td>
 
-                <!-- STATE -->
+                    </tr>
 
-                <div class="filter-group">
+                </tbody>
 
-                    <label for="stateFilter">
-                        State
-                    </label>
-
-                    <select id="stateFilter">
-
-                        <option value="">
-                            All States
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-
-                <!-- CITY -->
-
-                <div class="filter-group">
-
-                    <label for="cityFilter">
-                        City
-                    </label>
-
-                    <select id="cityFilter">
-
-                        <option value="">
-                            All Cities
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-
-                <!-- STATUS -->
-
-                <div class="filter-group">
-
-                    <label for="statusFilter">
-                        Status
-                    </label>
-
-                    <select id="statusFilter">
-
-                        <option value="">
-                            All Status
-                        </option>
-
-                        <option value="Approved">
-                            Approved
-                        </option>
-
-                        <option value="Pending">
-                            Pending
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-
-                <!-- SEARCH -->
-
-                <div class="filter-group search-group">
-
-                    <label for="searchFilter">
-                        Search
-                    </label>
-
-                    <input
-                        type="text"
-                        id="searchFilter"
-                        placeholder="Teacher / Employee Code / Mobile"
-                        autocomplete="off"
-                    >
-
-                </div>
-
-
-            </div>
-
-
-
-            <!-- BUTTONS -->
-
-            <div class="filter-buttons">
-
-
-                <button
-                    type="button"
-                    id="applyFilter"
-                    class="filter-btn apply-btn"
-                >
-
-                    <i class="fa-solid fa-filter"></i>
-
-                    Apply Filter
-
-                </button>
-
-
-                <button
-                    type="button"
-                    id="resetFilter"
-                    class="filter-btn reset-btn"
-                >
-
-                    <i class="fa-solid fa-rotate-left"></i>
-
-                    Reset
-
-                </button>
-
-
-            </div>
+            </table>
 
         </div>
-
-
-
-        <!-- ==================================
-             SUMMARY CARDS
-        ================================== -->
-
-        <div class="summary-grid">
-
-
-            <!-- TOTAL TARGET -->
-
-            <div class="summary-card">
-
-                <div class="summary-icon">
-
-                    <i class="fa-solid fa-bullseye"></i>
-
-                </div>
-
-
-                <div class="summary-title">
-                    Total Target
-                </div>
-
-
-                <div
-                    id="totalTarget"
-                    class="summary-value"
-                >
-                    ₹ 0
-                </div>
-
-            </div>
-
-
-
-            <!-- TOTAL COLLECTION -->
-
-            <div class="summary-card collection">
-
-                <div class="summary-icon">
-
-                    <i class="fa-solid fa-indian-rupee-sign"></i>
-
-                </div>
-
-
-                <div class="summary-title">
-                    Total Collection
-                </div>
-
-
-                <div
-                    id="totalCollection"
-                    class="summary-value"
-                >
-                    ₹ 0
-                </div>
-
-            </div>
-
-
-
-            <!-- REMAINING TARGET -->
-
-            <div class="summary-card remaining">
-
-                <div class="summary-icon">
-
-                    <i class="fa-solid fa-chart-pie"></i>
-
-                </div>
-
-
-                <div class="summary-title">
-                    Remaining Target
-                </div>
-
-
-                <div
-                    id="remainingTarget"
-                    class="summary-value"
-                >
-                    ₹ 0
-                </div>
-
-            </div>
-
-
-
-            <!-- ACHIEVEMENT -->
-
-            <div class="summary-card achievement">
-
-                <div class="summary-icon">
-
-                    <i class="fa-solid fa-percent"></i>
-
-                </div>
-
-
-                <div class="summary-title">
-                    Achievement
-                </div>
-
-
-                <div
-                    id="achievementPercentage"
-                    class="summary-value"
-                >
-                    0.00%
-                </div>
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- ==================================
-             TEACHERS TABLE
-        ================================== -->
-
-        <div class="table-container">
-
-
-            <div class="table-header">
-
-                <h3>
-                    <i class="fa-solid fa-list"></i>
-                    Teachers Data
-                </h3>
-
-
-                <span
-                    id="resultCount"
-                    class="result-count"
-                >
-                    Loading...
-                </span>
-
-            </div>
-
-
-
-            <div class="table-wrapper">
-
-
-                <table>
-
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Employee Code
-                            </th>
-
-                            <th>
-                                Teacher Name
-                            </th>
-
-                            <th>
-                                Mobile
-                            </th>
-
-                            <th>
-                                Region
-                            </th>
-
-                            <th>
-                                State
-                            </th>
-
-                            <th>
-                                City
-                            </th>
-
-                            <th>
-                                Target
-                            </th>
-
-                            <th>
-                                Total Collection
-                            </th>
-
-                            <th>
-                                Remaining Target
-                            </th>
-
-                            <th>
-                                Percentage
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-
-                    <tbody id="regionUsersTable">
-
-                        <tr>
-
-                            <td
-                                colspan="11"
-                                class="loading-cell"
-                            >
-                                Loading Teachers...
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-
-                </table>
-
-            </div>
-
-        </div>
-
 
     </div>
 
 
-
-    <!-- ======================================
-         FIREBASE CONFIG
-    ====================================== -->
-
-    <script
-        type="module"
-        src="assets/js/firebase-config.js"
-    ></script>
+</main>
 
 
+<!-- ======================================
+     JAVASCRIPT
+====================================== -->
 
-    <!-- ======================================
-         REGION USERS JS
-    ====================================== -->
-
-    <script
-        type="module"
-        src="assets/js/region-users.js"
-    ></script>
+<script
+    type="module"
+    src="assets/js/region-users.js"
+></script>
 
 
 </body>
