@@ -1,5 +1,5 @@
 // ======================================
-// Telethon - Secure Admin & Teacher Login
+// Telethon - Admin / Teacher / Region User Login
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -55,7 +55,7 @@ if (loginForm) {
         if (!loginId || !password) {
 
             showMessage(
-                "Employee Code / Admin Email aur Password enter karein."
+                "Employee Code / User Code / Admin Email aur Password enter karein."
             );
 
             return;
@@ -73,7 +73,6 @@ if (loginForm) {
 
             if (password === "123789") {
 
-                // Admin session
                 localStorage.setItem(
                     "loggedInEmpCode",
                     "admin"
@@ -84,7 +83,7 @@ if (loginForm) {
                     "admin"
                 );
 
-                // Admin → Dashboard
+                // Admin Dashboard
                 window.location.href =
                     "dashboard.html";
 
@@ -102,15 +101,123 @@ if (loginForm) {
 
 
         // ======================================
-        // TEACHER LOGIN
+        // CHECK REGION USER
         // ======================================
 
         showMessage(
-            "Checking Employee Code..."
+            "Checking User..."
         );
 
 
         try {
+
+            const regionUserRef =
+                doc(
+                    db,
+                    "region_users",
+                    loginId
+                );
+
+
+            const regionUserSnap =
+                await getDoc(
+                    regionUserRef
+                );
+
+
+            // ======================================
+            // REGION USER FOUND
+            // ======================================
+
+            if (regionUserSnap.exists()) {
+
+                const data =
+                    regionUserSnap.data();
+
+
+                // ==================================
+                // Password Check
+                // ==================================
+
+                if (
+                    String(data.password || "").trim()
+                    !== password
+                ) {
+
+                    showMessage(
+                        "Wrong Password!"
+                    );
+
+                    return;
+                }
+
+
+                // ==================================
+                // Status Check
+                // ==================================
+
+                if (
+                    String(data.status || "").toLowerCase()
+                    !== "active"
+                ) {
+
+                    showMessage(
+                        "Aapka Region User Account Active nahi hai."
+                    );
+
+                    return;
+                }
+
+
+                // ==================================
+                // REGION USER LOGIN SUCCESS
+                // ==================================
+
+                localStorage.setItem(
+                    "loggedInEmpCode",
+                    loginId
+                );
+
+                localStorage.setItem(
+                    "userRole",
+                    "regionUser"
+                );
+
+
+                // Region User Information
+                localStorage.setItem(
+                    "regionUserName",
+                    data.userName || ""
+                );
+
+
+                localStorage.setItem(
+                    "regionUserAccess",
+                    JSON.stringify(
+                        data.access || {}
+                    )
+                );
+
+
+                // ==================================
+                // REGION USER PANEL
+                // ==================================
+
+                window.location.href =
+                    "region-user.html";
+
+                return;
+            }
+
+
+            // ======================================
+            // TEACHER LOGIN
+            // ======================================
+
+            showMessage(
+                "Checking Employee Code..."
+            );
+
 
             const employeeRef =
                 doc(
@@ -121,7 +228,9 @@ if (loginForm) {
 
 
             const employeeSnap =
-                await getDoc(employeeRef);
+                await getDoc(
+                    employeeRef
+                );
 
 
             // ======================================
@@ -131,7 +240,7 @@ if (loginForm) {
             if (!employeeSnap.exists()) {
 
                 showMessage(
-                    "Employee Code not found!"
+                    "User / Employee Code not found!"
                 );
 
                 return;
@@ -143,7 +252,7 @@ if (loginForm) {
 
 
             // ======================================
-            // Password Check
+            // Teacher Password Check
             // ======================================
 
             if (
@@ -160,7 +269,7 @@ if (loginForm) {
 
 
             // ======================================
-            // Account Approval Check
+            // Teacher Approval Check
             // ======================================
 
             if (
@@ -191,7 +300,7 @@ if (loginForm) {
             );
 
 
-            // Teacher ko ONLY Daily Collection
+            // Teacher → Daily Collection
             window.location.href =
                 "daily-entry.html";
 
