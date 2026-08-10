@@ -9,15 +9,14 @@ import {
     collection,
     getDocs,
     doc,
-    updateDoc
+    updateDoc,
+    deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
 
 const usersTable = document.getElementById("usersTable");
 const searchUser = document.getElementById("searchUser");
 
 let employees = [];
-
 
 // ======================================
 // Load Employees From Firebase
@@ -82,7 +81,6 @@ function displayEmployees(list) {
 
     if (!usersTable) return;
 
-
     if (list.length === 0) {
 
         usersTable.innerHTML = `
@@ -140,12 +138,6 @@ function displayEmployees(list) {
             "-";
 
 
-        const jamiatulMadina =
-            employee.jamiatulMadina ||
-            employee.jamiatul_madina ||
-            "-";
-
-
         const status =
             employee.status ||
             "Pending";
@@ -180,10 +172,10 @@ function displayEmployees(list) {
 
 
         // ==================================
-        // Action Button
+        // Status Button
         // ==================================
 
-        let actionHTML = "";
+        let statusButtonHTML = "";
 
 
         if (
@@ -191,7 +183,7 @@ function displayEmployees(list) {
             "approved"
         ) {
 
-            actionHTML = `
+            statusButtonHTML = `
                 <button
                     class="action-btn pending-btn"
                     onclick="changeStatus('${employee.id}', 'Pending')"
@@ -202,7 +194,7 @@ function displayEmployees(list) {
 
         } else {
 
-            actionHTML = `
+            statusButtonHTML = `
                 <button
                     class="action-btn approve-btn"
                     onclick="changeStatus('${employee.id}', 'Approved')"
@@ -211,6 +203,20 @@ function displayEmployees(list) {
                 </button>
             `;
         }
+
+
+        // ==================================
+        // Delete Button
+        // ==================================
+
+        const deleteButtonHTML = `
+            <button
+                class="action-btn delete-btn"
+                onclick="deleteTeacher('${employee.id}', '${employeeCode}')"
+            >
+                Delete
+            </button>
+        `;
 
 
         // ==================================
@@ -249,7 +255,11 @@ function displayEmployees(list) {
                 </td>
 
                 <td>
-                    ${actionHTML}
+
+                    ${statusButtonHTML}
+
+                    ${deleteButtonHTML}
+
                 </td>
 
             </tr>
@@ -326,22 +336,13 @@ if (searchUser) {
                         ).toLowerCase();
 
 
-                    const jamiatulMadina =
-                        String(
-                            employee.jamiatulMadina ||
-                            employee.jamiatul_madina ||
-                            ""
-                        ).toLowerCase();
-
-
                     return (
                         employeeCode.includes(search) ||
                         teacherName.includes(search) ||
                         mobile.includes(search) ||
                         region.includes(search) ||
                         state.includes(search) ||
-                        city.includes(search) ||
-                        jamiatulMadina.includes(search)
+                        city.includes(search)
                     );
                 });
 
@@ -404,6 +405,72 @@ window.changeStatus = async function (
 
         alert(
             "Status update nahi ho saka.\n\n" +
+            error.message
+        );
+    }
+};
+
+
+// ======================================
+// DELETE TEACHER
+// ======================================
+
+window.deleteTeacher = async function (
+    employeeId,
+    employeeCode
+) {
+
+    const confirmation = confirm(
+        `Employee Code: ${employeeCode}\n\n` +
+        `Is teacher ko permanently DELETE karna hai?\n\n` +
+        `Ye action undo nahi kiya ja sakta.`
+    );
+
+
+    if (!confirmation) {
+        return;
+    }
+
+
+    try {
+
+        const employeeRef =
+            doc(
+                db,
+                "employees",
+                employeeId
+            );
+
+
+        // ==================================
+        // Delete From Firebase
+        // ==================================
+
+        await deleteDoc(employeeRef);
+
+
+        alert(
+            `Teacher ${employeeCode} successfully deleted.`
+        );
+
+
+        // ==================================
+        // Reload Teachers List
+        // ==================================
+
+        await loadEmployees();
+
+
+    } catch (error) {
+
+        console.error(
+            "Delete Teacher Error:",
+            error
+        );
+
+
+        alert(
+            "Teacher delete nahi ho saka.\n\n" +
             error.message
         );
     }
