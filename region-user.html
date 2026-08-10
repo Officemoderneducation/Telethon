@@ -1,1641 +1,1392 @@
-// ======================================
-// Telethon - Region / State Users
-// Collection Summary
-// Firebase Firestore
-// ======================================
+<!DOCTYPE html>
+<html lang="en">
 
-import { db } from "./firebase-config.js";
+<head>
 
-import {
-    collection,
-    getDocs,
-    query,
-    where,
-    doc,
-    getDoc
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    <meta charset="UTF-8">
 
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-// ======================================
-// HTML Elements
-// ======================================
+    <title>Region User Panel | Telethon</title>
 
-const regionFilter =
-    document.getElementById("regionFilter");
 
-const stateFilter =
-    document.getElementById("stateFilter");
+    <!-- Font Awesome -->
 
-const cityFilter =
-    document.getElementById("cityFilter");
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
 
-const statusFilter =
-    document.getElementById("statusFilter");
 
-const searchFilter =
-    document.getElementById("searchFilter");
+    <style>
 
-const applyFilter =
-    document.getElementById("applyFilter");
+        /* ======================================
+           RESET
+        ====================================== */
 
-const resetFilter =
-    document.getElementById("resetFilter");
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-const usersTable =
-    document.getElementById("regionUsersTable");
 
-const resultCount =
-    document.getElementById("resultCount");
+        /* ======================================
+           BODY
+        ====================================== */
 
-const regionUserInfo =
-    document.getElementById("regionUserInfo");
+        body {
 
+            min-height: 100vh;
 
-// ======================================
-// Data
-// ======================================
+            background: #f4f6f9;
 
-let allEmployees = [];
+            color: #1e293b;
+        }
 
-let visibleEmployees = [];
 
-let dailyEntries = [];
+        /* ======================================
+           TOP NAVBAR
+        ====================================== */
 
-let accessRules = [];
+        .navbar {
 
-let currentUserRole =
-    String(
-        localStorage.getItem("userRole") || ""
-    ).toLowerCase();
+            height: 77px;
 
-let loggedInUser =
-    String(
-        localStorage.getItem("loggedInEmpCode") || ""
-    ).trim();
+            width: 100%;
 
+            background: #0f172a;
 
-// ======================================
-// Escape HTML
-// ======================================
+            color: white;
 
-function escapeHTML(value) {
+            display: flex;
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+            align-items: center;
 
+            justify-content: space-between;
 
-// ======================================
-// Normalize
-// ======================================
+            padding: 0 28px;
 
-function normalize(value) {
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.15);
+        }
 
-    return String(value ?? "")
-        .trim()
-        .toLowerCase();
 
-}
+        /* Logo Area */
 
+        .brand {
 
-// ======================================
-// Number
-// ======================================
+            display: flex;
 
-function numberValue(value) {
+            align-items: center;
 
-    const number =
-        Number(
-            String(value ?? "")
-                .replace(/,/g, "")
-                .replace(/₹/g, "")
-                .trim()
-        );
+            gap: 12px;
+        }
 
-    return Number.isFinite(number)
-        ? number
-        : 0;
 
-}
+        .brand img {
 
+            width: 48px;
 
-// ======================================
-// Currency
-// ======================================
+            height: 48px;
 
-function formatCurrency(value) {
+            object-fit: contain;
+        }
 
-    return "₹ " +
-        Number(value || 0).toLocaleString(
-            "en-IN"
-        );
 
-}
+        .brand-text h2 {
 
+            font-size: 18px;
 
-// ======================================
-// Get Employee Code
-// ======================================
+            color: #38bdf8;
 
-function getEmployeeCode(employee) {
+            margin-bottom: 2px;
+        }
 
-    return String(
-        employee.employeeCode ||
-        employee.employee_code ||
-        employee.empCode ||
-        employee.emp_code ||
-        employee.id ||
-        ""
-    ).trim();
 
-}
+        .brand-text p {
 
+            font-size: 12px;
 
-// ======================================
-// Get Collection Employee Code
-// ======================================
+            color: #cbd5e1;
+        }
 
-function getEntryEmployeeCode(entry) {
 
-    return String(
-        entry.employeeCode ||
-        entry.employee_code ||
-        entry.empCode ||
-        entry.emp_code ||
-        ""
-    ).trim();
+        /* User Area */
 
-}
+        .user-area {
 
+            display: flex;
 
-// ======================================
-// Get Collection Amount
-// ======================================
+            align-items: center;
 
-function getEntryAmount(entry) {
+            gap: 15px;
+        }
 
-    return numberValue(
-        entry.amount ||
-        entry.collection ||
-        entry.collectionAmount ||
-        entry.totalCollection ||
-        0
-    );
 
-}
+        .user-name {
 
+            font-size: 13px;
 
-// ======================================
-// Get Target
-// ======================================
+            color: #e2e8f0;
 
-function getEmployeeTarget(employee) {
+            font-weight: 500;
+        }
 
-    return numberValue(
-        employee.targetAmount ||
-        employee.target ||
-        0
-    );
 
-}
+        .logout-btn {
 
+            border: none;
 
-// ======================================
-// Calculate Collection
-// ======================================
+            background: #dc3545;
 
-function getEmployeeCollection(employeeCode) {
+            color: white;
 
-    const code =
-        normalize(employeeCode);
+            padding: 9px 15px;
 
-    let total = 0;
+            border-radius: 6px;
 
-    dailyEntries.forEach(
-        (entry) => {
+            cursor: pointer;
 
-            const entryCode =
-                normalize(
-                    getEntryEmployeeCode(
-                        entry
-                    )
-                );
+            font-size: 13px;
 
+            font-weight: bold;
+        }
 
-            if (
-                entryCode === code
-            ) {
 
-                total +=
-                    getEntryAmount(
-                        entry
-                    );
+        .logout-btn:hover {
 
+            background: #b02a37;
+        }
+
+
+        /* ======================================
+           MAIN
+        ====================================== */
+
+        .main {
+
+            width: 100%;
+
+            padding: 21px;
+        }
+
+
+        /* ======================================
+           TOPBAR
+        ====================================== */
+
+        .topbar {
+
+            background: white;
+
+            border-radius: 10px;
+
+            padding: 22px;
+
+            margin-bottom: 18px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+        }
+
+
+        .topbar h2 {
+
+            font-size: 24px;
+
+            color: #0f172a;
+
+            margin-bottom: 5px;
+        }
+
+
+        .topbar p {
+
+            font-size: 14px;
+
+            color: #64748b;
+        }
+
+
+        /* ======================================
+           FILTER PANEL
+        ====================================== */
+
+        .filter-panel {
+
+            background: white;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+            margin-bottom: 18px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+        }
+
+
+        .filter-title {
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            color: #0f172a;
+
+            margin-bottom: 15px;
+        }
+
+
+        .filters {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 12px;
+        }
+
+
+        .filter-group label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            color: #475569;
+        }
+
+
+        .filter-group select,
+        .filter-group input {
+
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 6px;
+
+            outline: none;
+
+            background: white;
+
+            font-size: 14px;
+        }
+
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,0.10);
+        }
+
+
+        /* Search */
+
+        .search-group {
+
+            grid-column: span 1;
+        }
+
+
+        /* Buttons */
+
+        .filter-buttons {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 15px;
+        }
+
+
+        .filter-btn {
+
+            border: none;
+
+            padding: 10px 18px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        .apply-btn {
+
+            background: #2563eb;
+
+            color: white;
+        }
+
+
+        .apply-btn:hover {
+
+            background: #1d4ed8;
+        }
+
+
+        .reset-btn {
+
+            background: #e2e8f0;
+
+            color: #334155;
+        }
+
+
+        .reset-btn:hover {
+
+            background: #cbd5e1;
+        }
+
+
+        /* ======================================
+           SUMMARY CARDS
+        ====================================== */
+
+        .summary-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 16px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .summary-card {
+
+            background: white;
+
+            border-radius: 10px;
+
+            padding: 18px;
+
+            min-height: 105px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .summary-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+
+            right: 0;
+
+            bottom: 0;
+
+            height: 3px;
+
+            background: #2563eb;
+        }
+
+
+        .summary-card.collection::after {
+
+            background: #16a34a;
+        }
+
+
+        .summary-card.remaining::after {
+
+            background: #f59e0b;
+        }
+
+
+        .summary-card.achievement::after {
+
+            background: #7c3aed;
+        }
+
+
+        .summary-title {
+
+            font-size: 13px;
+
+            color: #64748b;
+
+            margin-bottom: 8px;
+        }
+
+
+        .summary-value {
+
+            font-size: 23px;
+
+            font-weight: bold;
+
+            color: #0f172a;
+        }
+
+
+        .summary-icon {
+
+            float: right;
+
+            width: 40px;
+
+            height: 40px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            font-size: 18px;
+        }
+
+
+        .collection .summary-icon {
+
+            background: #dcfce7;
+
+            color: #16a34a;
+        }
+
+
+        .remaining .summary-icon {
+
+            background: #fef3c7;
+
+            color: #f59e0b;
+        }
+
+
+        .achievement .summary-icon {
+
+            background: #f3e8ff;
+
+            color: #7c3aed;
+        }
+
+
+        /* ======================================
+           TABLE CONTAINER
+        ====================================== */
+
+        .table-container {
+
+            background: white;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+        }
+
+
+        .table-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+
+        .table-header h3 {
+
+            font-size: 18px;
+
+            color: #0f172a;
+        }
+
+
+        .result-count {
+
+            font-size: 13px;
+
+            color: #64748b;
+        }
+
+
+        /* ======================================
+           TABLE
+        ====================================== */
+
+        .table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 7px;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            min-width: 1250px;
+
+            border-collapse: collapse;
+
+            background: white;
+        }
+
+
+        th {
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 13px 14px;
+
+            text-align: left;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
+
+
+        td {
+
+            padding: 13px 14px;
+
+            border-bottom:
+                1px solid #e2e8f0;
+
+            font-size: 13px;
+
+            color: #334155;
+
+            white-space: nowrap;
+        }
+
+
+        tbody tr:hover {
+
+            background: #f8fafc;
+        }
+
+
+        tbody tr:last-child td {
+
+            border-bottom: none;
+        }
+
+
+        /* Employee Code */
+
+        .employee-code {
+
+            font-weight: bold;
+
+            color: #1d4ed8;
+        }
+
+
+        /* ======================================
+           MONEY
+        ====================================== */
+
+        .target-amount {
+
+            color: #0f172a;
+
+            font-weight: 600;
+        }
+
+
+        .collection-amount {
+
+            color: #16a34a;
+
+            font-weight: 600;
+        }
+
+
+        .remaining-amount {
+
+            color: #f97316;
+
+            font-weight: 600;
+        }
+
+
+        /* ======================================
+           PERCENTAGE
+        ====================================== */
+
+        .percentage-badge {
+
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #fee2e2;
+
+            color: #dc2626;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+
+        .percentage-badge.good {
+
+            background: #dcfce7;
+
+            color: #15803d;
+        }
+
+
+        .percentage-badge.medium {
+
+            background: #fef3c7;
+
+            color: #a16207;
+        }
+
+
+        /* ======================================
+           STATUS
+        ====================================== */
+
+        .status-badge {
+
+            display: inline-block;
+
+            padding: 5px 11px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+
+        .status-badge.approved {
+
+            background: #d1e7dd;
+
+            color: #0f5132;
+        }
+
+
+        .status-badge.pending {
+
+            background: #fff3cd;
+
+            color: #664d03;
+        }
+
+
+        /* ======================================
+           TOTAL ROW
+        ====================================== */
+
+        .total-row {
+
+            background: #eff6ff;
+
+            font-weight: bold;
+        }
+
+
+        .total-row td {
+
+            color: #0f172a;
+
+            border-top:
+                2px solid #bfdbfe;
+        }
+
+
+        /* ======================================
+           LOADING / EMPTY / ERROR
+        ====================================== */
+
+        .loading-cell,
+        .empty-cell,
+        .error-cell {
+
+            text-align: center;
+
+            padding: 30px !important;
+
+            font-size: 14px;
+        }
+
+
+        .loading-cell {
+
+            color: #64748b;
+        }
+
+
+        .empty-cell {
+
+            color: #64748b;
+        }
+
+
+        .error-cell {
+
+            color: #dc3545;
+        }
+
+
+        /* ======================================
+           MOBILE
+        ====================================== */
+
+        @media (max-width: 1000px) {
+
+            .filters {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .summary-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
             }
 
         }
-    );
-
-    return total;
-
-}
 
 
-// ======================================
-// Show Error
-// ======================================
+        @media (max-width: 600px) {
 
-function showError(message) {
+            .navbar {
 
-    console.error(
-        "Region Users Error:",
-        message
-    );
+                padding: 0 12px;
+            }
 
 
-    if (usersTable) {
+            .brand-text h2 {
 
-        usersTable.innerHTML = `
-            <tr>
-                <td
-                    colspan="11"
-                    class="error-cell"
+                font-size: 16px;
+            }
+
+
+            .brand-text p {
+
+                font-size: 10px;
+            }
+
+
+            .brand img {
+
+                width: 42px;
+
+                height: 42px;
+            }
+
+
+            .user-name {
+
+                display: none;
+            }
+
+
+            .main {
+
+                padding: 12px;
+            }
+
+
+            .topbar h2 {
+
+                font-size: 20px;
+            }
+
+
+            .filters {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .summary-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .filter-panel,
+            .table-container {
+
+                padding: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ======================================
+         NAVBAR
+    ====================================== -->
+
+    <div class="navbar">
+
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <img
+                src="assets/images/logo.png"
+                alt="Telethon Logo"
+            >
+
+            <div class="brand-text">
+
+                <h2>
+                    Telethon
+                </h2>
+
+                <p>
+                    Region User Panel
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- USER -->
+
+        <div class="user-area">
+
+            <span
+                id="regionUserName"
+                class="user-name"
+            >
+                Region User
+            </span>
+
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="logout-btn"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================
+         MAIN
+    ====================================== -->
+
+    <div class="main">
+
+
+        <!-- ==================================
+             TOPBAR
+        ================================== -->
+
+        <div class="topbar">
+
+            <h2>
+                Collection Summary
+            </h2>
+
+            <p id="assignmentInfo">
+                Aapko assign ki gayi Region / State ka data dikhaya ja raha hai.
+            </p>
+
+        </div>
+
+
+
+        <!-- ==================================
+             FILTER PANEL
+        ================================== -->
+
+        <div class="filter-panel">
+
+
+            <div class="filter-title">
+
+                <i class="fa-solid fa-filter"></i>
+
+                Filter Teachers
+
+            </div>
+
+
+
+            <div class="filters">
+
+
+                <!-- REGION -->
+
+                <div class="filter-group">
+
+                    <label for="regionFilter">
+                        Region
+                    </label>
+
+                    <select id="regionFilter">
+
+                        <option value="">
+                            All Regions
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- STATE -->
+
+                <div class="filter-group">
+
+                    <label for="stateFilter">
+                        State
+                    </label>
+
+                    <select id="stateFilter">
+
+                        <option value="">
+                            All States
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- CITY -->
+
+                <div class="filter-group">
+
+                    <label for="cityFilter">
+                        City
+                    </label>
+
+                    <select id="cityFilter">
+
+                        <option value="">
+                            All Cities
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- STATUS -->
+
+                <div class="filter-group">
+
+                    <label for="statusFilter">
+                        Status
+                    </label>
+
+                    <select id="statusFilter">
+
+                        <option value="">
+                            All Status
+                        </option>
+
+                        <option value="Approved">
+                            Approved
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- SEARCH -->
+
+                <div class="filter-group search-group">
+
+                    <label for="searchFilter">
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        id="searchFilter"
+                        placeholder="Teacher / Employee Code / Mobile"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- BUTTONS -->
+
+            <div class="filter-buttons">
+
+
+                <button
+                    type="button"
+                    id="applyFilter"
+                    class="filter-btn apply-btn"
                 >
-                    ${escapeHTML(message)}
-                </td>
-            </tr>
-        `;
 
-    }
+                    <i class="fa-solid fa-filter"></i>
 
+                    Apply Filter
 
-    if (resultCount) {
-
-        resultCount.textContent =
-            "Error";
-
-    }
-
-}
+                </button>
 
 
-// ======================================
-// Loading
-// ======================================
-
-function showLoading() {
-
-    if (usersTable) {
-
-        usersTable.innerHTML = `
-            <tr>
-                <td
-                    colspan="11"
-                    class="loading-cell"
+                <button
+                    type="button"
+                    id="resetFilter"
+                    class="filter-btn reset-btn"
                 >
-                    Loading Teachers...
-                </td>
-            </tr>
-        `;
 
-    }
+                    <i class="fa-solid fa-rotate-left"></i>
 
+                    Reset
 
-    if (resultCount) {
+                </button>
 
-        resultCount.textContent =
-            "Loading...";
 
-    }
+            </div>
 
-}
+        </div>
 
 
-// ======================================
-// Load Region User
-// ======================================
 
-async function loadRegionUser() {
+        <!-- ==================================
+             SUMMARY CARDS
+        ================================== -->
 
-    // ==================================
-    // ADMIN
-    // ==================================
+        <div class="summary-grid">
 
-    if (
-        currentUserRole === "admin"
-    ) {
 
-        if (regionUserInfo) {
+            <!-- TOTAL TARGET -->
 
-            regionUserInfo.innerHTML =
-                `Region User: <strong>Administrator</strong>`;
+            <div class="summary-card">
 
-        }
+                <div class="summary-icon">
 
-        return;
+                    <i class="fa-solid fa-bullseye"></i>
 
-    }
+                </div>
 
 
-    // ==================================
-    // Region User
-    // ==================================
+                <div class="summary-title">
+                    Total Target
+                </div>
 
-    if (
-        currentUserRole !== "regionuser" &&
-        currentUserRole !== "region_user"
-    ) {
 
-        return;
-
-    }
-
-
-    if (!loggedInUser) {
-
-        throw new Error(
-            "Login session nahi mili."
-        );
-
-    }
-
-
-    // ==================================
-    // Find User
-    // ==================================
-
-    let userData = null;
-
-
-    // Search employeeCode
-    try {
-
-        const q =
-            query(
-                collection(
-                    db,
-                    "regionUsers"
-                ),
-                where(
-                    "employeeCode",
-                    "==",
-                    loggedInUser
-                )
-            );
-
-
-        const snapshot =
-            await getDocs(q);
-
-
-        if (!snapshot.empty) {
-
-            userData =
-                snapshot.docs[0].data();
-
-        }
-
-    }
-
-    catch (error) {
-
-        console.warn(
-            "Region User Query:",
-            error
-        );
-
-    }
-
-
-    // ==================================
-    // Try Document ID
-    // ==================================
-
-    if (!userData) {
-
-        try {
-
-            const userRef =
-                doc(
-                    db,
-                    "regionUsers",
-                    loggedInUser
-                );
-
-
-            const userSnap =
-                await getDoc(
-                    userRef
-                );
-
-
-            if (
-                userSnap.exists()
-            ) {
-
-                userData =
-                    userSnap.data();
-
-            }
-
-        }
-
-        catch (error) {
-
-            console.warn(
-                "Region User Document:",
-                error
-            );
-
-        }
-
-    }
-
-
-    // ==================================
-    // User Not Found
-    // ==================================
-
-    if (!userData) {
-
-        throw new Error(
-            "Region User record nahi mila."
-        );
-
-    }
-
-
-    // ==================================
-    // User Name
-    // ==================================
-
-    const userName =
-        userData.userName ||
-        userData.name ||
-        loggedInUser;
-
-
-    if (regionUserInfo) {
-
-        regionUserInfo.innerHTML =
-            `Region User: <strong>${escapeHTML(userName)}</strong>`;
-
-    }
-
-
-    // ==================================
-    // Access Rules
-    // ==================================
-
-    accessRules =
-        Array.isArray(
-            userData.access
-        )
-            ? userData.access
-            : [];
-
-}
-
-
-// ======================================
-// Employee Access
-// ======================================
-
-function hasEmployeeAccess(employee) {
-
-    // Admin
-    if (
-        currentUserRole === "admin"
-    ) {
-
-        return true;
-
-    }
-
-
-    if (
-        !Array.isArray(accessRules) ||
-        accessRules.length === 0
-    ) {
-
-        return false;
-
-    }
-
-
-    const employeeRegion =
-        normalize(
-            employee.region
-        );
-
-
-    const employeeState =
-        normalize(
-            employee.state
-        );
-
-
-    return accessRules.some(
-        (rule) => {
-
-            if (!rule) {
-                return false;
-            }
-
-
-            const assignedRegion =
-                normalize(
-                    rule.region
-                );
-
-
-            if (
-                !assignedRegion ||
-                assignedRegion !==
-                employeeRegion
-            ) {
-
-                return false;
-
-            }
-
-
-            // Full Region
-            if (
-                rule.fullRegion === true
-            ) {
-
-                return true;
-
-            }
-
-
-            // Selected States
-            if (
-                Array.isArray(
-                    rule.states
-                )
-            ) {
-
-                return rule.states.some(
-                    (state) => {
-
-                        if (
-                            state === "*"
-                        ) {
-
-                            return true;
-
-                        }
-
-
-                        return normalize(
-                            state
-                        ) ===
-                        employeeState;
-
-                    }
-                );
-
-            }
-
-
-            return false;
-
-        }
-    );
-
-}
-
-
-// ======================================
-// Load Employees
-// ======================================
-
-async function loadEmployees() {
-
-    showLoading();
-
-
-    try {
-
-        // User info + permission
-        await loadRegionUser();
-
-
-        // Employees
-        const employeeSnapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "employees"
-                )
-            );
-
-
-        allEmployees = [];
-
-
-        employeeSnapshot.forEach(
-            (employeeDoc) => {
-
-                allEmployees.push({
-
-                    id:
-                        employeeDoc.id,
-
-                    ...employeeDoc.data()
-
-                });
-
-            }
-        );
-
-
-        // Daily Collection
-        const entrySnapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "daily_entry"
-                )
-            );
-
-
-        dailyEntries = [];
-
-
-        entrySnapshot.forEach(
-            (entryDoc) => {
-
-                dailyEntries.push({
-
-                    id:
-                        entryDoc.id,
-
-                    ...entryDoc.data()
-
-                });
-
-            }
-        );
-
-
-        // Permission
-        visibleEmployees =
-            allEmployees.filter(
-                (employee) =>
-                    hasEmployeeAccess(
-                        employee
-                    )
-            );
-
-
-        // Filters
-        loadRegionOptions();
-
-
-        // Display
-        displayEmployees(
-            visibleEmployees
-        );
-
-
-    }
-
-    catch (error) {
-
-        showError(
-            error.message
-        );
-
-    }
-
-}
-
-
-// ======================================
-// Region Options
-// ======================================
-
-function loadRegionOptions() {
-
-    if (!regionFilter) {
-        return;
-    }
-
-
-    const regions =
-        new Set();
-
-
-    visibleEmployees.forEach(
-        (employee) => {
-
-            const region =
-                String(
-                    employee.region || ""
-                ).trim();
-
-
-            if (region) {
-
-                regions.add(
-                    region
-                );
-
-            }
-
-        }
-    );
-
-
-    regionFilter.innerHTML = `
-        <option value="">
-            All Regions
-        </option>
-    `;
-
-
-    [...regions]
-        .sort()
-        .forEach(
-            (region) => {
-
-                regionFilter.innerHTML += `
-                    <option value="${escapeHTML(region)}">
-                        ${escapeHTML(region)}
-                    </option>
-                `;
-
-            }
-        );
-
-
-    loadStateOptions();
-
-}
-
-
-// ======================================
-// State Options
-// ======================================
-
-function loadStateOptions() {
-
-    if (!stateFilter) {
-        return;
-    }
-
-
-    const selectedRegion =
-        String(
-            regionFilter?.value || ""
-        ).trim();
-
-
-    const states =
-        new Set();
-
-
-    visibleEmployees.forEach(
-        (employee) => {
-
-            const employeeRegion =
-                String(
-                    employee.region || ""
-                ).trim();
-
-
-            const state =
-                String(
-                    employee.state || ""
-                ).trim();
-
-
-            if (
-                state &&
-                (
-                    !selectedRegion ||
-                    employeeRegion ===
-                    selectedRegion
-                )
-            ) {
-
-                states.add(
-                    state
-                );
-
-            }
-
-        }
-    );
-
-
-    stateFilter.innerHTML = `
-        <option value="">
-            All States
-        </option>
-    `;
-
-
-    [...states]
-        .sort()
-        .forEach(
-            (state) => {
-
-                stateFilter.innerHTML += `
-                    <option value="${escapeHTML(state)}">
-                        ${escapeHTML(state)}
-                    </option>
-                `;
-
-            }
-        );
-
-
-    loadCityOptions();
-
-}
-
-
-// ======================================
-// City Options
-// ======================================
-
-function loadCityOptions() {
-
-    if (!cityFilter) {
-        return;
-    }
-
-
-    const selectedRegion =
-        String(
-            regionFilter?.value || ""
-        ).trim();
-
-
-    const selectedState =
-        String(
-            stateFilter?.value || ""
-        ).trim();
-
-
-    const cities =
-        new Set();
-
-
-    visibleEmployees.forEach(
-        (employee) => {
-
-            const employeeRegion =
-                String(
-                    employee.region || ""
-                ).trim();
-
-
-            const employeeState =
-                String(
-                    employee.state || ""
-                ).trim();
-
-
-            const city =
-                String(
-                    employee.city || ""
-                ).trim();
-
-
-            if (!city) {
-                return;
-            }
-
-
-            const regionMatch =
-                !selectedRegion ||
-                employeeRegion ===
-                selectedRegion;
-
-
-            const stateMatch =
-                !selectedState ||
-                employeeState ===
-                selectedState;
-
-
-            if (
-                regionMatch &&
-                stateMatch
-            ) {
-
-                cities.add(
-                    city
-                );
-
-            }
-
-        }
-    );
-
-
-    cityFilter.innerHTML = `
-        <option value="">
-            All Cities
-        </option>
-    `;
-
-
-    [...cities]
-        .sort()
-        .forEach(
-            (city) => {
-
-                cityFilter.innerHTML += `
-                    <option value="${escapeHTML(city)}">
-                        ${escapeHTML(city)}
-                    </option>
-                `;
-
-            }
-        );
-
-}
-
-
-// ======================================
-// Display Employees
-// ======================================
-
-function displayEmployees(list) {
-
-    if (!usersTable) {
-        return;
-    }
-
-
-    if (!list.length) {
-
-        usersTable.innerHTML = `
-            <tr>
-                <td
-                    colspan="11"
-                    class="empty-cell"
+                <div
+                    id="totalTarget"
+                    class="summary-value"
                 >
-                    Koi Teacher nahi mila.
-                </td>
-            </tr>
-        `;
+                    ₹ 0
+                </div>
 
+            </div>
 
-        if (resultCount) {
 
-            resultCount.textContent =
-                "0 Teachers";
 
-        }
+            <!-- TOTAL COLLECTION -->
 
+            <div class="summary-card collection">
 
-        return;
+                <div class="summary-icon">
 
-    }
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
 
+                </div>
 
-    let html = "";
 
+                <div class="summary-title">
+                    Total Collection
+                </div>
 
-    list.forEach(
-        (employee) => {
 
-            // ==========================
-            // Basic Data
-            // ==========================
+                <div
+                    id="totalCollection"
+                    class="summary-value"
+                >
+                    ₹ 0
+                </div>
 
-            const employeeCode =
-                getEmployeeCode(
-                    employee
-                );
+            </div>
 
 
-            const teacherName =
-                employee.teacherName ||
-                employee.teacher_name ||
-                "-";
 
+            <!-- REMAINING TARGET -->
 
-            const mobile =
-                employee.mobileNumber ||
-                employee.mobile ||
-                "-";
+            <div class="summary-card remaining">
 
+                <div class="summary-icon">
 
-            const region =
-                employee.region ||
-                "-";
+                    <i class="fa-solid fa-chart-pie"></i>
 
+                </div>
 
-            const state =
-                employee.state ||
-                "-";
 
+                <div class="summary-title">
+                    Remaining Target
+                </div>
 
-            const city =
-                employee.city ||
-                "-";
 
+                <div
+                    id="remainingTarget"
+                    class="summary-value"
+                >
+                    ₹ 0
+                </div>
 
-            const status =
-                employee.status ||
-                "Pending";
+            </div>
 
 
-            // ==========================
-            // Target
-            // ==========================
 
-            const target =
-                getEmployeeTarget(
-                    employee
-                );
+            <!-- ACHIEVEMENT -->
 
+            <div class="summary-card achievement">
 
-            // ==========================
-            // Collection
-            // ==========================
+                <div class="summary-icon">
 
-            const collectionAmount =
-                getEmployeeCollection(
-                    employeeCode
-                );
+                    <i class="fa-solid fa-percent"></i>
 
+                </div>
 
-            // ==========================
-            // Remaining
-            // ==========================
 
-            const remaining =
-                Math.max(
-                    target -
-                    collectionAmount,
-                    0
-                );
+                <div class="summary-title">
+                    Achievement
+                </div>
 
 
-            // ==========================
-            // Percentage
-            // ==========================
+                <div
+                    id="achievementPercentage"
+                    class="summary-value"
+                >
+                    0.00%
+                </div>
 
-            let percentage = 0;
+            </div>
 
 
-            if (target > 0) {
+        </div>
 
-                percentage =
-                    (
-                        collectionAmount /
-                        target
-                    ) * 100;
 
-            }
 
+        <!-- ==================================
+             TEACHERS TABLE
+        ================================== -->
 
-            // Maximum 100 for display
-            const displayPercentage =
-                Math.min(
-                    percentage,
-                    100
-                );
+        <div class="table-container">
 
 
-            // ==========================
-            // Status
-            // ==========================
+            <div class="table-header">
 
-            let statusHTML = "";
+                <h3>
+                    <i class="fa-solid fa-list"></i>
+                    Teachers Data
+                </h3>
 
 
-            if (
-                normalize(status) ===
-                "approved"
-            ) {
+                <span
+                    id="resultCount"
+                    class="result-count"
+                >
+                    Loading...
+                </span>
 
-                statusHTML = `
-                    <span class="status-badge approved">
-                        Approved
-                    </span>
-                `;
+            </div>
 
-            }
 
-            else {
 
-                statusHTML = `
-                    <span class="status-badge pending">
-                        Pending
-                    </span>
-                `;
+            <div class="table-wrapper">
 
-            }
 
+                <table>
 
-            // ==========================
-            // Percentage HTML
-            // ==========================
 
-            let percentageClass =
-                "percentage-low";
+                    <thead>
 
+                        <tr>
 
-            if (
-                displayPercentage >= 100
-            ) {
+                            <th>
+                                Employee Code
+                            </th>
 
-                percentageClass =
-                    "percentage-complete";
+                            <th>
+                                Teacher Name
+                            </th>
 
-            }
+                            <th>
+                                Mobile
+                            </th>
 
-            else if (
-                displayPercentage >= 75
-            ) {
+                            <th>
+                                Region
+                            </th>
 
-                percentageClass =
-                    "percentage-good";
+                            <th>
+                                State
+                            </th>
 
-            }
+                            <th>
+                                City
+                            </th>
 
-            else if (
-                displayPercentage >= 50
-            ) {
+                            <th>
+                                Target
+                            </th>
 
-                percentageClass =
-                    "percentage-medium";
+                            <th>
+                                Total Collection
+                            </th>
 
-            }
+                            <th>
+                                Remaining Target
+                            </th>
 
+                            <th>
+                                Percentage
+                            </th>
 
-            // ==========================
-            // Row
-            // ==========================
+                            <th>
+                                Status
+                            </th>
 
-            html += `
-                <tr>
+                        </tr>
 
-                    <td class="employee-code">
-                        ${escapeHTML(employeeCode)}
-                    </td>
+                    </thead>
 
-                    <td>
-                        ${escapeHTML(teacherName)}
-                    </td>
 
-                    <td>
-                        ${escapeHTML(mobile)}
-                    </td>
 
-                    <td>
-                        ${escapeHTML(region)}
-                    </td>
+                    <tbody id="regionUsersTable">
 
-                    <td>
-                        ${escapeHTML(state)}
-                    </td>
+                        <tr>
 
-                    <td>
-                        ${escapeHTML(city)}
-                    </td>
+                            <td
+                                colspan="11"
+                                class="loading-cell"
+                            >
+                                Loading Teachers...
+                            </td>
 
-                    <td>
-                        <strong>
-                            ${formatCurrency(target)}
-                        </strong>
-                    </td>
+                        </tr>
 
-                    <td class="collection-amount">
-                        <strong>
-                            ${formatCurrency(collectionAmount)}
-                        </strong>
-                    </td>
+                    </tbody>
 
-                    <td class="remaining-amount">
-                        ${formatCurrency(remaining)}
-                    </td>
 
-                    <td>
-                        <span
-                            class="
-                                percentage-badge
-                                ${percentageClass}
-                            "
-                        >
-                            ${displayPercentage.toFixed(2)}%
-                        </span>
-                    </td>
+                </table>
 
-                    <td>
-                        ${statusHTML}
-                    </td>
+            </div>
 
-                </tr>
-            `;
+        </div>
 
-        }
-    );
 
+    </div>
 
-    usersTable.innerHTML =
-        html;
 
 
-    if (resultCount) {
+    <!-- ======================================
+         FIREBASE CONFIG
+    ====================================== -->
 
-        resultCount.textContent =
-            `${list.length} Teacher(s)`;
+    <script
+        type="module"
+        src="assets/js/firebase-config.js"
+    ></script>
 
-    }
 
-}
 
+    <!-- ======================================
+         REGION USERS JS
+    ====================================== -->
 
-// ======================================
-// Apply Filters
-// ======================================
+    <script
+        type="module"
+        src="assets/js/region-users.js"
+    ></script>
 
-function applyFilters() {
 
-    const selectedRegion =
-        String(
-            regionFilter?.value || ""
-        ).trim();
+</body>
 
-
-    const selectedState =
-        String(
-            stateFilter?.value || ""
-        ).trim();
-
-
-    const selectedCity =
-        String(
-            cityFilter?.value || ""
-        ).trim();
-
-
-    const selectedStatus =
-        String(
-            statusFilter?.value || ""
-        ).trim();
-
-
-    const search =
-        normalize(
-            searchFilter?.value || ""
-        );
-
-
-    const filtered =
-        visibleEmployees.filter(
-            (employee) => {
-
-                const employeeRegion =
-                    String(
-                        employee.region || ""
-                    ).trim();
-
-
-                const employeeState =
-                    String(
-                        employee.state || ""
-                    ).trim();
-
-
-                const employeeCity =
-                    String(
-                        employee.city || ""
-                    ).trim();
-
-
-                const employeeStatus =
-                    String(
-                        employee.status ||
-                        "Pending"
-                    ).trim();
-
-
-                const employeeCode =
-                    normalize(
-                        getEmployeeCode(
-                            employee
-                        )
-                    );
-
-
-                const teacherName =
-                    normalize(
-                        employee.teacherName ||
-                        employee.teacher_name ||
-                        ""
-                    );
-
-
-                const mobile =
-                    normalize(
-                        employee.mobileNumber ||
-                        employee.mobile ||
-                        ""
-                    );
-
-
-                const regionMatch =
-                    !selectedRegion ||
-                    employeeRegion ===
-                    selectedRegion;
-
-
-                const stateMatch =
-                    !selectedState ||
-                    employeeState ===
-                    selectedState;
-
-
-                const cityMatch =
-                    !selectedCity ||
-                    employeeCity ===
-                    selectedCity;
-
-
-                const statusMatch =
-                    !selectedStatus ||
-                    normalize(
-                        employeeStatus
-                    ) ===
-                    normalize(
-                        selectedStatus
-                    );
-
-
-                const searchMatch =
-                    !search ||
-                    employeeCode.includes(
-                        search
-                    ) ||
-                    teacherName.includes(
-                        search
-                    ) ||
-                    mobile.includes(
-                        search
-                    ) ||
-                    normalize(
-                        employeeRegion
-                    ).includes(
-                        search
-                    ) ||
-                    normalize(
-                        employeeState
-                    ).includes(
-                        search
-                    ) ||
-                    normalize(
-                        employeeCity
-                    ).includes(
-                        search
-                    );
-
-
-                return (
-                    regionMatch &&
-                    stateMatch &&
-                    cityMatch &&
-                    statusMatch &&
-                    searchMatch
-                );
-
-            }
-        );
-
-
-    displayEmployees(
-        filtered
-    );
-
-}
-
-
-// ======================================
-// Region Change
-// ======================================
-
-if (regionFilter) {
-
-    regionFilter.addEventListener(
-        "change",
-        function () {
-
-            if (stateFilter) {
-                stateFilter.value = "";
-            }
-
-
-            if (cityFilter) {
-                cityFilter.value = "";
-            }
-
-
-            loadStateOptions();
-
-        }
-    );
-
-}
-
-
-// ======================================
-// State Change
-// ======================================
-
-if (stateFilter) {
-
-    stateFilter.addEventListener(
-        "change",
-        function () {
-
-            if (cityFilter) {
-                cityFilter.value = "";
-            }
-
-
-            loadCityOptions();
-
-        }
-    );
-
-}
-
-
-// ======================================
-// City Change
-// ======================================
-
-if (cityFilter) {
-
-    cityFilter.addEventListener(
-        "change",
-        function () {
-
-            applyFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================
-// Status Change
-// ======================================
-
-if (statusFilter) {
-
-    statusFilter.addEventListener(
-        "change",
-        function () {
-
-            applyFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================
-// Apply Filter
-// ======================================
-
-if (applyFilter) {
-
-    applyFilter.addEventListener(
-        "click",
-        function () {
-
-            applyFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================
-// Search
-// ======================================
-
-if (searchFilter) {
-
-    searchFilter.addEventListener(
-        "input",
-        function () {
-
-            applyFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================
-// Reset
-// ======================================
-
-if (resetFilter) {
-
-    resetFilter.addEventListener(
-        "click",
-        function () {
-
-            if (regionFilter) {
-                regionFilter.value = "";
-            }
-
-
-            if (stateFilter) {
-                stateFilter.value = "";
-            }
-
-
-            if (cityFilter) {
-                cityFilter.value = "";
-            }
-
-
-            if (statusFilter) {
-                statusFilter.value = "";
-            }
-
-
-            if (searchFilter) {
-                searchFilter.value = "";
-            }
-
-
-            loadStateOptions();
-
-
-            displayEmployees(
-                visibleEmployees
-            );
-
-        }
-    );
-
-}
-
-
-// ======================================
-// Logout
-// ======================================
-
-const logoutBtn =
-    document.getElementById(
-        "logoutBtn"
-    );
-
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-        "click",
-        function (e) {
-
-            e.preventDefault();
-
-
-            localStorage.removeItem(
-                "loggedInEmpCode"
-            );
-
-
-            localStorage.removeItem(
-                "userRole"
-            );
-
-
-            window.location.href =
-                "index.html";
-
-        }
-    );
-
-}
-
-
-// ======================================
-// START
-// ======================================
-
-loadEmployees();
+</html>
