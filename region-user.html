@@ -3,473 +3,608 @@
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Region Users | Telethon</title>
-
-    <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    >
-
-    <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            background: #f4f6f9;
-            color: #1e293b;
-            display: flex;
-        }
-
-        /* ==============================
-           SIDEBAR
-        ============================== */
-
-        .sidebar {
-            width: 235px;
-            min-width: 235px;
-            min-height: 100vh;
-            background: #0f172a;
-            color: white;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            height: 178px;
-            padding: 20px 15px;
-            text-align: center;
-            border-bottom: 1px solid #263247;
-        }
-
-        .logo img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-bottom: 5px;
-        }
-
-        .logo h2 {
-            font-size: 20px;
-            color: #38bdf8;
-            margin-bottom: 5px;
-        }
-
-        .logo p {
-            font-size: 13px;
-            color: #cbd5e1;
-        }
-
-        .menu {
-            padding-top: 15px;
-        }
-
-        .menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 13px 22px;
-            color: #cbd5e1;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .menu a:hover {
-            background: #1e293b;
-            color: white;
-        }
-
-        .menu a.active {
-            background: #2563eb;
-            color: white;
-        }
-
-        .menu a i {
-            width: 18px;
-            text-align: center;
-        }
-
-        /* ==============================
-           MAIN
-        ============================== */
-
-        .main {
-            margin-left: 235px;
-            width: calc(100% - 235px);
-            min-height: 100vh;
-            padding: 24px;
-        }
-
-        /* ==============================
-           TOPBAR
-        ============================== */
-
-        .topbar {
-            background: white;
-            border-radius: 10px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .topbar h2 {
-            font-size: 24px;
-            color: #0f172a;
-            margin-bottom: 5px;
-        }
-
-        .topbar p {
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        /* ==============================
-           FILTER PANEL
-        ============================== */
-
-        .filter-panel {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .filter-title {
-            font-size: 17px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #0f172a;
-        }
-
-        .filters {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-
-        .filter-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 13px;
-            font-weight: bold;
-            color: #475569;
-        }
-
-        .filter-group select,
-        .filter-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            outline: none;
-            background: white;
-            font-size: 14px;
-        }
-
-        .filter-group select:focus,
-        .filter-group input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .filter-btn {
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .apply-btn {
-            background: #2563eb;
-            color: white;
-        }
-
-        .apply-btn:hover {
-            background: #1d4ed8;
-        }
-
-        .reset-btn {
-            background: #e2e8f0;
-            color: #334155;
-        }
-
-        .reset-btn:hover {
-            background: #cbd5e1;
-        }
-
-        /* ==============================
-           TABLE
-        ============================== */
-
-        .table-container {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .table-header h3 {
-            font-size: 18px;
-            color: #0f172a;
-        }
-
-        .result-count {
-            font-size: 13px;
-            color: #64748b;
-        }
-
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            border: 1px solid #e2e8f0;
-            border-radius: 7px;
-        }
-
-        table {
-            width: 100%;
-            min-width: 1000px;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th {
-            background: #2563eb;
-            color: white;
-            padding: 13px 14px;
-            text-align: left;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 13px 14px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 14px;
-            color: #334155;
-            white-space: nowrap;
-        }
-
-        tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        .employee-code {
-            font-weight: bold;
-            color: #1d4ed8;
-        }
-
-        /* ==============================
-           STATUS
-        ============================== */
-
-        .status-badge {
-            display: inline-block;
-            padding: 5px 11px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .approved {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .pending {
-            background: #fff3cd;
-            color: #664d03;
-        }
-
-        /* ==============================
-           LOADING
-        ============================== */
-
-        .loading-cell,
-        .empty-cell,
-        .error-cell {
-            text-align: center;
-            padding: 30px !important;
-        }
-
-        .loading-cell {
-            color: #64748b;
-        }
-
-        .empty-cell {
-            color: #64748b;
-        }
-
-        .error-cell {
-            color: #dc3545;
-        }
-
-        /* ==============================
-           MOBILE
-        ============================== */
-
-        @media (max-width: 900px) {
-
-            .filters {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-        }
-
-        @media (max-width: 600px) {
-
-            .sidebar {
-                width: 70px;
-                min-width: 70px;
-            }
-
-            .logo {
-                height: 100px;
-                padding: 10px 5px;
-            }
-
-            .logo img {
-                width: 45px;
-                height: 45px;
-            }
-
-            .logo h2,
-            .logo p,
-            .menu a span {
-                display: none;
-            }
-
-            .menu a {
-                justify-content: center;
-                padding: 15px 5px;
-            }
-
-            .main {
-                margin-left: 70px;
-                width: calc(100% - 70px);
-                padding: 12px;
-            }
-
-            .filters {
-                grid-template-columns: 1fr;
-            }
-
-            .table-container,
-            .filter-panel {
-                padding: 12px;
-            }
-
-            .topbar h2 {
-                font-size: 20px;
-            }
-
-        }
-
-    </style>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Region User Panel | Telethon</title>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:#f4f6f9;
+    color:#1e293b;
+}
+
+
+/* ======================================
+   TOP HEADER
+====================================== */
+
+.header{
+
+    background:#0f172a;
+
+    color:white;
+
+    min-height:80px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:15px 30px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.15);
+}
+
+.logo-area{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.logo-area img{
+
+    width:55px;
+
+    height:55px;
+
+    object-fit:contain;
+}
+
+.logo-text h2{
+
+    color:#38bdf8;
+
+    font-size:20px;
+
+    margin-bottom:3px;
+}
+
+.logo-text p{
+
+    color:#cbd5e1;
+
+    font-size:12px;
+}
+
+.user-area{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+}
+
+.user-name{
+
+    font-size:14px;
+
+    color:#e2e8f0;
+}
+
+.logout-btn{
+
+    border:none;
+
+    background:#dc3545;
+
+    color:white;
+
+    padding:9px 15px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    font-size:13px;
+}
+
+.logout-btn:hover{
+
+    background:#b02a37;
+}
+
+
+/* ======================================
+   MAIN
+====================================== */
+
+.main{
+
+    width:100%;
+
+    min-height:calc(100vh - 80px);
+
+    padding:24px;
+}
+
+
+/* ======================================
+   TOPBAR
+====================================== */
+
+.topbar{
+
+    background:white;
+
+    border-radius:10px;
+
+    padding:20px 24px;
+
+    margin-bottom:20px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.06);
+}
+
+.topbar h2{
+
+    font-size:24px;
+
+    color:#0f172a;
+
+    margin-bottom:5px;
+}
+
+.topbar p{
+
+    color:#64748b;
+
+    font-size:14px;
+}
+
+
+/* ======================================
+   FILTER PANEL
+====================================== */
+
+.filter-panel{
+
+    background:white;
+
+    border-radius:10px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.06);
+}
+
+.filter-title{
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+    color:#0f172a;
+}
+
+.filters{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:12px;
+}
+
+.filter-group label{
+
+    display:block;
+
+    margin-bottom:6px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    color:#475569;
+}
+
+.filter-group select,
+.filter-group input{
+
+    width:100%;
+
+    padding:10px 12px;
+
+    border:1px solid #cbd5e1;
+
+    border-radius:6px;
+
+    outline:none;
+
+    background:white;
+
+    font-size:14px;
+}
+
+.filter-group select:focus,
+.filter-group input:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37,99,235,.10);
+}
+
+.filter-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.filter-btn{
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    font-size:13px;
+}
+
+.apply-btn{
+
+    background:#2563eb;
+
+    color:white;
+}
+
+.apply-btn:hover{
+
+    background:#1d4ed8;
+}
+
+.reset-btn{
+
+    background:#e2e8f0;
+
+    color:#334155;
+}
+
+.reset-btn:hover{
+
+    background:#cbd5e1;
+}
+
+
+/* ======================================
+   TABLE
+====================================== */
+
+.table-container{
+
+    background:white;
+
+    border-radius:10px;
+
+    padding:20px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.06);
+}
+
+.table-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:18px;
+}
+
+.table-header h3{
+
+    font-size:18px;
+
+    color:#0f172a;
+}
+
+.result-count{
+
+    font-size:13px;
+
+    color:#64748b;
+}
+
+.table-wrapper{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:7px;
+}
+
+table{
+
+    width:100%;
+
+    min-width:1000px;
+
+    border-collapse:collapse;
+
+    background:white;
+}
+
+th{
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:13px 14px;
+
+    text-align:left;
+
+    font-size:13px;
+
+    white-space:nowrap;
+}
+
+td{
+
+    padding:13px 14px;
+
+    border-bottom:1px solid #e2e8f0;
+
+    font-size:14px;
+
+    color:#334155;
+
+    white-space:nowrap;
+}
+
+tbody tr:hover{
+
+    background:#f8fafc;
+}
+
+.employee-code{
+
+    font-weight:bold;
+
+    color:#1d4ed8;
+}
+
+
+/* ======================================
+   STATUS
+====================================== */
+
+.status-badge{
+
+    display:inline-block;
+
+    padding:5px 11px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:bold;
+}
+
+.approved{
+
+    background:#d1e7dd;
+
+    color:#0f5132;
+}
+
+.pending{
+
+    background:#fff3cd;
+
+    color:#664d03;
+}
+
+
+/* ======================================
+   LOADING / ERROR
+====================================== */
+
+.loading-cell,
+.empty-cell,
+.error-cell{
+
+    text-align:center;
+
+    padding:30px !important;
+}
+
+.loading-cell{
+
+    color:#64748b;
+}
+
+.empty-cell{
+
+    color:#64748b;
+}
+
+.error-cell{
+
+    color:#dc3545;
+}
+
+
+/* ======================================
+   MOBILE
+====================================== */
+
+@media(max-width:900px){
+
+    .filters{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+}
+
+@media(max-width:600px){
+
+    .header{
+
+        padding:12px 15px;
+    }
+
+    .logo-area img{
+
+        width:45px;
+
+        height:45px;
+    }
+
+    .logo-text h2{
+
+        font-size:17px;
+    }
+
+    .logo-text p{
+
+        font-size:11px;
+    }
+
+    .user-area{
+
+        gap:8px;
+    }
+
+    .user-name{
+
+        display:none;
+    }
+
+    .main{
+
+        padding:12px;
+    }
+
+    .filters{
+
+        grid-template-columns:1fr;
+    }
+
+    .filter-panel,
+    .table-container{
+
+        padding:12px;
+    }
+
+    .topbar h2{
+
+        font-size:20px;
+    }
+
+}
+
+</style>
 
 </head>
+
 
 <body>
 
 
 <!-- ======================================
-     SIDEBAR
+     HEADER
 ====================================== -->
 
-<div class="sidebar">
+<header class="header">
 
-    <div class="logo">
+    <div class="logo-area">
 
         <img
             src="assets/images/logo.png"
             alt="Telethon Logo"
         >
 
-        <h2>Telethon</h2>
+        <div class="logo-text">
 
-        <p>Management System</p>
+            <h2>
+                Telethon
+            </h2>
+
+            <p>
+                Region User Panel
+            </p>
+
+        </div>
 
     </div>
 
 
-    <div class="menu">
+    <div class="user-area">
 
-        <a href="dashboard.html">
-            <i class="fa-solid fa-house"></i>
-            <span>Dashboard</span>
-        </a>
+        <span
+            id="loggedUserName"
+            class="user-name"
+        >
+            Region User
+        </span>
 
-        <a href="register.html">
-            <i class="fa-solid fa-user-plus"></i>
-            <span>Registration Form</span>
-        </a>
 
-        <a href="users.html">
-            <i class="fa-solid fa-users"></i>
-            <span>Teachers List</span>
-        </a>
+        <button
+            type="button"
+            id="logoutBtn"
+            class="logout-btn"
+        >
 
-        <a href="region-user.html" class="active">
-            <i class="fa-solid fa-user-shield"></i>
-            <span>Region Users</span>
-        </a>
-
-        <a href="daily-entry.html">
-            <i class="fa-solid fa-file-circle-plus"></i>
-            <span>Daily Collection</span>
-        </a>
-
-        <a href="all-entry.html">
-            <i class="fa-solid fa-list"></i>
-            <span>All Entry</span>
-        </a>
-
-        <a href="reports.html">
-            <i class="fa-solid fa-chart-column"></i>
-            <span>Reports</span>
-        </a>
-
-        <a href="#" id="logoutBtn">
             <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Logout</span>
-        </a>
+
+            Logout
+
+        </button>
 
     </div>
 
-</div>
+</header>
 
 
 <!-- ======================================
@@ -484,25 +619,28 @@
     <div class="topbar">
 
         <h2>
-            Region / State User Management
+            Collection Summary
         </h2>
 
         <p>
-            Region aur State ke hisaab se Teachers ka data filter karein.
+            Aapko sirf assigned Region / State ka data dikhaya ja raha hai.
         </p>
 
     </div>
 
 
-    <!-- ======================================
+    <!-- ==================================
          FILTER PANEL
-    ====================================== -->
+    ================================== -->
 
     <div class="filter-panel">
 
         <div class="filter-title">
+
             <i class="fa-solid fa-filter"></i>
+
             Filter Teachers
+
         </div>
 
 
@@ -620,8 +758,11 @@
                 id="applyFilter"
                 class="filter-btn apply-btn"
             >
+
                 <i class="fa-solid fa-filter"></i>
+
                 Apply Filter
+
             </button>
 
 
@@ -630,8 +771,11 @@
                 id="resetFilter"
                 class="filter-btn reset-btn"
             >
+
                 <i class="fa-solid fa-rotate-left"></i>
+
                 Reset
+
             </button>
 
         </div>
@@ -639,9 +783,9 @@
     </div>
 
 
-    <!-- ======================================
+    <!-- ==================================
          TABLE
-    ====================================== -->
+    ================================== -->
 
     <div class="table-container">
 
@@ -728,12 +872,22 @@
 
 
 <!-- ======================================
-     REGION USERS JS
+     FIREBASE
 ====================================== -->
 
 <script
     type="module"
-    src="assets/js/region-users.js"
+    src="assets/js/firebase-config.js"
+></script>
+
+
+<!-- ======================================
+     REGION USER JS
+====================================== -->
+
+<script
+    type="module"
+    src="assets/js/region-user.js"
 ></script>
 
 
