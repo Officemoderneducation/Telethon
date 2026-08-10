@@ -10,199 +10,244 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Employee Registration | Telethon</title>
-
-
-    <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    >
-
-
-    <!-- Registration CSS -->
-    <link
-        rel="stylesheet"
-        href="assets/css/register.css"
-    >
+    <title>Teacher Registration | Telethon</title>
 
 
     <style>
 
-        /* =====================================
-           PAGE LAYOUT
-        ===================================== */
-
-        body {
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            min-height: 100vh;
-            background: #f4f6f9;
+            box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
 
 
-        /* =====================================
-           SIDEBAR
-        ===================================== */
+        body {
 
-        .sidebar {
-            width: 225px;
             min-height: 100vh;
-            background: #1e293b;
-            color: #ffffff;
-            flex-shrink: 0;
-        }
 
+            background: #f4f7fc;
 
-        /* Logo */
-
-        .sidebar .logo-section {
-            text-align: center;
-            padding: 18px 10px 20px;
-            border-bottom: 1px solid #334155;
-        }
-
-
-        .sidebar .logo-section img {
-            width: 75px;
-            height: 75px;
-            object-fit: contain;
-            display: block;
-            margin: 0 auto 8px;
-        }
-
-
-        .sidebar .logo-section h2 {
-            margin: 0;
-            font-size: 20px;
-            color: #38bdf8;
-        }
-
-
-        .sidebar .logo-section p {
-            margin: 7px 0 0;
-            font-size: 12px;
-            color: #cbd5e1;
-        }
-
-
-        /* Menu */
-
-        .sidebar .menu {
-            margin-top: 15px;
             display: flex;
-            flex-direction: column;
-        }
 
+            justify-content: center;
 
-        .sidebar .menu a {
-            display: flex;
             align-items: center;
-            gap: 12px;
 
-            padding: 12px 20px;
+            padding: 20px;
+        }
 
-            color: #cbd5e1;
 
-            text-decoration: none;
+        /* ==================================
+           REGISTRATION BOX
+        ================================== */
+
+        .register-box {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            background: #ffffff;
+
+            padding: 30px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.10);
+        }
+
+
+        /* ==================================
+           HEADING
+        ================================== */
+
+        h2 {
+
+            text-align: center;
+
+            color: #0d6efd;
+
+            margin-bottom: 8px;
+
+            font-size: 28px;
+        }
+
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #64748b;
 
             font-size: 14px;
 
-            transition: 0.2s;
+            margin-bottom: 25px;
         }
 
 
-        .sidebar .menu a i {
-            width: 18px;
+        /* ==================================
+           FORM GROUP
+        ================================== */
+
+        .form-group {
+
+            margin-bottom: 16px;
+        }
+
+
+        label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #334155;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            background: #ffffff;
+        }
+
+
+        input:focus,
+        select:focus {
+
+            border-color: #0d6efd;
+
+            box-shadow:
+                0 0 0 3px rgba(13,110,253,0.10);
+        }
+
+
+        /* ==================================
+           REGISTER BUTTON
+        ================================== */
+
+        .register-btn {
+
+            width: 100%;
+
+            padding: 13px;
+
+            margin-top: 8px;
+
+            background: #198754;
+
+            color: #ffffff;
+
+            border: none;
+
+            border-radius: 7px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .register-btn:hover {
+
+            background: #157347;
+        }
+
+
+        .register-btn:disabled {
+
+            background: #94a3b8;
+
+            cursor: not-allowed;
+        }
+
+
+        /* ==================================
+           MESSAGE
+        ================================== */
+
+        #message {
+
             text-align: center;
-        }
 
-
-        .sidebar .menu a:hover {
-            background: #0f172a;
-            color: #ffffff;
-        }
-
-
-        .sidebar .menu a.active {
-            background: #2563eb;
-            color: #ffffff;
-        }
-
-
-        .sidebar .menu a:last-child {
             margin-top: 15px;
-            color: #ef4444;
+
+            min-height: 20px;
+
+            font-size: 14px;
+
+            font-weight: bold;
         }
 
 
-        .sidebar .menu a:last-child:hover {
-            background: #0f172a;
+        /* ==================================
+           LOGIN LINK
+        ================================== */
+
+        .login-link {
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #64748b;
+
+            font-size: 14px;
         }
 
 
-        /* =====================================
-           MAIN AREA
-        ===================================== */
+        .login-link a {
 
-        .register-main {
-    flex: 1;
-    min-width: 0;
+            color: #0d6efd;
 
-    height: 100vh;
+            text-decoration: none;
 
-    padding: 20px 30px;
-
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-
-    overflow-y: auto;
-}
+            font-weight: bold;
+        }
 
 
-.register-box {
-    width: 100%;
-    max-width: 650px;
-    margin: 0 auto 20px auto;
-}
+        .login-link a:hover {
 
-        /* =====================================
+            text-decoration: underline;
+        }
+
+
+        /* ==================================
            MOBILE
-        ===================================== */
+        ================================== */
 
-        @media (max-width: 700px) {
+        @media (max-width: 600px) {
 
-            body {
-                flex-direction: column;
+            .register-box {
+
+                padding: 25px 20px;
             }
 
-            .sidebar {
-                width: 100%;
-                min-height: auto;
-            }
 
-            .sidebar .logo-section {
-                padding: 12px;
-            }
+            h2 {
 
-            .sidebar .logo-section img {
-                width: 55px;
-                height: 55px;
-            }
-
-            .sidebar .menu {
-                margin-top: 0;
-            }
-
-            .sidebar .menu a {
-                padding: 10px 15px;
-            }
-
-            .register-main {
-                padding: 15px;
+                font-size: 24px;
             }
 
         }
@@ -215,339 +260,212 @@
 <body>
 
 
-    <!-- =====================================
-         SIDEBAR
-    ====================================== -->
+<!-- ==================================
+     REGISTRATION BOX
+================================== -->
 
-    <div class="sidebar">
+<div class="register-box">
 
 
-        <!-- Logo -->
+    <h2>
+        Teacher Registration
+    </h2>
 
-        <div class="logo-section">
 
-            <img
-                src="assets/images/logo.png"
-                alt="Telethon Logo"
+    <p class="subtitle">
+        Telethon Management System
+    </p>
+
+
+    <!-- ==================================
+         REGISTRATION FORM
+    ================================== -->
+
+    <form id="registerForm">
+
+
+        <!-- Region -->
+
+        <div class="form-group">
+
+            <label for="region">
+                Region
+            </label>
+
+            <select
+                id="region"
+                required
             >
 
-            <h2>Telethon</h2>
+                <option value="">
+                    Select Region
+                </option>
 
-            <p>Management System</p>
+            </select>
 
         </div>
 
 
-        <!-- Menu -->
+        <!-- State -->
 
-        <div class="menu">
+        <div class="form-group">
 
+            <label for="state">
+                State
+            </label>
 
-            <a href="dashboard.html">
-
-                <i class="fa-solid fa-house"></i>
-
-                <span>Dashboard</span>
-
-            </a>
-
-
-            <a
-                href="register.html"
-                class="active"
+            <select
+                id="state"
+                required
             >
 
-                <i class="fa-solid fa-user-plus"></i>
+                <option value="">
+                    Select State
+                </option>
 
-                <span>Registration Form</span>
-
-            </a>
-
-
-            <a href="users.html">
-
-                <i class="fa-solid fa-users"></i>
-
-                <span>Teachers List</span>
-
-            </a>
-
-
-            <a href="daily-entry.html">
-
-                <i class="fa-solid fa-file-circle-plus"></i>
-
-                <span>Daily Collection</span>
-
-            </a>
-
-
-            <a href="all-entry.html">
-
-                <i class="fa-solid fa-list"></i>
-
-                <span>All Entry</span>
-
-            </a>
-
-
-            <a href="reports.html">
-
-                <i class="fa-solid fa-chart-column"></i>
-
-                <span>Reports</span>
-
-            </a>
-
-
-            <a
-                href="#"
-                id="logoutBtn"
-            >
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                <span>Logout</span>
-
-            </a>
-
+            </select>
 
         </div>
 
-    </div>
 
+        <!-- City -->
 
-    <!-- =====================================
-         REGISTRATION MAIN
-    ====================================== -->
+        <div class="form-group">
 
-    <div class="register-main">
+            <label for="city">
+                City
+            </label>
 
-
-        <div class="register-box">
-
-
-            <div class="logo-section">
-
-                <img
-                    src="assets/images/logo.png"
-                    alt="Logo"
-                    class="logo"
-                >
-
-                <h2>
-                    Employee Registration
-                </h2>
-
-                <p>
-                    Telethon Collection Management System
-                </p>
-
-            </div>
-
-
-            <form id="registerForm">
-
-
-                <!-- Region -->
-
-                <div class="input-group">
-
-                    <label>
-                        Region
-                    </label>
-
-                    <select
-                        id="region"
-                        required
-                    >
-
-                        <option value="">
-                            Select Region
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- State -->
-
-                <div class="input-group">
-
-                    <label>
-                        State
-                    </label>
-
-                    <select
-                        id="state"
-                        required
-                    >
-
-                        <option value="">
-                            Select State
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- City -->
-
-                <div class="input-group">
-
-                    <label>
-                        City
-                    </label>
-
-                    <select
-                        id="city"
-                        required
-                    >
-
-                        <option value="">
-                            Select City
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- Jamiatul Madina -->
-
-                <div class="input-group">
-
-                    <label>
-                        Jamiatul Madina
-                    </label>
-
-                    <input
-                        type="text"
-                        id="jamiatulMadina"
-                        placeholder="Enter Jamiatul Madina Name"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- Employee Code -->
-
-                <div class="input-group">
-
-                    <label>
-                        Employee Code
-                    </label>
-
-                    <input
-                        type="text"
-                        id="employeeCode"
-                        placeholder="Enter Employee Code"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- Teacher Name -->
-
-                <div class="input-group">
-
-                    <label>
-                        Teacher Name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="teacherName"
-                        placeholder="Enter Teacher Name"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- Mobile -->
-
-                <div class="input-group">
-
-                    <label>
-                        Mobile Number
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="mobileNumber"
-                        maxlength="10"
-                        placeholder="Enter Mobile Number"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- Password -->
-
-                <div class="input-group">
-
-                    <label>
-                        Password (4 Digits)
-                    </label>
-
-                    <input
-                        type="password"
-                        id="password"
-                        maxlength="4"
-                        inputmode="numeric"
-                        pattern="[0-9]{4}"
-                        placeholder="Create 4 Digit Password"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- Confirm Password -->
-
-                <div class="input-group">
-
-                    <label>
-                        Confirm Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        maxlength="4"
-                        inputmode="numeric"
-                        pattern="[0-9]{4}"
-                        placeholder="Confirm Password"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- Register Button -->
-
-                <button
-                    type="submit"
-                    class="register-btn"
-                >
-                    Register
-                </button>
-
-
-                <p id="message"></p>
-
-
-            </form>
-
+            <input
+                type="text"
+                id="city"
+                placeholder="Enter City"
+                required
+            >
 
         </div>
 
+
+        <!-- Teacher Name -->
+
+        <div class="form-group">
+
+            <label for="teacherName">
+                Teacher Name
+            </label>
+
+            <input
+                type="text"
+                id="teacherName"
+                placeholder="Enter Teacher Name"
+                required
+            >
+
+        </div>
+
+
+        <!-- Employee Code -->
+
+        <div class="form-group">
+
+            <label for="employeeCode">
+                Employee Code
+            </label>
+
+            <input
+                type="text"
+                id="employeeCode"
+                placeholder="Enter Employee Code"
+                required
+            >
+
+        </div>
+
+
+        <!-- Mobile -->
+
+        <div class="form-group">
+
+            <label for="mobile">
+                Mobile Number
+            </label>
+
+            <input
+                type="tel"
+                id="mobile"
+                placeholder="Enter Mobile Number"
+                required
+            >
+
+        </div>
+
+
+        <!-- Password -->
+
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Create Password"
+                required
+            >
+
+        </div>
+
+
+        <!-- Confirm Password -->
+
+        <div class="form-group">
+
+            <label for="confirmPassword">
+                Confirm Password
+            </label>
+
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm Password"
+                required
+            >
+
+        </div>
+
+
+        <!-- Submit -->
+
+        <button
+            type="submit"
+            id="registerBtn"
+            class="register-btn"
+        >
+            Register
+        </button>
+
+
+        <!-- Message -->
+
+        <div id="message"></div>
+
+
+    </form>
+
+
+    <!-- ==================================
+         LOGIN LINK
+    ================================== -->
+
+    <div class="login-link">
+
+        Already Registered?
+
+        <a href="index.html">
+            Login Here
+        </a>
 
     </div>
 
@@ -555,10 +473,9 @@
 </div>
 
 
-<!-- =====================================
-     EXISTING REGISTRATION JAVASCRIPT
-     DO NOT CHANGE
-====================================== -->
+<!-- ==================================
+     REGISTRATION JAVASCRIPT
+================================== -->
 
 <script
     type="module"
