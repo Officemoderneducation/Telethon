@@ -792,7 +792,7 @@ async function logoutUser() {
         );
 
         window.location.href =
-            "login.html";
+    "index.html";
     }
 
 }
