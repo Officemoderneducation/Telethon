@@ -1,5 +1,5 @@
 // ======================================
-// Telethon - Region User Panel
+// Telethon - Region / State Users Panel
 // Firebase Firestore
 // ======================================
 
@@ -24,8 +24,8 @@ const filterState =
 const filterCity =
     document.getElementById("filterCity");
 
-const filterEmployee =
-    document.getElementById("filterEmployee");
+const filterStatus =
+    document.getElementById("filterStatus");
 
 const applyFilter =
     document.getElementById("applyFilter");
@@ -33,226 +33,30 @@ const applyFilter =
 const resetFilter =
     document.getElementById("resetFilter");
 
-const regionUserTable =
-    document.getElementById("regionUserTable");
+const searchUser =
+    document.getElementById("searchUser");
 
-const viewingSummary =
-    document.getElementById("viewingSummary");
+const usersTable =
+    document.getElementById("usersTable");
 
-const totalTarget =
-    document.getElementById("totalTarget");
+const totalTeachers =
+    document.getElementById("totalTeachers");
+
+const approvedTeachers =
+    document.getElementById("approvedTeachers");
+
+const pendingTeachers =
+    document.getElementById("pendingTeachers");
 
 const totalCollection =
     document.getElementById("totalCollection");
 
-const remainingTarget =
-    document.getElementById("remainingTarget");
-
-const achievementPercentage =
-    document.getElementById("achievementPercentage");
-
 
 // ======================================
-// Global Employees Data
+// Global Employees
 // ======================================
 
 let employees = [];
-
-
-// ======================================
-// Format Currency
-// ======================================
-
-function formatCurrency(amount) {
-
-    const number =
-        Number(amount) || 0;
-
-    return "₹ " +
-        number.toLocaleString("en-IN");
-}
-
-
-// ======================================
-// Clean Value
-// ======================================
-
-function cleanValue(value) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return "";
-
-    }
-
-    return String(value).trim();
-}
-
-
-// ======================================
-// Escape HTML
-// ======================================
-
-function escapeHTML(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-// ======================================
-// Get Employee Code
-// ======================================
-
-function getEmployeeCode(employee) {
-
-    return cleanValue(
-        employee.employeeCode ||
-        employee.employee_code ||
-        employee.id
-    );
-}
-
-
-// ======================================
-// Get Teacher Name
-// ======================================
-
-function getTeacherName(employee) {
-
-    return cleanValue(
-        employee.teacherName ||
-        employee.teacher_name
-    );
-}
-
-
-// ======================================
-// Get Region
-// ======================================
-
-function getRegion(employee) {
-
-    return cleanValue(
-        employee.region
-    );
-}
-
-
-// ======================================
-// Get State
-// ======================================
-
-function getState(employee) {
-
-    return cleanValue(
-        employee.state
-    );
-}
-
-
-// ======================================
-// Get City
-// ======================================
-
-function getCity(employee) {
-
-    return cleanValue(
-        employee.city
-    );
-}
-
-
-// ======================================
-// Get Jamiatul Madina
-// ======================================
-
-function getJamiatulMadina(employee) {
-
-    return cleanValue(
-        employee.jamiatulMadina ||
-        employee.jamiatul_madina
-    );
-}
-
-
-// ======================================
-// Get Target
-// ======================================
-
-function getTarget(employee) {
-
-    return Number(
-        employee.target || 0
-    );
-}
-
-
-// ======================================
-// Get Collection
-// ======================================
-
-function getCollection(employee) {
-
-    return Number(
-        employee.totalCollection ||
-        employee.total_collection ||
-        employee.collection ||
-        0
-    );
-}
-
-
-// ======================================
-// Reset State
-// ======================================
-
-function resetState() {
-
-    filterState.innerHTML = `
-        <option value="">
-            All States
-        </option>
-    `;
-
-}
-
-
-// ======================================
-// Reset City
-// ======================================
-
-function resetCity() {
-
-    filterCity.innerHTML = `
-        <option value="">
-            All Cities
-        </option>
-    `;
-
-}
-
-
-// ======================================
-// Reset Employee
-// ======================================
-
-function resetEmployee() {
-
-    filterEmployee.innerHTML = `
-        <option value="">
-            All Employees
-        </option>
-    `;
-
-}
 
 
 // ======================================
@@ -261,18 +65,13 @@ function resetEmployee() {
 
 async function loadEmployees() {
 
-    if (!regionUserTable) {
-        return;
-    }
+    if (!usersTable) return;
 
 
-    regionUserTable.innerHTML = `
+    usersTable.innerHTML = `
         <tr>
-            <td
-                colspan="11"
-                class="loading-cell"
-            >
-                Loading Data...
+            <td colspan="9" class="loading-cell">
+                Loading Teachers...
             </td>
         </tr>
     `;
@@ -282,10 +81,7 @@ async function loadEmployees() {
 
         const snapshot =
             await getDocs(
-                collection(
-                    db,
-                    "employees"
-                )
+                collection(db, "employees")
             );
 
 
@@ -308,54 +104,28 @@ async function loadEmployees() {
         );
 
 
-        // ==================================
-        // Sort By Employee Code
-        // ==================================
+        loadRegions();
 
-        employees.sort(
-            (a, b) => {
-
-                return getEmployeeCode(a)
-                    .localeCompare(
-                        getEmployeeCode(b),
-                        undefined,
-                        {
-                            numeric: true
-                        }
-                    );
-
-            }
-        );
-
-
-        loadRegionFilter();
-
-        updateAllFilters();
 
         displayEmployees(
             employees
         );
 
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Region User Load Error:",
+            "Employees Load Error:",
             error
         );
 
 
-        regionUserTable.innerHTML = `
+        usersTable.innerHTML = `
             <tr>
-                <td
-                    colspan="11"
-                    class="empty-cell"
-                >
-                    Data load nahi ho raha.
+                <td colspan="9" class="error-cell">
+                    Teachers load nahi ho rahe.
                     <br><br>
-                    ${escapeHTML(error.message)}
+                    ${error.message}
                 </td>
             </tr>
         `;
@@ -366,22 +136,30 @@ async function loadEmployees() {
 
 
 // ======================================
-// Load Region Filter
+// Load Regions
 // ======================================
 
-function loadRegionFilter() {
+function loadRegions() {
+
+    if (!filterRegion) return;
+
 
     const regions =
-        [...new Set(
+        [
+            ...new Set(
 
-            employees
-                .map(
-                    employee =>
-                        getRegion(employee)
-                )
-                .filter(Boolean)
+                employees
 
-        )]
+                    .map(
+                        employee =>
+                            employee.region
+                    )
+
+                    .filter(Boolean)
+
+            )
+        ]
+
         .sort();
 
 
@@ -393,13 +171,11 @@ function loadRegionFilter() {
 
 
     regions.forEach(
-        (regionName) => {
+        region => {
 
             filterRegion.innerHTML += `
-                <option
-                    value="${escapeHTML(regionName)}"
-                >
-                    ${escapeHTML(regionName)}
+                <option value="${escapeHTML(region)}">
+                    ${escapeHTML(region)}
                 </option>
             `;
 
@@ -410,89 +186,106 @@ function loadRegionFilter() {
 
 
 // ======================================
-// Load State Filter
+// Load States
 // ======================================
 
-function loadStateFilter() {
+function loadStates(
+    selectedRegion = ""
+) {
 
-    const selectedRegion =
-        filterRegion.value;
+    if (!filterState) return;
 
 
-    let filtered =
+    let filteredEmployees =
         employees;
 
 
     if (selectedRegion) {
 
-        filtered =
+        filteredEmployees =
             employees.filter(
                 employee =>
-                    getRegion(employee) ===
-                    selectedRegion
+                    String(
+                        employee.region || ""
+                    ).trim()
+                    === selectedRegion
             );
 
     }
 
 
     const states =
-        [...new Set(
+        [
+            ...new Set(
 
-            filtered
-                .map(
-                    employee =>
-                        getState(employee)
-                )
-                .filter(Boolean)
+                filteredEmployees
 
-        )]
+                    .map(
+                        employee =>
+                            employee.state
+                    )
+
+                    .filter(Boolean)
+
+            )
+        ]
+
         .sort();
 
 
-    resetState();
+    filterState.innerHTML = `
+        <option value="">
+            All States
+        </option>
+    `;
 
 
     states.forEach(
-        (stateName) => {
+        state => {
 
             filterState.innerHTML += `
-                <option
-                    value="${escapeHTML(stateName)}"
-                >
-                    ${escapeHTML(stateName)}
+                <option value="${escapeHTML(state)}">
+                    ${escapeHTML(state)}
                 </option>
             `;
 
         }
     );
 
+
+    loadCities(
+        selectedRegion,
+        ""
+    );
+
 }
 
 
 // ======================================
-// Load City Filter
+// Load Cities
 // ======================================
 
-function loadCityFilter() {
+function loadCities(
+    selectedRegion = "",
+    selectedState = ""
+) {
 
-    const selectedRegion =
-        filterRegion.value;
-
-    const selectedState =
-        filterState.value;
+    if (!filterCity) return;
 
 
-    let filtered =
+    let filteredEmployees =
         employees;
 
 
     if (selectedRegion) {
 
-        filtered =
-            filtered.filter(
+        filteredEmployees =
+            filteredEmployees.filter(
                 employee =>
-                    getRegion(employee) ===
-                    selectedRegion
+                    String(
+                        employee.region || ""
+                    ).trim()
+                    === selectedRegion
             );
 
     }
@@ -500,173 +293,55 @@ function loadCityFilter() {
 
     if (selectedState) {
 
-        filtered =
-            filtered.filter(
+        filteredEmployees =
+            filteredEmployees.filter(
                 employee =>
-                    getState(employee) ===
-                    selectedState
+                    String(
+                        employee.state || ""
+                    ).trim()
+                    === selectedState
             );
 
     }
 
 
     const cities =
-        [...new Set(
+        [
+            ...new Set(
 
-            filtered
-                .map(
-                    employee =>
-                        getCity(employee)
-                )
-                .filter(Boolean)
+                filteredEmployees
 
-        )]
+                    .map(
+                        employee =>
+                            employee.city
+                    )
+
+                    .filter(Boolean)
+
+            )
+        ]
+
         .sort();
 
 
-    resetCity();
+    filterCity.innerHTML = `
+        <option value="">
+            All Cities
+        </option>
+    `;
 
 
     cities.forEach(
-        (cityName) => {
+        city => {
 
             filterCity.innerHTML += `
-                <option
-                    value="${escapeHTML(cityName)}"
-                >
-                    ${escapeHTML(cityName)}
+                <option value="${escapeHTML(city)}">
+                    ${escapeHTML(city)}
                 </option>
             `;
 
         }
     );
-
-}
-
-
-// ======================================
-// Load Employee Filter
-// ======================================
-
-function loadEmployeeFilter() {
-
-    const selectedRegion =
-        filterRegion.value;
-
-    const selectedState =
-        filterState.value;
-
-    const selectedCity =
-        filterCity.value;
-
-
-    let filtered =
-        employees;
-
-
-    if (selectedRegion) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-                    getRegion(employee) ===
-                    selectedRegion
-            );
-
-    }
-
-
-    if (selectedState) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-                    getState(employee) ===
-                    selectedState
-            );
-
-    }
-
-
-    if (selectedCity) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-                    getCity(employee) ===
-                    selectedCity
-            );
-
-    }
-
-
-    const employeeList =
-        filtered
-            .map(
-                employee => ({
-
-                    code:
-                        getEmployeeCode(employee),
-
-                    name:
-                        getTeacherName(employee)
-
-                })
-            )
-            .filter(
-                employee =>
-                    employee.code
-            );
-
-
-    resetEmployee();
-
-
-    employeeList.sort(
-        (a, b) => {
-
-            return a.code.localeCompare(
-                b.code,
-                undefined,
-                {
-                    numeric: true
-                }
-            );
-
-        }
-    );
-
-
-    employeeList.forEach(
-        (employee) => {
-
-            filterEmployee.innerHTML += `
-                <option
-                    value="${escapeHTML(employee.code)}"
-                >
-                    ${escapeHTML(employee.code)}
-                    - 
-                    ${escapeHTML(employee.name)}
-                </option>
-            `;
-
-        }
-    );
-
-}
-
-
-// ======================================
-// Update All Filters
-// ======================================
-
-function updateAllFilters() {
-
-    loadStateFilter();
-
-    loadCityFilter();
-
-    loadEmployeeFilter();
 
 }
 
@@ -675,240 +350,89 @@ function updateAllFilters() {
 // Region Change
 // ======================================
 
-filterRegion.addEventListener(
-    "change",
-    function () {
+if (filterRegion) {
 
-        resetState();
+    filterRegion.addEventListener(
+        "change",
+        function() {
 
-        resetCity();
-
-        resetEmployee();
-
-
-        loadStateFilter();
-
-        loadCityFilter();
-
-        loadEmployeeFilter();
-
-    }
-);
+            const selectedRegion =
+                this.value;
 
 
-// ======================================
-// State Change
-// ======================================
-
-filterState.addEventListener(
-    "change",
-    function () {
-
-        resetCity();
-
-        resetEmployee();
-
-
-        loadCityFilter();
-
-        loadEmployeeFilter();
-
-    }
-);
-
-
-// ======================================
-// City Change
-// ======================================
-
-filterCity.addEventListener(
-    "change",
-    function () {
-
-        resetEmployee();
-
-        loadEmployeeFilter();
-
-    }
-);
-
-
-// ======================================
-// Apply Filter
-// ======================================
-
-applyFilter.addEventListener(
-    "click",
-    function () {
-
-        applyCurrentFilters();
-
-    }
-);
-
-
-// ======================================
-// Apply Current Filters
-// ======================================
-
-function applyCurrentFilters() {
-
-    const selectedRegion =
-        filterRegion.value;
-
-    const selectedState =
-        filterState.value;
-
-    const selectedCity =
-        filterCity.value;
-
-    const selectedEmployee =
-        filterEmployee.value;
-
-
-    let filtered =
-        employees;
-
-
-    // ==================================
-    // Region
-    // ==================================
-
-    if (selectedRegion) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-                    getRegion(employee) ===
-                    selectedRegion
+            loadStates(
+                selectedRegion
             );
 
-    }
-
-
-    // ==================================
-    // State
-    // ==================================
-
-    if (selectedState) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-                    getState(employee) ===
-                    selectedState
-            );
-
-    }
-
-
-    // ==================================
-    // City
-    // ==================================
-
-    if (selectedCity) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-                    getCity(employee) ===
-                    selectedCity
-            );
-
-    }
-
-
-    // ==================================
-    // Employee
-    // ==================================
-
-    if (selectedEmployee) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-                    getEmployeeCode(employee) ===
-                    selectedEmployee
-            );
-
-    }
-
-
-    displayEmployees(
-        filtered
-    );
-
-
-    updateViewingText(
-        selectedRegion,
-        selectedState,
-        selectedCity,
-        selectedEmployee
+        }
     );
 
 }
 
 
 // ======================================
-// Viewing Summary Text
+// State Change
 // ======================================
 
-function updateViewingText(
-    selectedRegion,
-    selectedState,
-    selectedCity,
-    selectedEmployee
-) {
+if (filterState) {
 
-    let text =
-        "All Teachers";
+    filterState.addEventListener(
+        "change",
+        function() {
+
+            const selectedRegion =
+                filterRegion
+                    ? filterRegion.value
+                    : "";
 
 
-    if (selectedEmployee) {
+            const selectedState =
+                this.value;
 
-        const employee =
-            employees.find(
-                item =>
-                    getEmployeeCode(item) ===
-                    selectedEmployee
+
+            loadCities(
+                selectedRegion,
+                selectedState
             );
 
+        }
+    );
 
-        if (employee) {
+}
 
-            text =
-                getEmployeeCode(employee) +
-                " - " +
-                getTeacherName(employee);
+
+// ======================================
+// Apply Filter
+// ======================================
+
+if (applyFilter) {
+
+    applyFilter.addEventListener(
+        "click",
+        function() {
+
+            applyFilters();
 
         }
+    );
 
-    }
-
-    else if (selectedCity) {
-
-        text =
-            selectedCity;
-
-    }
-
-    else if (selectedState) {
-
-        text =
-            selectedState;
-
-    }
-
-    else if (selectedRegion) {
-
-        text =
-            selectedRegion;
-
-    }
+}
 
 
-    viewingSummary.textContent =
-        text;
+// ======================================
+// Search
+// ======================================
+
+if (searchUser) {
+
+    searchUser.addEventListener(
+        "input",
+        function() {
+
+            applyFilters();
+
+        }
+    );
 
 }
 
@@ -917,36 +441,233 @@ function updateViewingText(
 // Reset Filter
 // ======================================
 
-resetFilter.addEventListener(
-    "click",
-    function () {
+if (resetFilter) {
 
-        filterRegion.value = "";
+    resetFilter.addEventListener(
+        "click",
+        function() {
 
-        resetState();
+            if (filterRegion) {
 
-        resetCity();
+                filterRegion.value =
+                    "";
 
-        resetEmployee();
-
-
-        loadStateFilter();
-
-        loadCityFilter();
-
-        loadEmployeeFilter();
+            }
 
 
-        displayEmployees(
-            employees
+            if (filterState) {
+
+                filterState.innerHTML = `
+                    <option value="">
+                        All States
+                    </option>
+                `;
+
+            }
+
+
+            if (filterCity) {
+
+                filterCity.innerHTML = `
+                    <option value="">
+                        All Cities
+                    </option>
+                `;
+
+            }
+
+
+            if (filterStatus) {
+
+                filterStatus.value =
+                    "";
+
+            }
+
+
+            if (searchUser) {
+
+                searchUser.value =
+                    "";
+
+            }
+
+
+            loadStates("");
+
+
+            displayEmployees(
+                employees
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Apply All Filters
+// ======================================
+
+function applyFilters() {
+
+    const selectedRegion =
+        filterRegion
+            ? filterRegion.value
+            : "";
+
+
+    const selectedState =
+        filterState
+            ? filterState.value
+            : "";
+
+
+    const selectedCity =
+        filterCity
+            ? filterCity.value
+            : "";
+
+
+    const selectedStatus =
+        filterStatus
+            ? filterStatus.value
+            : "";
+
+
+    const search =
+        searchUser
+            ? searchUser.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const filtered =
+        employees.filter(
+            employee => {
+
+
+                const employeeRegion =
+                    String(
+                        employee.region || ""
+                    ).trim();
+
+
+                const employeeState =
+                    String(
+                        employee.state || ""
+                    ).trim();
+
+
+                const employeeCity =
+                    String(
+                        employee.city || ""
+                    ).trim();
+
+
+                const employeeStatus =
+                    String(
+                        employee.status || "Pending"
+                    ).trim();
+
+
+                const employeeCode =
+                    String(
+                        employee.employeeCode ||
+                        employee.employee_code ||
+                        employee.id ||
+                        ""
+                    ).toLowerCase();
+
+
+                const teacherName =
+                    String(
+                        employee.teacherName ||
+                        employee.teacher_name ||
+                        ""
+                    ).toLowerCase();
+
+
+                const mobile =
+                    String(
+                        employee.mobileNumber ||
+                        employee.mobile ||
+                        ""
+                    ).toLowerCase();
+
+
+                const regionMatch =
+                    !selectedRegion ||
+                    employeeRegion ===
+                    selectedRegion;
+
+
+                const stateMatch =
+                    !selectedState ||
+                    employeeState ===
+                    selectedState;
+
+
+                const cityMatch =
+                    !selectedCity ||
+                    employeeCity ===
+                    selectedCity;
+
+
+                const statusMatch =
+                    !selectedStatus ||
+                    employeeStatus.toLowerCase()
+                    ===
+                    selectedStatus.toLowerCase();
+
+
+                const searchMatch =
+                    !search ||
+
+                    employeeCode.includes(search) ||
+
+                    teacherName.includes(search) ||
+
+                    mobile.includes(search) ||
+
+                    employeeRegion
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    employeeState
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    employeeCity
+                        .toLowerCase()
+                        .includes(search);
+
+
+                return (
+
+                    regionMatch &&
+
+                    stateMatch &&
+
+                    cityMatch &&
+
+                    statusMatch &&
+
+                    searchMatch
+
+                );
+
+            }
         );
 
 
-        viewingSummary.textContent =
-            "All Teachers";
+    displayEmployees(
+        filtered
+    );
 
-    }
-);
+}
 
 
 // ======================================
@@ -955,36 +676,23 @@ resetFilter.addEventListener(
 
 function displayEmployees(list) {
 
-    if (!regionUserTable) {
-        return;
-    }
+    if (!usersTable) return;
 
 
-    // ==================================
-    // Empty
-    // ==================================
+    updateSummary(
+        list
+    );
+
 
     if (list.length === 0) {
 
-        regionUserTable.innerHTML = `
+        usersTable.innerHTML = `
             <tr>
-
-                <td
-                    colspan="11"
-                    class="empty-cell"
-                >
-
-                    No Teacher Found.
-
+                <td colspan="9" class="empty-cell">
+                    Koi Teacher nahi mila.
                 </td>
-
             </tr>
         `;
-
-
-        updateSummaryCards(
-            []
-        );
 
         return;
 
@@ -994,149 +702,126 @@ function displayEmployees(list) {
     let html = "";
 
 
-    // ==================================
-    // Summary Variables
-    // ==================================
-
-    let totalTargetValue = 0;
-
-    let totalCollectionValue = 0;
-
-
-    // ==================================
-    // Rows
-    // ==================================
-
     list.forEach(
-        (employee, index) => {
+        employee => {
+
+
+            const employeeCode =
+                employee.employeeCode ||
+                employee.employee_code ||
+                employee.id ||
+                "-";
+
+
+            const teacherName =
+                employee.teacherName ||
+                employee.teacher_name ||
+                "-";
+
+
+            const mobile =
+                employee.mobileNumber ||
+                employee.mobile ||
+                "-";
+
+
+            const region =
+                employee.region ||
+                "-";
+
+
+            const state =
+                employee.state ||
+                "-";
+
+
+            const city =
+                employee.city ||
+                "-";
+
+
+            const status =
+                employee.status ||
+                "Pending";
+
 
             const target =
-                getTarget(employee);
-
-
-            const collection =
-                getCollection(employee);
-
-
-            const remaining =
-                Math.max(
-                    target - collection,
-                    0
+                Number(
+                    employee.target || 0
                 );
 
 
-            let percentage = 0;
+            const collection =
+                Number(
+                    employee.totalCollection || 0
+                );
 
 
-            if (target > 0) {
+            let statusHTML = "";
 
-                percentage =
-                    (
-                        collection /
-                        target
-                    ) * 100;
+
+            if (
+                String(status)
+                    .toLowerCase()
+                    ===
+                    "approved"
+            ) {
+
+                statusHTML = `
+                    <span class="status-badge approved">
+                        Approved
+                    </span>
+                `;
+
+            } else {
+
+                statusHTML = `
+                    <span class="status-badge pending">
+                        Pending
+                    </span>
+                `;
 
             }
-
-
-            totalTargetValue +=
-                target;
-
-
-            totalCollectionValue +=
-                collection;
 
 
             html += `
 
                 <tr>
 
-                    <td>
-                        ${index + 1}
+                    <td class="employee-code">
+                        ${escapeHTML(employeeCode)}
                     </td>
-
-
-                    <td>
-                        ${escapeHTML(
-                            getRegion(employee)
-                        )}
-                    </td>
-
 
                     <td>
-                        ${escapeHTML(
-                            getState(employee)
-                        )}
+                        ${escapeHTML(teacherName)}
                     </td>
-
 
                     <td>
-                        ${escapeHTML(
-                            getCity(employee)
-                        )}
+                        ${escapeHTML(mobile)}
                     </td>
-
 
                     <td>
-                        ${escapeHTML(
-                            getJamiatulMadina(employee)
-                        )}
+                        ${escapeHTML(region)}
                     </td>
-
 
                     <td>
-
-                        <strong>
-                            ${escapeHTML(
-                                getEmployeeCode(employee)
-                            )}
-                        </strong>
-
+                        ${escapeHTML(state)}
                     </td>
-
 
                     <td>
-                        ${escapeHTML(
-                            getTeacherName(employee)
-                        )}
+                        ${escapeHTML(city)}
                     </td>
-
-
-                    <td class="amount target-amount">
-
-                        ${formatCurrency(
-                            target
-                        )}
-
-                    </td>
-
-
-                    <td class="amount collection-amount">
-
-                        ${formatCurrency(
-                            collection
-                        )}
-
-                    </td>
-
-
-                    <td class="amount remaining-amount">
-
-                        ${formatCurrency(
-                            remaining
-                        )}
-
-                    </td>
-
 
                     <td>
+                        ${statusHTML}
+                    </td>
 
-                        <span class="percentage">
+                    <td>
+                        ₹ ${formatNumber(target)}
+                    </td>
 
-                            ${percentage.toFixed(2)}%
-
-                        </span>
-
+                    <td>
+                        ₹ ${formatNumber(collection)}
                     </td>
 
                 </tr>
@@ -1147,93 +832,154 @@ function displayEmployees(list) {
     );
 
 
-    regionUserTable.innerHTML =
+    usersTable.innerHTML =
         html;
-
-
-    // ==================================
-    // Update Summary
-    // ==================================
-
-    updateSummaryCards(
-        list
-    );
 
 }
 
 
 // ======================================
-// Update Summary Cards
+// Summary
 // ======================================
 
-function updateSummaryCards(list) {
+function updateSummary(list) {
 
-    let target = 0;
-
-    let collection = 0;
-
-
-    list.forEach(
-        (employee) => {
-
-            target +=
-                getTarget(employee);
-
-            collection +=
-                getCollection(employee);
-
-        }
-    );
+    const total =
+        list.length;
 
 
-    const remaining =
-        Math.max(
-            target - collection,
+    const approved =
+        list.filter(
+            employee =>
+                String(
+                    employee.status || ""
+                ).toLowerCase()
+                ===
+                "approved"
+        ).length;
+
+
+    const pending =
+        list.filter(
+            employee =>
+                String(
+                    employee.status || "Pending"
+                ).toLowerCase()
+                !==
+                "approved"
+        ).length;
+
+
+    const collection =
+        list.reduce(
+            (
+                total,
+                employee
+            ) => {
+
+                return (
+                    total +
+                    Number(
+                        employee.totalCollection ||
+                        0
+                    )
+                );
+
+            },
             0
         );
 
 
-    let percentage = 0;
+    if (totalTeachers) {
 
-
-    if (target > 0) {
-
-        percentage =
-            (
-                collection /
-                target
-            ) * 100;
+        totalTeachers.textContent =
+            total;
 
     }
 
 
-    totalTarget.textContent =
-        formatCurrency(
-            target
-        );
+    if (approvedTeachers) {
+
+        approvedTeachers.textContent =
+            approved;
+
+    }
 
 
-    totalCollection.textContent =
-        formatCurrency(
-            collection
-        );
+    if (pendingTeachers) {
+
+        pendingTeachers.textContent =
+            pending;
+
+    }
 
 
-    remainingTarget.textContent =
-        formatCurrency(
-            remaining
-        );
+    if (totalCollection) {
 
+        totalCollection.textContent =
+            "₹ " +
+            formatNumber(collection);
 
-    achievementPercentage.textContent =
-        percentage.toFixed(2) +
-        "%";
+    }
 
 }
 
 
 // ======================================
-// Start
+// Format Number
+// ======================================
+
+function formatNumber(number) {
+
+    return Number(
+        number || 0
+    ).toLocaleString(
+        "en-IN"
+    );
+
+}
+
+
+// ======================================
+// Escape HTML
+// ======================================
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+// ======================================
+// START
 // ======================================
 
 loadEmployees();
