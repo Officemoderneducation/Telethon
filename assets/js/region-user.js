@@ -78,14 +78,14 @@ const currentUserRole =
     String(
         localStorage.getItem("userRole") || ""
     )
-        .trim()
-        .toLowerCase();
+    .trim()
+    .toLowerCase();
 
 const loggedInUser =
     String(
         localStorage.getItem("loggedInEmpCode") || ""
     )
-        .trim();
+    .trim();
 
 
 // ======================================
@@ -203,6 +203,10 @@ function getEntryEmployeeCode(entry) {
 
         entry.user_code ||
 
+        entry.emp_id ||
+
+        entry.employee ||
+
         ""
 
     ).trim();
@@ -273,19 +277,16 @@ function getEmployeeCollection(employeeCode) {
 
             const entryCode =
                 normalize(
-                    getEntryEmployeeCode(
-                        entry
-                    )
+                    getEntryEmployeeCode(entry)
                 );
 
             if (
+                entryCode &&
                 entryCode === code
             ) {
 
                 total +=
-                    getEntryAmount(
-                        entry
-                    );
+                    getEntryAmount(entry);
 
             }
 
@@ -323,7 +324,6 @@ function showLoading() {
             "Loading...";
 
     }
-
 }
 
 
@@ -359,7 +359,6 @@ function showError(message) {
             "Error";
 
     }
-
 }
 
 
@@ -391,11 +390,14 @@ async function loadRegionUser() {
 
         }
 
-        // Admin ko all employees dikhenge
+        // Admin = All Employees
         accessRules = [];
 
-        return;
+        console.log(
+            "Logged In As Administrator"
+        );
 
+        return;
     }
 
 
@@ -443,17 +445,41 @@ async function loadRegionUser() {
 
 
     // ==================================
-    // COLLECTION 1: regionUsers
+    // Collections To Check
     // ==================================
 
     const collectionNames = [
-        "regionUsers",
-        "region_users"
+
+        "region_users",
+
+        "regionUsers"
+
     ];
 
 
     // ==================================
-    // Search User
+    // Fields To Check
+    // ==================================
+
+    const fieldsToCheck = [
+
+        "userCode",
+
+        "employeeCode",
+
+        "employee_code",
+
+        "user_code",
+
+        "empCode",
+
+        "emp_code"
+
+    ];
+
+
+    // ==================================
+    // Search Region User
     // ==================================
 
     for (
@@ -464,20 +490,6 @@ async function loadRegionUser() {
         if (userData) {
             break;
         }
-
-
-        // --------------------------------
-        // Try employeeCode
-        // --------------------------------
-
-        const fieldsToCheck = [
-            "employeeCode",
-            "employee_code",
-            "userCode",
-            "user_code",
-            "empCode",
-            "emp_code"
-        ];
 
 
         for (
@@ -494,15 +506,18 @@ async function loadRegionUser() {
 
                 const q =
                     query(
+
                         collection(
                             db,
                             collectionName
                         ),
+
                         where(
                             fieldName,
                             "==",
                             loggedInUser
                         )
+
                     );
 
 
@@ -516,6 +531,7 @@ async function loadRegionUser() {
 
                     userData =
                         snapshot.docs[0].data();
+
 
                     console.log(
                         "Region User Found:",
@@ -544,7 +560,7 @@ async function loadRegionUser() {
 
 
     // ==================================
-    // Try Document ID
+    // Search By Document ID
     // ==================================
 
     if (!userData) {
@@ -570,9 +586,7 @@ async function loadRegionUser() {
 
 
                 const userSnap =
-                    await getDoc(
-                        userRef
-                    );
+                    await getDoc(userRef);
 
 
                 if (
@@ -581,6 +595,7 @@ async function loadRegionUser() {
 
                     userData =
                         userSnap.data();
+
 
                     console.log(
                         "Region User Found By Document ID:",
@@ -616,14 +631,13 @@ async function loadRegionUser() {
         throw new Error(
             `Region User record nahi mila.
 
-Login Code:
-${loggedInUser}
+Login Code: ${loggedInUser}
 
-Firestore me check karein:
-regionUsers / region_users
+Firestore collections:
+region_users / regionUsers
 
-Aur field:
-employeeCode / userCode`
+Fields:
+userCode / employeeCode`
         );
 
     }
@@ -716,15 +730,8 @@ employeeCode / userCode`
         "Access Rules:",
         accessRules
     );
-
 }
 
-
-// ======================================
-// Check Employee Access
-// ======================================
-
-function hasEmployeeAccess(employee) {
 
 // ======================================
 // Check Employee Access
@@ -736,24 +743,30 @@ function hasEmployeeAccess(employee) {
     // ADMIN
     // ==================================
 
-    if (currentUserRole === "admin") {
+    if (
+        currentUserRole === "admin"
+    ) {
+
         return true;
+
     }
 
 
     // ==================================
-    // No Access Rules
+    // No Rules
     // ==================================
 
     if (
         !Array.isArray(accessRules) ||
         accessRules.length === 0
     ) {
+
         console.warn(
             "No Access Rules Found"
         );
 
         return false;
+
     }
 
 
@@ -761,38 +774,40 @@ function hasEmployeeAccess(employee) {
     // Employee Region
     // ==================================
 
-    const employeeRegion = normalize(
-        employee.region ||
-        employee.regionName ||
-        employee.region_name ||
-        ""
-    );
+    const employeeRegion =
+        normalize(
+
+            employee.region ||
+
+            employee.regionName ||
+
+            employee.region_name ||
+
+            ""
+
+        );
 
 
     // ==================================
     // Employee State
     // ==================================
 
-    const employeeState = normalize(
-        employee.state ||
-        employee.stateName ||
-        employee.state_name ||
-        ""
-    );
+    const employeeState =
+        normalize(
 
+            employee.state ||
 
-    console.log(
-        "Checking Employee Access:",
-        {
-            employeeCode: getEmployeeCode(employee),
-            employeeRegion: employeeRegion,
-            employeeState: employeeState
-        }
-    );
+            employee.stateName ||
+
+            employee.state_name ||
+
+            ""
+
+        );
 
 
     // ==================================
-    // Check Access Rules
+    // Check Every Rule
     // ==================================
 
     return accessRules.some(
@@ -804,24 +819,23 @@ function hasEmployeeAccess(employee) {
 
 
             // ==================================
-            // Region
+            // Assigned Region
             // ==================================
 
-            const assignedRegion = normalize(
-                rule.region ||
-                rule.assignedRegion ||
-                rule.regionName ||
-                rule.region_name ||
-                ""
-            );
+            const assignedRegion =
+                normalize(
 
+                    rule.region ||
 
-            console.log(
-                "Access Rule:",
-                rule,
-                "Assigned Region:",
-                assignedRegion
-            );
+                    rule.assignedRegion ||
+
+                    rule.regionName ||
+
+                    rule.region_name ||
+
+                    ""
+
+                );
 
 
             // ==================================
@@ -830,7 +844,8 @@ function hasEmployeeAccess(employee) {
 
             if (
                 assignedRegion &&
-                assignedRegion !== employeeRegion
+                assignedRegion !==
+                employeeRegion
             ) {
 
                 return false;
@@ -839,10 +854,23 @@ function hasEmployeeAccess(employee) {
 
 
             // ==================================
+            // IMPORTANT:
+            // Your Firestore access format is:
+            //
+            // {
+            //    region: "Ajmer",
+            //    state: "Madhya Pradesh"
+            // }
+            //
+            // ==================================
+
+
+            // ==================================
             // Full Region
             // ==================================
 
             const fullRegion =
+
                 rule.fullRegion === true ||
 
                 normalize(
@@ -862,7 +890,9 @@ function hasEmployeeAccess(employee) {
                 ) === "full";
 
 
-            if (fullRegion) {
+            if (
+                fullRegion
+            ) {
 
                 return true;
 
@@ -870,14 +900,32 @@ function hasEmployeeAccess(employee) {
 
 
             // ==================================
-            // Get States
+            // Get Allowed States
             // ==================================
 
             let states = [];
 
 
-            // Array
+            // ----------------------------------
+            // rule.state
+            // ----------------------------------
+
             if (
+                rule.state
+            ) {
+
+                states = [
+                    rule.state
+                ];
+
+            }
+
+
+            // ----------------------------------
+            // rule.states Array
+            // ----------------------------------
+
+            else if (
                 Array.isArray(
                     rule.states
                 )
@@ -889,7 +937,10 @@ function hasEmployeeAccess(employee) {
             }
 
 
-            // Single State
+            // ----------------------------------
+            // rule.states String
+            // ----------------------------------
+
             else if (
                 typeof rule.states ===
                 "string"
@@ -902,7 +953,10 @@ function hasEmployeeAccess(employee) {
             }
 
 
+            // ----------------------------------
             // selectedStates
+            // ----------------------------------
+
             else if (
                 Array.isArray(
                     rule.selectedStates
@@ -915,7 +969,10 @@ function hasEmployeeAccess(employee) {
             }
 
 
+            // ----------------------------------
             // assignedStates
+            // ----------------------------------
+
             else if (
                 Array.isArray(
                     rule.assignedStates
@@ -928,19 +985,10 @@ function hasEmployeeAccess(employee) {
             }
 
 
-            // state
-            else if (
-                rule.state
-            ) {
-
-                states = [
-                    rule.state
-                ];
-
-            }
-
-
+            // ----------------------------------
             // stateName
+            // ----------------------------------
+
             else if (
                 rule.stateName
             ) {
@@ -960,10 +1008,6 @@ function hasEmployeeAccess(employee) {
                 states.length === 0
             ) {
 
-                console.log(
-                    "Region matched, no state restriction"
-                );
-
                 return true;
 
             }
@@ -973,204 +1017,37 @@ function hasEmployeeAccess(employee) {
             // Check State
             // ==================================
 
-            const stateMatch =
-                states.some(
-                    (state) => {
+            return states.some(
+                (state) => {
 
-                        const normalizedState =
-                            normalize(state);
-
-
-                        // All States
-                        if (
-                            normalizedState === "*" ||
-                            normalizedState === "all" ||
-                            normalizedState === "all states"
-                        ) {
-
-                            return true;
-
-                        }
+                    const allowedState =
+                        normalize(state);
 
 
-                        return (
-                            normalizedState ===
-                            employeeState
-                        );
+                    // All States
+                    if (
+
+                        allowedState === "*" ||
+
+                        allowedState === "all" ||
+
+                        allowedState ===
+                        "all states"
+
+                    ) {
+
+                        return true;
 
                     }
-                );
 
 
-            console.log(
-                "State Check:",
-                {
-                    employeeState:
-                        employeeState,
+                    return (
+                        allowedState ===
+                        employeeState
+                    );
 
-                    allowedStates:
-                        states,
-
-                    stateMatch:
-                        stateMatch
                 }
             );
-
-
-            return stateMatch;
-
-        }
-    );
-
-}
-
-    // ==================================
-    // No Access Rules
-    // ==================================
-
-    if (
-        !Array.isArray(accessRules) ||
-        accessRules.length === 0
-    ) {
-
-        return false;
-
-    }
-
-
-    const employeeRegion =
-        normalize(
-            employee.region
-        );
-
-
-    const employeeState =
-        normalize(
-            employee.state
-        );
-
-
-    // ==================================
-    // Check Rules
-    // ==================================
-
-    return accessRules.some(
-        (rule) => {
-
-            if (!rule) {
-
-                return false;
-
-            }
-
-
-            const assignedRegion =
-                normalize(
-                    rule.region
-                );
-
-
-            // Region match
-            if (
-                !assignedRegion ||
-                assignedRegion !==
-                employeeRegion
-            ) {
-
-                return false;
-
-            }
-
-
-            // ==================================
-            // Full Region
-            // ==================================
-
-            if (
-                rule.fullRegion === true
-            ) {
-
-                return true;
-
-            }
-
-
-            if (
-                normalize(
-                    rule.fullRegion
-                ) === "true"
-            ) {
-
-                return true;
-
-            }
-
-
-            // ==================================
-            // All States
-            // ==================================
-
-            if (
-                rule.states === "*"
-            ) {
-
-                return true;
-
-            }
-
-
-            // ==================================
-            // Selected States
-            // ==================================
-
-            if (
-                Array.isArray(
-                    rule.states
-                )
-            ) {
-
-                return rule.states.some(
-                    (state) => {
-
-                        if (
-                            state === "*"
-                        ) {
-
-                            return true;
-
-                        }
-
-                        return (
-                            normalize(state) ===
-                            employeeState
-                        );
-
-                    }
-                );
-
-            }
-
-
-            // ==================================
-            // Single State
-            // ==================================
-
-            if (
-                typeof rule.states ===
-                "string"
-            ) {
-
-                return (
-                    normalize(
-                        rule.states
-                    ) ===
-                    employeeState
-                );
-
-            }
-
-
-            return false;
 
         }
     );
@@ -1190,14 +1067,14 @@ async function loadEmployees() {
     try {
 
         // ==================================
-        // Load Region User
+        // Region User
         // ==================================
 
         await loadRegionUser();
 
 
         // ==================================
-        // Load Employees
+        // Employees
         // ==================================
 
         const employeeSnapshot =
@@ -1235,7 +1112,7 @@ async function loadEmployees() {
 
 
         // ==================================
-        // Load Daily Entries
+        // Daily Entries
         // ==================================
 
         const entrySnapshot =
@@ -1292,7 +1169,7 @@ async function loadEmployees() {
 
 
         // ==================================
-        // Load Filters
+        // Filters
         // ==================================
 
         loadRegionOptions();
@@ -1425,8 +1302,13 @@ function loadStateOptions() {
 
             const regionMatch =
                 !selectedRegion ||
-                employeeRegion ===
-                selectedRegion;
+
+                normalize(
+                    employeeRegion
+                ) ===
+                normalize(
+                    selectedRegion
+                );
 
 
             if (
@@ -1526,14 +1408,24 @@ function loadCityOptions() {
 
             const regionMatch =
                 !selectedRegion ||
-                employeeRegion ===
-                selectedRegion;
+
+                normalize(
+                    employeeRegion
+                ) ===
+                normalize(
+                    selectedRegion
+                );
 
 
             const stateMatch =
                 !selectedState ||
-                employeeState ===
-                selectedState;
+
+                normalize(
+                    employeeState
+                ) ===
+                normalize(
+                    selectedState
+                );
 
 
             if (
@@ -1627,14 +1519,12 @@ function displayEmployees(list) {
     list.forEach(
         (employee) => {
 
-            // Employee Code
             const employeeCode =
                 getEmployeeCode(
                     employee
                 );
 
 
-            // Teacher Name
             const teacherName =
 
                 employee.teacherName ||
@@ -1646,7 +1536,6 @@ function displayEmployees(list) {
                 "-";
 
 
-            // Mobile
             const mobile =
 
                 employee.mobileNumber ||
@@ -1658,25 +1547,21 @@ function displayEmployees(list) {
                 "-";
 
 
-            // Region
             const region =
                 employee.region ||
                 "-";
 
 
-            // State
             const state =
                 employee.state ||
                 "-";
 
 
-            // City
             const city =
                 employee.city ||
                 "-";
 
 
-            // Status
             const status =
 
                 employee.status ||
@@ -1684,21 +1569,18 @@ function displayEmployees(list) {
                 "Pending";
 
 
-            // Target
             const target =
                 getEmployeeTarget(
                     employee
                 );
 
 
-            // Collection
             const collectionAmount =
                 getEmployeeCollection(
                     employeeCode
                 );
 
 
-            // Remaining
             const remaining =
                 Math.max(
                     target -
@@ -1707,7 +1589,6 @@ function displayEmployees(list) {
                 );
 
 
-            // Percentage
             let percentage = 0;
 
 
@@ -1795,7 +1676,7 @@ function displayEmployees(list) {
                     <span
                         class="status-badge pending"
                     >
-                        Pending
+                        ${escapeHTML(status)}
                     </span>
                 `;
 
@@ -2009,25 +1890,45 @@ function applyFilters() {
 
 
                 const regionMatch =
+
                     !selectedRegion ||
-                    employeeRegion ===
-                    selectedRegion;
+
+                    normalize(
+                        employeeRegion
+                    ) ===
+                    normalize(
+                        selectedRegion
+                    );
 
 
                 const stateMatch =
+
                     !selectedState ||
-                    employeeState ===
-                    selectedState;
+
+                    normalize(
+                        employeeState
+                    ) ===
+                    normalize(
+                        selectedState
+                    );
 
 
                 const cityMatch =
+
                     !selectedCity ||
-                    employeeCity ===
-                    selectedCity;
+
+                    normalize(
+                        employeeCity
+                    ) ===
+                    normalize(
+                        selectedCity
+                    );
 
 
                 const statusMatch =
+
                     !selectedStatus ||
+
                     normalize(
                         employeeStatus
                     ) ===
@@ -2110,9 +2011,11 @@ if (regionFilter) {
                 stateFilter.value = "";
             }
 
+
             if (cityFilter) {
                 cityFilter.value = "";
             }
+
 
             loadStateOptions();
 
@@ -2137,6 +2040,7 @@ if (stateFilter) {
             if (cityFilter) {
                 cityFilter.value = "";
             }
+
 
             loadCityOptions();
 
@@ -2234,23 +2138,28 @@ if (resetFilter) {
                 regionFilter.value = "";
             }
 
+
             if (stateFilter) {
                 stateFilter.value = "";
             }
+
 
             if (cityFilter) {
                 cityFilter.value = "";
             }
 
+
             if (statusFilter) {
                 statusFilter.value = "";
             }
+
 
             if (searchFilter) {
                 searchFilter.value = "";
             }
 
-            loadStateOptions();
+
+            loadRegionOptions();
 
             displayEmployees(
                 visibleEmployees
@@ -2274,13 +2183,22 @@ if (logoutBtn) {
 
             e.preventDefault();
 
+
             localStorage.removeItem(
                 "loggedInEmpCode"
             );
 
+
             localStorage.removeItem(
                 "userRole"
             );
+
+
+            // Optional other login values
+            localStorage.removeItem(
+                "userName"
+            );
+
 
             window.location.href =
                 "index.html";
