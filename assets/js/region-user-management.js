@@ -1,7 +1,7 @@
 // ======================================
 // Telethon
 // Region User Management
-// Multi Region / Multi State Access
+// Multiple Region / State Access
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -22,11 +22,23 @@ import {
 // HTML Elements
 // ======================================
 
-const regionUserForm =
+const form =
     document.getElementById("regionUserForm");
 
-const accessList =
-    document.getElementById("accessList");
+const userName =
+    document.getElementById("userName");
+
+const userCode =
+    document.getElementById("userCode");
+
+const userMobile =
+    document.getElementById("userMobile");
+
+const userPassword =
+    document.getElementById("userPassword");
+
+const accessContainer =
+    document.getElementById("accessContainer");
 
 const addAccessBtn =
     document.getElementById("addAccessBtn");
@@ -34,8 +46,17 @@ const addAccessBtn =
 const message =
     document.getElementById("message");
 
-const regionUsersTable =
+const table =
     document.getElementById("regionUsersTable");
+
+const formTitle =
+    document.getElementById("formTitle");
+
+const saveBtn =
+    document.getElementById("saveBtn");
+
+const cancelBtn =
+    document.getElementById("cancelBtn");
 
 
 // ======================================
@@ -46,7 +67,7 @@ let regions = [];
 
 let states = [];
 
-let accessCounter = 0;
+let editingUserId = null;
 
 
 // ======================================
@@ -64,14 +85,15 @@ async function loadRegions() {
 
         regions = [];
 
-        snapshot.forEach((docSnap) => {
+        snapshot.forEach((item) => {
 
-            const data = docSnap.data();
+            const data =
+                item.data();
 
             if (data.name) {
 
                 regions.push(
-                    String(data.name).trim()
+                    data.name.trim()
                 );
 
             }
@@ -89,9 +111,9 @@ async function loadRegions() {
             error
         );
 
-        alert(
-            "Region load nahi ho rahe.\n\n" +
-            error.message
+        showMessage(
+            "Region load nahi ho sake.",
+            "red"
         );
 
     }
@@ -100,7 +122,7 @@ async function loadRegions() {
 
 
 // ======================================
-// Load All States
+// Load States
 // ======================================
 
 async function loadStates() {
@@ -114,26 +136,27 @@ async function loadStates() {
 
         states = [];
 
-        snapshot.forEach((docSnap) => {
+        snapshot.forEach((item) => {
 
             const data =
-                docSnap.data();
+                item.data();
 
-            if (!data.name) {
-                return;
+            if (
+                data.name &&
+                data.region
+            ) {
+
+                states.push({
+
+                    name:
+                        data.name.trim(),
+
+                    region:
+                        data.region.trim()
+
+                });
+
             }
-
-            states.push({
-
-                name:
-                    String(data.name).trim(),
-
-                region:
-                    String(
-                        data.region || ""
-                    ).trim()
-
-            });
 
         });
 
@@ -146,48 +169,130 @@ async function loadStates() {
             error
         );
 
-        alert(
-            "State load nahi ho rahe.\n\n" +
-            error.message
-        );
-
     }
 
 }
 
 
 // ======================================
-// Escape HTML
+// Show Message
 // ======================================
 
-function escapeHTML(value) {
+function showMessage(
+    text,
+    color = "green"
+) {
 
-    return String(value ?? "")
+    if (!message) return;
 
-        .replace(/&/g, "&amp;")
+    message.textContent = text;
 
-        .replace(/</g, "&lt;")
-
-        .replace(/>/g, "&gt;")
-
-        .replace(/"/g, "&quot;")
-
-        .replace(/'/g, "&#039;");
+    message.style.color = color;
 
 }
 
 
 // ======================================
-// Create Access Row
+// Create Region Select
 // ======================================
 
-function createAccessRow() {
+function createRegionOptions(
+    selectedRegion = ""
+) {
 
-    accessCounter++;
+    let html =
+        '<option value="">Select Region</option>';
 
-    const rowId =
-        `access-${accessCounter}`;
+    regions.forEach((regionName) => {
 
+        const selected =
+            regionName === selectedRegion
+                ? "selected"
+                : "";
+
+        html += `
+
+            <option
+                value="${escapeHTML(regionName)}"
+                ${selected}
+            >
+
+                ${escapeHTML(regionName)}
+
+            </option>
+
+        `;
+
+    });
+
+    return html;
+
+}
+
+
+// ======================================
+// Create State Options
+// ======================================
+
+function createStateOptions(
+    selectedRegion = "",
+    selectedState = ""
+) {
+
+    let html =
+        '<option value="">Full Region</option>';
+
+    if (!selectedRegion) {
+
+        return html;
+
+    }
+
+
+    const filteredStates =
+        states.filter(
+            (item) =>
+                item.region ===
+                selectedRegion
+        );
+
+
+    filteredStates.forEach((item) => {
+
+        const selected =
+            item.name === selectedState
+                ? "selected"
+                : "";
+
+        html += `
+
+            <option
+                value="${escapeHTML(item.name)}"
+                ${selected}
+            >
+
+                ${escapeHTML(item.name)}
+
+            </option>
+
+        `;
+
+    });
+
+
+    return html;
+
+}
+
+
+// ======================================
+// Add Access Row
+// ======================================
+
+function addAccessRow(
+    selectedRegion = "",
+    selectedState = ""
+) {
 
     const row =
         document.createElement("div");
@@ -195,113 +300,58 @@ function createAccessRow() {
     row.className =
         "access-row";
 
-    row.dataset.id =
-        rowId;
-
 
     row.innerHTML = `
 
-        <div class="access-row-header">
-
-
-            <!-- Region -->
-
-            <div>
-
-                <label>
-                    Region
-                </label>
-
-                <select
-                    class="access-region"
-                >
-
-                    <option value="">
-                        Select Region
-                    </option>
-
-                    ${regions.map(
-                        regionName => `
-                            <option
-                                value="${escapeHTML(regionName)}"
-                            >
-                                ${escapeHTML(regionName)}
-                            </option>
-                        `
-                    ).join("")}
-
-                </select>
-
-            </div>
-
-
-            <!-- Access Type -->
-
-            <div>
-
-                <label>
-                    Access Type
-                </label>
-
-                <select
-                    class="access-type"
-                >
-
-                    <option value="full">
-                        Full Region
-                    </option>
-
-                    <option value="states">
-                        Selected States
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- Remove -->
-
-            <div>
-
-                <button
-                    type="button"
-                    class="remove-access"
-                >
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-
-            </div>
-
-
-        </div>
-
-
-        <!-- States -->
-
-        <div class="state-box">
+        <div>
 
             <label>
-                Select States
+                Region
             </label>
 
             <select
-                class="access-states"
-                multiple
+                class="access-region"
             >
+
+                ${createRegionOptions(
+                    selectedRegion
+                )}
 
             </select>
 
-            <small>
-                Ctrl press karke multiple States select kar sakte hain.
-            </small>
+        </div>
+
+
+        <div>
+
+            <label>
+                State
+            </label>
+
+            <select
+                class="access-state"
+            >
+
+                ${createStateOptions(
+                    selectedRegion,
+                    selectedState
+                )}
+
+            </select>
 
         </div>
 
+
+        <button
+            type="button"
+            class="remove-access"
+        >
+
+            <i class="fa-solid fa-trash"></i>
+
+        </button>
+
     `;
-
-
-    accessList.appendChild(row);
 
 
     const regionSelect =
@@ -309,22 +359,12 @@ function createAccessRow() {
             ".access-region"
         );
 
-    const accessType =
-        row.querySelector(
-            ".access-type"
-        );
-
-    const stateBox =
-        row.querySelector(
-            ".state-box"
-        );
-
     const stateSelect =
         row.querySelector(
-            ".access-states"
+            ".access-state"
         );
 
-    const removeButton =
+    const removeBtn =
         row.querySelector(
             ".remove-access"
         );
@@ -338,49 +378,11 @@ function createAccessRow() {
         "change",
         function () {
 
-            loadStatesForRegion(
-                this.value,
-                stateSelect
-            );
-
-        }
-    );
-
-
-    // ==================================
-    // Access Type Change
-    // ==================================
-
-    accessType.addEventListener(
-        "change",
-        function () {
-
-            if (
-                this.value ===
-                "states"
-            ) {
-
-                stateBox.classList.add(
-                    "show"
+            stateSelect.innerHTML =
+                createStateOptions(
+                    this.value,
+                    ""
                 );
-
-                loadStatesForRegion(
-                    regionSelect.value,
-                    stateSelect
-                );
-
-            }
-
-            else {
-
-                stateBox.classList.remove(
-                    "show"
-                );
-
-                stateSelect.innerHTML =
-                    "";
-
-            }
 
         }
     );
@@ -390,26 +392,9 @@ function createAccessRow() {
     // Remove Row
     // ==================================
 
-    removeButton.addEventListener(
+    removeBtn.addEventListener(
         "click",
         function () {
-
-            const rows =
-                accessList.querySelectorAll(
-                    ".access-row"
-                );
-
-
-            if (rows.length === 1) {
-
-                alert(
-                    "Kam se kam ek Access Assignment zaroor hona chahiye."
-                );
-
-                return;
-
-            }
-
 
             row.remove();
 
@@ -417,205 +402,63 @@ function createAccessRow() {
     );
 
 
-    return row;
+    accessContainer.appendChild(row);
 
 }
 
 
 // ======================================
-// Load States For Selected Region
+// Collect Access
 // ======================================
 
-function loadStatesForRegion(
-    selectedRegion,
-    stateSelect
-) {
-
-    stateSelect.innerHTML = "";
-
-
-    if (!selectedRegion) {
-        return;
-    }
-
-
-    const regionStates =
-        states.filter(
-            item =>
-                item.region ===
-                selectedRegion
-        );
-
-
-    if (
-        regionStates.length ===
-        0
-    ) {
-
-        stateSelect.innerHTML = `
-
-            <option value="">
-                No State Found
-            </option>
-
-        `;
-
-        return;
-    }
-
-
-    regionStates
-        .sort(
-            (a, b) =>
-                a.name.localeCompare(
-                    b.name
-                )
-        )
-        .forEach(
-            item => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    item.name;
-
-                option.textContent =
-                    item.name;
-
-                stateSelect.appendChild(
-                    option
-                );
-
-            }
-        );
-
-}
-
-
-// ======================================
-// Get Access Data From Form
-// ======================================
-
-function getAccessData() {
+function collectAccess() {
 
     const rows =
-        accessList.querySelectorAll(
+        accessContainer.querySelectorAll(
             ".access-row"
         );
-
 
     const access = [];
 
 
-    for (
-        const row of rows
-    ) {
+    rows.forEach((row) => {
 
         const regionSelect =
             row.querySelector(
                 ".access-region"
             );
 
-        const typeSelect =
-            row.querySelector(
-                ".access-type"
-            );
-
         const stateSelect =
             row.querySelector(
-                ".access-states"
+                ".access-state"
             );
 
 
-        const selectedRegion =
+        const regionValue =
             regionSelect.value.trim();
 
+        const stateValue =
+            stateSelect.value.trim();
 
-        const accessType =
-            typeSelect.value;
 
+        if (!regionValue) {
 
-        if (!selectedRegion) {
-
-            throw new Error(
-                "Har Access Assignment me Region select karein."
-            );
+            return;
 
         }
 
 
-        // ==================================
-        // Full Region
-        // ==================================
+        access.push({
 
-        if (
-            accessType ===
-            "full"
-        ) {
+            region:
+                regionValue,
 
-            access.push({
+            state:
+                stateValue || "*"
 
-                region:
-                    selectedRegion,
+        });
 
-                fullRegion:
-                    true,
-
-                states: []
-
-            });
-
-        }
-
-
-        // ==================================
-        // Selected States
-        // ==================================
-
-        else {
-
-            const selectedStates =
-                Array.from(
-                    stateSelect.selectedOptions
-                )
-                .map(
-                    option =>
-                        option.value.trim()
-                )
-                .filter(Boolean);
-
-
-            if (
-                selectedStates.length ===
-                0
-            ) {
-
-                throw new Error(
-                    `Region "${selectedRegion}" ke liye kam se kam ek State select karein.`
-                );
-
-            }
-
-
-            access.push({
-
-                region:
-                    selectedRegion,
-
-                fullRegion:
-                    false,
-
-                states:
-                    selectedStates
-
-            });
-
-        }
-
-    }
+    });
 
 
     return access;
@@ -627,67 +470,58 @@ function getAccessData() {
 // Save User
 // ======================================
 
-regionUserForm.addEventListener(
+form.addEventListener(
     "submit",
     async function (e) {
 
         e.preventDefault();
 
 
-        message.innerHTML = "";
-
-        message.style.color =
-            "red";
-
-
-        const userName =
-            document.getElementById(
-                "userName"
-            )
-            .value
-            .trim();
+        showMessage(
+            "Saving...",
+            "#2563eb"
+        );
 
 
-        const employeeCode =
-            document.getElementById(
-                "employeeCode"
-            )
-            .value
-            .trim();
+        const name =
+            userName.value.trim();
 
+        const code =
+            userCode.value.trim();
+
+        const mobile =
+            userMobile.value.trim();
 
         const password =
-            document.getElementById(
-                "password"
-            )
-            .value;
+            userPassword.value.trim();
 
 
-        const confirmPassword =
-            document.getElementById(
-                "confirmPassword"
-            )
-            .value;
+        const access =
+            collectAccess();
 
 
         // ==================================
         // Validation
         // ==================================
 
-        if (!userName) {
+        if (!name) {
 
-            message.innerHTML =
-                "User Name enter karein.";
+            showMessage(
+                "User Name enter karein.",
+                "red"
+            );
 
             return;
 
         }
 
 
-        if (!employeeCode) {
+        if (!code) {
 
-            message.innerHTML =
-                "Employee Code enter karein.";
+            showMessage(
+                "User Code enter karein.",
+                "red"
+            );
 
             return;
 
@@ -696,41 +530,22 @@ regionUserForm.addEventListener(
 
         if (!password) {
 
-            message.innerHTML =
-                "Password enter karein.";
+            showMessage(
+                "Password enter karein.",
+                "red"
+            );
 
             return;
 
         }
 
 
-        if (
-            password !==
-            confirmPassword
-        ) {
+        if (access.length === 0) {
 
-            message.innerHTML =
-                "Passwords do not match.";
-
-            return;
-
-        }
-
-
-        let access;
-
-
-        try {
-
-            access =
-                getAccessData();
-
-        }
-
-        catch (error) {
-
-            message.innerHTML =
-                error.message;
+            showMessage(
+                "Kam se kam 1 Region / State access assign karein.",
+                "red"
+            );
 
             return;
 
@@ -740,40 +555,87 @@ regionUserForm.addEventListener(
         try {
 
             // ==================================
-            // Duplicate Employee Code
+            // Duplicate Code
             // ==================================
 
-            const duplicateQuery =
-                query(
+            if (!editingUserId) {
 
-                    collection(
-                        db,
-                        "regionUsers"
-                    ),
+                const q =
+                    query(
+                        collection(
+                            db,
+                            "region_users"
+                        ),
 
-                    where(
-                        "employeeCode",
-                        "==",
-                        employeeCode
-                    )
-
-                );
-
-
-            const duplicateSnapshot =
-                await getDocs(
-                    duplicateQuery
-                );
+                        where(
+                            "userCode",
+                            "==",
+                            code
+                        )
+                    );
 
 
-            if (
-                !duplicateSnapshot.empty
-            ) {
+                const snapshot =
+                    await getDocs(q);
 
-                message.innerHTML =
-                    "Employee Code already exists.";
 
-                return;
+                if (!snapshot.empty) {
+
+                    showMessage(
+                        "User Code already exists.",
+                        "red"
+                    );
+
+                    return;
+
+                }
+
+            }
+
+
+            // ==================================
+            // Document ID
+            // ==================================
+
+            const documentId =
+                editingUserId ||
+                code;
+
+
+            // ==================================
+            // User Data
+            // ==================================
+
+            const userData = {
+
+                userName:
+                    name,
+
+                userCode:
+                    code,
+
+                mobile:
+                    mobile,
+
+                password:
+                    password,
+
+                access:
+                    access,
+
+                status:
+                    "Active",
+
+                updatedAt:
+                    serverTimestamp()
+
+            };
+
+
+            if (!editingUserId) {
+
+                userData.createdAt =
+                    serverTimestamp();
 
             }
 
@@ -786,74 +648,46 @@ regionUserForm.addEventListener(
 
                 doc(
                     db,
-                    "regionUsers",
-                    employeeCode
+                    "region_users",
+                    documentId
                 ),
 
+                userData,
+
                 {
-
-                    userName:
-                        userName,
-
-                    employeeCode:
-                        employeeCode,
-
-                    password:
-                        password,
-
-                    access:
-                        access,
-
-                    status:
-                        "Active",
-
-                    createdAt:
-                        serverTimestamp()
-
+                    merge: true
                 }
 
             );
 
 
-            message.style.color =
-                "green";
+            showMessage(
+                editingUserId
+                    ? "Region User updated successfully."
+                    : "Region User created successfully.",
+                "green"
+            );
 
 
-            message.innerHTML =
-                "Region User successfully created.";
+            resetForm();
 
 
-            regionUserForm.reset();
-
-
-            accessList.innerHTML =
-                "";
-
-            accessCounter =
-                0;
-
-
-            createAccessRow();
-
-
-            await loadRegionUsers();
+            await loadUsers();
 
         }
 
         catch (error) {
 
             console.error(
-                "Save User Error:",
+                "Save Region User Error:",
                 error
             );
 
 
-            message.style.color =
-                "red";
-
-
-            message.innerHTML =
-                error.message;
+            showMessage(
+                error.message,
+                "red"
+            );
 
         }
 
@@ -862,22 +696,25 @@ regionUserForm.addEventListener(
 
 
 // ======================================
-// Load Region Users
+// Load Users
 // ======================================
 
-async function loadRegionUsers() {
+async function loadUsers() {
 
-    if (!regionUsersTable) {
-        return;
-    }
+    if (!table) return;
 
 
-    regionUsersTable.innerHTML = `
+    table.innerHTML = `
 
         <tr>
 
-            <td colspan="4">
-                Loading Users...
+            <td
+                colspan="5"
+                style="text-align:center;padding:25px;"
+            >
+
+                Loading Region Users...
+
             </td>
 
         </tr>
@@ -891,21 +728,24 @@ async function loadRegionUsers() {
             await getDocs(
                 collection(
                     db,
-                    "regionUsers"
+                    "region_users"
                 )
             );
 
 
-        if (
-            snapshot.empty
-        ) {
+        if (snapshot.empty) {
 
-            regionUsersTable.innerHTML = `
+            table.innerHTML = `
 
                 <tr>
 
-                    <td colspan="4">
+                    <td
+                        colspan="5"
+                        style="text-align:center;padding:25px;"
+                    >
+
                         No Region Users Found.
+
                     </td>
 
                 </tr>
@@ -920,230 +760,148 @@ async function loadRegionUsers() {
         let html = "";
 
 
-        snapshot.forEach(
-            userDoc => {
+        snapshot.forEach((item) => {
 
-                const user =
-                    userDoc.data();
-
-
-                let accessHTML =
-                    "";
+            const user =
+                item.data();
 
 
-                const access =
-                    Array.isArray(
-                        user.access
-                    )
-                    ?
+            const access =
+                Array.isArray(
                     user.access
-                    :
-                    [];
+                )
+                    ? user.access
+                    : [];
 
 
-                access.forEach(
-                    item => {
-
-                        if (
-                            item.fullRegion
-                        ) {
-
-                            accessHTML += `
-
-                                <span
-                                    class="access-badge"
-                                >
-                                    ${escapeHTML(
-                                        item.region
-                                    )}
-                                    — Full Region
-                                </span>
-
-                            `;
-
-                        }
-
-                        else {
-
-                            const statesText =
-                                Array.isArray(
-                                    item.states
-                                )
-                                ?
-                                item.states.join(
-                                    ", "
-                                )
-                                :
-                                "";
+            let accessHTML = "";
 
 
-                            accessHTML += `
+            access.forEach(
+                (item) => {
 
-                                <span
-                                    class="access-badge"
-                                >
-                                    ${escapeHTML(
-                                        item.region
-                                    )}
-                                    →
-                                    ${escapeHTML(
-                                        statesText
-                                    )}
-                                </span>
-
-                            `;
-
-                        }
-
-                    }
-                );
+                    const regionName =
+                        item.region ||
+                        "-";
 
 
-                html += `
-
-                    <tr>
-
-                        <td>
-                            ${escapeHTML(
-                                user.userName ||
+                    const stateName =
+                        item.state === "*"
+                            ? "Full Region"
+                            : (
+                                item.state ||
                                 "-"
-                            )}
-                        </td>
+                            );
 
-                        <td>
+
+                    accessHTML += `
+
+                        <span class="access-badge">
+
                             ${escapeHTML(
-                                user.employeeCode ||
-                                userDoc.id
+                                regionName
                             )}
-                        </td>
 
-                        <td>
-                            ${
-                                accessHTML ||
-                                "-"
-                            }
-                        </td>
+                            →
 
-                        <td>
+                            ${escapeHTML(
+                                stateName
+                            )}
 
-                            <button
-                                class="delete-user"
-                                data-id="${escapeHTML(
-                                    userDoc.id
-                                )}"
-                            >
-                                <i class="fa-solid fa-trash"></i>
-                                Delete
-                            </button>
+                        </span>
 
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-        );
-
-
-        regionUsersTable.innerHTML =
-            html;
-
-
-        // ==================================
-        // Delete Buttons
-        // ==================================
-
-        document
-            .querySelectorAll(
-                ".delete-user"
-            )
-            .forEach(
-                button => {
-
-                    button.addEventListener(
-                        "click",
-                        async function () {
-
-                            const id =
-                                this.dataset.id;
-
-
-                            const confirmDelete =
-                                confirm(
-                                    "Is Region User ko delete karna hai?"
-                                );
-
-
-                            if (
-                                !confirmDelete
-                            ) {
-                                return;
-                            }
-
-
-                            try {
-
-                                await deleteDoc(
-
-                                    doc(
-                                        db,
-                                        "regionUsers",
-                                        id
-                                    )
-
-                                );
-
-
-                                alert(
-                                    "Region User delete ho gaya."
-                                );
-
-
-                                await loadRegionUsers();
-
-                            }
-
-                            catch (error) {
-
-                                console.error(
-                                    "Delete Error:",
-                                    error
-                                );
-
-
-                                alert(
-                                    "User delete nahi ho saka.\n\n" +
-                                    error.message
-                                );
-
-                            }
-
-                        }
-                    );
+                    `;
 
                 }
             );
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${escapeHTML(
+                            user.userName ||
+                            "-"
+                        )}
+                    </td>
+
+
+                    <td>
+                        ${escapeHTML(
+                            user.userCode ||
+                            item.id
+                        )}
+                    </td>
+
+
+                    <td>
+                        ${escapeHTML(
+                            user.mobile ||
+                            "-"
+                        )}
+                    </td>
+
+
+                    <td>
+                        ${accessHTML}
+                    </td>
+
+
+                    <td>
+
+                        <button
+                            class="edit-btn"
+                            onclick="editRegionUser('${item.id}')"
+                        >
+
+                            <i class="fa-solid fa-pen"></i>
+                            Edit
+
+                        </button>
+
+
+                        <button
+                            class="delete-btn"
+                            onclick="deleteRegionUser('${item.id}')"
+                        >
+
+                            <i class="fa-solid fa-trash"></i>
+                            Delete
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+
+        table.innerHTML =
+            html;
 
     }
 
     catch (error) {
 
         console.error(
-            "Users Load Error:",
+            "Load Users Error:",
             error
         );
 
 
-        regionUsersTable.innerHTML = `
+        table.innerHTML = `
 
             <tr>
 
-                <td colspan="4">
-
-                    Users load nahi ho rahe.
-
-                    <br>
+                <td
+                    colspan="5"
+                    style="text-align:center;color:red;padding:25px;"
+                >
 
                     ${escapeHTML(
                         error.message
@@ -1161,50 +919,329 @@ async function loadRegionUsers() {
 
 
 // ======================================
-// Add Access Button
+// Edit User
 // ======================================
 
-addAccessBtn.addEventListener(
+window.editRegionUser =
+    async function (userId) {
+
+        try {
+
+            const snapshot =
+                await getDocs(
+                    collection(
+                        db,
+                        "region_users"
+                    )
+                );
+
+
+            let selectedUser =
+                null;
+
+
+            snapshot.forEach(
+                (item) => {
+
+                    if (
+                        item.id ===
+                        userId
+                    ) {
+
+                        selectedUser = {
+
+                            id:
+                                item.id,
+
+                            ...item.data()
+
+                        };
+
+                    }
+
+                }
+            );
+
+
+            if (!selectedUser) {
+
+                alert(
+                    "User nahi mila."
+                );
+
+                return;
+
+            }
+
+
+            editingUserId =
+                selectedUser.id;
+
+
+            userName.value =
+                selectedUser.userName ||
+                "";
+
+            userCode.value =
+                selectedUser.userCode ||
+                "";
+
+            userMobile.value =
+                selectedUser.mobile ||
+                "";
+
+            userPassword.value =
+                selectedUser.password ||
+                "";
+
+
+            accessContainer.innerHTML =
+                "";
+
+
+            const access =
+                Array.isArray(
+                    selectedUser.access
+                )
+                    ? selectedUser.access
+                    : [];
+
+
+            access.forEach(
+                (item) => {
+
+                    addAccessRow(
+
+                        item.region ||
+                        "",
+
+                        item.state === "*"
+                            ? ""
+                            : (
+                                item.state ||
+                                ""
+                            )
+
+                    );
+
+                }
+            );
+
+
+            if (access.length === 0) {
+
+                addAccessRow();
+
+            }
+
+
+            formTitle.textContent =
+                "Edit Region User";
+
+
+            saveBtn.innerHTML = `
+
+                <i class="fa-solid fa-save"></i>
+
+                Update Region User
+
+            `;
+
+
+            cancelBtn.style.display =
+                "block";
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Edit User Error:",
+                error
+            );
+
+            alert(
+                error.message
+            );
+
+        }
+
+    };
+
+
+// ======================================
+// Delete User
+// ======================================
+
+window.deleteRegionUser =
+    async function (userId) {
+
+        const confirmation =
+            confirm(
+                "Kya aap is Region User ko delete karna chahte hain?"
+            );
+
+
+        if (!confirmation) {
+
+            return;
+
+        }
+
+
+        try {
+
+            await deleteDoc(
+
+                doc(
+                    db,
+                    "region_users",
+                    userId
+                )
+
+            );
+
+
+            alert(
+                "Region User delete ho gaya."
+            );
+
+
+            await loadUsers();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Delete User Error:",
+                error
+            );
+
+
+            alert(
+                "User delete nahi ho saka.\n\n" +
+                error.message
+            );
+
+        }
+
+    };
+
+
+// ======================================
+// Cancel Edit
+// ======================================
+
+cancelBtn.addEventListener(
     "click",
     function () {
 
-        createAccessRow();
+        resetForm();
 
     }
 );
 
 
 // ======================================
-// Logout
+// Add Access
 // ======================================
 
-const logoutBtn =
-    document.getElementById(
-        "logoutBtn"
-    );
+addAccessBtn.addEventListener(
+    "click",
+    function () {
+
+        addAccessRow();
+
+    }
+);
 
 
-if (logoutBtn) {
+// ======================================
+// Reset Form
+// ======================================
 
-    logoutBtn.addEventListener(
-        "click",
-        function (e) {
+function resetForm() {
 
-            e.preventDefault();
+    editingUserId =
+        null;
 
-            localStorage.removeItem(
-                "loggedInEmpCode"
-            );
 
-            localStorage.removeItem(
-                "userRole"
-            );
+    form.reset();
 
-            window.location.href =
-                "index.html";
 
-        }
-    );
+    accessContainer.innerHTML =
+        "";
+
+
+    addAccessRow();
+
+
+    formTitle.textContent =
+        "Create Region User";
+
+
+    saveBtn.innerHTML = `
+
+        <i class="fa-solid fa-save"></i>
+
+        Save Region User
+
+    `;
+
+
+    cancelBtn.style.display =
+        "none";
+
+
+    if (message) {
+
+        message.textContent =
+            "";
+
+    }
+
+}
+
+
+// ======================================
+// Escape HTML
+// ======================================
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -1219,9 +1256,9 @@ async function start() {
 
     await loadStates();
 
-    createAccessRow();
+    addAccessRow();
 
-    await loadRegionUsers();
+    await loadUsers();
 
 }
 
