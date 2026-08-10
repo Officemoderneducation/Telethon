@@ -1,896 +1,1641 @@
-<!DOCTYPE html>
-<html lang="en">
+// ======================================
+// Telethon - Region / State Users
+// Collection Summary
+// Firebase Firestore
+// ======================================
 
-<head>
+import { db } from "./firebase-config.js";
 
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Region User Panel | Telethon</title>
-
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
->
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
-}
-
-body{
-    min-height:100vh;
-    background:#f4f6f9;
-    color:#1e293b;
-}
+import {
+    collection,
+    getDocs,
+    query,
+    where,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-/* ======================================
-   TOP HEADER
-====================================== */
+// ======================================
+// HTML Elements
+// ======================================
 
-.header{
+const regionFilter =
+    document.getElementById("regionFilter");
 
-    background:#0f172a;
+const stateFilter =
+    document.getElementById("stateFilter");
 
-    color:white;
+const cityFilter =
+    document.getElementById("cityFilter");
 
-    min-height:80px;
+const statusFilter =
+    document.getElementById("statusFilter");
 
-    display:flex;
+const searchFilter =
+    document.getElementById("searchFilter");
 
-    align-items:center;
+const applyFilter =
+    document.getElementById("applyFilter");
 
-    justify-content:space-between;
+const resetFilter =
+    document.getElementById("resetFilter");
 
-    padding:15px 30px;
+const usersTable =
+    document.getElementById("regionUsersTable");
 
-    box-shadow:
-        0 2px 8px rgba(0,0,0,.15);
-}
+const resultCount =
+    document.getElementById("resultCount");
 
-.logo-area{
+const regionUserInfo =
+    document.getElementById("regionUserInfo");
 
-    display:flex;
 
-    align-items:center;
+// ======================================
+// Data
+// ======================================
 
-    gap:12px;
-}
+let allEmployees = [];
 
-.logo-area img{
+let visibleEmployees = [];
 
-    width:55px;
+let dailyEntries = [];
 
-    height:55px;
+let accessRules = [];
 
-    object-fit:contain;
-}
+let currentUserRole =
+    String(
+        localStorage.getItem("userRole") || ""
+    ).toLowerCase();
 
-.logo-text h2{
+let loggedInUser =
+    String(
+        localStorage.getItem("loggedInEmpCode") || ""
+    ).trim();
 
-    color:#38bdf8;
 
-    font-size:20px;
+// ======================================
+// Escape HTML
+// ======================================
 
-    margin-bottom:3px;
-}
+function escapeHTML(value) {
 
-.logo-text p{
-
-    color:#cbd5e1;
-
-    font-size:12px;
-}
-
-.user-area{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:18px;
-}
-
-.user-name{
-
-    font-size:14px;
-
-    color:#e2e8f0;
-}
-
-.logout-btn{
-
-    border:none;
-
-    background:#dc3545;
-
-    color:white;
-
-    padding:9px 15px;
-
-    border-radius:6px;
-
-    cursor:pointer;
-
-    font-weight:bold;
-
-    font-size:13px;
-}
-
-.logout-btn:hover{
-
-    background:#b02a37;
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
-/* ======================================
-   MAIN
-====================================== */
+// ======================================
+// Normalize
+// ======================================
 
-.main{
+function normalize(value) {
 
-    width:100%;
+    return String(value ?? "")
+        .trim()
+        .toLowerCase();
 
-    min-height:calc(100vh - 80px);
-
-    padding:24px;
 }
 
 
-/* ======================================
-   TOPBAR
-====================================== */
+// ======================================
+// Number
+// ======================================
 
-.topbar{
+function numberValue(value) {
 
-    background:white;
+    const number =
+        Number(
+            String(value ?? "")
+                .replace(/,/g, "")
+                .replace(/₹/g, "")
+                .trim()
+        );
 
-    border-radius:10px;
+    return Number.isFinite(number)
+        ? number
+        : 0;
 
-    padding:20px 24px;
-
-    margin-bottom:20px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,.06);
-}
-
-.topbar h2{
-
-    font-size:24px;
-
-    color:#0f172a;
-
-    margin-bottom:5px;
-}
-
-.topbar p{
-
-    color:#64748b;
-
-    font-size:14px;
 }
 
 
-/* ======================================
-   FILTER PANEL
-====================================== */
+// ======================================
+// Currency
+// ======================================
 
-.filter-panel{
+function formatCurrency(value) {
 
-    background:white;
+    return "₹ " +
+        Number(value || 0).toLocaleString(
+            "en-IN"
+        );
 
-    border-radius:10px;
-
-    padding:20px;
-
-    margin-bottom:20px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,.06);
-}
-
-.filter-title{
-
-    font-size:17px;
-
-    font-weight:bold;
-
-    margin-bottom:15px;
-
-    color:#0f172a;
-}
-
-.filters{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(4,1fr);
-
-    gap:12px;
-}
-
-.filter-group label{
-
-    display:block;
-
-    margin-bottom:6px;
-
-    font-size:13px;
-
-    font-weight:bold;
-
-    color:#475569;
-}
-
-.filter-group select,
-.filter-group input{
-
-    width:100%;
-
-    padding:10px 12px;
-
-    border:1px solid #cbd5e1;
-
-    border-radius:6px;
-
-    outline:none;
-
-    background:white;
-
-    font-size:14px;
-}
-
-.filter-group select:focus,
-.filter-group input:focus{
-
-    border-color:#2563eb;
-
-    box-shadow:
-        0 0 0 3px rgba(37,99,235,.10);
-}
-
-.filter-buttons{
-
-    display:flex;
-
-    gap:10px;
-
-    margin-top:15px;
-}
-
-.filter-btn{
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:6px;
-
-    cursor:pointer;
-
-    font-weight:bold;
-
-    font-size:13px;
-}
-
-.apply-btn{
-
-    background:#2563eb;
-
-    color:white;
-}
-
-.apply-btn:hover{
-
-    background:#1d4ed8;
-}
-
-.reset-btn{
-
-    background:#e2e8f0;
-
-    color:#334155;
-}
-
-.reset-btn:hover{
-
-    background:#cbd5e1;
 }
 
 
-/* ======================================
-   TABLE
-====================================== */
+// ======================================
+// Get Employee Code
+// ======================================
 
-.table-container{
+function getEmployeeCode(employee) {
 
-    background:white;
+    return String(
+        employee.employeeCode ||
+        employee.employee_code ||
+        employee.empCode ||
+        employee.emp_code ||
+        employee.id ||
+        ""
+    ).trim();
 
-    border-radius:10px;
-
-    padding:20px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,.06);
-}
-
-.table-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:18px;
-}
-
-.table-header h3{
-
-    font-size:18px;
-
-    color:#0f172a;
-}
-
-.result-count{
-
-    font-size:13px;
-
-    color:#64748b;
-}
-
-.table-wrapper{
-
-    width:100%;
-
-    overflow-x:auto;
-
-    border:1px solid #e2e8f0;
-
-    border-radius:7px;
-}
-
-table{
-
-    width:100%;
-
-    min-width:1000px;
-
-    border-collapse:collapse;
-
-    background:white;
-}
-
-th{
-
-    background:#2563eb;
-
-    color:white;
-
-    padding:13px 14px;
-
-    text-align:left;
-
-    font-size:13px;
-
-    white-space:nowrap;
-}
-
-td{
-
-    padding:13px 14px;
-
-    border-bottom:1px solid #e2e8f0;
-
-    font-size:14px;
-
-    color:#334155;
-
-    white-space:nowrap;
-}
-
-tbody tr:hover{
-
-    background:#f8fafc;
-}
-
-.employee-code{
-
-    font-weight:bold;
-
-    color:#1d4ed8;
 }
 
 
-/* ======================================
-   STATUS
-====================================== */
+// ======================================
+// Get Collection Employee Code
+// ======================================
 
-.status-badge{
+function getEntryEmployeeCode(entry) {
 
-    display:inline-block;
-
-    padding:5px 11px;
-
-    border-radius:20px;
-
-    font-size:12px;
-
-    font-weight:bold;
-}
-
-.approved{
-
-    background:#d1e7dd;
-
-    color:#0f5132;
-}
-
-.pending{
-
-    background:#fff3cd;
-
-    color:#664d03;
-}
-
-
-/* ======================================
-   LOADING / ERROR
-====================================== */
-
-.loading-cell,
-.empty-cell,
-.error-cell{
-
-    text-align:center;
-
-    padding:30px !important;
-}
-
-.loading-cell{
-
-    color:#64748b;
-}
-
-.empty-cell{
-
-    color:#64748b;
-}
-
-.error-cell{
-
-    color:#dc3545;
-}
-
-
-/* ======================================
-   MOBILE
-====================================== */
-
-@media(max-width:900px){
-
-    .filters{
-
-        grid-template-columns:
-            repeat(2,1fr);
-    }
-}
-
-@media(max-width:600px){
-
-    .header{
-
-        padding:12px 15px;
-    }
-
-    .logo-area img{
-
-        width:45px;
-
-        height:45px;
-    }
-
-    .logo-text h2{
-
-        font-size:17px;
-    }
-
-    .logo-text p{
-
-        font-size:11px;
-    }
-
-    .user-area{
-
-        gap:8px;
-    }
-
-    .user-name{
-
-        display:none;
-    }
-
-    .main{
-
-        padding:12px;
-    }
-
-    .filters{
-
-        grid-template-columns:1fr;
-    }
-
-    .filter-panel,
-    .table-container{
-
-        padding:12px;
-    }
-
-    .topbar h2{
-
-        font-size:20px;
-    }
+    return String(
+        entry.employeeCode ||
+        entry.employee_code ||
+        entry.empCode ||
+        entry.emp_code ||
+        ""
+    ).trim();
 
 }
 
-</style>
 
-</head>
+// ======================================
+// Get Collection Amount
+// ======================================
 
+function getEntryAmount(entry) {
 
-<body>
+    return numberValue(
+        entry.amount ||
+        entry.collection ||
+        entry.collectionAmount ||
+        entry.totalCollection ||
+        0
+    );
 
+}
 
-<!-- ======================================
-     HEADER
-====================================== -->
 
-<header class="header">
+// ======================================
+// Get Target
+// ======================================
 
-    <div class="logo-area">
+function getEmployeeTarget(employee) {
 
-        <img
-            src="assets/images/logo.png"
-            alt="Telethon Logo"
-        >
+    return numberValue(
+        employee.targetAmount ||
+        employee.target ||
+        0
+    );
 
-        <div class="logo-text">
+}
 
-            <h2>
-                Telethon
-            </h2>
 
-            <p>
-                Region User Panel
-            </p>
+// ======================================
+// Calculate Collection
+// ======================================
 
-        </div>
+function getEmployeeCollection(employeeCode) {
 
-    </div>
+    const code =
+        normalize(employeeCode);
 
+    let total = 0;
 
-    <div class="user-area">
+    dailyEntries.forEach(
+        (entry) => {
 
-        <span
-            id="loggedUserName"
-            class="user-name"
-        >
-            Region User
-        </span>
+            const entryCode =
+                normalize(
+                    getEntryEmployeeCode(
+                        entry
+                    )
+                );
 
 
-        <button
-            type="button"
-            id="logoutBtn"
-            class="logout-btn"
-        >
+            if (
+                entryCode === code
+            ) {
 
-            <i class="fa-solid fa-right-from-bracket"></i>
+                total +=
+                    getEntryAmount(
+                        entry
+                    );
 
-            Logout
+            }
 
-        </button>
+        }
+    );
 
-    </div>
+    return total;
 
-</header>
+}
 
 
-<!-- ======================================
-     MAIN
-====================================== -->
+// ======================================
+// Show Error
+// ======================================
 
-<div class="main">
+function showError(message) {
 
+    console.error(
+        "Region Users Error:",
+        message
+    );
 
-    <!-- TOPBAR -->
 
-    <div class="topbar">
+    if (usersTable) {
 
-        <h2>
-            Collection Summary
-        </h2>
-
-        <p>
-            Aapko sirf assigned Region / State ka data dikhaya ja raha hai.
-        </p>
-
-    </div>
-
-
-    <!-- ==================================
-         FILTER PANEL
-    ================================== -->
-
-    <div class="filter-panel">
-
-        <div class="filter-title">
-
-            <i class="fa-solid fa-filter"></i>
-
-            Filter Teachers
-
-        </div>
-
-
-        <div class="filters">
-
-
-            <!-- Region -->
-
-            <div class="filter-group">
-
-                <label for="regionFilter">
-                    Region
-                </label>
-
-                <select id="regionFilter">
-
-                    <option value="">
-                        All Regions
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- State -->
-
-            <div class="filter-group">
-
-                <label for="stateFilter">
-                    State
-                </label>
-
-                <select id="stateFilter">
-
-                    <option value="">
-                        All States
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- City -->
-
-            <div class="filter-group">
-
-                <label for="cityFilter">
-                    City
-                </label>
-
-                <select id="cityFilter">
-
-                    <option value="">
-                        All Cities
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- Status -->
-
-            <div class="filter-group">
-
-                <label for="statusFilter">
-                    Status
-                </label>
-
-                <select id="statusFilter">
-
-                    <option value="">
-                        All Status
-                    </option>
-
-                    <option value="Approved">
-                        Approved
-                    </option>
-
-                    <option value="Pending">
-                        Pending
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- Search -->
-
-            <div class="filter-group">
-
-                <label for="searchFilter">
-                    Search
-                </label>
-
-                <input
-                    type="text"
-                    id="searchFilter"
-                    placeholder="Teacher / Employee Code / Mobile"
-                    autocomplete="off"
+        usersTable.innerHTML = `
+            <tr>
+                <td
+                    colspan="11"
+                    class="error-cell"
                 >
+                    ${escapeHTML(message)}
+                </td>
+            </tr>
+        `;
 
-            </div>
-
-        </div>
-
-
-        <div class="filter-buttons">
-
-            <button
-                type="button"
-                id="applyFilter"
-                class="filter-btn apply-btn"
-            >
-
-                <i class="fa-solid fa-filter"></i>
-
-                Apply Filter
-
-            </button>
+    }
 
 
-            <button
-                type="button"
-                id="resetFilter"
-                class="filter-btn reset-btn"
-            >
+    if (resultCount) {
 
-                <i class="fa-solid fa-rotate-left"></i>
+        resultCount.textContent =
+            "Error";
 
-                Reset
+    }
 
-            </button>
-
-        </div>
-
-    </div>
+}
 
 
-    <!-- ==================================
-         TABLE
-    ================================== -->
+// ======================================
+// Loading
+// ======================================
 
-    <div class="table-container">
+function showLoading() {
 
+    if (usersTable) {
 
-        <div class="table-header">
+        usersTable.innerHTML = `
+            <tr>
+                <td
+                    colspan="11"
+                    class="loading-cell"
+                >
+                    Loading Teachers...
+                </td>
+            </tr>
+        `;
 
-            <h3>
-                Teachers Data
-            </h3>
-
-            <span
-                id="resultCount"
-                class="result-count"
-            >
-                Loading...
-            </span>
-
-        </div>
-
-
-        <div class="table-wrapper">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Employee Code
-                        </th>
-
-                        <th>
-                            Teacher Name
-                        </th>
-
-                        <th>
-                            Mobile
-                        </th>
-
-                        <th>
-                            Region
-                        </th>
-
-                        <th>
-                            State
-                        </th>
-
-                        <th>
-                            City
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                    </tr>
-
-                </thead>
+    }
 
 
-                <tbody id="regionUsersTable">
+    if (resultCount) {
 
-                    <tr>
+        resultCount.textContent =
+            "Loading...";
 
-                        <td
-                            colspan="7"
-                            class="loading-cell"
+    }
+
+}
+
+
+// ======================================
+// Load Region User
+// ======================================
+
+async function loadRegionUser() {
+
+    // ==================================
+    // ADMIN
+    // ==================================
+
+    if (
+        currentUserRole === "admin"
+    ) {
+
+        if (regionUserInfo) {
+
+            regionUserInfo.innerHTML =
+                `Region User: <strong>Administrator</strong>`;
+
+        }
+
+        return;
+
+    }
+
+
+    // ==================================
+    // Region User
+    // ==================================
+
+    if (
+        currentUserRole !== "regionuser" &&
+        currentUserRole !== "region_user"
+    ) {
+
+        return;
+
+    }
+
+
+    if (!loggedInUser) {
+
+        throw new Error(
+            "Login session nahi mili."
+        );
+
+    }
+
+
+    // ==================================
+    // Find User
+    // ==================================
+
+    let userData = null;
+
+
+    // Search employeeCode
+    try {
+
+        const q =
+            query(
+                collection(
+                    db,
+                    "regionUsers"
+                ),
+                where(
+                    "employeeCode",
+                    "==",
+                    loggedInUser
+                )
+            );
+
+
+        const snapshot =
+            await getDocs(q);
+
+
+        if (!snapshot.empty) {
+
+            userData =
+                snapshot.docs[0].data();
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.warn(
+            "Region User Query:",
+            error
+        );
+
+    }
+
+
+    // ==================================
+    // Try Document ID
+    // ==================================
+
+    if (!userData) {
+
+        try {
+
+            const userRef =
+                doc(
+                    db,
+                    "regionUsers",
+                    loggedInUser
+                );
+
+
+            const userSnap =
+                await getDoc(
+                    userRef
+                );
+
+
+            if (
+                userSnap.exists()
+            ) {
+
+                userData =
+                    userSnap.data();
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.warn(
+                "Region User Document:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // ==================================
+    // User Not Found
+    // ==================================
+
+    if (!userData) {
+
+        throw new Error(
+            "Region User record nahi mila."
+        );
+
+    }
+
+
+    // ==================================
+    // User Name
+    // ==================================
+
+    const userName =
+        userData.userName ||
+        userData.name ||
+        loggedInUser;
+
+
+    if (regionUserInfo) {
+
+        regionUserInfo.innerHTML =
+            `Region User: <strong>${escapeHTML(userName)}</strong>`;
+
+    }
+
+
+    // ==================================
+    // Access Rules
+    // ==================================
+
+    accessRules =
+        Array.isArray(
+            userData.access
+        )
+            ? userData.access
+            : [];
+
+}
+
+
+// ======================================
+// Employee Access
+// ======================================
+
+function hasEmployeeAccess(employee) {
+
+    // Admin
+    if (
+        currentUserRole === "admin"
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        !Array.isArray(accessRules) ||
+        accessRules.length === 0
+    ) {
+
+        return false;
+
+    }
+
+
+    const employeeRegion =
+        normalize(
+            employee.region
+        );
+
+
+    const employeeState =
+        normalize(
+            employee.state
+        );
+
+
+    return accessRules.some(
+        (rule) => {
+
+            if (!rule) {
+                return false;
+            }
+
+
+            const assignedRegion =
+                normalize(
+                    rule.region
+                );
+
+
+            if (
+                !assignedRegion ||
+                assignedRegion !==
+                employeeRegion
+            ) {
+
+                return false;
+
+            }
+
+
+            // Full Region
+            if (
+                rule.fullRegion === true
+            ) {
+
+                return true;
+
+            }
+
+
+            // Selected States
+            if (
+                Array.isArray(
+                    rule.states
+                )
+            ) {
+
+                return rule.states.some(
+                    (state) => {
+
+                        if (
+                            state === "*"
+                        ) {
+
+                            return true;
+
+                        }
+
+
+                        return normalize(
+                            state
+                        ) ===
+                        employeeState;
+
+                    }
+                );
+
+            }
+
+
+            return false;
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Load Employees
+// ======================================
+
+async function loadEmployees() {
+
+    showLoading();
+
+
+    try {
+
+        // User info + permission
+        await loadRegionUser();
+
+
+        // Employees
+        const employeeSnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "employees"
+                )
+            );
+
+
+        allEmployees = [];
+
+
+        employeeSnapshot.forEach(
+            (employeeDoc) => {
+
+                allEmployees.push({
+
+                    id:
+                        employeeDoc.id,
+
+                    ...employeeDoc.data()
+
+                });
+
+            }
+        );
+
+
+        // Daily Collection
+        const entrySnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "daily_entry"
+                )
+            );
+
+
+        dailyEntries = [];
+
+
+        entrySnapshot.forEach(
+            (entryDoc) => {
+
+                dailyEntries.push({
+
+                    id:
+                        entryDoc.id,
+
+                    ...entryDoc.data()
+
+                });
+
+            }
+        );
+
+
+        // Permission
+        visibleEmployees =
+            allEmployees.filter(
+                (employee) =>
+                    hasEmployeeAccess(
+                        employee
+                    )
+            );
+
+
+        // Filters
+        loadRegionOptions();
+
+
+        // Display
+        displayEmployees(
+            visibleEmployees
+        );
+
+
+    }
+
+    catch (error) {
+
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+// ======================================
+// Region Options
+// ======================================
+
+function loadRegionOptions() {
+
+    if (!regionFilter) {
+        return;
+    }
+
+
+    const regions =
+        new Set();
+
+
+    visibleEmployees.forEach(
+        (employee) => {
+
+            const region =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            if (region) {
+
+                regions.add(
+                    region
+                );
+
+            }
+
+        }
+    );
+
+
+    regionFilter.innerHTML = `
+        <option value="">
+            All Regions
+        </option>
+    `;
+
+
+    [...regions]
+        .sort()
+        .forEach(
+            (region) => {
+
+                regionFilter.innerHTML += `
+                    <option value="${escapeHTML(region)}">
+                        ${escapeHTML(region)}
+                    </option>
+                `;
+
+            }
+        );
+
+
+    loadStateOptions();
+
+}
+
+
+// ======================================
+// State Options
+// ======================================
+
+function loadStateOptions() {
+
+    if (!stateFilter) {
+        return;
+    }
+
+
+    const selectedRegion =
+        String(
+            regionFilter?.value || ""
+        ).trim();
+
+
+    const states =
+        new Set();
+
+
+    visibleEmployees.forEach(
+        (employee) => {
+
+            const employeeRegion =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            const state =
+                String(
+                    employee.state || ""
+                ).trim();
+
+
+            if (
+                state &&
+                (
+                    !selectedRegion ||
+                    employeeRegion ===
+                    selectedRegion
+                )
+            ) {
+
+                states.add(
+                    state
+                );
+
+            }
+
+        }
+    );
+
+
+    stateFilter.innerHTML = `
+        <option value="">
+            All States
+        </option>
+    `;
+
+
+    [...states]
+        .sort()
+        .forEach(
+            (state) => {
+
+                stateFilter.innerHTML += `
+                    <option value="${escapeHTML(state)}">
+                        ${escapeHTML(state)}
+                    </option>
+                `;
+
+            }
+        );
+
+
+    loadCityOptions();
+
+}
+
+
+// ======================================
+// City Options
+// ======================================
+
+function loadCityOptions() {
+
+    if (!cityFilter) {
+        return;
+    }
+
+
+    const selectedRegion =
+        String(
+            regionFilter?.value || ""
+        ).trim();
+
+
+    const selectedState =
+        String(
+            stateFilter?.value || ""
+        ).trim();
+
+
+    const cities =
+        new Set();
+
+
+    visibleEmployees.forEach(
+        (employee) => {
+
+            const employeeRegion =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            const employeeState =
+                String(
+                    employee.state || ""
+                ).trim();
+
+
+            const city =
+                String(
+                    employee.city || ""
+                ).trim();
+
+
+            if (!city) {
+                return;
+            }
+
+
+            const regionMatch =
+                !selectedRegion ||
+                employeeRegion ===
+                selectedRegion;
+
+
+            const stateMatch =
+                !selectedState ||
+                employeeState ===
+                selectedState;
+
+
+            if (
+                regionMatch &&
+                stateMatch
+            ) {
+
+                cities.add(
+                    city
+                );
+
+            }
+
+        }
+    );
+
+
+    cityFilter.innerHTML = `
+        <option value="">
+            All Cities
+        </option>
+    `;
+
+
+    [...cities]
+        .sort()
+        .forEach(
+            (city) => {
+
+                cityFilter.innerHTML += `
+                    <option value="${escapeHTML(city)}">
+                        ${escapeHTML(city)}
+                    </option>
+                `;
+
+            }
+        );
+
+}
+
+
+// ======================================
+// Display Employees
+// ======================================
+
+function displayEmployees(list) {
+
+    if (!usersTable) {
+        return;
+    }
+
+
+    if (!list.length) {
+
+        usersTable.innerHTML = `
+            <tr>
+                <td
+                    colspan="11"
+                    class="empty-cell"
+                >
+                    Koi Teacher nahi mila.
+                </td>
+            </tr>
+        `;
+
+
+        if (resultCount) {
+
+            resultCount.textContent =
+                "0 Teachers";
+
+        }
+
+
+        return;
+
+    }
+
+
+    let html = "";
+
+
+    list.forEach(
+        (employee) => {
+
+            // ==========================
+            // Basic Data
+            // ==========================
+
+            const employeeCode =
+                getEmployeeCode(
+                    employee
+                );
+
+
+            const teacherName =
+                employee.teacherName ||
+                employee.teacher_name ||
+                "-";
+
+
+            const mobile =
+                employee.mobileNumber ||
+                employee.mobile ||
+                "-";
+
+
+            const region =
+                employee.region ||
+                "-";
+
+
+            const state =
+                employee.state ||
+                "-";
+
+
+            const city =
+                employee.city ||
+                "-";
+
+
+            const status =
+                employee.status ||
+                "Pending";
+
+
+            // ==========================
+            // Target
+            // ==========================
+
+            const target =
+                getEmployeeTarget(
+                    employee
+                );
+
+
+            // ==========================
+            // Collection
+            // ==========================
+
+            const collectionAmount =
+                getEmployeeCollection(
+                    employeeCode
+                );
+
+
+            // ==========================
+            // Remaining
+            // ==========================
+
+            const remaining =
+                Math.max(
+                    target -
+                    collectionAmount,
+                    0
+                );
+
+
+            // ==========================
+            // Percentage
+            // ==========================
+
+            let percentage = 0;
+
+
+            if (target > 0) {
+
+                percentage =
+                    (
+                        collectionAmount /
+                        target
+                    ) * 100;
+
+            }
+
+
+            // Maximum 100 for display
+            const displayPercentage =
+                Math.min(
+                    percentage,
+                    100
+                );
+
+
+            // ==========================
+            // Status
+            // ==========================
+
+            let statusHTML = "";
+
+
+            if (
+                normalize(status) ===
+                "approved"
+            ) {
+
+                statusHTML = `
+                    <span class="status-badge approved">
+                        Approved
+                    </span>
+                `;
+
+            }
+
+            else {
+
+                statusHTML = `
+                    <span class="status-badge pending">
+                        Pending
+                    </span>
+                `;
+
+            }
+
+
+            // ==========================
+            // Percentage HTML
+            // ==========================
+
+            let percentageClass =
+                "percentage-low";
+
+
+            if (
+                displayPercentage >= 100
+            ) {
+
+                percentageClass =
+                    "percentage-complete";
+
+            }
+
+            else if (
+                displayPercentage >= 75
+            ) {
+
+                percentageClass =
+                    "percentage-good";
+
+            }
+
+            else if (
+                displayPercentage >= 50
+            ) {
+
+                percentageClass =
+                    "percentage-medium";
+
+            }
+
+
+            // ==========================
+            // Row
+            // ==========================
+
+            html += `
+                <tr>
+
+                    <td class="employee-code">
+                        ${escapeHTML(employeeCode)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(teacherName)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(mobile)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(region)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(state)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(city)}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${formatCurrency(target)}
+                        </strong>
+                    </td>
+
+                    <td class="collection-amount">
+                        <strong>
+                            ${formatCurrency(collectionAmount)}
+                        </strong>
+                    </td>
+
+                    <td class="remaining-amount">
+                        ${formatCurrency(remaining)}
+                    </td>
+
+                    <td>
+                        <span
+                            class="
+                                percentage-badge
+                                ${percentageClass}
+                            "
                         >
-                            Loading Teachers...
-                        </td>
+                            ${displayPercentage.toFixed(2)}%
+                        </span>
+                    </td>
 
-                    </tr>
+                    <td>
+                        ${statusHTML}
+                    </td>
 
-                </tbody>
+                </tr>
+            `;
 
-            </table>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================
-     FIREBASE
-====================================== -->
-
-<script
-    type="module"
-    src="assets/js/firebase-config.js"
-></script>
+        }
+    );
 
 
-<!-- ======================================
-     REGION USER JS
-====================================== -->
-
-<script
-    type="module"
-    src="assets/js/region-user.js"
-></script>
+    usersTable.innerHTML =
+        html;
 
 
-</body>
+    if (resultCount) {
 
-</html>
+        resultCount.textContent =
+            `${list.length} Teacher(s)`;
+
+    }
+
+}
+
+
+// ======================================
+// Apply Filters
+// ======================================
+
+function applyFilters() {
+
+    const selectedRegion =
+        String(
+            regionFilter?.value || ""
+        ).trim();
+
+
+    const selectedState =
+        String(
+            stateFilter?.value || ""
+        ).trim();
+
+
+    const selectedCity =
+        String(
+            cityFilter?.value || ""
+        ).trim();
+
+
+    const selectedStatus =
+        String(
+            statusFilter?.value || ""
+        ).trim();
+
+
+    const search =
+        normalize(
+            searchFilter?.value || ""
+        );
+
+
+    const filtered =
+        visibleEmployees.filter(
+            (employee) => {
+
+                const employeeRegion =
+                    String(
+                        employee.region || ""
+                    ).trim();
+
+
+                const employeeState =
+                    String(
+                        employee.state || ""
+                    ).trim();
+
+
+                const employeeCity =
+                    String(
+                        employee.city || ""
+                    ).trim();
+
+
+                const employeeStatus =
+                    String(
+                        employee.status ||
+                        "Pending"
+                    ).trim();
+
+
+                const employeeCode =
+                    normalize(
+                        getEmployeeCode(
+                            employee
+                        )
+                    );
+
+
+                const teacherName =
+                    normalize(
+                        employee.teacherName ||
+                        employee.teacher_name ||
+                        ""
+                    );
+
+
+                const mobile =
+                    normalize(
+                        employee.mobileNumber ||
+                        employee.mobile ||
+                        ""
+                    );
+
+
+                const regionMatch =
+                    !selectedRegion ||
+                    employeeRegion ===
+                    selectedRegion;
+
+
+                const stateMatch =
+                    !selectedState ||
+                    employeeState ===
+                    selectedState;
+
+
+                const cityMatch =
+                    !selectedCity ||
+                    employeeCity ===
+                    selectedCity;
+
+
+                const statusMatch =
+                    !selectedStatus ||
+                    normalize(
+                        employeeStatus
+                    ) ===
+                    normalize(
+                        selectedStatus
+                    );
+
+
+                const searchMatch =
+                    !search ||
+                    employeeCode.includes(
+                        search
+                    ) ||
+                    teacherName.includes(
+                        search
+                    ) ||
+                    mobile.includes(
+                        search
+                    ) ||
+                    normalize(
+                        employeeRegion
+                    ).includes(
+                        search
+                    ) ||
+                    normalize(
+                        employeeState
+                    ).includes(
+                        search
+                    ) ||
+                    normalize(
+                        employeeCity
+                    ).includes(
+                        search
+                    );
+
+
+                return (
+                    regionMatch &&
+                    stateMatch &&
+                    cityMatch &&
+                    statusMatch &&
+                    searchMatch
+                );
+
+            }
+        );
+
+
+    displayEmployees(
+        filtered
+    );
+
+}
+
+
+// ======================================
+// Region Change
+// ======================================
+
+if (regionFilter) {
+
+    regionFilter.addEventListener(
+        "change",
+        function () {
+
+            if (stateFilter) {
+                stateFilter.value = "";
+            }
+
+
+            if (cityFilter) {
+                cityFilter.value = "";
+            }
+
+
+            loadStateOptions();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// State Change
+// ======================================
+
+if (stateFilter) {
+
+    stateFilter.addEventListener(
+        "change",
+        function () {
+
+            if (cityFilter) {
+                cityFilter.value = "";
+            }
+
+
+            loadCityOptions();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// City Change
+// ======================================
+
+if (cityFilter) {
+
+    cityFilter.addEventListener(
+        "change",
+        function () {
+
+            applyFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Status Change
+// ======================================
+
+if (statusFilter) {
+
+    statusFilter.addEventListener(
+        "change",
+        function () {
+
+            applyFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Apply Filter
+// ======================================
+
+if (applyFilter) {
+
+    applyFilter.addEventListener(
+        "click",
+        function () {
+
+            applyFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Search
+// ======================================
+
+if (searchFilter) {
+
+    searchFilter.addEventListener(
+        "input",
+        function () {
+
+            applyFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Reset
+// ======================================
+
+if (resetFilter) {
+
+    resetFilter.addEventListener(
+        "click",
+        function () {
+
+            if (regionFilter) {
+                regionFilter.value = "";
+            }
+
+
+            if (stateFilter) {
+                stateFilter.value = "";
+            }
+
+
+            if (cityFilter) {
+                cityFilter.value = "";
+            }
+
+
+            if (statusFilter) {
+                statusFilter.value = "";
+            }
+
+
+            if (searchFilter) {
+                searchFilter.value = "";
+            }
+
+
+            loadStateOptions();
+
+
+            displayEmployees(
+                visibleEmployees
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Logout
+// ======================================
+
+const logoutBtn =
+    document.getElementById(
+        "logoutBtn"
+    );
+
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener(
+        "click",
+        function (e) {
+
+            e.preventDefault();
+
+
+            localStorage.removeItem(
+                "loggedInEmpCode"
+            );
+
+
+            localStorage.removeItem(
+                "userRole"
+            );
+
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+}
+
+
+// ======================================
+// START
+// ======================================
+
+loadEmployees();
