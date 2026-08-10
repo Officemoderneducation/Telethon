@@ -3,460 +3,402 @@
 
 <head>
 
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Region Users Panel | Telethon</title>
-
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
->
-
-<style>
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-body {
-    min-height: 100vh;
-    background: #f4f6f9;
-    color: #1e293b;
-}
-
-/* ======================================
-   SIDEBAR
-====================================== */
-
-.sidebar {
-    width: 235px;
-    min-height: 100vh;
-    background: #0f172a;
-    color: white;
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    z-index: 1000;
-}
-
-.logo {
-    height: 178px;
-    padding: 20px 15px;
-    text-align: center;
-    border-bottom: 1px solid #263247;
-}
-
-.logo img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    margin-bottom: 5px;
-}
-
-.logo h2 {
-    font-size: 20px;
-    color: #38bdf8;
-    margin-bottom: 5px;
-}
-
-.logo p {
-    font-size: 13px;
-    color: #cbd5e1;
-}
-
-.menu {
-    padding-top: 15px;
-}
-
-.menu a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 13px 22px;
-    color: #cbd5e1;
-    text-decoration: none;
-    font-size: 14px;
-    transition: 0.2s;
-}
-
-.menu a i {
-    width: 18px;
-    text-align: center;
-}
-
-.menu a:hover {
-    background: #1e293b;
-    color: white;
-}
-
-.menu a.active {
-    background: #2563eb;
-    color: white;
-}
-
-/* ======================================
-   MAIN
-====================================== */
-
-.main {
-    margin-left: 235px;
-    width: calc(100% - 235px);
-    min-height: 100vh;
-    padding: 24px;
-}
-
-/* ======================================
-   TOPBAR
-====================================== */
-
-.topbar {
-    background: white;
-    border-radius: 10px;
-    padding: 20px 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
-.topbar h2 {
-    font-size: 24px;
-    color: #0f172a;
-    margin-bottom: 5px;
-}
-
-.topbar p {
-    color: #64748b;
-    font-size: 14px;
-}
-
-/* ======================================
-   FILTER
-====================================== */
-
-.filter-container {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
-.filter-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #0f172a;
-    margin-bottom: 18px;
-}
-
-.filter-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-}
-
-.filter-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 13px;
-    font-weight: bold;
-    color: #475569;
-}
-
-.filter-group select {
-    width: 100%;
-    padding: 11px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 7px;
-    background: white;
-    font-size: 14px;
-    outline: none;
-}
-
-.filter-group select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
-}
-
-/* ======================================
-   BUTTONS
-====================================== */
-
-.filter-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 18px;
-}
-
-.apply-btn,
-.reset-btn {
-    border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.apply-btn {
-    background: #2563eb;
-}
-
-.apply-btn:hover {
-    background: #1d4ed8;
-}
-
-.reset-btn {
-    background: #64748b;
-}
-
-.reset-btn:hover {
-    background: #475569;
-}
-
-/* ======================================
-   SUMMARY
-====================================== */
-
-.summary-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.summary-card {
-    background: white;
-    padding: 18px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
-.summary-title {
-    font-size: 13px;
-    color: #64748b;
-    margin-bottom: 8px;
-}
-
-.summary-value {
-    font-size: 23px;
-    font-weight: bold;
-    color: #0f172a;
-}
-
-/* ======================================
-   TABLE
-====================================== */
-
-.table-container {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
-.table-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 18px;
-}
-
-.table-header h3 {
-    font-size: 18px;
-    color: #0f172a;
-}
-
-.search-box {
-    width: 280px;
-    max-width: 100%;
-    padding: 10px 13px;
-    border: 1px solid #cbd5e1;
-    border-radius: 7px;
-    outline: none;
-    font-size: 14px;
-}
-
-.search-box:focus {
-    border-color: #2563eb;
-}
-
-.table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    border: 1px solid #e2e8f0;
-    border-radius: 7px;
-}
-
-table {
-    width: 100%;
-    min-width: 1050px;
-    border-collapse: collapse;
-}
-
-th {
-    background: #2563eb;
-    color: white;
-    padding: 13px 14px;
-    text-align: left;
-    font-size: 13px;
-    white-space: nowrap;
-}
-
-td {
-    padding: 13px 14px;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 14px;
-    color: #334155;
-    white-space: nowrap;
-}
-
-tbody tr:hover {
-    background: #f8fafc;
-}
-
-.employee-code {
-    font-weight: bold;
-    color: #1d4ed8;
-}
-
-/* ======================================
-   STATUS
-====================================== */
-
-.status-badge {
-    display: inline-block;
-    padding: 5px 11px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.status-badge.approved {
-    background: #d1e7dd;
-    color: #0f5132;
-}
-
-.status-badge.pending {
-    background: #fff3cd;
-    color: #664d03;
-}
-
-/* ======================================
-   LOADING
-====================================== */
-
-.loading-cell,
-.empty-cell,
-.error-cell {
-    text-align: center;
-    padding: 30px !important;
-    font-size: 14px;
-}
-
-.loading-cell,
-.empty-cell {
-    color: #64748b;
-}
-
-.error-cell {
-    color: #dc3545;
-}
-
-/* ======================================
-   MOBILE
-====================================== */
-
-@media (max-width: 900px) {
-
-    .filter-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .summary-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-
-    .sidebar {
-        width: 190px;
-    }
-
-    .main {
-        margin-left: 190px;
-        width: calc(100% - 190px);
-        padding: 15px;
-    }
-
-    .table-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .search-box {
-        width: 100%;
-    }
-}
-
-@media (max-width: 550px) {
-
-    .sidebar {
-        width: 70px;
-    }
-
-    .main {
-        margin-left: 70px;
-        width: calc(100% - 70px);
-        padding: 10px;
-    }
-
-    .logo {
-        height: 100px;
-        padding: 10px 5px;
-    }
-
-    .logo img {
-        width: 45px;
-        height: 45px;
-    }
-
-    .logo h2,
-    .logo p,
-    .menu a span {
-        display: none;
-    }
-
-    .menu a {
-        justify-content: center;
-        padding: 15px 5px;
-    }
-
-    .filter-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .summary-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .filter-buttons {
-        flex-direction: column;
-    }
-}
-
-</style>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Region Users | Telethon</title>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f4f6f9;
+            color: #1e293b;
+            display: flex;
+        }
+
+        /* ==============================
+           SIDEBAR
+        ============================== */
+
+        .sidebar {
+            width: 235px;
+            min-width: 235px;
+            min-height: 100vh;
+            background: #0f172a;
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            height: 178px;
+            padding: 20px 15px;
+            text-align: center;
+            border-bottom: 1px solid #263247;
+        }
+
+        .logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        .logo h2 {
+            font-size: 20px;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .menu {
+            padding-top: 15px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 13px 22px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .menu a:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .menu a i {
+            width: 18px;
+            text-align: center;
+        }
+
+        /* ==============================
+           MAIN
+        ============================== */
+
+        .main {
+            margin-left: 235px;
+            width: calc(100% - 235px);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        /* ==============================
+           TOPBAR
+        ============================== */
+
+        .topbar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .topbar h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* ==============================
+           FILTER PANEL
+        ============================== */
+
+        .filter-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .filter-title {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            outline: none;
+            background: white;
+            font-size: 14px;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .filter-btn {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .apply-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .apply-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .reset-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .reset-btn:hover {
+            background: #cbd5e1;
+        }
+
+        /* ==============================
+           TABLE
+        ============================== */
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .table-header h3 {
+            font-size: 18px;
+            color: #0f172a;
+        }
+
+        .result-count {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 13px 14px;
+            text-align: left;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #334155;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .employee-code {
+            font-weight: bold;
+            color: #1d4ed8;
+        }
+
+        /* ==============================
+           STATUS
+        ============================== */
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .approved {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .pending {
+            background: #fff3cd;
+            color: #664d03;
+        }
+
+        /* ==============================
+           LOADING
+        ============================== */
+
+        .loading-cell,
+        .empty-cell,
+        .error-cell {
+            text-align: center;
+            padding: 30px !important;
+        }
+
+        .loading-cell {
+            color: #64748b;
+        }
+
+        .empty-cell {
+            color: #64748b;
+        }
+
+        .error-cell {
+            color: #dc3545;
+        }
+
+        /* ==============================
+           MOBILE
+        ============================== */
+
+        @media (max-width: 900px) {
+
+            .filters {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .sidebar {
+                width: 70px;
+                min-width: 70px;
+            }
+
+            .logo {
+                height: 100px;
+                padding: 10px 5px;
+            }
+
+            .logo img {
+                width: 45px;
+                height: 45px;
+            }
+
+            .logo h2,
+            .logo p,
+            .menu a span {
+                display: none;
+            }
+
+            .menu a {
+                justify-content: center;
+                padding: 15px 5px;
+            }
+
+            .main {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 12px;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container,
+            .filter-panel {
+                padding: 12px;
+            }
+
+            .topbar h2 {
+                font-size: 20px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -486,80 +428,43 @@ tbody tr:hover {
     <div class="menu">
 
         <a href="dashboard.html">
-
             <i class="fa-solid fa-house"></i>
-
             <span>Dashboard</span>
-
         </a>
-
 
         <a href="register.html">
-
             <i class="fa-solid fa-user-plus"></i>
-
             <span>Registration Form</span>
-
         </a>
-
 
         <a href="users.html">
-
             <i class="fa-solid fa-users"></i>
-
             <span>Teachers List</span>
-
         </a>
 
+        <a href="region-user.html" class="active">
+            <i class="fa-solid fa-user-shield"></i>
+            <span>Region Users</span>
+        </a>
 
         <a href="daily-entry.html">
-
             <i class="fa-solid fa-file-circle-plus"></i>
-
             <span>Daily Collection</span>
-
         </a>
-
 
         <a href="all-entry.html">
-
             <i class="fa-solid fa-list"></i>
-
             <span>All Entry</span>
-
         </a>
-
 
         <a href="reports.html">
-
             <i class="fa-solid fa-chart-column"></i>
-
             <span>Reports</span>
-
         </a>
 
-
-        <a
-            href="region-user.html"
-            class="active"
-        >
-
-            <i class="fa-solid fa-user-shield"></i>
-
-            <span>Region Users</span>
-
-        </a>
-
-
-        <a
-            href="#"
-            id="logoutBtn"
-        >
-
+        <a href="#" id="logoutBtn">
             <i class="fa-solid fa-right-from-bracket"></i>
-
             <span>Logout</span>
-
         </a>
 
     </div>
@@ -574,46 +479,45 @@ tbody tr:hover {
 <div class="main">
 
 
+    <!-- TOPBAR -->
+
     <div class="topbar">
 
         <h2>
-            Region / State Users
+            Region / State User Management
         </h2>
 
         <p>
-            Region aur State ke hisaab se data view karein
+            Region aur State ke hisaab se Teachers ka data filter karein.
         </p>
 
     </div>
 
 
-    <!-- ==================================
+    <!-- ======================================
          FILTER PANEL
-    ================================== -->
+    ====================================== -->
 
-    <div class="filter-container">
+    <div class="filter-panel">
 
         <div class="filter-title">
-
             <i class="fa-solid fa-filter"></i>
-
-            Data Filters
-
+            Filter Teachers
         </div>
 
 
-        <div class="filter-grid">
+        <div class="filters">
 
 
-            <!-- REGION -->
+            <!-- Region -->
 
             <div class="filter-group">
 
-                <label>
+                <label for="regionFilter">
                     Region
                 </label>
 
-                <select id="filterRegion">
+                <select id="regionFilter">
 
                     <option value="">
                         All Regions
@@ -624,15 +528,15 @@ tbody tr:hover {
             </div>
 
 
-            <!-- STATE -->
+            <!-- State -->
 
             <div class="filter-group">
 
-                <label>
+                <label for="stateFilter">
                     State
                 </label>
 
-                <select id="filterState">
+                <select id="stateFilter">
 
                     <option value="">
                         All States
@@ -643,15 +547,15 @@ tbody tr:hover {
             </div>
 
 
-            <!-- CITY -->
+            <!-- City -->
 
             <div class="filter-group">
 
-                <label>
+                <label for="cityFilter">
                     City
                 </label>
 
-                <select id="filterCity">
+                <select id="cityFilter">
 
                     <option value="">
                         All Cities
@@ -662,15 +566,15 @@ tbody tr:hover {
             </div>
 
 
-            <!-- STATUS -->
+            <!-- Status -->
 
             <div class="filter-group">
 
-                <label>
+                <label for="statusFilter">
                     Status
                 </label>
 
-                <select id="filterStatus">
+                <select id="statusFilter">
 
                     <option value="">
                         All Status
@@ -688,6 +592,24 @@ tbody tr:hover {
 
             </div>
 
+
+            <!-- Search -->
+
+            <div class="filter-group">
+
+                <label for="searchFilter">
+                    Search
+                </label>
+
+                <input
+                    type="text"
+                    id="searchFilter"
+                    placeholder="Teacher / Employee Code / Mobile"
+                    autocomplete="off"
+                >
+
+            </div>
+
         </div>
 
 
@@ -696,26 +618,20 @@ tbody tr:hover {
             <button
                 type="button"
                 id="applyFilter"
-                class="apply-btn"
+                class="filter-btn apply-btn"
             >
-
                 <i class="fa-solid fa-filter"></i>
-
                 Apply Filter
-
             </button>
 
 
             <button
                 type="button"
                 id="resetFilter"
-                class="reset-btn"
+                class="filter-btn reset-btn"
             >
-
                 <i class="fa-solid fa-rotate-left"></i>
-
                 Reset
-
             </button>
 
         </div>
@@ -723,82 +639,9 @@ tbody tr:hover {
     </div>
 
 
-    <!-- ==================================
-         SUMMARY
-    ================================== -->
-
-    <div class="summary-grid">
-
-
-        <div class="summary-card">
-
-            <div class="summary-title">
-                Total Teachers
-            </div>
-
-            <div
-                class="summary-value"
-                id="totalTeachers"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="summary-card">
-
-            <div class="summary-title">
-                Approved
-            </div>
-
-            <div
-                class="summary-value"
-                id="approvedTeachers"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="summary-card">
-
-            <div class="summary-title">
-                Pending
-            </div>
-
-            <div
-                class="summary-value"
-                id="pendingTeachers"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="summary-card">
-
-            <div class="summary-title">
-                Total Collection
-            </div>
-
-            <div
-                class="summary-value"
-                id="totalCollection"
-            >
-                ₹ 0
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================
+    <!-- ======================================
          TABLE
-    ================================== -->
+    ====================================== -->
 
     <div class="table-container">
 
@@ -809,14 +652,12 @@ tbody tr:hover {
                 Teachers Data
             </h3>
 
-
-            <input
-                type="text"
-                id="searchUser"
-                class="search-box"
-                placeholder="Search Teacher..."
-                autocomplete="off"
+            <span
+                id="resultCount"
+                class="result-count"
             >
+                Loading...
+            </span>
 
         </div>
 
@@ -857,30 +698,20 @@ tbody tr:hover {
                             Status
                         </th>
 
-                        <th>
-                            Target
-                        </th>
-
-                        <th>
-                            Collection
-                        </th>
-
                     </tr>
 
                 </thead>
 
 
-                <tbody id="usersTable">
+                <tbody id="regionUsersTable">
 
                     <tr>
 
                         <td
-                            colspan="9"
+                            colspan="7"
                             class="loading-cell"
                         >
-
                             Loading Teachers...
-
                         </td>
 
                     </tr>
@@ -904,42 +735,6 @@ tbody tr:hover {
     type="module"
     src="assets/js/region-users.js"
 ></script>
-
-
-<!-- ======================================
-     LOGOUT
-====================================== -->
-
-<script>
-
-const logoutBtn =
-    document.getElementById("logoutBtn");
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-        "click",
-        function(e) {
-
-            e.preventDefault();
-
-            localStorage.removeItem(
-                "loggedInEmpCode"
-            );
-
-            localStorage.removeItem(
-                "userRole"
-            );
-
-            window.location.href =
-                "index.html";
-
-        }
-    );
-
-}
-
-</script>
 
 
 </body>
