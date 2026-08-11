@@ -89,15 +89,25 @@
                 <span>Teachers List</span>
 
             </a>
+
+
             <a href="region-user-management.html">
-    <i class="fa-solid fa-user-shield"></i>
-    <span>Region User Management</span>
-</a>
-            
-<a href="region-user.html">
-    <i class="fa-solid fa-user-shield"></i>
-    <span>Region Users</span>
-</a>
+
+                <i class="fa-solid fa-user-shield"></i>
+
+                <span>Region User Management</span>
+
+            </a>
+
+
+            <a href="region-user.html">
+
+                <i class="fa-solid fa-user-shield"></i>
+
+                <span>Region Users</span>
+
+            </a>
+
 
             <a href="daily-entry.html">
 
@@ -115,15 +125,25 @@
                 <span>All Entry</span>
 
             </a>
+
+
             <a href="collection-summary.html">
-    <i class="fa-solid fa-chart-pie"></i>
-    <span>Collection Summary</span>
-</a>
-            
-<a href="target-management.html">
-    <i class="fa-solid fa-bullseye"></i>
-    <span>Target Management</span>
-</a>
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span>Collection Summary</span>
+
+            </a>
+
+
+            <a href="target-management.html">
+
+                <i class="fa-solid fa-bullseye"></i>
+
+                <span>Target Management</span>
+
+            </a>
+
 
             <a href="reports.html">
 
@@ -151,6 +171,7 @@
     </div>
 
 
+
     <!-- =====================================
          MAIN CONTENT
     ====================================== -->
@@ -158,26 +179,31 @@
     <div class="main-content">
 
 
-        <!-- Header -->
+        <!-- =====================================
+             HEADER
+        ====================================== -->
 
         <div class="header">
 
-            <h2>
-                Admin Overview
-            </h2>
+            <div>
+
+                <h2>
+                    Admin Overview
+                </h2>
+
+                <p>
+                    User Target & Collection Summary
+                </p>
+
+            </div>
 
 
             <button
                 onclick="window.location.reload()"
-                style="
-                    padding:8px 16px;
-                    cursor:pointer;
-                    background:#3b82f6;
-                    color:white;
-                    border:none;
-                    border-radius:6px;
-                "
+                class="refresh-btn"
             >
+
+                <i class="fa-solid fa-rotate"></i>
 
                 Refresh Data
 
@@ -186,8 +212,222 @@
         </div>
 
 
+
         <!-- =====================================
-             SUMMARY CARDS
+             USER SUMMARY CARDS
+        ====================================== -->
+
+        <div class="user-summary-cards">
+
+
+            <!-- Total Users -->
+
+            <div class="user-summary-card">
+
+                <div class="summary-card-icon users">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Users
+                    </span>
+
+                    <strong id="userSummaryTotalUsers">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Total Target -->
+
+            <div class="user-summary-card">
+
+                <div class="summary-card-icon target">
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Target
+                    </span>
+
+                    <strong id="userSummaryTotalTarget">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Total Collection -->
+
+            <div class="user-summary-card">
+
+                <div class="summary-card-icon collection">
+
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Collection
+                    </span>
+
+                    <strong id="userSummaryTotalCollection">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Remaining -->
+
+            <div class="user-summary-card">
+
+                <div class="summary-card-icon remaining">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Remaining Target
+                    </span>
+
+                    <strong id="userSummaryTotalRemaining">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================
+             USER TARGET SUMMARY
+        ====================================== -->
+
+        <div class="user-summary-container">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <h3>
+
+                        <i class="fa-solid fa-chart-pie"></i>
+
+                        User Collection Summary
+
+                    </h3>
+
+                    <p>
+                        User-wise target and all assigned teachers collection
+                    </p>
+
+                </div>
+
+
+                <input
+                    type="text"
+                    id="userSummarySearch"
+                    placeholder="Search User / User Code..."
+                >
+
+            </div>
+
+
+
+            <div class="user-summary-table-wrapper">
+
+
+                <table class="user-summary-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                User
+                            </th>
+
+                            <th>
+                                Target
+                            </th>
+
+                            <th>
+                                Total Collection
+                            </th>
+
+                            <th>
+                                Remaining Target
+                            </th>
+
+                            <th>
+                                Percentage
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="userSummaryTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="no-data"
+                            >
+
+                                Loading User Summary...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================
+             OLD COLLECTION SUMMARY
         ====================================== -->
 
         <div class="stats-grid">
@@ -233,6 +473,7 @@
 
 
         </div>
+
 
 
         <!-- =====================================
@@ -300,24 +541,26 @@
     </div>
 
 
-<!-- =====================================
-     DASHBOARD JAVASCRIPT
-====================================== -->
 
-<script
-    type="module"
-    src="assets/js/dashboard.js">
-</script>
+    <!-- =====================================
+         DASHBOARD JAVASCRIPT
+    ====================================== -->
+
+    <script
+        type="module"
+        src="assets/js/dashboard.js"
+    ></script>
 
 
-<!-- =====================================
-     PAGE PROTECTION
-====================================== -->
+    <!-- =====================================
+         PAGE PROTECTION
+    ====================================== -->
 
-<script
-    type="module"
-    src="assets/js/page-protection.js">
-</script>
+    <script
+        type="module"
+        src="assets/js/page-protection.js"
+    ></script>
+
 
 </body>
 
