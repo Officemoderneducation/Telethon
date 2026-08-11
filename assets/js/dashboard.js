@@ -3,6 +3,7 @@
 // User Wise Target + Collection Summary
 // ======================================
 
+
 // ======================================
 // ADMIN ONLY ACCESS
 // ======================================
@@ -14,12 +15,20 @@ const userRole =
     .trim()
     .toLowerCase();
 
+
 if (userRole !== "admin") {
 
-    localStorage.removeItem("loggedInEmpCode");
-    localStorage.removeItem("userRole");
+    localStorage.removeItem(
+        "loggedInEmpCode"
+    );
 
-    window.location.href = "index.html";
+    localStorage.removeItem(
+        "userRole"
+    );
+
+    window.location.href =
+        "index.html";
+
 }
 
 
@@ -40,52 +49,95 @@ import {
 
 
 // ======================================
+// UNIT VALUE
+// ₹ 7,000 = 1 Unit
+// ======================================
+
+const UNIT_VALUE = 7000;
+
+
+// ======================================
 // HTML ELEMENTS
 // ======================================
 
-// Old Dashboard Cards
+
+// Old Dashboard
 
 const totalAmountEl =
-    document.getElementById("totalAmount");
+    document.getElementById(
+        "totalAmount"
+    );
+
 
 const todayAmountEl =
-    document.getElementById("todayAmount");
+    document.getElementById(
+        "todayAmount"
+    );
+
 
 const totalEntriesCountEl =
-    document.getElementById("totalEntriesCount");
+    document.getElementById(
+        "totalEntriesCount"
+    );
+
 
 const entriesTableBody =
-    document.getElementById("entriesTableBody");
-
-
-// ======================================
-// USER SUMMARY
-// ======================================
-
-const userSummaryTableBody =
     document.getElementById(
-        "userSummaryTableBody"
+        "entriesTableBody"
     );
+
+
+// Summary Cards
 
 const userSummaryTotalUsers =
     document.getElementById(
         "userSummaryTotalUsers"
     );
 
+
 const userSummaryTotalTarget =
     document.getElementById(
         "userSummaryTotalTarget"
     );
+
+
+const userSummaryTotalTargetUnit =
+    document.getElementById(
+        "userSummaryTotalTargetUnit"
+    );
+
 
 const userSummaryTotalCollection =
     document.getElementById(
         "userSummaryTotalCollection"
     );
 
+
+const userSummaryTotalCollectionUnit =
+    document.getElementById(
+        "userSummaryTotalCollectionUnit"
+    );
+
+
 const userSummaryTotalRemaining =
     document.getElementById(
         "userSummaryTotalRemaining"
     );
+
+
+const userSummaryTotalRemainingUnit =
+    document.getElementById(
+        "userSummaryTotalRemainingUnit"
+    );
+
+
+// User Summary
+
+const userSummaryTableBody =
+    document.getElementById(
+        "userSummaryTableBody"
+    );
+
 
 const userSummarySearch =
     document.getElementById(
@@ -122,7 +174,7 @@ function normalize(value) {
 
 
 // ======================================
-// NUMBER VALUE
+// NUMBER
 // ======================================
 
 function numberValue(value) {
@@ -134,6 +186,7 @@ function numberValue(value) {
                 .replace(/₹/g, "")
                 .trim()
         );
+
 
     return Number.isFinite(number)
         ? number
@@ -152,6 +205,52 @@ function formatCurrency(value) {
         "₹ " +
         Number(value || 0)
             .toLocaleString("en-IN")
+    );
+
+}
+
+
+// ======================================
+// UNIT
+// ======================================
+
+function getUnits(amount) {
+
+    return (
+        Number(amount || 0) /
+        UNIT_VALUE
+    );
+
+}
+
+
+// ======================================
+// FORMAT UNIT
+// ======================================
+
+function formatUnits(amount) {
+
+    const units =
+        getUnits(amount);
+
+
+    if (
+        Number.isInteger(units)
+    ) {
+
+        return units.toLocaleString(
+            "en-IN"
+        );
+
+    }
+
+
+    return units.toLocaleString(
+        "en-IN",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
     );
 
 }
@@ -347,8 +446,6 @@ function getUserCode(user) {
 
         user.emp_code ||
 
-        user.code ||
-
         user.id ||
 
         ""
@@ -376,15 +473,11 @@ function getUserName(user) {
 
         user.full_name ||
 
-        user.displayName ||
-
         user.teacherName ||
 
         user.teacher_name ||
 
-        getUserCode(user) ||
-
-        "Unknown User"
+        ""
 
     ).trim();
 
@@ -394,34 +487,18 @@ function getUserName(user) {
 // ======================================
 // USER TARGET
 // ======================================
-//
-// IMPORTANT:
-//
-// Teacher/Employee target ko use nahi karna.
-//
-// Dashboard ka Target sirf Admin ke manually
-// entered Region User target se aayega.
-//
-// Supported fields:
-//
-// target
-// targetAmount
-// manualTarget
-// manual_target
-//
-// ======================================
 
 function getUserTarget(user) {
 
     return numberValue(
 
-        user.manualTarget ??
+        user.targetAmount ||
 
-        user.manual_target ??
+        user.target ||
 
-        user.targetAmount ??
+        user.manualTarget ||
 
-        user.target ??
+        user.manual_target ||
 
         0
 
@@ -436,57 +513,42 @@ function getUserTarget(user) {
 
 async function loadEmployees() {
 
-    try {
-
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "employees"
-                )
-            );
-
-
-        employees = [];
-
-
-        snapshot.forEach(
-            (docSnapshot) => {
-
-                const data =
-                    docSnapshot.data();
-
-
-                employees.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    ...data
-
-                });
-
-            }
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                "employees"
+            )
         );
 
 
-        console.log(
-            "Total Employees:",
-            employees.length
-        );
+    employees = [];
 
-    }
 
-    catch (error) {
+    snapshot.forEach(
+        (docSnapshot) => {
 
-        console.error(
-            "Employees Load Error:",
-            error
-        );
+            const data =
+                docSnapshot.data();
 
-        employees = [];
 
-    }
+            employees.push({
+
+                id:
+                    docSnapshot.id,
+
+                ...data
+
+            });
+
+        }
+    );
+
+
+    console.log(
+        "Total Employees:",
+        employees.length
+    );
 
 }
 
@@ -499,52 +561,26 @@ async function loadDailyEntries() {
 
     try {
 
-        let snapshot;
+        const entriesQuery =
+            query(
 
+                collection(
+                    db,
+                    "daily_entry"
+                ),
 
-        // ----------------------------------
-        // Try createdAt ordering
-        // ----------------------------------
+                orderBy(
+                    "createdAt",
+                    "desc"
+                )
 
-        try {
-
-            const entriesQuery =
-                query(
-                    collection(
-                        db,
-                        "daily_entry"
-                    ),
-                    orderBy(
-                        "createdAt",
-                        "desc"
-                    )
-                );
-
-
-            snapshot =
-                await getDocs(
-                    entriesQuery
-                );
-
-        }
-
-        catch (orderError) {
-
-            console.warn(
-                "createdAt orderBy failed.",
-                orderError
             );
 
 
-            snapshot =
-                await getDocs(
-                    collection(
-                        db,
-                        "daily_entry"
-                    )
-                );
-
-        }
+        const snapshot =
+            await getDocs(
+                entriesQuery
+            );
 
 
         dailyEntries = [];
@@ -565,117 +601,57 @@ async function loadDailyEntries() {
             }
         );
 
-
-        // ----------------------------------
-        // Sort newest first
-        // ----------------------------------
-
-        dailyEntries.sort(
-            (a, b) => {
-
-                const timeA =
-                    getCreatedTime(a);
-
-                const timeB =
-                    getCreatedTime(b);
-
-                return timeB - timeA;
-
-            }
-        );
-
-
-        console.log(
-            "Total Daily Entries:",
-            dailyEntries.length
-        );
-
     }
 
     catch (error) {
 
-        console.error(
-            "Daily Entries Load Error:",
+        console.warn(
+            "createdAt orderBy failed.",
             error
         );
 
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "daily_entry"
+                )
+            );
+
+
         dailyEntries = [];
 
+
+        snapshot.forEach(
+            (docSnapshot) => {
+
+                dailyEntries.push({
+
+                    id:
+                        docSnapshot.id,
+
+                    ...docSnapshot.data()
+
+                });
+
+            }
+        );
+
     }
+
+
+    console.log(
+        "Total Daily Entries:",
+        dailyEntries.length
+    );
 
 }
 
 
 // ======================================
-// GET CREATED TIME
-// ======================================
-
-function getCreatedTime(entry) {
-
-    const createdAt =
-        entry.createdAt;
-
-
-    if (!createdAt) {
-
-        return 0;
-
-    }
-
-
-    // Firestore Timestamp
-
-    if (
-        typeof createdAt.toMillis ===
-        "function"
-    ) {
-
-        return createdAt.toMillis();
-
-    }
-
-
-    // JavaScript Date
-
-    if (
-        createdAt instanceof Date
-    ) {
-
-        return createdAt.getTime();
-
-    }
-
-
-    // String / Number
-
-    const parsed =
-        new Date(
-            createdAt
-        ).getTime();
-
-
-    if (
-        Number.isFinite(parsed)
-    ) {
-
-        return parsed;
-
-    }
-
-
-    return 0;
-
-}
-
-
-// ======================================
-// GET LATEST ENTRIES
+// GET LATEST ENTRY
 // Employee + Date
-// ======================================
-//
-// Ek Employee + ek Date ke liye
-// sirf latest entry rakhi jayegi.
-//
 // ======================================
 
 function getLatestEntries() {
@@ -700,16 +676,12 @@ function getLatestEntries() {
 
 
             if (!employeeCode) {
-
                 return;
-
             }
 
 
             if (!date) {
-
                 return;
-
             }
 
 
@@ -717,11 +689,7 @@ function getLatestEntries() {
                 `${normalize(employeeCode)}_${date}`;
 
 
-            // Daily entries already newest first
-
-            if (
-                !latestMap.has(key)
-            ) {
+            if (!latestMap.has(key)) {
 
                 latestMap.set(
                     key,
@@ -742,257 +710,27 @@ function getLatestEntries() {
 
 
 // ======================================
-// USER ACCESS RULES
-// ======================================
-
-function getUserAccessRules(user) {
-
-    if (
-        Array.isArray(
-            user.access
-        )
-    ) {
-
-        return user.access;
-
-    }
-
-
-    if (
-        Array.isArray(
-            user.accessRules
-        )
-    ) {
-
-        return user.accessRules;
-
-    }
-
-
-    if (
-        Array.isArray(
-            user.permissions
-        )
-    ) {
-
-        return user.permissions;
-
-    }
-
-
-    // ----------------------------------
-    // Single access object support
-    // ----------------------------------
-
-    if (
-        user.access &&
-        typeof user.access === "object"
-    ) {
-
-        return [
-            user.access
-        ];
-
-    }
-
-
-    if (
-        user.accessRules &&
-        typeof user.accessRules === "object"
-    ) {
-
-        return [
-            user.accessRules
-        ];
-
-    }
-
-
-    // ----------------------------------
-    // Direct Region / State fields
-    // ----------------------------------
-
-    if (
-        user.region ||
-        user.state ||
-        user.states ||
-        user.fullRegion
-    ) {
-
-        return [
-
-            {
-
-                region:
-                    user.region || "",
-
-                state:
-                    user.state || "",
-
-                states:
-                    user.states || [],
-
-                fullRegion:
-                    user.fullRegion || false
-
-            }
-
-        ];
-
-    }
-
-
-    return [];
-
-}
-
-
-// ======================================
-// GET RULE STATES
-// ======================================
-
-function getRuleStates(rule) {
-
-    let states = [];
-
-
-    if (
-        Array.isArray(
-            rule.states
-        )
-    ) {
-
-        states =
-            rule.states;
-
-    }
-
-    else if (
-        typeof rule.states ===
-        "string"
-    ) {
-
-        states =
-            rule.states
-                .split(",")
-                .map(
-                    item =>
-                        item.trim()
-                )
-                .filter(Boolean);
-
-    }
-
-    else if (
-        Array.isArray(
-            rule.selectedStates
-        )
-    ) {
-
-        states =
-            rule.selectedStates;
-
-    }
-
-    else if (
-        typeof rule.selectedStates ===
-        "string"
-    ) {
-
-        states =
-            rule.selectedStates
-                .split(",")
-                .map(
-                    item =>
-                        item.trim()
-                )
-                .filter(Boolean);
-
-    }
-
-    else if (
-        Array.isArray(
-            rule.assignedStates
-        )
-    ) {
-
-        states =
-            rule.assignedStates;
-
-    }
-
-    else if (
-        rule.state
-    ) {
-
-        states = [
-            rule.state
-        ];
-
-    }
-
-    else if (
-        rule.stateName
-    ) {
-
-        states = [
-            rule.stateName
-        ];
-
-    }
-
-
-    return states;
-
-}
-
-
-// ======================================
-// IS FULL REGION ACCESS
-// ======================================
-
-function isFullRegion(rule) {
-
-    return (
-
-        rule.fullRegion === true ||
-
-        normalize(
-            rule.fullRegion
-        ) === "true" ||
-
-        normalize(
-            rule.fullRegion
-        ) === "yes" ||
-
-        normalize(
-            rule.accessType
-        ) === "full" ||
-
-        normalize(
-            rule.type
-        ) === "full"
-
-    );
-
-}
-
-
-// ======================================
-// GET TEACHERS FOR USER
+// GET USER EMPLOYEES
 // ======================================
 
 function getUserEmployees(user) {
 
     const accessRules =
-        getUserAccessRules(
-            user
-        );
 
+        Array.isArray(
+            user.access
+        )
 
-    // ----------------------------------
-    // No access rule
-    // ----------------------------------
+            ? user.access
+
+            : Array.isArray(
+                user.accessRules
+            )
+
+                ? user.accessRules
+
+                : [];
+
 
     if (
         accessRules.length === 0
@@ -1022,30 +760,13 @@ function getUserEmployees(user) {
                 );
 
 
-            const employeeCity =
-                normalize(
-                    getEmployeeCity(
-                        employee
-                    )
-                );
-
-
             return accessRules.some(
                 (rule) => {
 
-                    if (
-                        !rule ||
-                        typeof rule !== "object"
-                    ) {
-
+                    if (!rule) {
                         return false;
-
                     }
 
-
-                    // ----------------------------------
-                    // Region
-                    // ----------------------------------
 
                     const assignedRegion =
                         normalize(
@@ -1068,12 +789,6 @@ function getUserEmployees(user) {
                         assignedRegion &&
 
                         assignedRegion !==
-                        "*" &&
-
-                        assignedRegion !==
-                        "all" &&
-
-                        assignedRegion !==
                         employeeRegion
 
                     ) {
@@ -1083,155 +798,223 @@ function getUserEmployees(user) {
                     }
 
 
-                    // ----------------------------------
-                    // Full Region
-                    // ----------------------------------
+                    const fullRegion =
 
-                    if (
-                        isFullRegion(
-                            rule
-                        )
-                    ) {
+                        rule.fullRegion === true ||
+
+                        normalize(
+                            rule.fullRegion
+                        ) === "true" ||
+
+                        normalize(
+                            rule.fullRegion
+                        ) === "yes" ||
+
+                        normalize(
+                            rule.accessType
+                        ) === "full" ||
+
+                        normalize(
+                            rule.type
+                        ) === "full";
+
+
+                    if (fullRegion) {
 
                         return true;
 
                     }
 
 
-                    // ----------------------------------
-                    // State
-                    // ----------------------------------
+                    let states = [];
 
-                    const states =
-                        getRuleStates(
-                            rule
-                        );
+
+                    if (
+                        Array.isArray(
+                            rule.states
+                        )
+                    ) {
+
+                        states =
+                            rule.states;
+
+                    }
+
+                    else if (
+                        typeof rule.states ===
+                        "string"
+                    ) {
+
+                        states = [
+                            rule.states
+                        ];
+
+                    }
+
+                    else if (
+                        Array.isArray(
+                            rule.selectedStates
+                        )
+                    ) {
+
+                        states =
+                            rule.selectedStates;
+
+                    }
+
+                    else if (
+                        Array.isArray(
+                            rule.assignedStates
+                        )
+                    ) {
+
+                        states =
+                            rule.assignedStates;
+
+                    }
+
+                    else if (
+                        rule.state
+                    ) {
+
+                        states = [
+                            rule.state
+                        ];
+
+                    }
+
+                    else if (
+                        rule.stateName
+                    ) {
+
+                        states = [
+                            rule.stateName
+                        ];
+
+                    }
 
 
                     if (
                         states.length === 0
                     ) {
 
-                        // Region level access
-
                         return true;
 
                     }
 
 
-                    const stateMatch =
-                        states.some(
-                            (state) => {
+                    return states.some(
+                        (state) => {
 
-                                const normalizedState =
-                                    normalize(
-                                        state
-                                    );
-
-
-                                return (
-
-                                    normalizedState ===
-                                    "*" ||
-
-                                    normalizedState ===
-                                    "all" ||
-
-                                    normalizedState ===
-                                    "all states" ||
-
-                                    normalizedState ===
-                                    employeeState
-
+                            const normalizedState =
+                                normalize(
+                                    state
                                 );
 
-                            }
-                        );
 
+                            if (
 
-                    if (
-                        !stateMatch
-                    ) {
+                                normalizedState ===
+                                "*" ||
 
-                        return false;
+                                normalizedState ===
+                                "all" ||
 
-                    }
+                                normalizedState ===
+                                "all states"
 
+                            ) {
 
-                    // ----------------------------------
-                    // Optional City restriction
-                    // ----------------------------------
-
-                    let cities = [];
-
-
-                    if (
-                        Array.isArray(
-                            rule.cities
-                        )
-                    ) {
-
-                        cities =
-                            rule.cities;
-
-                    }
-
-                    else if (
-                        typeof rule.cities ===
-                        "string"
-                    ) {
-
-                        cities =
-                            rule.cities
-                                .split(",")
-                                .map(
-                                    item =>
-                                        item.trim()
-                                )
-                                .filter(Boolean);
-
-                    }
-
-
-                    if (
-                        cities.length > 0
-                    ) {
-
-                        return cities.some(
-                            (city) => {
-
-                                const normalizedCity =
-                                    normalize(
-                                        city
-                                    );
-
-
-                                return (
-
-                                    normalizedCity ===
-                                    "*" ||
-
-                                    normalizedCity ===
-                                    "all" ||
-
-                                    normalizedCity ===
-                                    employeeCity
-
-                                );
+                                return true;
 
                             }
-                        );
-
-                    }
 
 
-                    return true;
+                            return (
+                                normalizedState ===
+                                employeeState
+                            );
+
+                        }
+                    );
 
                 }
             );
 
         }
     );
+
+}
+
+
+// ======================================
+// USER COLLECTION
+// ======================================
+
+function getUserCollection(
+    userEmployees,
+    latestEntries
+) {
+
+    const employeeCodes =
+        new Set();
+
+
+    userEmployees.forEach(
+        (employee) => {
+
+            const code =
+                normalize(
+                    getEmployeeCode(
+                        employee
+                    )
+                );
+
+
+            if (code) {
+
+                employeeCodes.add(
+                    code
+                );
+
+            }
+
+        }
+    );
+
+
+    let total = 0;
+
+
+    latestEntries.forEach(
+        (entry) => {
+
+            const entryCode =
+                normalize(
+                    getEntryEmployeeCode(
+                        entry
+                    )
+                );
+
+
+            if (
+                employeeCodes.has(
+                    entryCode
+                )
+            ) {
+
+                total +=
+                    getEntryAmount(
+                        entry
+                    );
+
+            }
+
+        }
+    );
+
+
+    return total;
 
 }
 
@@ -1249,7 +1032,7 @@ async function loadRegionUsers() {
 
 
     // ==================================
-    // First collection
+    // regionUsers
     // ==================================
 
     try {
@@ -1281,7 +1064,7 @@ async function loadRegionUsers() {
 
 
     // ==================================
-    // Second collection
+    // region_users
     // ==================================
 
     if (
@@ -1361,78 +1144,6 @@ async function loadRegionUsers() {
 
 
 // ======================================
-// CALCULATE USER COLLECTION
-// ======================================
-
-function getUserCollection(
-    userEmployees,
-    latestEntries
-) {
-
-    const employeeCodes =
-        new Set();
-
-
-    userEmployees.forEach(
-        (employee) => {
-
-            const code =
-                normalize(
-                    getEmployeeCode(
-                        employee
-                    )
-                );
-
-
-            if (code) {
-
-                employeeCodes.add(
-                    code
-                );
-
-            }
-
-        }
-    );
-
-
-    let total = 0;
-
-
-    latestEntries.forEach(
-        (entry) => {
-
-            const entryCode =
-                normalize(
-                    getEntryEmployeeCode(
-                        entry
-                    )
-                );
-
-
-            if (
-                employeeCodes.has(
-                    entryCode
-                )
-            ) {
-
-                total +=
-                    getEntryAmount(
-                        entry
-                    );
-
-            }
-
-        }
-    );
-
-
-    return total;
-
-}
-
-
-// ======================================
 // BUILD USER SUMMARY
 // ======================================
 
@@ -1461,11 +1172,6 @@ function buildUserSummary() {
                 );
 
 
-            // ==================================
-            // IMPORTANT
-            // Target is ADMIN MANUAL TARGET
-            // ==================================
-
             const target =
                 getUserTarget(
                     user
@@ -1480,20 +1186,15 @@ function buildUserSummary() {
                 );
 
 
-            let percentage = 0;
-
-
-            if (
+            const percentage =
                 target > 0
-            ) {
 
-                percentage =
-                    (
+                    ? (
                         totalCollection /
                         target
-                    ) * 100;
+                    ) * 100
 
-            }
+                    : 0;
 
 
             userSummaryData.push({
@@ -1506,14 +1207,10 @@ function buildUserSummary() {
                     "regionUsers",
 
                 userCode:
-                    getUserCode(
-                        user
-                    ),
+                    getUserCode(user),
 
                 userName:
-                    getUserName(
-                        user
-                    ),
+                    getUserName(user),
 
                 target:
                     target,
@@ -1548,7 +1245,7 @@ function buildUserSummary() {
 
 
 // ======================================
-// UPDATE USER SUMMARY CARDS
+// UPDATE SUMMARY CARDS
 // ======================================
 
 function updateUserSummaryCards(
@@ -1564,15 +1261,10 @@ function updateUserSummaryCards(
         (user) => {
 
             totalTarget +=
-                numberValue(
-                    user.target
-                );
-
+                user.target;
 
             totalCollection +=
-                numberValue(
-                    user.collection
-                );
+                user.collection;
 
         }
     );
@@ -1586,6 +1278,8 @@ function updateUserSummaryCards(
         );
 
 
+    // Total Users
+
     if (
         userSummaryTotalUsers
     ) {
@@ -1595,6 +1289,8 @@ function updateUserSummaryCards(
 
     }
 
+
+    // Total Target
 
     if (
         userSummaryTotalTarget
@@ -1609,6 +1305,18 @@ function updateUserSummaryCards(
 
 
     if (
+        userSummaryTotalTargetUnit
+    ) {
+
+        userSummaryTotalTargetUnit.textContent =
+            `${formatUnits(totalTarget)} Unit`;
+
+    }
+
+
+    // Total Collection
+
+    if (
         userSummaryTotalCollection
     ) {
 
@@ -1621,6 +1329,18 @@ function updateUserSummaryCards(
 
 
     if (
+        userSummaryTotalCollectionUnit
+    ) {
+
+        userSummaryTotalCollectionUnit.textContent =
+            `${formatUnits(totalCollection)} Unit`;
+
+    }
+
+
+    // Remaining
+
+    if (
         userSummaryTotalRemaining
     ) {
 
@@ -1631,45 +1351,15 @@ function updateUserSummaryCards(
 
     }
 
-}
-
-
-// ======================================
-// GET PERCENTAGE CLASS
-// ======================================
-
-function getPercentageClass(
-    percentage
-) {
 
     if (
-        percentage >= 100
+        userSummaryTotalRemainingUnit
     ) {
 
-        return "complete";
+        userSummaryTotalRemainingUnit.textContent =
+            `${formatUnits(totalRemaining)} Unit`;
 
     }
-
-
-    if (
-        percentage >= 75
-    ) {
-
-        return "good";
-
-    }
-
-
-    if (
-        percentage >= 50
-    ) {
-
-        return "medium";
-
-    }
-
-
-    return "low";
 
 }
 
@@ -1691,11 +1381,6 @@ function displayUserSummary(
     }
 
 
-    updateUserSummaryCards(
-        list
-    );
-
-
     if (
         list.length === 0
     ) {
@@ -1705,7 +1390,7 @@ function displayUserSummary(
             <tr>
 
                 <td
-                    colspan="6"
+                    colspan="9"
                     class="no-data"
                 >
 
@@ -1716,6 +1401,11 @@ function displayUserSummary(
             </tr>
 
         `;
+
+
+        updateUserSummaryCards(
+            list
+        );
 
 
         return;
@@ -1730,25 +1420,46 @@ function displayUserSummary(
         (user, index) => {
 
             const percentage =
-                Number(
-                    user.percentage
-                ) || 0;
+                user.percentage;
 
 
             const progress =
                 Math.min(
-                    Math.max(
-                        percentage,
-                        0
-                    ),
+                    percentage,
                     100
                 );
 
 
-            const percentageClass =
-                getPercentageClass(
-                    percentage
-                );
+            let percentageClass =
+                "low";
+
+
+            if (
+                percentage >= 100
+            ) {
+
+                percentageClass =
+                    "complete";
+
+            }
+
+            else if (
+                percentage >= 75
+            ) {
+
+                percentageClass =
+                    "good";
+
+            }
+
+            else if (
+                percentage >= 50
+            ) {
+
+                percentageClass =
+                    "medium";
+
+            }
 
 
             const userName =
@@ -1763,76 +1474,84 @@ function displayUserSummary(
                 );
 
 
-            const teacherCount =
-                Number(
-                    user.teacherCount
-                ) || 0;
+            const userId =
+                escapeHTML(
+                    user.id
+                );
 
 
             html += `
 
                 <tr>
 
+                    <!-- # -->
+
                     <td>
                         ${index + 1}
                     </td>
 
 
+                    <!-- USER NAME -->
+
                     <td>
 
-                        <div
-                            class="user-name-cell"
-                        >
+                        <div class="user-name-edit-box">
 
-                            <strong>
-                                ${userName}
-                            </strong>
+                            <input
+                                type="text"
+                                class="user-name-input"
+                                data-id="${userId}"
+                                value="${userName}"
+                                placeholder="Enter User Name"
+                            >
 
-                            <small>
-                                ${userCode}
-                            </small>
+                            <button
+                                type="button"
+                                class="save-user-name-btn"
+                                data-id="${userId}"
+                                title="Save User Name"
+                            >
 
-                            <small>
-                                ${teacherCount}
-                                Teachers
-                            </small>
+                                <i class="fa-solid fa-save"></i>
+
+                            </button>
 
                         </div>
+
+
+                        <small class="user-code-small">
+
+                            User Code:
+                            ${userCode || "-"}
+
+                        </small>
 
                     </td>
 
 
+                    <!-- TARGET -->
+
                     <td>
 
-                        <div
-                            class="target-edit-box"
-                        >
+                        <div class="target-edit-box">
 
                             <input
                                 type="number"
                                 min="0"
-                                step="1"
                                 class="user-target-input"
-                                data-id="${escapeHTML(user.id)}"
-                                value="${
-                                    user.target > 0
-                                        ? user.target
-                                        : ""
-                                }"
+                                data-id="${userId}"
+                                value="${user.target || ""}"
                                 placeholder="Enter Target"
                             >
-
 
                             <button
                                 type="button"
                                 class="save-user-target-btn"
-                                data-id="${escapeHTML(user.id)}"
+                                data-id="${userId}"
                                 title="Save Target"
                             >
 
-                                <i
-                                    class="fa-solid fa-save"
-                                ></i>
+                                <i class="fa-solid fa-save"></i>
 
                             </button>
 
@@ -1841,22 +1560,58 @@ function displayUserSummary(
                     </td>
 
 
-                    <td
-                        class="collection-cell"
-                    >
+                    <!-- TARGET UNIT -->
 
-                        <strong>
-                            ${formatCurrency(
-                                user.collection
+                    <td>
+
+                        <span class="unit-value">
+
+                            ${formatUnits(
+                                user.target
                             )}
-                        </strong>
+
+                        </span>
+
+                        <span class="unit-label">
+                            Unit
+                        </span>
 
                     </td>
 
 
-                    <td
-                        class="remaining-cell"
-                    >
+                    <!-- COLLECTION -->
+
+                    <td class="collection-cell">
+
+                        ${formatCurrency(
+                            user.collection
+                        )}
+
+                    </td>
+
+
+                    <!-- COLLECTION UNIT -->
+
+                    <td>
+
+                        <span class="unit-value">
+
+                            ${formatUnits(
+                                user.collection
+                            )}
+
+                        </span>
+
+                        <span class="unit-label">
+                            Unit
+                        </span>
+
+                    </td>
+
+
+                    <!-- REMAINING -->
+
+                    <td class="remaining-cell">
 
                         ${formatCurrency(
                             user.remaining
@@ -1864,6 +1619,27 @@ function displayUserSummary(
 
                     </td>
 
+
+                    <!-- REMAINING UNIT -->
+
+                    <td>
+
+                        <span class="unit-value">
+
+                            ${formatUnits(
+                                user.remaining
+                            )}
+
+                        </span>
+
+                        <span class="unit-label">
+                            Unit
+                        </span>
+
+                    </td>
+
+
+                    <!-- PERCENTAGE -->
 
                     <td>
 
@@ -1917,8 +1693,208 @@ function displayUserSummary(
         html;
 
 
+    updateUserSummaryCards(
+        list
+    );
+
+
     // ==================================
-    // SAVE TARGET BUTTONS
+    // SAVE USER NAME
+    // ==================================
+
+    document
+        .querySelectorAll(
+            ".save-user-name-btn"
+        )
+        .forEach(
+            (button) => {
+
+                button.addEventListener(
+                    "click",
+                    async function () {
+
+                        const userId =
+                            this.dataset.id;
+
+
+                        const input =
+                            document.querySelector(
+
+                                `.user-name-input[data-id="${CSS.escape(userId)}"]`
+
+                            );
+
+
+                        if (!input) {
+                            return;
+                        }
+
+
+                        const userName =
+                            input.value.trim();
+
+
+                        if (!userName) {
+
+                            alert(
+                                "Please enter User Name."
+                            );
+
+                            input.focus();
+
+                            return;
+
+                        }
+
+
+                        const user =
+                            userSummaryData.find(
+                                item =>
+                                    item.id ===
+                                    userId
+                            );
+
+
+                        if (!user) {
+                            return;
+                        }
+
+
+                        this.disabled =
+                            true;
+
+
+                        const oldHTML =
+                            this.innerHTML;
+
+
+                        this.innerHTML = `
+
+                            <i
+                                class="
+                                    fa-solid
+                                    fa-spinner
+                                    fa-spin
+                                "
+                            ></i>
+
+                        `;
+
+
+                        try {
+
+                            const collectionName =
+                                user.collectionName ||
+                                "regionUsers";
+
+
+                            await setDoc(
+
+                                doc(
+                                    db,
+                                    collectionName,
+                                    userId
+                                ),
+
+                                {
+
+                                    userName:
+                                        userName,
+
+                                    name:
+                                        userName,
+
+                                    updatedAt:
+                                        new Date()
+
+                                },
+
+                                {
+                                    merge: true
+                                }
+
+                            );
+
+
+                            // Update Local Data
+
+                            user.userName =
+                                userName;
+
+
+                            user.originalUser.userName =
+                                userName;
+
+
+                            user.originalUser.name =
+                                userName;
+
+
+                            this.innerHTML = `
+
+                                <i
+                                    class="
+                                        fa-solid
+                                        fa-check
+                                    "
+                                ></i>
+
+                            `;
+
+
+                            setTimeout(
+                                () => {
+
+                                    this.innerHTML =
+                                        oldHTML;
+
+                                    this.disabled =
+                                        false;
+
+                                },
+                                1200
+                            );
+
+
+                            console.log(
+                                "User Name Saved:",
+                                userName
+                            );
+
+                        }
+
+                        catch (error) {
+
+                            console.error(
+                                "User Name Save Error:",
+                                error
+                            );
+
+
+                            alert(
+                                "User Name save nahi hua:\n" +
+                                error.message
+                            );
+
+
+                            this.disabled =
+                                false;
+
+
+                            this.innerHTML =
+                                oldHTML;
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    // ==================================
+    // SAVE TARGET
     // ==================================
 
     document
@@ -1938,39 +1914,20 @@ function displayUserSummary(
 
                         const input =
                             document.querySelector(
+
                                 `.user-target-input[data-id="${CSS.escape(userId)}"]`
+
                             );
 
 
                         if (!input) {
-
                             return;
-
-                        }
-
-
-                        const rawValue =
-                            input.value.trim();
-
-
-                        if (
-                            rawValue === ""
-                        ) {
-
-                            alert(
-                                "Please enter Target."
-                            );
-
-                            input.focus();
-
-                            return;
-
                         }
 
 
                         const target =
                             numberValue(
-                                rawValue
+                                input.value
                             );
 
 
@@ -1996,31 +1953,19 @@ function displayUserSummary(
 
 
                         if (!user) {
-
                             return;
-
                         }
 
 
-                        const originalUser =
-                            user.originalUser;
-
-
-                        const collectionName =
-                            user.collectionName ||
-                            originalUser.__collectionName ||
-                            "regionUsers";
-
-
-                        button.disabled =
+                        this.disabled =
                             true;
 
 
                         const oldHTML =
-                            button.innerHTML;
+                            this.innerHTML;
 
 
-                        button.innerHTML = `
+                        this.innerHTML = `
 
                             <i
                                 class="
@@ -2035,9 +1980,10 @@ function displayUserSummary(
 
                         try {
 
-                            // ==================================
-                            // SAVE ADMIN MANUAL TARGET
-                            // ==================================
+                            const collectionName =
+                                user.collectionName ||
+                                "regionUsers";
+
 
                             await setDoc(
 
@@ -2058,9 +2004,6 @@ function displayUserSummary(
                                     manualTarget:
                                         target,
 
-                                    manual_target:
-                                        target,
-
                                     updatedAt:
                                         new Date()
 
@@ -2073,11 +2016,21 @@ function displayUserSummary(
                             );
 
 
-                            // ==================================
-                            // UPDATE LOCAL DATA
-                            // ==================================
+                            // Update Local Data
 
                             user.target =
+                                target;
+
+
+                            user.originalUser.target =
+                                target;
+
+
+                            user.originalUser.targetAmount =
+                                target;
+
+
+                            user.originalUser.manualTarget =
                                 target;
 
 
@@ -2101,12 +2054,12 @@ function displayUserSummary(
 
 
                             displayUserSummary(
-                                getFilteredUserSummary()
+                                userSummaryData
                             );
 
 
                             console.log(
-                                "Admin Target Saved:",
+                                "Target Saved:",
                                 user.userCode,
                                 target
                             );
@@ -2127,11 +2080,11 @@ function displayUserSummary(
                             );
 
 
-                            button.disabled =
+                            this.disabled =
                                 false;
 
 
-                            button.innerHTML =
+                            this.innerHTML =
                                 oldHTML;
 
                         }
@@ -2141,59 +2094,6 @@ function displayUserSummary(
 
             }
         );
-
-}
-
-
-// ======================================
-// FILTERED USER SUMMARY
-// ======================================
-
-function getFilteredUserSummary() {
-
-    if (
-        !userSummarySearch
-    ) {
-
-        return userSummaryData;
-
-    }
-
-
-    const search =
-        normalize(
-            userSummarySearch.value
-        );
-
-
-    if (!search) {
-
-        return userSummaryData;
-
-    }
-
-
-    return userSummaryData.filter(
-        (user) => {
-
-            return (
-
-                normalize(
-                    user.userName
-                )
-                .includes(search)
-
-                ||
-
-                normalize(
-                    user.userCode
-                )
-                .includes(search)
-
-            );
-
-        }
-    );
 
 }
 
@@ -2210,8 +2110,53 @@ if (
         "input",
         function () {
 
+            const search =
+                normalize(
+                    this.value
+                );
+
+
+            if (!search) {
+
+                displayUserSummary(
+                    userSummaryData
+                );
+
+                return;
+
+            }
+
+
+            const filtered =
+                userSummaryData.filter(
+                    (user) => {
+
+                        return (
+
+                            normalize(
+                                user.userName
+                            )
+                            .includes(
+                                search
+                            )
+
+                            ||
+
+                            normalize(
+                                user.userCode
+                            )
+                            .includes(
+                                search
+                            )
+
+                        );
+
+                    }
+                );
+
+
             displayUserSummary(
-                getFilteredUserSummary()
+                filtered
             );
 
         }
@@ -2221,7 +2166,7 @@ if (
 
 
 // ======================================
-// LOAD RECENT COLLECTIONS
+// RECENT COLLECTION
 // ======================================
 
 async function loadRecentCollections() {
@@ -2232,22 +2177,18 @@ async function loadRecentCollections() {
             getLatestEntries();
 
 
-        // ==================================
-        // Sort By Date
-        // ==================================
-
         latestEntries.sort(
             (a, b) => {
 
                 const dateA =
                     new Date(
-                        a.date || ""
+                        a.date
                     );
 
 
                 const dateB =
                     new Date(
-                        b.date || ""
+                        b.date
                     );
 
 
@@ -2272,11 +2213,11 @@ async function loadRecentCollections() {
 
 
         latestEntries.forEach(
-            (entry) => {
+            (data) => {
 
                 const amount =
                     getEntryAmount(
-                        entry
+                        data
                     );
 
 
@@ -2285,9 +2226,7 @@ async function loadRecentCollections() {
 
 
                 if (
-                    String(
-                        entry.date || ""
-                    ) ===
+                    data.date ===
                     todayStr
                 ) {
 
@@ -2298,51 +2237,49 @@ async function loadRecentCollections() {
 
 
                 const employeeCode =
-                    entry.employee_code ||
+                    data.employee_code ||
 
-                    entry.employeeCode ||
-
-                    entry.empCode ||
+                    data.employeeCode ||
 
                     "-";
 
 
                 const teacherName =
-                    entry.teacher_name ||
+                    data.teacher_name ||
 
-                    entry.teacherName ||
+                    data.teacherName ||
 
                     "-";
 
 
                 const jamiatulMadina =
-                    entry.jamiatul_madina ||
+                    data.jamiatul_madina ||
 
-                    entry.jamiatulMadina ||
+                    data.jamiatulMadina ||
 
                     "-";
 
 
                 const city =
-                    entry.city ||
+                    data.city ||
 
                     "-";
 
 
                 const state =
-                    entry.state ||
+                    data.state ||
 
                     "-";
 
 
                 const region =
-                    entry.region ||
+                    data.region ||
 
                     "-";
 
 
                 const date =
-                    entry.date ||
+                    data.date ||
 
                     "-";
 
@@ -2352,9 +2289,7 @@ async function loadRecentCollections() {
                     <tr>
 
                         <td>
-                            ${escapeHTML(
-                                date
-                            )}
+                            ${escapeHTML(date)}
                         </td>
 
                         <td>
@@ -2378,18 +2313,14 @@ async function loadRecentCollections() {
                         </td>
 
                         <td>
-                            ${escapeHTML(
-                                city
-                            )},
-                            ${escapeHTML(
-                                state
-                            )}
+
+                            ${escapeHTML(city)},
+                            ${escapeHTML(state)}
+
                         </td>
 
                         <td>
-                            ${escapeHTML(
-                                region
-                            )}
+                            ${escapeHTML(region)}
                         </td>
 
                         <td
@@ -2412,10 +2343,6 @@ async function loadRecentCollections() {
             }
         );
 
-
-        // ==================================
-        // OLD CARDS
-        // ==================================
 
         if (
             totalAmountEl
@@ -2450,10 +2377,6 @@ async function loadRecentCollections() {
 
         }
 
-
-        // ==================================
-        // RECENT TABLE
-        // ==================================
 
         if (
             entriesTableBody
@@ -2546,9 +2469,7 @@ const logoutBtn =
     );
 
 
-if (
-    logoutBtn
-) {
+if (logoutBtn) {
 
     logoutBtn.addEventListener(
         "click",
@@ -2597,7 +2518,7 @@ async function loadDashboard() {
                 <tr>
 
                     <td
-                        colspan="6"
+                        colspan="9"
                         class="no-data"
                     >
 
@@ -2636,14 +2557,14 @@ async function loadDashboard() {
 
 
         // ==================================
-        // BUILD SUMMARY
+        // BUILD USER SUMMARY
         // ==================================
 
         buildUserSummary();
 
 
         // ==================================
-        // DISPLAY SUMMARY
+        // DISPLAY USER SUMMARY
         // ==================================
 
         displayUserSummary(
@@ -2681,7 +2602,7 @@ async function loadDashboard() {
                 <tr>
 
                     <td
-                        colspan="6"
+                        colspan="9"
                         class="no-data"
                         style="color:red;"
                     >
