@@ -10,13 +10,16 @@
 
     <title>Target Management | Telethon</title>
 
+
     <!-- Main CSS -->
     <link rel="stylesheet"
           href="assets/css/style.css">
 
+
     <!-- Target Management CSS -->
     <link rel="stylesheet"
           href="assets/css/target-management.css">
+
 
     <!-- Font Awesome -->
     <link rel="stylesheet"
@@ -27,13 +30,16 @@
 
 <body>
 
+
 <div class="wrapper">
+
 
     <!-- =====================================
          SIDEBAR
     ====================================== -->
 
     <div class="sidebar">
+
 
         <div class="logo">
 
@@ -50,33 +56,49 @@
 
         <div class="menu">
 
+
             <a href="dashboard.html">
+
                 <i class="fa-solid fa-house"></i>
+
                 <span>Dashboard</span>
+
             </a>
 
 
             <a href="register.html">
+
                 <i class="fa-solid fa-user-plus"></i>
+
                 <span>Registration Form</span>
+
             </a>
 
 
             <a href="users.html">
+
                 <i class="fa-solid fa-users"></i>
+
                 <span>Teachers List</span>
+
             </a>
 
 
             <a href="daily-entry.html">
+
                 <i class="fa-solid fa-file-circle-plus"></i>
+
                 <span>Daily Collection</span>
+
             </a>
 
 
             <a href="all-entry.html">
+
                 <i class="fa-solid fa-list"></i>
+
                 <span>All Entry</span>
+
             </a>
 
 
@@ -108,6 +130,7 @@
 
             </a>
 
+
         </div>
 
     </div>
@@ -121,7 +144,9 @@
     <div class="main">
 
 
-        <!-- Topbar -->
+        <!-- =====================================
+             TOPBAR
+        ====================================== -->
 
         <div class="topbar">
 
@@ -144,6 +169,7 @@
         ====================================== -->
 
         <div class="target-form-card">
+
 
             <div class="card-title">
 
@@ -170,15 +196,17 @@
             <form id="targetForm">
 
 
-                <!-- Employee -->
+                <!-- Employee + Target -->
 
                 <div class="form-row">
+
 
                     <div class="form-group">
 
                         <label for="employeeSelect">
                             Employee
                         </label>
+
 
                         <select
                             id="employeeSelect"
@@ -194,13 +222,12 @@
 
 
 
-                    <!-- Target -->
-
                     <div class="form-group">
 
                         <label for="targetAmount">
                             Target Amount (₹)
                         </label>
+
 
                         <input
                             type="number"
@@ -211,45 +238,73 @@
 
                     </div>
 
+
                 </div>
 
 
 
-                <!-- Selected Employee Details -->
+                <!-- =====================================
+                     SELECTED EMPLOYEE PREVIEW
+                ====================================== -->
 
                 <div id="employeePreview"
                      class="employee-preview"
                      style="display:none;">
 
+
                     <div>
+
                         <span>Region</span>
+
                         <strong id="previewRegion">-</strong>
+
                     </div>
 
+
                     <div>
+
                         <span>State</span>
+
                         <strong id="previewState">-</strong>
+
                     </div>
 
+
                     <div>
+
                         <span>City</span>
+
                         <strong id="previewCity">-</strong>
+
                     </div>
 
+
                     <div>
+
                         <span>Jamiatul Madina</span>
+
                         <strong id="previewMadina">-</strong>
+
                     </div>
 
+
                     <div>
+
                         <span>Employee Code</span>
+
                         <strong id="previewCode">-</strong>
+
                     </div>
 
+
                     <div>
+
                         <span>Teacher Name</span>
+
                         <strong id="previewTeacher">-</strong>
+
                     </div>
+
 
                 </div>
 
@@ -286,7 +341,9 @@
             <div class="summary-card">
 
                 <div class="summary-icon users-icon">
+
                     <i class="fa-solid fa-users"></i>
+
                 </div>
 
                 <div>
@@ -306,7 +363,9 @@
             <div class="summary-card">
 
                 <div class="summary-icon target-icon">
+
                     <i class="fa-solid fa-bullseye"></i>
+
                 </div>
 
                 <div>
@@ -326,7 +385,9 @@
             <div class="summary-card">
 
                 <div class="summary-icon collection-icon">
+
                     <i class="fa-solid fa-indian-rupee-sign"></i>
+
                 </div>
 
                 <div>
@@ -346,7 +407,9 @@
             <div class="summary-card">
 
                 <div class="summary-icon remaining-icon">
+
                     <i class="fa-solid fa-chart-line"></i>
+
                 </div>
 
                 <div>
@@ -361,6 +424,7 @@
 
             </div>
 
+
         </div>
 
 
@@ -369,19 +433,23 @@
              FILTER CARD
         ====================================== -->
 
-        <div class="target-filter-card">
+        <div class="table-card">
 
-            <div class="filter-title">
+
+            <div class="table-header">
 
                 <div>
 
                     <h3>
+
                         <i class="fa-solid fa-filter"></i>
+
                         Filter Teachers
+
                     </h3>
 
                     <p>
-                        Region, State aur City ke hisaab se filter karein
+                        Region, State aur City ke according teachers filter karein
                     </p>
 
                 </div>
@@ -389,12 +457,13 @@
             </div>
 
 
+
             <div class="target-filter-grid">
 
 
                 <!-- Region -->
 
-                <div class="filter-group">
+                <div class="target-filter-group">
 
                     <label for="targetRegionFilter">
                         Region
@@ -414,7 +483,7 @@
 
                 <!-- State -->
 
-                <div class="filter-group">
+                <div class="target-filter-group">
 
                     <label for="targetStateFilter">
                         State
@@ -434,7 +503,7 @@
 
                 <!-- City -->
 
-                <div class="filter-group">
+                <div class="target-filter-group">
 
                     <label for="targetCityFilter">
                         City
@@ -450,69 +519,11 @@
 
                 </div>
 
-<!-- =====================================
-     FILTERS
-====================================== -->
 
-<div class="target-filter-card">
-
-    <div class="filter-title">
-        <h3>
-            <i class="fa-solid fa-filter"></i>
-            Filter Teachers
-        </h3>
-        <p>Region, State aur City ke according teachers filter karein</p>
-    </div>
-
-    <div class="target-filter-grid">
-
-        <!-- Region -->
-        <div class="form-group">
-            <label for="targetRegionFilter">Region</label>
-
-            <select id="targetRegionFilter">
-                <option value="">All Regions</option>
-            </select>
-        </div>
-
-        <!-- State -->
-        <div class="form-group">
-            <label for="targetStateFilter">State</label>
-
-            <select id="targetStateFilter">
-                <option value="">All States</option>
-            </select>
-        </div>
-
-        <!-- City -->
-        <div class="form-group">
-            <label for="targetCityFilter">City</label>
-
-            <select id="targetCityFilter">
-                <option value="">All Cities</option>
-            </select>
-        </div>
-
-        <!-- Reset -->
-        <div class="filter-button-box">
-            <button
-                type="button"
-                id="resetTargetFilter"
-                class="reset-filter-btn">
-
-                <i class="fa-solid fa-rotate-left"></i>
-                Reset
-
-            </button>
-        </div>
-
-    </div>
-
-</div>
 
                 <!-- Search -->
 
-                <div class="filter-group">
+                <div class="target-filter-group">
 
                     <label for="targetSearch">
                         Search
@@ -521,20 +532,21 @@
                     <input
                         type="text"
                         id="targetSearch"
-                        placeholder="Teacher / Employee Code / Madina">
+                        placeholder="Teacher / Employee Code / Mobile">
 
                 </div>
+
 
             </div>
 
 
 
-            <div class="filter-buttons">
+            <div class="target-filter-actions">
 
                 <button
                     type="button"
                     id="applyTargetFilter"
-                    class="apply-filter-btn">
+                    class="filter-btn">
 
                     <i class="fa-solid fa-filter"></i>
 
@@ -556,6 +568,7 @@
 
             </div>
 
+
         </div>
 
 
@@ -568,6 +581,7 @@
 
 
             <div class="table-header">
+
 
                 <div>
 
@@ -585,6 +599,12 @@
 
                 </div>
 
+
+                <div id="targetResultCount">
+                    0 Teachers
+                </div>
+
+
             </div>
 
 
@@ -593,6 +613,7 @@
 
 
                 <table>
+
 
                     <thead>
 
@@ -611,6 +632,8 @@
                             <th>Employee Code</th>
 
                             <th>Teacher Name</th>
+
+                            <th>Mobile</th>
 
                             <th>Target</th>
 
@@ -631,7 +654,7 @@
 
                         <tr>
 
-                            <td colspan="12"
+                            <td colspan="13"
                                 class="loading">
 
                                 Loading Teachers...
@@ -641,6 +664,7 @@
                         </tr>
 
                     </tbody>
+
 
                 </table>
 
@@ -662,8 +686,7 @@
 ====================================== -->
 
 <script type="module"
-        src="assets/js/target-management.js">
-</script>
+        src="assets/js/target-management.js"></script>
 
 
 </body>
