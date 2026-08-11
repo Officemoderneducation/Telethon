@@ -123,7 +123,191 @@ const totalRemainingEl =
 let employees = [];
 
 let entries = [];
+// ======================================
+// Load Region Dropdown
+// ======================================
 
+function loadTargetRegionOptions() {
+
+    if (!targetRegionFilter) {
+        return;
+    }
+
+    const regions = new Set();
+
+    employees.forEach((employee) => {
+
+        const region =
+            String(employee.region || "").trim();
+
+        if (region) {
+            regions.add(region);
+        }
+
+    });
+
+    targetRegionFilter.innerHTML = `
+        <option value="">All Regions</option>
+    `;
+
+    [...regions]
+        .sort((a, b) =>
+            a.localeCompare(b)
+        )
+        .forEach((region) => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = region;
+            option.textContent = region;
+
+            targetRegionFilter.appendChild(
+                option
+            );
+
+        });
+
+}
+
+
+// ======================================
+// Load State Dropdown
+// ======================================
+
+function loadTargetStateOptions() {
+
+    if (!targetStateFilter) {
+        return;
+    }
+
+    const selectedRegion =
+        String(
+            targetRegionFilter?.value || ""
+        ).trim();
+
+    const states = new Set();
+
+    employees.forEach((employee) => {
+
+        const region =
+            String(employee.region || "").trim();
+
+        const state =
+            String(employee.state || "").trim();
+
+        const regionMatch =
+            !selectedRegion ||
+            region === selectedRegion;
+
+        if (
+            state &&
+            regionMatch
+        ) {
+            states.add(state);
+        }
+
+    });
+
+    targetStateFilter.innerHTML = `
+        <option value="">All States</option>
+    `;
+
+    [...states]
+        .sort((a, b) =>
+            a.localeCompare(b)
+        )
+        .forEach((state) => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = state;
+            option.textContent = state;
+
+            targetStateFilter.appendChild(
+                option
+            );
+
+        });
+
+}
+
+
+// ======================================
+// Load City Dropdown
+// ======================================
+
+function loadTargetCityOptions() {
+
+    if (!targetCityFilter) {
+        return;
+    }
+
+    const selectedRegion =
+        String(
+            targetRegionFilter?.value || ""
+        ).trim();
+
+    const selectedState =
+        String(
+            targetStateFilter?.value || ""
+        ).trim();
+
+    const cities = new Set();
+
+    employees.forEach((employee) => {
+
+        const region =
+            String(employee.region || "").trim();
+
+        const state =
+            String(employee.state || "").trim();
+
+        const city =
+            String(employee.city || "").trim();
+
+        const regionMatch =
+            !selectedRegion ||
+            region === selectedRegion;
+
+        const stateMatch =
+            !selectedState ||
+            state === selectedState;
+
+        if (
+            city &&
+            regionMatch &&
+            stateMatch
+        ) {
+            cities.add(city);
+        }
+
+    });
+
+    targetCityFilter.innerHTML = `
+        <option value="">All Cities</option>
+    `;
+
+    [...cities]
+        .sort((a, b) =>
+            a.localeCompare(b)
+        )
+        .forEach((city) => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = city;
+            option.textContent = city;
+
+            targetCityFilter.appendChild(
+                option
+            );
+
+        });
+
+}
 
 // ======================================
 // Helper - Escape HTML
