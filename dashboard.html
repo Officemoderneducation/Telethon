@@ -5,7 +5,10 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Telethon Admin Dashboard</title>
 
@@ -21,6 +24,663 @@
         href="assets/css/dashboard.css"
     >
 
+    <style>
+
+        /* ======================================
+           USER SUMMARY
+        ====================================== */
+
+        .user-summary-cards {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 20px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .user-summary-card {
+
+            background: #ffffff;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.07);
+
+        }
+
+
+        .summary-card-icon {
+
+            width: 50px;
+
+            height: 50px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 22px;
+
+        }
+
+
+        .summary-card-icon.users {
+
+            background: #e0f2fe;
+
+            color: #0284c7;
+
+        }
+
+
+        .summary-card-icon.target {
+
+            background: #fef3c7;
+
+            color: #d97706;
+
+        }
+
+
+        .summary-card-icon.collection {
+
+            background: #dcfce7;
+
+            color: #16a34a;
+
+        }
+
+
+        .summary-card-icon.remaining {
+
+            background: #fee2e2;
+
+            color: #dc2626;
+
+        }
+
+
+        .user-summary-card span {
+
+            display: block;
+
+            color: #64748b;
+
+            font-size: 13px;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .user-summary-card strong {
+
+            display: block;
+
+            font-size: 20px;
+
+            color: #1e293b;
+
+        }
+
+
+        .summary-unit {
+
+            display: block;
+
+            margin-top: 3px;
+
+            font-size: 12px;
+
+            color: #64748b;
+
+            font-weight: 600;
+
+        }
+
+
+        /* ======================================
+           USER SUMMARY CONTAINER
+        ====================================== */
+
+        .user-summary-container {
+
+            background: #ffffff;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.07);
+
+        }
+
+
+        .section-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .section-header h3 {
+
+            margin: 0 0 5px 0;
+
+            color: #1e293b;
+
+        }
+
+
+        .section-header p {
+
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 13px;
+
+        }
+
+
+        #userSummarySearch {
+
+            width: 280px;
+
+            padding: 10px 14px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            outline: none;
+
+        }
+
+
+        #userSummarySearch:focus {
+
+            border-color: #3b82f6;
+
+        }
+
+
+        /* ======================================
+           TABLE
+        ====================================== */
+
+        .user-summary-table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+        }
+
+
+        .user-summary-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1050px;
+
+        }
+
+
+        .user-summary-table th {
+
+            background: #f8fafc;
+
+            color: #475569;
+
+            font-size: 13px;
+
+            padding: 13px 10px;
+
+            text-align: left;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            white-space: nowrap;
+
+        }
+
+
+        .user-summary-table td {
+
+            padding: 13px 10px;
+
+            border-bottom: 1px solid #eef2f7;
+
+            vertical-align: middle;
+
+        }
+
+
+        .user-summary-table tbody tr:hover {
+
+            background: #f8fafc;
+
+        }
+
+
+        /* ======================================
+           USER NAME EDIT
+        ====================================== */
+
+        .user-name-edit-box {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            min-width: 220px;
+
+        }
+
+
+        .user-name-input {
+
+            width: 180px;
+
+            padding: 8px 9px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 7px;
+
+            outline: none;
+
+            font-size: 13px;
+
+        }
+
+
+        .user-name-input:focus {
+
+            border-color: #3b82f6;
+
+            box-shadow:
+                0 0 0 2px rgba(59,130,246,0.10);
+
+        }
+
+
+        .save-user-name-btn {
+
+            width: 34px;
+
+            height: 34px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+            cursor: pointer;
+
+        }
+
+
+        .save-user-name-btn:hover {
+
+            background: #1d4ed8;
+
+        }
+
+
+        .save-user-name-btn:disabled {
+
+            opacity: .6;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .user-code-small {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: #64748b;
+
+            font-size: 11px;
+
+        }
+
+
+        /* ======================================
+           TARGET INPUT
+        ====================================== */
+
+        .target-edit-box {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            min-width: 160px;
+
+        }
+
+
+        .user-target-input {
+
+            width: 120px;
+
+            padding: 8px 9px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 7px;
+
+            outline: none;
+
+        }
+
+
+        .user-target-input:focus {
+
+            border-color: #3b82f6;
+
+        }
+
+
+        .save-user-target-btn {
+
+            width: 34px;
+
+            height: 34px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #16a34a;
+
+            color: #ffffff;
+
+            cursor: pointer;
+
+        }
+
+
+        .save-user-target-btn:hover {
+
+            background: #15803d;
+
+        }
+
+
+        .save-user-target-btn:disabled {
+
+            opacity: .6;
+
+            cursor: not-allowed;
+
+        }
+
+
+        /* ======================================
+           UNIT
+        ====================================== */
+
+        .unit-value {
+
+            font-weight: 700;
+
+            color: #475569;
+
+            white-space: nowrap;
+
+        }
+
+
+        .unit-label {
+
+            font-size: 11px;
+
+            color: #94a3b8;
+
+            margin-left: 2px;
+
+        }
+
+
+        .collection-cell {
+
+            color: #16a34a;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+        }
+
+
+        .remaining-cell {
+
+            color: #dc2626;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* ======================================
+           PERCENTAGE
+        ====================================== */
+
+        .percentage-wrapper {
+
+            min-width: 150px;
+
+        }
+
+
+        .percentage-badge {
+
+            display: inline-block;
+
+            padding: 4px 9px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .percentage-badge.low {
+
+            background: #fee2e2;
+
+            color: #dc2626;
+
+        }
+
+
+        .percentage-badge.medium {
+
+            background: #fef3c7;
+
+            color: #b45309;
+
+        }
+
+
+        .percentage-badge.good {
+
+            background: #dbeafe;
+
+            color: #2563eb;
+
+        }
+
+
+        .percentage-badge.complete {
+
+            background: #dcfce7;
+
+            color: #15803d;
+
+        }
+
+
+        .user-progress-container {
+
+            width: 100%;
+
+            height: 7px;
+
+            background: #e5e7eb;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+        }
+
+
+        .user-progress-bar {
+
+            height: 100%;
+
+            border-radius: 20px;
+
+        }
+
+
+        .user-progress-bar.low {
+
+            background: #ef4444;
+
+        }
+
+
+        .user-progress-bar.medium {
+
+            background: #f59e0b;
+
+        }
+
+
+        .user-progress-bar.good {
+
+            background: #3b82f6;
+
+        }
+
+
+        .user-progress-bar.complete {
+
+            background: #22c55e;
+
+        }
+
+
+        .no-data {
+
+            text-align: center;
+
+            padding: 30px !important;
+
+            color: #64748b;
+
+        }
+
+
+        /* ======================================
+           RESPONSIVE
+        ====================================== */
+
+        @media (max-width: 1100px) {
+
+            .user-summary-cards {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .user-summary-cards {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .section-header {
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+            }
+
+
+            #userSummarySearch {
+
+                width: 100%;
+
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
@@ -33,7 +693,6 @@
 
     <div class="sidebar">
 
-        <!-- Logo -->
 
         <div class="logo">
 
@@ -50,70 +709,99 @@
         </div>
 
 
-        <!-- Menu -->
-
         <div class="menu">
+
 
             <a
                 href="dashboard.html"
                 class="active"
             >
+
                 <i class="fa-solid fa-house"></i>
+
                 <span>Dashboard</span>
+
             </a>
 
 
             <a href="register.html">
+
                 <i class="fa-solid fa-user-plus"></i>
+
                 <span>Registration Form</span>
+
             </a>
 
 
             <a href="users.html">
+
                 <i class="fa-solid fa-users"></i>
+
                 <span>Teachers List</span>
+
             </a>
 
 
             <a href="region-user-management.html">
+
                 <i class="fa-solid fa-user-shield"></i>
+
                 <span>Region User Management</span>
+
             </a>
 
 
             <a href="region-user.html">
+
                 <i class="fa-solid fa-user-shield"></i>
+
                 <span>Region Users</span>
+
             </a>
 
 
             <a href="daily-entry.html">
+
                 <i class="fa-solid fa-file-circle-plus"></i>
+
                 <span>Daily Collection</span>
+
             </a>
 
 
             <a href="all-entry.html">
+
                 <i class="fa-solid fa-list"></i>
+
                 <span>All Entry</span>
+
             </a>
 
 
             <a href="collection-summary.html">
+
                 <i class="fa-solid fa-chart-pie"></i>
+
                 <span>Collection Summary</span>
+
             </a>
 
 
             <a href="target-management.html">
+
                 <i class="fa-solid fa-bullseye"></i>
+
                 <span>Target Management</span>
+
             </a>
 
 
             <a href="reports.html">
+
                 <i class="fa-solid fa-chart-column"></i>
+
                 <span>Reports</span>
+
             </a>
 
 
@@ -121,9 +809,13 @@
                 href="#"
                 id="logoutBtn"
             >
+
                 <i class="fa-solid fa-right-from-bracket"></i>
+
                 <span>Logout</span>
+
             </a>
+
 
         </div>
 
@@ -138,9 +830,7 @@
     <div class="main-content">
 
 
-        <!-- =====================================
-             HEADER
-        ====================================== -->
+        <!-- HEADER -->
 
         <div class="header">
 
@@ -173,13 +863,13 @@
 
 
         <!-- =====================================
-             USER SUMMARY CARDS
+             SUMMARY CARDS
         ====================================== -->
 
         <div class="user-summary-cards">
 
 
-            <!-- Total Users -->
+            <!-- TOTAL USERS -->
 
             <div class="user-summary-card">
 
@@ -191,9 +881,7 @@
 
                 <div>
 
-                    <span>
-                        Total Users
-                    </span>
+                    <span>Total Users</span>
 
                     <strong id="userSummaryTotalUsers">
                         0
@@ -204,8 +892,7 @@
             </div>
 
 
-
-            <!-- Total Target -->
+            <!-- TOTAL TARGET -->
 
             <div class="user-summary-card">
 
@@ -217,21 +904,25 @@
 
                 <div>
 
-                    <span>
-                        Total Target
-                    </span>
+                    <span>Total Target</span>
 
                     <strong id="userSummaryTotalTarget">
                         ₹ 0
                     </strong>
+
+                    <small
+                        id="userSummaryTotalTargetUnit"
+                        class="summary-unit"
+                    >
+                        0 Unit
+                    </small>
 
                 </div>
 
             </div>
 
 
-
-            <!-- Total Collection -->
+            <!-- TOTAL COLLECTION -->
 
             <div class="user-summary-card">
 
@@ -243,21 +934,25 @@
 
                 <div>
 
-                    <span>
-                        Total Collection
-                    </span>
+                    <span>Total Collection</span>
 
                     <strong id="userSummaryTotalCollection">
                         ₹ 0
                     </strong>
+
+                    <small
+                        id="userSummaryTotalCollectionUnit"
+                        class="summary-unit"
+                    >
+                        0 Unit
+                    </small>
 
                 </div>
 
             </div>
 
 
-
-            <!-- Remaining Target -->
+            <!-- REMAINING -->
 
             <div class="user-summary-card">
 
@@ -269,24 +964,30 @@
 
                 <div>
 
-                    <span>
-                        Remaining Target
-                    </span>
+                    <span>Remaining Target</span>
 
                     <strong id="userSummaryTotalRemaining">
                         ₹ 0
                     </strong>
 
+                    <small
+                        id="userSummaryTotalRemainingUnit"
+                        class="summary-unit"
+                    >
+                        0 Unit
+                    </small>
+
                 </div>
 
             </div>
+
 
         </div>
 
 
 
         <!-- =====================================
-             USER COLLECTION SUMMARY
+             USER SUMMARY
         ====================================== -->
 
         <div class="user-summary-container">
@@ -323,7 +1024,9 @@
 
             <div class="user-summary-table-wrapper">
 
+
                 <table class="user-summary-table">
+
 
                     <thead>
 
@@ -331,13 +1034,19 @@
 
                             <th>#</th>
 
-                            <th>User</th>
+                            <th>User Name</th>
 
                             <th>Target</th>
 
+                            <th>Unit</th>
+
                             <th>Total Collection</th>
 
+                            <th>Unit</th>
+
                             <th>Remaining Target</th>
+
+                            <th>Unit</th>
 
                             <th>Percentage</th>
 
@@ -351,11 +1060,9 @@
                         <tr>
 
                             <td
-                                colspan="6"
+                                colspan="9"
                                 class="no-data"
                             >
-
-                                <i class="fa-solid fa-spinner fa-spin"></i>
 
                                 Loading User Summary...
 
@@ -365,16 +1072,18 @@
 
                     </tbody>
 
+
                 </table>
 
             </div>
+
 
         </div>
 
 
 
         <!-- =====================================
-             COLLECTION STATISTICS
+             OLD COLLECTION CARDS
         ====================================== -->
 
         <div class="stats-grid">
@@ -429,58 +1138,58 @@
 
         <div class="table-container">
 
+
             <h3>
                 Recent Collection Entries
             </h3>
 
 
-            <div style="overflow-x:auto;">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Date</th>
-
-                            <th>Emp Code</th>
-
-                            <th>Teacher Name</th>
-
-                            <th>Jamiatul Madina</th>
-
-                            <th>City / State</th>
-
-                            <th>Region</th>
-
-                            <th>Amount</th>
-
-                        </tr>
-
-                    </thead>
+            <table>
 
 
-                    <tbody id="entriesTableBody">
+                <thead>
 
-                        <tr>
+                    <tr>
 
-                            <td
-                                colspan="7"
-                                class="no-data"
-                            >
+                        <th>Date</th>
 
-                                Loading live entries...
+                        <th>Emp Code</th>
 
-                            </td>
+                        <th>Teacher Name</th>
 
-                        </tr>
+                        <th>Jamiatul Madina</th>
 
-                    </tbody>
+                        <th>City / State</th>
 
-                </table>
+                        <th>Region</th>
 
-            </div>
+                        <th>Amount</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="entriesTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="no-data"
+                        >
+
+                            Loading live entries...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+
+            </table>
+
 
         </div>
 
@@ -490,7 +1199,7 @@
 
 
     <!-- =====================================
-         DASHBOARD JAVASCRIPT
+         DASHBOARD JS
     ====================================== -->
 
     <script
@@ -499,9 +1208,7 @@
     ></script>
 
 
-    <!-- =====================================
-         PAGE PROTECTION
-    ====================================== -->
+    <!-- PAGE PROTECTION -->
 
     <script
         type="module"
