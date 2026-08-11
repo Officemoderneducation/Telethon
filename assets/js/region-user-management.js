@@ -19,7 +19,20 @@ import {
 
 
 // ======================================
-// HTML Elements
+// FIRESTORE COLLECTION
+// ======================================
+
+// IMPORTANT:
+// Dashboard bhi isi collection ko read karta hai.
+const REGION_USERS_COLLECTION = "regionUsers";
+
+// Old collection name.
+// Isse existing old users automatically migrate honge.
+const OLD_REGION_USERS_COLLECTION = "region_users";
+
+
+// ======================================
+// HTML ELEMENTS
 // ======================================
 
 const form =
@@ -60,7 +73,7 @@ const cancelBtn =
 
 
 // ======================================
-// Data
+// DATA
 // ======================================
 
 let regions = [];
@@ -71,7 +84,41 @@ let editingUserId = null;
 
 
 // ======================================
-// Load Regions
+// ESCAPE HTML
+// ======================================
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ======================================
+// SHOW MESSAGE
+// ======================================
+
+function showMessage(
+    text,
+    color = "green"
+) {
+
+    if (!message) return;
+
+    message.textContent = text;
+
+    message.style.color = color;
+
+}
+
+
+// ======================================
+// LOAD REGIONS
 // ======================================
 
 async function loadRegions() {
@@ -80,7 +127,10 @@ async function loadRegions() {
 
         const snapshot =
             await getDocs(
-                collection(db, "region")
+                collection(
+                    db,
+                    "region"
+                )
             );
 
         regions = [];
@@ -93,7 +143,7 @@ async function loadRegions() {
             if (data.name) {
 
                 regions.push(
-                    data.name.trim()
+                    String(data.name).trim()
                 );
 
             }
@@ -122,7 +172,7 @@ async function loadRegions() {
 
 
 // ======================================
-// Load States
+// LOAD STATES
 // ======================================
 
 async function loadStates() {
@@ -131,7 +181,10 @@ async function loadStates() {
 
         const snapshot =
             await getDocs(
-                collection(db, "state")
+                collection(
+                    db,
+                    "state"
+                )
             );
 
         states = [];
@@ -149,10 +202,10 @@ async function loadStates() {
                 states.push({
 
                     name:
-                        data.name.trim(),
+                        String(data.name).trim(),
 
                     region:
-                        data.region.trim()
+                        String(data.region).trim()
 
                 });
 
@@ -175,25 +228,7 @@ async function loadStates() {
 
 
 // ======================================
-// Show Message
-// ======================================
-
-function showMessage(
-    text,
-    color = "green"
-) {
-
-    if (!message) return;
-
-    message.textContent = text;
-
-    message.style.color = color;
-
-}
-
-
-// ======================================
-// Create Region Select
+// CREATE REGION OPTIONS
 // ======================================
 
 function createRegionOptions(
@@ -231,7 +266,7 @@ function createRegionOptions(
 
 
 // ======================================
-// Create State Options
+// CREATE STATE OPTIONS
 // ======================================
 
 function createStateOptions(
@@ -286,13 +321,16 @@ function createStateOptions(
 
 
 // ======================================
-// Add Access Row
+// ADD ACCESS ROW
 // ======================================
 
 function addAccessRow(
     selectedRegion = "",
     selectedState = ""
 ) {
+
+    if (!accessContainer) return;
+
 
     const row =
         document.createElement("div");
@@ -359,10 +397,12 @@ function addAccessRow(
             ".access-region"
         );
 
+
     const stateSelect =
         row.querySelector(
             ".access-state"
         );
+
 
     const removeBtn =
         row.querySelector(
@@ -371,7 +411,7 @@ function addAccessRow(
 
 
     // ==================================
-    // Region Change
+    // REGION CHANGE
     // ==================================
 
     regionSelect.addEventListener(
@@ -389,7 +429,7 @@ function addAccessRow(
 
 
     // ==================================
-    // Remove Row
+    // REMOVE ACCESS ROW
     // ==================================
 
     removeBtn.addEventListener(
@@ -408,7 +448,7 @@ function addAccessRow(
 
 
 // ======================================
-// Collect Access
+// COLLECT ACCESS
 // ======================================
 
 function collectAccess() {
@@ -432,6 +472,11 @@ function collectAccess() {
             row.querySelector(
                 ".access-state"
             );
+
+
+        if (!regionSelect || !stateSelect) {
+            return;
+        }
 
 
         const regionValue =
@@ -467,7 +512,148 @@ function collectAccess() {
 
 
 // ======================================
-// Save User
+// MIGRATE OLD REGION USERS
+// ======================================
+//
+// Old collection:
+// region_users
+//
+// New collection:
+// regionUsers
+//
+// Existing users jo old collection me hain
+// unko new collection me automatically copy karega.
+//
+// Existing new records ko overwrite nahi karega.
+// ======================================
+
+async function migrateOldRegionUsers() {
+
+    try {
+
+        const oldSnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    OLD_REGION_USERS_COLLECTION
+                )
+            );
+
+
+        if (oldSnapshot.empty) {
+
+            console.log(
+                "No old region_users data found."
+            );
+
+            return;
+
+        }
+
+
+        const newSnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    REGION_USERS_COLLECTION
+                )
+            );
+
+
+        const existingIds =
+            new Set();
+
+
+        newSnapshot.forEach((item) => {
+
+            existingIds.add(
+                item.id
+            );
+
+        });
+
+
+        let migratedCount = 0;
+
+
+        for (
+            const oldDoc of oldSnapshot.docs
+        ) {
+
+            const oldId =
+                oldDoc.id;
+
+
+            // Already exists
+            // in new collection
+            if (
+                existingIds.has(oldId)
+            ) {
+
+                continue;
+
+            }
+
+
+            const oldData =
+                oldDoc.data();
+
+
+            // Copy old user
+            // into new collection
+
+            await setDoc(
+
+                doc(
+                    db,
+                    REGION_USERS_COLLECTION,
+                    oldId
+                ),
+
+                {
+                    ...oldData,
+
+                    migratedFrom:
+                        OLD_REGION_USERS_COLLECTION,
+
+                    migratedAt:
+                        serverTimestamp()
+
+                },
+
+                {
+                    merge: true
+                }
+
+            );
+
+
+            migratedCount++;
+
+        }
+
+
+        console.log(
+            "Old Region Users Migrated:",
+            migratedCount
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Migration Error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ======================================
+// SAVE USER
 // ======================================
 
 form.addEventListener(
@@ -495,13 +681,12 @@ form.addEventListener(
         const password =
             userPassword.value.trim();
 
-
         const access =
             collectAccess();
 
 
         // ==================================
-        // Validation
+        // VALIDATION
         // ==================================
 
         if (!name) {
@@ -510,6 +695,8 @@ form.addEventListener(
                 "User Name enter karein.",
                 "red"
             );
+
+            userName.focus();
 
             return;
 
@@ -523,6 +710,8 @@ form.addEventListener(
                 "red"
             );
 
+            userCode.focus();
+
             return;
 
         }
@@ -534,6 +723,8 @@ form.addEventListener(
                 "Password enter karein.",
                 "red"
             );
+
+            userPassword.focus();
 
             return;
 
@@ -555,46 +746,66 @@ form.addEventListener(
         try {
 
             // ==================================
-            // Duplicate Code
+            // DUPLICATE CODE CHECK
             // ==================================
 
-            if (!editingUserId) {
+            const duplicateQuery =
+                query(
 
-                const q =
-                    query(
-                        collection(
-                            db,
-                            "region_users"
-                        ),
+                    collection(
+                        db,
+                        REGION_USERS_COLLECTION
+                    ),
 
-                        where(
-                            "userCode",
-                            "==",
-                            code
-                        )
-                    );
+                    where(
+                        "userCode",
+                        "==",
+                        code
+                    )
 
-
-                const snapshot =
-                    await getDocs(q);
+                );
 
 
-                if (!snapshot.empty) {
+            const duplicateSnapshot =
+                await getDocs(
+                    duplicateQuery
+                );
 
-                    showMessage(
-                        "User Code already exists.",
-                        "red"
-                    );
 
-                    return;
+            let duplicateFound = false;
+
+
+            duplicateSnapshot.forEach(
+                (item) => {
+
+                    if (
+                        item.id !==
+                        editingUserId
+                    ) {
+
+                        duplicateFound =
+                            true;
+
+                    }
 
                 }
+            );
+
+
+            if (duplicateFound) {
+
+                showMessage(
+                    "User Code already exists.",
+                    "red"
+                );
+
+                return;
 
             }
 
 
             // ==================================
-            // Document ID
+            // DOCUMENT ID
             // ==================================
 
             const documentId =
@@ -603,12 +814,15 @@ form.addEventListener(
 
 
             // ==================================
-            // User Data
+            // USER DATA
             // ==================================
 
             const userData = {
 
                 userName:
+                    name,
+
+                name:
                     name,
 
                 userCode:
@@ -632,6 +846,10 @@ form.addEventListener(
             };
 
 
+            // ==================================
+            // CREATE TIME
+            // ==================================
+
             if (!editingUserId) {
 
                 userData.createdAt =
@@ -641,14 +859,14 @@ form.addEventListener(
 
 
             // ==================================
-            // Save
+            // SAVE TO CORRECT COLLECTION
             // ==================================
 
             await setDoc(
 
                 doc(
                     db,
-                    "region_users",
+                    REGION_USERS_COLLECTION,
                     documentId
                 ),
 
@@ -661,11 +879,18 @@ form.addEventListener(
             );
 
 
+            // ==================================
+            // SUCCESS
+            // ==================================
+
             showMessage(
+
                 editingUserId
                     ? "Region User updated successfully."
                     : "Region User created successfully.",
+
                 "green"
+
             );
 
 
@@ -696,7 +921,7 @@ form.addEventListener(
 
 
 // ======================================
-// Load Users
+// LOAD USERS
 // ======================================
 
 async function loadUsers() {
@@ -710,7 +935,10 @@ async function loadUsers() {
 
             <td
                 colspan="5"
-                style="text-align:center;padding:25px;"
+                style="
+                    text-align:center;
+                    padding:25px;
+                "
             >
 
                 Loading Region Users...
@@ -724,12 +952,25 @@ async function loadUsers() {
 
     try {
 
+        // ==================================
+        // FIRST MIGRATE OLD USERS
+        // ==================================
+
+        await migrateOldRegionUsers();
+
+
+        // ==================================
+        // LOAD CORRECT COLLECTION
+        // ==================================
+
         const snapshot =
             await getDocs(
+
                 collection(
                     db,
-                    "region_users"
+                    REGION_USERS_COLLECTION
                 )
+
             );
 
 
@@ -741,7 +982,10 @@ async function loadUsers() {
 
                     <td
                         colspan="5"
-                        style="text-align:center;padding:25px;"
+                        style="
+                            text-align:center;
+                            padding:25px;
+                        "
                     >
 
                         No Region Users Found.
@@ -757,132 +1001,222 @@ async function loadUsers() {
         }
 
 
-        let html = "";
+        // ==================================
+        // SORT USERS BY USER CODE
+        // ==================================
+
+        const users = [];
 
 
         snapshot.forEach((item) => {
 
-            const user =
-                item.data();
+            users.push({
 
+                id:
+                    item.id,
 
-            const access =
-                Array.isArray(
-                    user.access
-                )
-                    ? user.access
-                    : [];
+                ...item.data()
 
-
-            let accessHTML = "";
-
-
-            access.forEach(
-                (item) => {
-
-                    const regionName =
-                        item.region ||
-                        "-";
-
-
-                    const stateName =
-                        item.state === "*"
-                            ? "Full Region"
-                            : (
-                                item.state ||
-                                "-"
-                            );
-
-
-                    accessHTML += `
-
-                        <span class="access-badge">
-
-                            ${escapeHTML(
-                                regionName
-                            )}
-
-                            →
-
-                            ${escapeHTML(
-                                stateName
-                            )}
-
-                        </span>
-
-                    `;
-
-                }
-            );
-
-
-            html += `
-
-                <tr>
-
-                    <td>
-                        ${escapeHTML(
-                            user.userName ||
-                            "-"
-                        )}
-                    </td>
-
-
-                    <td>
-                        ${escapeHTML(
-                            user.userCode ||
-                            item.id
-                        )}
-                    </td>
-
-
-                    <td>
-                        ${escapeHTML(
-                            user.mobile ||
-                            "-"
-                        )}
-                    </td>
-
-
-                    <td>
-                        ${accessHTML}
-                    </td>
-
-
-                    <td>
-
-                        <button
-                            class="edit-btn"
-                            onclick="editRegionUser('${item.id}')"
-                        >
-
-                            <i class="fa-solid fa-pen"></i>
-                            Edit
-
-                        </button>
-
-
-                        <button
-                            class="delete-btn"
-                            onclick="deleteRegionUser('${item.id}')"
-                        >
-
-                            <i class="fa-solid fa-trash"></i>
-                            Delete
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            `;
+            });
 
         });
 
 
+        users.sort(
+            (a, b) => {
+
+                return String(
+                    a.userCode ||
+                    a.id ||
+                    ""
+                ).localeCompare(
+
+                    String(
+                        b.userCode ||
+                        b.id ||
+                        ""
+                    ),
+
+                    undefined,
+
+                    {
+                        numeric: true
+                    }
+
+                );
+
+            }
+        );
+
+
+        // ==================================
+        // CREATE TABLE
+        // ==================================
+
+        let html = "";
+
+
+        users.forEach(
+            (user) => {
+
+                const access =
+                    Array.isArray(
+                        user.access
+                    )
+                        ? user.access
+                        : [];
+
+
+                let accessHTML =
+                    "";
+
+
+                access.forEach(
+                    (item) => {
+
+                        const regionName =
+                            item.region ||
+                            "-";
+
+
+                        const stateName =
+                            item.state === "*"
+
+                                ? "Full Region"
+
+                                : (
+                                    item.state ||
+                                    "-"
+                                );
+
+
+                        accessHTML += `
+
+                            <span
+                                class="access-badge"
+                            >
+
+                                ${escapeHTML(
+                                    regionName
+                                )}
+
+                                →
+
+                                ${escapeHTML(
+                                    stateName
+                                )}
+
+                            </span>
+
+                        `;
+
+                    }
+                );
+
+
+                if (!accessHTML) {
+
+                    accessHTML =
+                        `<span
+                            style="color:#999;"
+                        >
+                            No Access
+                        </span>`;
+
+                }
+
+
+                html += `
+
+                    <tr>
+
+                        <td>
+
+                            ${escapeHTML(
+                                user.userName ||
+                                user.name ||
+                                "-"
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHTML(
+                                user.userCode ||
+                                user.id ||
+                                "-"
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHTML(
+                                user.mobile ||
+                                "-"
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${accessHTML}
+
+                        </td>
+
+
+                        <td>
+
+                            <button
+                                class="edit-btn"
+                                onclick="editRegionUser('${escapeHTML(user.id)}')"
+                            >
+
+                                <i
+                                    class="fa-solid fa-pen"
+                                ></i>
+
+                                Edit
+
+                            </button>
+
+
+                            <button
+                                class="delete-btn"
+                                onclick="deleteRegionUser('${escapeHTML(user.id)}')"
+                            >
+
+                                <i
+                                    class="fa-solid fa-trash"
+                                ></i>
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+
         table.innerHTML =
             html;
+
+
+        console.log(
+            "Region Users Loaded:",
+            users.length
+        );
+
 
     }
 
@@ -900,7 +1234,11 @@ async function loadUsers() {
 
                 <td
                     colspan="5"
-                    style="text-align:center;color:red;padding:25px;"
+                    style="
+                        text-align:center;
+                        color:red;
+                        padding:25px;
+                    "
                 >
 
                     ${escapeHTML(
@@ -919,7 +1257,7 @@ async function loadUsers() {
 
 
 // ======================================
-// Edit User
+// EDIT USER
 // ======================================
 
 window.editRegionUser =
@@ -927,11 +1265,11 @@ window.editRegionUser =
 
         try {
 
-            const snapshot =
+            const userDoc =
                 await getDocs(
                     collection(
                         db,
-                        "region_users"
+                        REGION_USERS_COLLECTION
                     )
                 );
 
@@ -940,7 +1278,7 @@ window.editRegionUser =
                 null;
 
 
-            snapshot.forEach(
+            userDoc.forEach(
                 (item) => {
 
                     if (
@@ -980,15 +1318,20 @@ window.editRegionUser =
 
             userName.value =
                 selectedUser.userName ||
+                selectedUser.name ||
                 "";
+
 
             userCode.value =
                 selectedUser.userCode ||
+                selectedUser.id ||
                 "";
+
 
             userMobile.value =
                 selectedUser.mobile ||
                 "";
+
 
             userPassword.value =
                 selectedUser.password ||
@@ -1016,7 +1359,9 @@ window.editRegionUser =
                         "",
 
                         item.state === "*"
+
                             ? ""
+
                             : (
                                 item.state ||
                                 ""
@@ -1028,7 +1373,9 @@ window.editRegionUser =
             );
 
 
-            if (access.length === 0) {
+            if (
+                access.length === 0
+            ) {
 
                 addAccessRow();
 
@@ -1041,7 +1388,9 @@ window.editRegionUser =
 
             saveBtn.innerHTML = `
 
-                <i class="fa-solid fa-save"></i>
+                <i
+                    class="fa-solid fa-save"
+                ></i>
 
                 Update Region User
 
@@ -1053,8 +1402,11 @@ window.editRegionUser =
 
 
             window.scrollTo({
+
                 top: 0,
+
                 behavior: "smooth"
+
             });
 
         }
@@ -1066,6 +1418,7 @@ window.editRegionUser =
                 error
             );
 
+
             alert(
                 error.message
             );
@@ -1076,7 +1429,7 @@ window.editRegionUser =
 
 
 // ======================================
-// Delete User
+// DELETE USER
 // ======================================
 
 window.deleteRegionUser =
@@ -1101,7 +1454,7 @@ window.deleteRegionUser =
 
                 doc(
                     db,
-                    "region_users",
+                    REGION_USERS_COLLECTION,
                     userId
                 )
 
@@ -1126,8 +1479,10 @@ window.deleteRegionUser =
 
 
             alert(
+
                 "User delete nahi ho saka.\n\n" +
                 error.message
+
             );
 
         }
@@ -1136,35 +1491,43 @@ window.deleteRegionUser =
 
 
 // ======================================
-// Cancel Edit
+// CANCEL EDIT
 // ======================================
 
-cancelBtn.addEventListener(
-    "click",
-    function () {
+if (cancelBtn) {
 
-        resetForm();
+    cancelBtn.addEventListener(
+        "click",
+        function () {
 
-    }
-);
+            resetForm();
 
+        }
+    );
 
-// ======================================
-// Add Access
-// ======================================
-
-addAccessBtn.addEventListener(
-    "click",
-    function () {
-
-        addAccessRow();
-
-    }
-);
+}
 
 
 // ======================================
-// Reset Form
+// ADD ACCESS
+// ======================================
+
+if (addAccessBtn) {
+
+    addAccessBtn.addEventListener(
+        "click",
+        function () {
+
+            addAccessRow();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// RESET FORM
 // ======================================
 
 function resetForm() {
@@ -1173,31 +1536,52 @@ function resetForm() {
         null;
 
 
-    form.reset();
+    if (form) {
+
+        form.reset();
+
+    }
 
 
-    accessContainer.innerHTML =
-        "";
+    if (accessContainer) {
+
+        accessContainer.innerHTML =
+            "";
+
+        addAccessRow();
+
+    }
 
 
-    addAccessRow();
+    if (formTitle) {
+
+        formTitle.textContent =
+            "Create Region User";
+
+    }
 
 
-    formTitle.textContent =
-        "Create Region User";
+    if (saveBtn) {
+
+        saveBtn.innerHTML = `
+
+            <i
+                class="fa-solid fa-save"
+            ></i>
+
+            Save Region User
+
+        `;
+
+    }
 
 
-    saveBtn.innerHTML = `
+    if (cancelBtn) {
 
-        <i class="fa-solid fa-save"></i>
+        cancelBtn.style.display =
+            "none";
 
-        Save Region User
-
-    `;
-
-
-    cancelBtn.style.display =
-        "none";
+    }
 
 
     if (message) {
@@ -1211,56 +1595,63 @@ function resetForm() {
 
 
 // ======================================
-// Escape HTML
-// ======================================
-
-function escapeHTML(value) {
-
-    return String(value ?? "")
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-// ======================================
 // START
 // ======================================
 
 async function start() {
 
-    await loadRegions();
+    try {
 
-    await loadStates();
+        console.log(
+            "======================================"
+        );
 
-    addAccessRow();
+        console.log(
+            "Region User Management Starting..."
+        );
 
-    await loadUsers();
+        console.log(
+            "======================================"
+        );
+
+
+        // Load regions
+        await loadRegions();
+
+
+        // Load states
+        await loadStates();
+
+
+        // Default access row
+        addAccessRow();
+
+
+        // Load + migrate users
+        await loadUsers();
+
+
+        console.log(
+            "Region User Management Loaded Successfully."
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Region User Management Start Error:",
+            error
+        );
+
+    }
 
 }
 
+
+// ======================================
+// RUN
+// ======================================
 
 start();
