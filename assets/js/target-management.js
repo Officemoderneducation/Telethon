@@ -1,5 +1,6 @@
 // ======================================
 // Telethon - Target Management
+// Firebase Firestore
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -38,7 +39,29 @@ const saveTargetBtn =
     document.getElementById("saveTargetBtn");
 
 
+// ======================================
+// Filter Elements
+// ======================================
+
+const targetRegionFilter =
+    document.getElementById("targetRegionFilter");
+
+const targetStateFilter =
+    document.getElementById("targetStateFilter");
+
+const targetCityFilter =
+    document.getElementById("targetCityFilter");
+
+const applyTargetFilter =
+    document.getElementById("applyTargetFilter");
+
+const resetTargetFilter =
+    document.getElementById("resetTargetFilter");
+
+
+// ======================================
 // Preview Elements
+// ======================================
 
 const employeePreview =
     document.getElementById("employeePreview");
@@ -62,7 +85,9 @@ const previewTeacher =
     document.getElementById("previewTeacher");
 
 
+// ======================================
 // Summary Elements
+// ======================================
 
 const totalTeachersEl =
     document.getElementById("totalTeachers");
@@ -87,6 +112,135 @@ let entries = [];
 
 
 // ======================================
+// Helper - Escape HTML
+// ======================================
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ======================================
+// Helper - Normalize
+// ======================================
+
+function normalize(value) {
+
+    return String(value ?? "")
+        .trim()
+        .toLowerCase();
+
+}
+
+
+// ======================================
+// Employee Code
+// ======================================
+
+function getEmployeeCode(employee) {
+
+    return String(
+
+        employee.employee_code ||
+
+        employee.employeeCode ||
+
+        employee.empCode ||
+
+        employee.emp_code ||
+
+        employee.employeeID ||
+
+        employee.employeeId ||
+
+        employee.id ||
+
+        ""
+
+    ).trim();
+
+}
+
+
+// ======================================
+// Teacher Name
+// ======================================
+
+function getTeacherName(employee) {
+
+    return (
+
+        employee.teacher_name ||
+
+        employee.teacherName ||
+
+        employee.name ||
+
+        "-"
+
+    );
+
+}
+
+
+// ======================================
+// Jamiatul Madina
+// ======================================
+
+function getMadina(employee) {
+
+    return (
+
+        employee.jamiatul_madina ||
+
+        employee.jamiatulMadina ||
+
+        employee.jamiatulMadinaName ||
+
+        "-"
+
+    );
+
+}
+
+
+// ======================================
+// Target
+// ======================================
+
+function getEmployeeTarget(employee) {
+
+    const target = Number(
+
+        employee.targetAmount ||
+
+        employee.target ||
+
+        employee.target_amount ||
+
+        employee.monthlyTarget ||
+
+        employee.monthly_target ||
+
+        0
+
+    );
+
+    return Number.isFinite(target)
+        ? target
+        : 0;
+
+}
+
+
+// ======================================
 // Load Employees
 // ======================================
 
@@ -96,58 +250,68 @@ async function loadEmployees() {
 
         const snapshot =
             await getDocs(
-                collection(db, "employees")
+                collection(
+                    db,
+                    "employees"
+                )
             );
 
 
         employees = [];
 
 
-        snapshot.forEach((docSnapshot) => {
+        snapshot.forEach(
+            (docSnapshot) => {
 
-            const data =
-                docSnapshot.data();
-
-
-            const employeeCode =
-                String(
-                    data.employee_code ||
-                    data.employeeCode ||
-                    data.empCode ||
-                    docSnapshot.id ||
-                    ""
-                ).trim();
+                const data =
+                    docSnapshot.data();
 
 
-            employees.push({
+                const employeeCode =
+                    getEmployeeCode({
+                        ...data,
+                        id: docSnapshot.id
+                    });
 
-                id: docSnapshot.id,
 
-                ...data,
+                employees.push({
 
-                employeeCode:
-                    employeeCode
+                    id:
+                        docSnapshot.id,
 
-            });
+                    ...data,
 
-        });
+                    employeeCode:
+                        employeeCode
+
+                });
+
+            }
+        );
 
 
         // Sort Employee Code
 
-        employees.sort((a, b) =>
-            String(a.employeeCode)
-                .localeCompare(
-                    String(b.employeeCode),
-                    undefined,
-                    {
-                        numeric: true
-                    }
-                )
+        employees.sort(
+            (a, b) =>
+
+                String(a.employeeCode)
+                    .localeCompare(
+                        String(b.employeeCode),
+                        undefined,
+                        {
+                            numeric: true
+                        }
+                    )
         );
 
 
         populateEmployeeSelect();
+
+
+        // Load Filter Options
+
+        loadRegionFilterOptions();
 
 
     }
@@ -165,9 +329,7 @@ async function loadEmployees() {
             employeeSelect.innerHTML = `
 
                 <option value="">
-
                     Employees load nahi ho paaye
-
                 </option>
 
             `;
@@ -193,38 +355,39 @@ function populateEmployeeSelect() {
     employeeSelect.innerHTML = `
 
         <option value="">
-
             Select Teacher
-
         </option>
 
     `;
 
 
-    employees.forEach((employee) => {
+    employees.forEach(
+        (employee) => {
+
+            const teacherName =
+                getTeacherName(employee);
 
 
-        const teacherName =
-            employee.teacher_name ||
-            employee.teacherName ||
-            "-";
+            const option =
+                document.createElement(
+                    "option"
+                );
 
 
-        const option =
-            document.createElement("option");
+            option.value =
+                employee.id;
 
 
-        option.value =
-            employee.id;
+            option.textContent =
+                `${employee.employeeCode} - ${teacherName}`;
 
 
-        option.textContent =
-            `${employee.employeeCode} - ${teacherName}`;
+            employeeSelect.appendChild(
+                option
+            );
 
-
-        employeeSelect.appendChild(option);
-
-    });
+        }
+    );
 
 }
 
@@ -237,8 +400,7 @@ if (employeeSelect) {
 
     employeeSelect.addEventListener(
         "change",
-        async function () {
-
+        function () {
 
             const employeeId =
                 this.value;
@@ -268,7 +430,8 @@ if (employeeSelect) {
             const employee =
                 employees.find(
                     item =>
-                        item.id === employeeId
+                        item.id ===
+                        employeeId
                 );
 
 
@@ -276,8 +439,6 @@ if (employeeSelect) {
                 return;
             }
 
-
-            // Show Preview
 
             if (employeePreview) {
 
@@ -287,42 +448,58 @@ if (employeeSelect) {
             }
 
 
-            previewRegion.textContent =
-                employee.region || "-";
+            if (previewRegion) {
+
+                previewRegion.textContent =
+                    employee.region || "-";
+
+            }
 
 
-            previewState.textContent =
-                employee.state || "-";
+            if (previewState) {
+
+                previewState.textContent =
+                    employee.state || "-";
+
+            }
 
 
-            previewCity.textContent =
-                employee.city || "-";
+            if (previewCity) {
+
+                previewCity.textContent =
+                    employee.city || "-";
+
+            }
 
 
-            previewMadina.textContent =
-                employee.jamiatul_madina ||
-                employee.jamiatulMadina ||
-                "-";
+            if (previewMadina) {
+
+                previewMadina.textContent =
+                    getMadina(employee);
+
+            }
 
 
-            previewCode.textContent =
-                employee.employeeCode || "-";
+            if (previewCode) {
+
+                previewCode.textContent =
+                    employee.employeeCode || "-";
+
+            }
 
 
-            previewTeacher.textContent =
-                employee.teacher_name ||
-                employee.teacherName ||
-                "-";
+            if (previewTeacher) {
 
+                previewTeacher.textContent =
+                    getTeacherName(employee);
 
-            // Existing Target
+            }
+
 
             if (targetAmountInput) {
 
                 targetAmountInput.value =
-                    employee.targetAmount ||
-                    employee.target ||
-                    "";
+                    getEmployeeTarget(employee) || "";
 
             }
 
@@ -342,24 +519,36 @@ async function loadEntries() {
 
         const snapshot =
             await getDocs(
-                collection(db, "daily_entry")
+                collection(
+                    db,
+                    "daily_entry"
+                )
             );
 
 
         entries = [];
 
 
-        snapshot.forEach((docSnapshot) => {
+        snapshot.forEach(
+            (docSnapshot) => {
 
-            entries.push({
+                entries.push({
 
-                id: docSnapshot.id,
+                    id:
+                        docSnapshot.id,
 
-                ...docSnapshot.data()
+                    ...docSnapshot.data()
 
-            });
+                });
 
-        });
+            }
+        );
+
+
+        console.log(
+            "Total Daily Entries:",
+            entries.length
+        );
 
     }
 
@@ -370,7 +559,77 @@ async function loadEntries() {
             error
         );
 
+        entries = [];
+
     }
+
+}
+
+
+// ======================================
+// Get Entry Employee Code
+// ======================================
+
+function getEntryEmployeeCode(entry) {
+
+    return String(
+
+        entry.employee_code ||
+
+        entry.employeeCode ||
+
+        entry.empCode ||
+
+        entry.emp_code ||
+
+        entry.employeeID ||
+
+        entry.employeeId ||
+
+        entry.userCode ||
+
+        entry.user_code ||
+
+        ""
+
+    ).trim();
+
+}
+
+
+// ======================================
+// Get Entry Amount
+// ======================================
+
+function getEntryAmount(entry) {
+
+    const amount = Number(
+
+        String(
+
+            entry.amount ||
+
+            entry.collection ||
+
+            entry.collectionAmount ||
+
+            entry.totalCollection ||
+
+            entry.total_collection ||
+
+            0
+
+        )
+            .replace(/,/g, "")
+            .replace(/₹/g, "")
+            .trim()
+
+    );
+
+
+    return Number.isFinite(amount)
+        ? amount
+        : 0;
 
 }
 
@@ -382,9 +641,9 @@ async function loadEntries() {
 function getEmployeeCollection(employee) {
 
     const employeeCode =
-        String(
-            employee.employeeCode || ""
-        ).trim();
+        normalize(
+            getEmployeeCode(employee)
+        );
 
 
     if (!employeeCode) {
@@ -395,30 +654,31 @@ function getEmployeeCollection(employee) {
     let total = 0;
 
 
-    entries.forEach((entry) => {
+    entries.forEach(
+        (entry) => {
+
+            const entryCode =
+                normalize(
+                    getEntryEmployeeCode(
+                        entry
+                    )
+                );
 
 
-        const entryCode =
-            String(
+            if (
+                entryCode ===
+                employeeCode
+            ) {
 
-                entry.employee_code ||
-                entry.employeeCode ||
-                entry.empCode ||
-                ""
+                total +=
+                    getEntryAmount(
+                        entry
+                    );
 
-            ).trim();
-
-
-        if (
-            entryCode === employeeCode
-        ) {
-
-            total +=
-                Number(entry.amount) || 0;
+            }
 
         }
-
-    });
+    );
 
 
     return total;
@@ -427,24 +687,7 @@ function getEmployeeCollection(employee) {
 
 
 // ======================================
-// Get Target
-// ======================================
-
-function getEmployeeTarget(employee) {
-
-    return Number(
-
-        employee.targetAmount ||
-        employee.target ||
-        0
-
-    );
-
-}
-
-
-// ======================================
-// Calculate Percentage
+// Percentage
 // ======================================
 
 function getPercentage(
@@ -452,17 +695,16 @@ function getPercentage(
     collectionAmount
 ) {
 
-    if (
-        target <= 0
-    ) {
-
+    if (target <= 0) {
         return 0;
-
     }
 
 
     return Math.round(
-        (collectionAmount / target) * 100
+        (
+            collectionAmount /
+            target
+        ) * 100
     );
 
 }
@@ -477,13 +719,635 @@ function getRemaining(
     collectionAmount
 ) {
 
-    const remaining =
-        target - collectionAmount;
-
-
     return Math.max(
-        remaining,
+        target - collectionAmount,
         0
+    );
+
+}
+
+
+// ======================================
+// Load Region Filter Options
+// ======================================
+
+function loadRegionFilterOptions() {
+
+    if (!targetRegionFilter) {
+        return;
+    }
+
+
+    const regions =
+        new Set();
+
+
+    employees.forEach(
+        (employee) => {
+
+            const region =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            if (region) {
+
+                regions.add(
+                    region
+                );
+
+            }
+
+        }
+    );
+
+
+    targetRegionFilter.innerHTML = `
+
+        <option value="">
+            All Regions
+        </option>
+
+    `;
+
+
+    [...regions]
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        )
+        .forEach(
+            (region) => {
+
+                targetRegionFilter.innerHTML += `
+
+                    <option value="${escapeHTML(region)}">
+                        ${escapeHTML(region)}
+                    </option>
+
+                `;
+
+            }
+        );
+
+
+    loadStateFilterOptions();
+
+}
+
+
+// ======================================
+// Load State Filter Options
+// ======================================
+
+function loadStateFilterOptions() {
+
+    if (!targetStateFilter) {
+        return;
+    }
+
+
+    const selectedRegion =
+        String(
+            targetRegionFilter?.value || ""
+        ).trim();
+
+
+    const states =
+        new Set();
+
+
+    employees.forEach(
+        (employee) => {
+
+            const employeeRegion =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            const state =
+                String(
+                    employee.state || ""
+                ).trim();
+
+
+            const regionMatch =
+                !selectedRegion ||
+
+                normalize(
+                    employeeRegion
+                ) ===
+                normalize(
+                    selectedRegion
+                );
+
+
+            if (
+                state &&
+                regionMatch
+            ) {
+
+                states.add(
+                    state
+                );
+
+            }
+
+        }
+    );
+
+
+    targetStateFilter.innerHTML = `
+
+        <option value="">
+            All States
+        </option>
+
+    `;
+
+
+    [...states]
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        )
+        .forEach(
+            (state) => {
+
+                targetStateFilter.innerHTML += `
+
+                    <option value="${escapeHTML(state)}">
+                        ${escapeHTML(state)}
+                    </option>
+
+                `;
+
+            }
+        );
+
+
+    loadCityFilterOptions();
+
+}
+
+
+// ======================================
+// Load City Filter Options
+// ======================================
+
+function loadCityFilterOptions() {
+
+    if (!targetCityFilter) {
+        return;
+    }
+
+
+    const selectedRegion =
+        String(
+            targetRegionFilter?.value || ""
+        ).trim();
+
+
+    const selectedState =
+        String(
+            targetStateFilter?.value || ""
+        ).trim();
+
+
+    const cities =
+        new Set();
+
+
+    employees.forEach(
+        (employee) => {
+
+            const employeeRegion =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            const employeeState =
+                String(
+                    employee.state || ""
+                ).trim();
+
+
+            const city =
+                String(
+                    employee.city || ""
+                ).trim();
+
+
+            if (!city) {
+                return;
+            }
+
+
+            const regionMatch =
+                !selectedRegion ||
+
+                normalize(employeeRegion) ===
+                normalize(selectedRegion);
+
+
+            const stateMatch =
+                !selectedState ||
+
+                normalize(employeeState) ===
+                normalize(selectedState);
+
+
+            if (
+                regionMatch &&
+                stateMatch
+            ) {
+
+                cities.add(
+                    city
+                );
+
+            }
+
+        }
+    );
+
+
+    targetCityFilter.innerHTML = `
+
+        <option value="">
+            All Cities
+        </option>
+
+    `;
+
+
+    [...cities]
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        )
+        .forEach(
+            (city) => {
+
+                targetCityFilter.innerHTML += `
+
+                    <option value="${escapeHTML(city)}">
+                        ${escapeHTML(city)}
+                    </option>
+
+                `;
+
+            }
+        );
+
+}
+
+
+// ======================================
+// Get Filtered Employees
+// ======================================
+
+function getFilteredEmployees() {
+
+    const selectedRegion =
+        String(
+            targetRegionFilter?.value || ""
+        ).trim();
+
+
+    const selectedState =
+        String(
+            targetStateFilter?.value || ""
+        ).trim();
+
+
+    const selectedCity =
+        String(
+            targetCityFilter?.value || ""
+        ).trim();
+
+
+    const search =
+        normalize(
+            targetSearch?.value || ""
+        );
+
+
+    return employees.filter(
+        (employee) => {
+
+            const employeeRegion =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            const employeeState =
+                String(
+                    employee.state || ""
+                ).trim();
+
+
+            const employeeCity =
+                String(
+                    employee.city || ""
+                ).trim();
+
+
+            const employeeCode =
+                normalize(
+                    getEmployeeCode(
+                        employee
+                    )
+                );
+
+
+            const teacherName =
+                normalize(
+                    getTeacherName(
+                        employee
+                    )
+                );
+
+
+            const mobile =
+                normalize(
+
+                    employee.mobile ||
+
+                    employee.mobileNumber ||
+
+                    employee.phone ||
+
+                    ""
+
+                );
+
+
+            const madina =
+                normalize(
+                    getMadina(employee)
+                );
+
+
+            // Region
+
+            const regionMatch =
+                !selectedRegion ||
+
+                normalize(employeeRegion) ===
+                normalize(selectedRegion);
+
+
+            // State
+
+            const stateMatch =
+                !selectedState ||
+
+                normalize(employeeState) ===
+                normalize(selectedState);
+
+
+            // City
+
+            const cityMatch =
+                !selectedCity ||
+
+                normalize(employeeCity) ===
+                normalize(selectedCity);
+
+
+            // Search
+
+            const searchMatch =
+
+                !search ||
+
+                employeeCode.includes(
+                    search
+                ) ||
+
+                teacherName.includes(
+                    search
+                ) ||
+
+                mobile.includes(
+                    search
+                ) ||
+
+                madina.includes(
+                    search
+                );
+
+
+            return (
+
+                regionMatch &&
+
+                stateMatch &&
+
+                cityMatch &&
+
+                searchMatch
+
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Apply Filters
+// ======================================
+
+function applyTargetFilters() {
+
+    const filtered =
+        getFilteredEmployees();
+
+
+    displayTargetTable(
+        filtered
+    );
+
+}
+
+
+// ======================================
+// Region Change
+// ======================================
+
+if (targetRegionFilter) {
+
+    targetRegionFilter.addEventListener(
+        "change",
+        function () {
+
+            if (targetStateFilter) {
+
+                targetStateFilter.value =
+                    "";
+
+            }
+
+
+            if (targetCityFilter) {
+
+                targetCityFilter.value =
+                    "";
+
+            }
+
+
+            loadStateFilterOptions();
+
+
+            applyTargetFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// State Change
+// ======================================
+
+if (targetStateFilter) {
+
+    targetStateFilter.addEventListener(
+        "change",
+        function () {
+
+            if (targetCityFilter) {
+
+                targetCityFilter.value =
+                    "";
+
+            }
+
+
+            loadCityFilterOptions();
+
+
+            applyTargetFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// City Change
+// ======================================
+
+if (targetCityFilter) {
+
+    targetCityFilter.addEventListener(
+        "change",
+        function () {
+
+            applyTargetFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Apply Button
+// ======================================
+
+if (applyTargetFilter) {
+
+    applyTargetFilter.addEventListener(
+        "click",
+        function () {
+
+            applyTargetFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Search
+// ======================================
+
+if (targetSearch) {
+
+    targetSearch.addEventListener(
+        "input",
+        function () {
+
+            applyTargetFilters();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Reset Filter
+// ======================================
+
+if (resetTargetFilter) {
+
+    resetTargetFilter.addEventListener(
+        "click",
+        function () {
+
+            if (targetRegionFilter) {
+
+                targetRegionFilter.value =
+                    "";
+
+            }
+
+
+            if (targetStateFilter) {
+
+                targetStateFilter.value =
+                    "";
+
+            }
+
+
+            if (targetCityFilter) {
+
+                targetCityFilter.value =
+                    "";
+
+            }
+
+
+            if (targetSearch) {
+
+                targetSearch.value =
+                    "";
+
+            }
+
+
+            loadRegionFilterOptions();
+
+
+            displayTargetTable(
+                employees
+            );
+
+        }
     );
 
 }
@@ -498,7 +1362,6 @@ if (targetForm) {
     targetForm.addEventListener(
         "submit",
         async function (e) {
-
 
             e.preventDefault();
 
@@ -526,7 +1389,7 @@ if (targetForm) {
 
 
             if (
-                isNaN(target) ||
+                !Number.isFinite(target) ||
                 target < 0
             ) {
 
@@ -543,7 +1406,8 @@ if (targetForm) {
             const employee =
                 employees.find(
                     item =>
-                        item.id === employeeId
+                        item.id ===
+                        employeeId
                 );
 
 
@@ -561,16 +1425,15 @@ if (targetForm) {
 
             try {
 
-
                 if (saveTargetBtn) {
 
                     saveTargetBtn.disabled =
                         true;
 
+
                     saveTargetBtn.innerHTML = `
 
                         <i class="fa-solid fa-spinner fa-spin"></i>
-
                         Saving...
 
                     `;
@@ -578,34 +1441,35 @@ if (targetForm) {
                 }
 
 
-                // ==================================
-                // Save Target in Employee Document
-                // ==================================
-
                 await setDoc(
 
-    doc(
-        db,
-        "employees",
-        employee.id
-    ),
+                    doc(
+                        db,
+                        "employees",
+                        employee.id
+                    ),
 
-    {
+                    {
 
-        target: target,
-        targetAmount: target
+                        target:
+                            target,
 
-    },
+                        targetAmount:
+                            target
 
-    {
+                    },
 
-        merge: true
+                    {
+                        merge: true
+                    }
 
-    }
+                );
 
-);
 
-                // Update Local Data
+                // Local Data Update
+
+                employee.target =
+                    target;
 
                 employee.targetAmount =
                     target;
@@ -617,10 +1481,14 @@ if (targetForm) {
                 );
 
 
-                // Refresh Table
+                // Refresh
 
                 await loadTargetTable();
 
+
+                // Re-apply current filter
+
+                applyTargetFilters();
 
             }
 
@@ -640,7 +1508,6 @@ if (targetForm) {
 
             }
 
-
             finally {
 
                 if (saveTargetBtn) {
@@ -648,10 +1515,10 @@ if (targetForm) {
                     saveTargetBtn.disabled =
                         false;
 
+
                     saveTargetBtn.innerHTML = `
 
                         <i class="fa-solid fa-save"></i>
-
                         Save Target
 
                     `;
@@ -690,6 +1557,7 @@ function showMessage(
             "#16a34a";
 
     }
+
     else {
 
         targetMessage.style.color =
@@ -698,12 +1566,15 @@ function showMessage(
     }
 
 
-    setTimeout(() => {
+    setTimeout(
+        () => {
 
-        targetMessage.textContent =
-            "";
+            targetMessage.textContent =
+                "";
 
-    }, 4000);
+        },
+        4000
+    );
 
 }
 
@@ -713,7 +1584,6 @@ function showMessage(
 // ======================================
 
 async function loadTargetTable() {
-
 
     if (!targetTableBody) {
         return;
@@ -739,35 +1609,44 @@ async function loadTargetTable() {
     await loadEntries();
 
 
-    let totalTarget = 0;
-
-    let totalCollection = 0;
-
-
-    employees.forEach((employee) => {
+    let totalTarget =
+        0;
 
 
-        const target =
-            getEmployeeTarget(employee);
+    let totalCollection =
+        0;
 
 
-        const collectionAmount =
-            getEmployeeCollection(employee);
+    employees.forEach(
+        (employee) => {
+
+            const target =
+                getEmployeeTarget(
+                    employee
+                );
 
 
-        totalTarget +=
-            target;
+            const collectionAmount =
+                getEmployeeCollection(
+                    employee
+                );
 
 
-        totalCollection +=
-            collectionAmount;
+            totalTarget +=
+                target;
 
-    });
+
+            totalCollection +=
+                collectionAmount;
+
+        }
+    );
 
 
     const totalRemaining =
         Math.max(
-            totalTarget - totalCollection,
+            totalTarget -
+            totalCollection,
             0
         );
 
@@ -812,28 +1691,6 @@ async function loadTargetTable() {
     // Table
     // ==================================
 
-    if (employees.length === 0) {
-
-        targetTableBody.innerHTML = `
-
-            <tr>
-
-                <td colspan="12"
-                    class="no-data">
-
-                    No Teachers Found.
-
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
-
-    }
-
-
     displayTargetTable(
         employees
     );
@@ -845,17 +1702,14 @@ async function loadTargetTable() {
 // Display Target Table
 // ======================================
 
-function displayTargetTable(
-    list
-) {
-
+function displayTargetTable(list) {
 
     if (!targetTableBody) {
         return;
     }
 
 
-    if (list.length === 0) {
+    if (!list.length) {
 
         targetTableBody.innerHTML = `
 
@@ -897,24 +1751,25 @@ function displayTargetTable(
 
 
             const madina =
-                employee.jamiatul_madina ||
-                employee.jamiatulMadina ||
-                "-";
+                getMadina(employee);
 
 
             const employeeCode =
-                employee.employeeCode ||
-                "-";
+                getEmployeeCode(
+                    employee
+                ) || "-";
 
 
             const teacherName =
-                employee.teacher_name ||
-                employee.teacherName ||
-                "-";
+                getTeacherName(
+                    employee
+                );
 
 
             const target =
-                getEmployeeTarget(employee);
+                getEmployeeTarget(
+                    employee
+                );
 
 
             const collectionAmount =
@@ -954,57 +1809,42 @@ function displayTargetTable(
 
                 <tr>
 
-
                     <td>
-
                         ${index + 1}
-
                     </td>
 
 
                     <td>
-
-                        ${region}
-
+                        ${escapeHTML(region)}
                     </td>
 
 
                     <td>
-
-                        ${state}
-
+                        ${escapeHTML(state)}
                     </td>
 
 
                     <td>
-
-                        ${city}
-
+                        ${escapeHTML(city)}
                     </td>
 
 
                     <td>
-
-                        ${madina}
-
+                        ${escapeHTML(madina)}
                     </td>
 
 
                     <td>
 
                         <strong>
-
-                            ${employeeCode}
-
+                            ${escapeHTML(employeeCode)}
                         </strong>
 
                     </td>
 
 
                     <td>
-
-                        ${teacherName}
-
+                        ${escapeHTML(teacherName)}
                     </td>
 
 
@@ -1053,8 +1893,9 @@ function displayTargetTable(
                     <td>
 
                         <button
+                            type="button"
                             class="edit-btn"
-                            data-id="${employee.id}">
+                            data-id="${escapeHTML(employee.id)}">
 
                             <i class="fa-solid fa-pen"></i>
 
@@ -1063,7 +1904,6 @@ function displayTargetTable(
                         </button>
 
                     </td>
-
 
                 </tr>
 
@@ -1083,175 +1923,52 @@ function displayTargetTable(
 
     document
         .querySelectorAll(".edit-btn")
-        .forEach((button) => {
+        .forEach(
+            (button) => {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const employeeId =
+                            this.dataset.id;
 
 
-            button.addEventListener(
-                "click",
-                function () {
+                        if (employeeSelect) {
+
+                            employeeSelect.value =
+                                employeeId;
 
 
-                    const employeeId =
-                        this.dataset.id;
+                            employeeSelect.dispatchEvent(
+                                new Event(
+                                    "change"
+                                )
+                            );
+
+                        }
 
 
-                    employeeSelect.value =
-                        employeeId;
+                        if (targetAmountInput) {
+
+                            targetAmountInput.focus();
+
+                        }
 
 
-                    employeeSelect.dispatchEvent(
-                        new Event("change")
-                    );
+                        window.scrollTo({
 
+                            top: 0,
 
-                    document
-                        .getElementById(
-                            "targetAmount"
-                        )
-                        .focus();
+                            behavior: "smooth"
 
-
-                    window.scrollTo({
-
-                        top: 0,
-
-                        behavior: "smooth"
-
-                    });
-
-                }
-            );
-
-        });
-
-}
-
-
-// ======================================
-// Search
-// ======================================
-
-if (targetSearch) {
-
-    targetSearch.addEventListener(
-        "input",
-        function () {
-
-
-            const search =
-                this.value
-                    .trim()
-                    .toLowerCase();
-
-
-            if (!search) {
-
-                displayTargetTable(
-                    employees
-                );
-
-                return;
-
-            }
-
-
-            const filtered =
-                employees.filter(
-                    (employee) => {
-
-
-                        const employeeCode =
-                            String(
-                                employee.employeeCode ||
-                                ""
-                            ).toLowerCase();
-
-
-                        const teacherName =
-                            String(
-                                employee.teacher_name ||
-                                employee.teacherName ||
-                                ""
-                            ).toLowerCase();
-
-
-                        const city =
-                            String(
-                                employee.city ||
-                                ""
-                            ).toLowerCase();
-
-
-                        const state =
-                            String(
-                                employee.state ||
-                                ""
-                            ).toLowerCase();
-
-
-                        const region =
-                            String(
-                                employee.region ||
-                                ""
-                            ).toLowerCase();
-
-
-                        const madina =
-                            String(
-                                employee.jamiatul_madina ||
-                                employee.jamiatulMadina ||
-                                ""
-                            ).toLowerCase();
-
-
-                        return (
-
-                            employeeCode.includes(
-                                search
-                            )
-
-                            ||
-
-                            teacherName.includes(
-                                search
-                            )
-
-                            ||
-
-                            city.includes(
-                                search
-                            )
-
-                            ||
-
-                            state.includes(
-                                search
-                            )
-
-                            ||
-
-                            region.includes(
-                                search
-                            )
-
-                            ||
-
-                            madina.includes(
-                                search
-                            )
-
-                        );
+                        });
 
                     }
                 );
 
-
-            displayTargetTable(
-                filtered
-            );
-
-        }
-    );
+            }
+        );
 
 }
 
@@ -1261,7 +1978,9 @@ if (targetSearch) {
 // ======================================
 
 const logoutBtn =
-    document.getElementById("logoutBtn");
+    document.getElementById(
+        "logoutBtn"
+    );
 
 
 if (logoutBtn) {
