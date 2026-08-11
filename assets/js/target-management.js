@@ -34,7 +34,21 @@ const targetTableBody =
 
 const targetSearch =
     document.getElementById("targetSearch");
+// ======================================
+// Filter Elements
+// ======================================
 
+const targetRegionFilter =
+    document.getElementById("targetRegionFilter");
+
+const targetStateFilter =
+    document.getElementById("targetStateFilter");
+
+const targetCityFilter =
+    document.getElementById("targetCityFilter");
+
+const resetTargetFilter =
+    document.getElementById("resetTargetFilter");
 const saveTargetBtn =
     document.getElementById("saveTargetBtn");
 
