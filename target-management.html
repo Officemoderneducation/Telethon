@@ -10,16 +10,13 @@
 
     <title>Target Management | Telethon</title>
 
-
     <!-- Main CSS -->
     <link rel="stylesheet"
           href="assets/css/style.css">
 
-
     <!-- Target Management CSS -->
     <link rel="stylesheet"
           href="assets/css/target-management.css">
-
 
     <!-- Font Awesome -->
     <link rel="stylesheet"
@@ -30,16 +27,13 @@
 
 <body>
 
-
 <div class="wrapper">
-
 
     <!-- =====================================
          SIDEBAR
     ====================================== -->
 
     <div class="sidebar">
-
 
         <div class="logo">
 
@@ -56,53 +50,35 @@
 
         <div class="menu">
 
-
             <a href="dashboard.html">
-
                 <i class="fa-solid fa-house"></i>
-
                 <span>Dashboard</span>
-
             </a>
 
 
             <a href="register.html">
-
                 <i class="fa-solid fa-user-plus"></i>
-
                 <span>Registration Form</span>
-
             </a>
 
 
             <a href="users.html">
-
                 <i class="fa-solid fa-users"></i>
-
                 <span>Teachers List</span>
-
             </a>
 
 
             <a href="daily-entry.html">
-
                 <i class="fa-solid fa-file-circle-plus"></i>
-
                 <span>Daily Collection</span>
-
             </a>
 
 
             <a href="all-entry.html">
-
                 <i class="fa-solid fa-list"></i>
-
                 <span>All Entry</span>
-
             </a>
 
-
-            <!-- Target Management -->
 
             <a href="target-management.html"
                class="active">
@@ -131,7 +107,6 @@
                 <span>Logout</span>
 
             </a>
-
 
         </div>
 
@@ -170,7 +145,6 @@
 
         <div class="target-form-card">
 
-
             <div class="card-title">
 
                 <div>
@@ -200,24 +174,18 @@
 
                 <div class="form-row">
 
-
                     <div class="form-group">
 
                         <label for="employeeSelect">
-
                             Employee
-
                         </label>
-
 
                         <select
                             id="employeeSelect"
                             required>
 
                             <option value="">
-
                                 Loading Employees...
-
                             </option>
 
                         </select>
@@ -231,11 +199,8 @@
                     <div class="form-group">
 
                         <label for="targetAmount">
-
                             Target Amount (₹)
-
                         </label>
-
 
                         <input
                             type="number"
@@ -245,7 +210,6 @@
                             required>
 
                     </div>
-
 
                 </div>
 
@@ -257,60 +221,35 @@
                      class="employee-preview"
                      style="display:none;">
 
-
                     <div>
-
                         <span>Region</span>
-
                         <strong id="previewRegion">-</strong>
-
                     </div>
 
-
                     <div>
-
                         <span>State</span>
-
                         <strong id="previewState">-</strong>
-
                     </div>
 
-
                     <div>
-
                         <span>City</span>
-
                         <strong id="previewCity">-</strong>
-
                     </div>
 
-
                     <div>
-
                         <span>Jamiatul Madina</span>
-
                         <strong id="previewMadina">-</strong>
-
                     </div>
 
-
                     <div>
-
                         <span>Employee Code</span>
-
                         <strong id="previewCode">-</strong>
-
                     </div>
-
 
                     <div>
-
                         <span>Teacher Name</span>
-
                         <strong id="previewTeacher">-</strong>
-
                     </div>
-
 
                 </div>
 
@@ -347,9 +286,7 @@
             <div class="summary-card">
 
                 <div class="summary-icon users-icon">
-
                     <i class="fa-solid fa-users"></i>
-
                 </div>
 
                 <div>
@@ -357,9 +294,7 @@
                     <span>Total Teachers</span>
 
                     <strong id="totalTeachers">
-
                         0
-
                     </strong>
 
                 </div>
@@ -371,9 +306,7 @@
             <div class="summary-card">
 
                 <div class="summary-icon target-icon">
-
                     <i class="fa-solid fa-bullseye"></i>
-
                 </div>
 
                 <div>
@@ -381,9 +314,7 @@
                     <span>Total Target</span>
 
                     <strong id="totalTarget">
-
                         ₹ 0
-
                     </strong>
 
                 </div>
@@ -395,9 +326,7 @@
             <div class="summary-card">
 
                 <div class="summary-icon collection-icon">
-
                     <i class="fa-solid fa-indian-rupee-sign"></i>
-
                 </div>
 
                 <div>
@@ -405,9 +334,7 @@
                     <span>Total Collection</span>
 
                     <strong id="totalCollection">
-
                         ₹ 0
-
                     </strong>
 
                 </div>
@@ -419,9 +346,7 @@
             <div class="summary-card">
 
                 <div class="summary-icon remaining-icon">
-
                     <i class="fa-solid fa-chart-line"></i>
-
                 </div>
 
                 <div>
@@ -429,15 +354,149 @@
                     <span>Remaining Target</span>
 
                     <strong id="totalRemaining">
-
                         ₹ 0
-
                     </strong>
 
                 </div>
 
             </div>
 
+        </div>
+
+
+
+        <!-- =====================================
+             FILTER CARD
+        ====================================== -->
+
+        <div class="target-filter-card">
+
+            <div class="filter-title">
+
+                <div>
+
+                    <h3>
+                        <i class="fa-solid fa-filter"></i>
+                        Filter Teachers
+                    </h3>
+
+                    <p>
+                        Region, State aur City ke hisaab se filter karein
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="target-filter-grid">
+
+
+                <!-- Region -->
+
+                <div class="filter-group">
+
+                    <label for="targetRegionFilter">
+                        Region
+                    </label>
+
+                    <select id="targetRegionFilter">
+
+                        <option value="">
+                            All Regions
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- State -->
+
+                <div class="filter-group">
+
+                    <label for="targetStateFilter">
+                        State
+                    </label>
+
+                    <select id="targetStateFilter">
+
+                        <option value="">
+                            All States
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- City -->
+
+                <div class="filter-group">
+
+                    <label for="targetCityFilter">
+                        City
+                    </label>
+
+                    <select id="targetCityFilter">
+
+                        <option value="">
+                            All Cities
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Search -->
+
+                <div class="filter-group">
+
+                    <label for="targetSearch">
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        id="targetSearch"
+                        placeholder="Teacher / Employee Code / Madina">
+
+                </div>
+
+            </div>
+
+
+
+            <div class="filter-buttons">
+
+                <button
+                    type="button"
+                    id="applyTargetFilter"
+                    class="apply-filter-btn">
+
+                    <i class="fa-solid fa-filter"></i>
+
+                    Apply Filter
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="resetTargetFilter"
+                    class="reset-filter-btn">
+
+                    <i class="fa-solid fa-rotate-left"></i>
+
+                    Reset
+
+                </button>
+
+            </div>
 
         </div>
 
@@ -451,7 +510,6 @@
 
 
             <div class="table-header">
-
 
                 <div>
 
@@ -469,12 +527,6 @@
 
                 </div>
 
-
-                <input
-                    type="text"
-                    id="targetSearch"
-                    placeholder="Search Teacher / Employee Code...">
-
             </div>
 
 
@@ -483,7 +535,6 @@
 
 
                 <table>
-
 
                     <thead>
 
@@ -520,7 +571,6 @@
 
                     <tbody id="targetTableBody">
 
-
                         <tr>
 
                             <td colspan="12"
@@ -532,9 +582,7 @@
 
                         </tr>
 
-
                     </tbody>
-
 
                 </table>
 
@@ -556,7 +604,8 @@
 ====================================== -->
 
 <script type="module"
-        src="assets/js/target-management.js"></script>
+        src="assets/js/target-management.js">
+</script>
 
 
 </body>
