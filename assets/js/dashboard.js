@@ -28,7 +28,6 @@ if (userRole !== "admin") {
 
     window.location.href =
         "index.html";
-
 }
 
 
@@ -49,19 +48,27 @@ import {
 
 
 // ======================================
-// UNIT VALUE
+// UNIT SETTINGS
+// ======================================
+//
+// Target Unit:
 // ₹ 7,000 = 1 Unit
+//
+// Collection Unit:
+// ₹ 10,000 = 1 Unit
+//
 // ======================================
 
-const UNIT_VALUE = 7000;
+const TARGET_UNIT_VALUE = 7000;
+
+const COLLECTION_UNIT_VALUE = 10000;
 
 
 // ======================================
 // HTML ELEMENTS
 // ======================================
 
-
-// Old Dashboard
+// Old Dashboard Cards
 
 const totalAmountEl =
     document.getElementById(
@@ -87,11 +94,11 @@ const entriesTableBody =
     );
 
 
-// Summary Cards
+// User Summary
 
-const userSummaryTotalUsers =
+const userSummaryTableBody =
     document.getElementById(
-        "userSummaryTotalUsers"
+        "userSummaryTableBody"
     );
 
 
@@ -131,11 +138,9 @@ const userSummaryTotalRemainingUnit =
     );
 
 
-// User Summary
-
-const userSummaryTableBody =
+const userSummaryTotalPercentage =
     document.getElementById(
-        "userSummaryTableBody"
+        "userSummaryTotalPercentage"
     );
 
 
@@ -211,47 +216,75 @@ function formatCurrency(value) {
 
 
 // ======================================
-// UNIT
+// TARGET UNIT
 // ======================================
 
-function getUnits(amount) {
+function getTargetUnit(value) {
 
     return (
-        Number(amount || 0) /
-        UNIT_VALUE
+        numberValue(value) /
+        TARGET_UNIT_VALUE
     );
 
 }
 
 
 // ======================================
-// FORMAT UNIT
+// COLLECTION UNIT
 // ======================================
 
-function formatUnits(amount) {
+function getCollectionUnit(value) {
 
-    const units =
-        getUnits(amount);
+    return (
+        numberValue(value) /
+        COLLECTION_UNIT_VALUE
+    );
+
+}
 
 
-    if (
-        Number.isInteger(units)
-    ) {
+// ======================================
+// UNIT FORMAT
+// ======================================
 
-        return units.toLocaleString(
-            "en-IN"
-        );
+function formatUnit(value) {
+
+    return (
+        Number(value || 0)
+            .toFixed(2)
+            .replace(/\.00$/, "")
+    );
+
+}
+
+
+// ======================================
+// PERCENTAGE
+// ======================================
+
+function getPercentage(
+    target,
+    collection
+) {
+
+    target =
+        numberValue(target);
+
+    collection =
+        numberValue(collection);
+
+
+    if (target <= 0) {
+
+        return 0;
 
     }
 
 
-    return units.toLocaleString(
-        "en-IN",
-        {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }
-    );
+    return (
+        collection /
+        target
+    ) * 100;
 
 }
 
@@ -563,17 +596,14 @@ async function loadDailyEntries() {
 
         const entriesQuery =
             query(
-
                 collection(
                     db,
                     "daily_entry"
                 ),
-
                 orderBy(
                     "createdAt",
                     "desc"
                 )
-
             );
 
 
@@ -606,7 +636,7 @@ async function loadDailyEntries() {
     catch (error) {
 
         console.warn(
-            "createdAt orderBy failed.",
+            "createdAt orderBy failed. Loading without orderBy.",
             error
         );
 
@@ -650,7 +680,7 @@ async function loadDailyEntries() {
 
 
 // ======================================
-// GET LATEST ENTRY
+// GET LATEST ENTRIES
 // Employee + Date
 // ======================================
 
@@ -676,20 +706,26 @@ function getLatestEntries() {
 
 
             if (!employeeCode) {
+
                 return;
+
             }
 
 
             if (!date) {
+
                 return;
+
             }
 
 
             const key =
-                `${normalize(employeeCode)}_${date}`;
+                `${employeeCode}_${date}`;
 
 
-            if (!latestMap.has(key)) {
+            if (
+                !latestMap.has(key)
+            ) {
 
                 latestMap.set(
                     key,
@@ -710,7 +746,7 @@ function getLatestEntries() {
 
 
 // ======================================
-// GET USER EMPLOYEES
+// GET TEACHERS FOR USER
 // ======================================
 
 function getUserEmployees(user) {
@@ -764,9 +800,15 @@ function getUserEmployees(user) {
                 (rule) => {
 
                     if (!rule) {
+
                         return false;
+
                     }
 
+
+                    // ==================================
+                    // ASSIGNED REGION
+                    // ==================================
 
                     const assignedRegion =
                         normalize(
@@ -798,6 +840,10 @@ function getUserEmployees(user) {
                     }
 
 
+                    // ==================================
+                    // FULL REGION
+                    // ==================================
+
                     const fullRegion =
 
                         rule.fullRegion === true ||
@@ -825,6 +871,10 @@ function getUserEmployees(user) {
 
                     }
 
+
+                    // ==================================
+                    // STATES
+                    // ==================================
 
                     let states = [];
 
@@ -894,6 +944,10 @@ function getUserEmployees(user) {
                     }
 
 
+                    // ==================================
+                    // NO STATE RESTRICTION
+                    // ==================================
+
                     if (
                         states.length === 0
                     ) {
@@ -902,6 +956,10 @@ function getUserEmployees(user) {
 
                     }
 
+
+                    // ==================================
+                    // STATE MATCH
+                    // ==================================
 
                     return states.some(
                         (state) => {
@@ -948,7 +1006,7 @@ function getUserEmployees(user) {
 
 
 // ======================================
-// USER COLLECTION
+// CALCULATE USER COLLECTION
 // ======================================
 
 function getUserCollection(
@@ -1027,9 +1085,6 @@ async function loadRegionUsers() {
 
     let snapshot = null;
 
-    let collectionName =
-        "regionUsers";
-
 
     // ==================================
     // regionUsers
@@ -1083,10 +1138,6 @@ async function loadRegionUsers() {
                 );
 
 
-            collectionName =
-                "region_users";
-
-
             console.log(
                 "region_users found:",
                 snapshot.size
@@ -1123,7 +1174,9 @@ async function loadRegionUsers() {
                         docSnapshot.id,
 
                     __collectionName:
-                        collectionName,
+                        snapshot.query
+                            ? "regionUsers"
+                            : "regionUsers",
 
                     ...docSnapshot.data()
 
@@ -1187,24 +1240,16 @@ function buildUserSummary() {
 
 
             const percentage =
-                target > 0
-
-                    ? (
-                        totalCollection /
-                        target
-                    ) * 100
-
-                    : 0;
+                getPercentage(
+                    target,
+                    totalCollection
+                );
 
 
             userSummaryData.push({
 
                 id:
                     user.id,
-
-                collectionName:
-                    user.__collectionName ||
-                    "regionUsers",
 
                 userCode:
                     getUserCode(user),
@@ -1215,11 +1260,26 @@ function buildUserSummary() {
                 target:
                     target,
 
+                targetUnit:
+                    getTargetUnit(
+                        target
+                    ),
+
                 collection:
                     totalCollection,
 
+                collectionUnit:
+                    getCollectionUnit(
+                        totalCollection
+                    ),
+
                 remaining:
                     remaining,
+
+                remainingUnit:
+                    getTargetUnit(
+                        remaining
+                    ),
 
                 percentage:
                     percentage,
@@ -1261,10 +1321,15 @@ function updateUserSummaryCards(
         (user) => {
 
             totalTarget +=
-                user.target;
+                numberValue(
+                    user.target
+                );
+
 
             totalCollection +=
-                user.collection;
+                numberValue(
+                    user.collection
+                );
 
         }
     );
@@ -1278,19 +1343,16 @@ function updateUserSummaryCards(
         );
 
 
-    // Total Users
-
-    if (
-        userSummaryTotalUsers
-    ) {
-
-        userSummaryTotalUsers.textContent =
-            list.length;
-
-    }
+    const overallPercentage =
+        getPercentage(
+            totalTarget,
+            totalCollection
+        );
 
 
-    // Total Target
+    // ==================================
+    // TOTAL TARGET
+    // ==================================
 
     if (
         userSummaryTotalTarget
@@ -1309,12 +1371,18 @@ function updateUserSummaryCards(
     ) {
 
         userSummaryTotalTargetUnit.textContent =
-            `${formatUnits(totalTarget)} Unit`;
+            `${formatUnit(
+                getTargetUnit(
+                    totalTarget
+                )
+            )} Unit`;
 
     }
 
 
-    // Total Collection
+    // ==================================
+    // TOTAL COLLECTION
+    // ==================================
 
     if (
         userSummaryTotalCollection
@@ -1333,12 +1401,18 @@ function updateUserSummaryCards(
     ) {
 
         userSummaryTotalCollectionUnit.textContent =
-            `${formatUnits(totalCollection)} Unit`;
+            `${formatUnit(
+                getCollectionUnit(
+                    totalCollection
+                )
+            )} Unit`;
 
     }
 
 
-    // Remaining
+    // ==================================
+    // REMAINING
+    // ==================================
 
     if (
         userSummaryTotalRemaining
@@ -1357,7 +1431,25 @@ function updateUserSummaryCards(
     ) {
 
         userSummaryTotalRemainingUnit.textContent =
-            `${formatUnits(totalRemaining)} Unit`;
+            `${formatUnit(
+                getTargetUnit(
+                    totalRemaining
+                )
+            )} Unit`;
+
+    }
+
+
+    // ==================================
+    // OVERALL PERCENTAGE
+    // ==================================
+
+    if (
+        userSummaryTotalPercentage
+    ) {
+
+        userSummaryTotalPercentage.textContent =
+            `${overallPercentage.toFixed(2)}%`;
 
     }
 
@@ -1474,12 +1566,6 @@ function displayUserSummary(
                 );
 
 
-            const userId =
-                escapeHTML(
-                    user.id
-                );
-
-
             html += `
 
                 <tr>
@@ -1495,36 +1581,23 @@ function displayUserSummary(
 
                     <td>
 
-                        <div class="user-name-edit-box">
+                        <div class="user-name-cell">
 
                             <input
                                 type="text"
                                 class="user-name-input"
-                                data-id="${userId}"
+                                data-id="${escapeHTML(user.id)}"
                                 value="${userName}"
                                 placeholder="Enter User Name"
                             >
 
-                            <button
-                                type="button"
-                                class="save-user-name-btn"
-                                data-id="${userId}"
-                                title="Save User Name"
-                            >
-
-                                <i class="fa-solid fa-save"></i>
-
-                            </button>
+                            <small>
+                                ${userCode || "No Code"}
+                                &nbsp; | &nbsp;
+                                ${user.teacherCount} Teachers
+                            </small>
 
                         </div>
-
-
-                        <small class="user-code-small">
-
-                            User Code:
-                            ${userCode || "-"}
-
-                        </small>
 
                     </td>
 
@@ -1539,7 +1612,7 @@ function displayUserSummary(
                                 type="number"
                                 min="0"
                                 class="user-target-input"
-                                data-id="${userId}"
+                                data-id="${escapeHTML(user.id)}"
                                 value="${user.target || ""}"
                                 placeholder="Enter Target"
                             >
@@ -1547,7 +1620,7 @@ function displayUserSummary(
                             <button
                                 type="button"
                                 class="save-user-target-btn"
-                                data-id="${userId}"
+                                data-id="${escapeHTML(user.id)}"
                                 title="Save Target"
                             >
 
@@ -1562,17 +1635,15 @@ function displayUserSummary(
 
                     <!-- TARGET UNIT -->
 
-                    <td>
+                    <td class="unit-cell">
 
-                        <span class="unit-value">
-
-                            ${formatUnits(
-                                user.target
+                        <strong>
+                            ${formatUnit(
+                                user.targetUnit
                             )}
+                        </strong>
 
-                        </span>
-
-                        <span class="unit-label">
+                        <span>
                             Unit
                         </span>
 
@@ -1583,26 +1654,26 @@ function displayUserSummary(
 
                     <td class="collection-cell">
 
-                        ${formatCurrency(
-                            user.collection
-                        )}
+                        <strong>
+                            ${formatCurrency(
+                                user.collection
+                            )}
+                        </strong>
 
                     </td>
 
 
                     <!-- COLLECTION UNIT -->
 
-                    <td>
+                    <td class="unit-cell collection-unit">
 
-                        <span class="unit-value">
-
-                            ${formatUnits(
-                                user.collection
+                        <strong>
+                            ${formatUnit(
+                                user.collectionUnit
                             )}
+                        </strong>
 
-                        </span>
-
-                        <span class="unit-label">
+                        <span>
                             Unit
                         </span>
 
@@ -1622,17 +1693,15 @@ function displayUserSummary(
 
                     <!-- REMAINING UNIT -->
 
-                    <td>
+                    <td class="unit-cell remaining-unit">
 
-                        <span class="unit-value">
-
-                            ${formatUnits(
-                                user.remaining
+                        <strong>
+                            ${formatUnit(
+                                user.remainingUnit
                             )}
+                        </strong>
 
-                        </span>
-
-                        <span class="unit-label">
+                        <span>
                             Unit
                         </span>
 
@@ -1643,9 +1712,7 @@ function displayUserSummary(
 
                     <td>
 
-                        <div
-                            class="percentage-wrapper"
-                        >
+                        <div class="percentage-wrapper">
 
                             <div
                                 class="
@@ -1660,9 +1727,7 @@ function displayUserSummary(
 
 
                             <div
-                                class="
-                                    user-progress-container
-                                "
+                                class="user-progress-container"
                             >
 
                                 <div
@@ -1699,202 +1764,7 @@ function displayUserSummary(
 
 
     // ==================================
-    // SAVE USER NAME
-    // ==================================
-
-    document
-        .querySelectorAll(
-            ".save-user-name-btn"
-        )
-        .forEach(
-            (button) => {
-
-                button.addEventListener(
-                    "click",
-                    async function () {
-
-                        const userId =
-                            this.dataset.id;
-
-
-                        const input =
-                            document.querySelector(
-
-                                `.user-name-input[data-id="${CSS.escape(userId)}"]`
-
-                            );
-
-
-                        if (!input) {
-                            return;
-                        }
-
-
-                        const userName =
-                            input.value.trim();
-
-
-                        if (!userName) {
-
-                            alert(
-                                "Please enter User Name."
-                            );
-
-                            input.focus();
-
-                            return;
-
-                        }
-
-
-                        const user =
-                            userSummaryData.find(
-                                item =>
-                                    item.id ===
-                                    userId
-                            );
-
-
-                        if (!user) {
-                            return;
-                        }
-
-
-                        this.disabled =
-                            true;
-
-
-                        const oldHTML =
-                            this.innerHTML;
-
-
-                        this.innerHTML = `
-
-                            <i
-                                class="
-                                    fa-solid
-                                    fa-spinner
-                                    fa-spin
-                                "
-                            ></i>
-
-                        `;
-
-
-                        try {
-
-                            const collectionName =
-                                user.collectionName ||
-                                "regionUsers";
-
-
-                            await setDoc(
-
-                                doc(
-                                    db,
-                                    collectionName,
-                                    userId
-                                ),
-
-                                {
-
-                                    userName:
-                                        userName,
-
-                                    name:
-                                        userName,
-
-                                    updatedAt:
-                                        new Date()
-
-                                },
-
-                                {
-                                    merge: true
-                                }
-
-                            );
-
-
-                            // Update Local Data
-
-                            user.userName =
-                                userName;
-
-
-                            user.originalUser.userName =
-                                userName;
-
-
-                            user.originalUser.name =
-                                userName;
-
-
-                            this.innerHTML = `
-
-                                <i
-                                    class="
-                                        fa-solid
-                                        fa-check
-                                    "
-                                ></i>
-
-                            `;
-
-
-                            setTimeout(
-                                () => {
-
-                                    this.innerHTML =
-                                        oldHTML;
-
-                                    this.disabled =
-                                        false;
-
-                                },
-                                1200
-                            );
-
-
-                            console.log(
-                                "User Name Saved:",
-                                userName
-                            );
-
-                        }
-
-                        catch (error) {
-
-                            console.error(
-                                "User Name Save Error:",
-                                error
-                            );
-
-
-                            alert(
-                                "User Name save nahi hua:\n" +
-                                error.message
-                            );
-
-
-                            this.disabled =
-                                false;
-
-
-                            this.innerHTML =
-                                oldHTML;
-
-                        }
-
-                    }
-                );
-
-            }
-        );
-
-
-    // ==================================
-    // SAVE TARGET
+    // SAVE TARGET BUTTONS
     // ==================================
 
     document
@@ -1914,14 +1784,14 @@ function displayUserSummary(
 
                         const input =
                             document.querySelector(
-
                                 `.user-target-input[data-id="${CSS.escape(userId)}"]`
-
                             );
 
 
                         if (!input) {
+
                             return;
+
                         }
 
 
@@ -1953,19 +1823,21 @@ function displayUserSummary(
 
 
                         if (!user) {
+
                             return;
+
                         }
 
 
-                        this.disabled =
+                        button.disabled =
                             true;
 
 
                         const oldHTML =
-                            this.innerHTML;
+                            button.innerHTML;
 
 
-                        this.innerHTML = `
+                        button.innerHTML = `
 
                             <i
                                 class="
@@ -1981,7 +1853,8 @@ function displayUserSummary(
                         try {
 
                             const collectionName =
-                                user.collectionName ||
+                                user.originalUser
+                                    .__collectionName ||
                                 "regionUsers";
 
 
@@ -2004,6 +1877,9 @@ function displayUserSummary(
                                     manualTarget:
                                         target,
 
+                                    manual_target:
+                                        target,
+
                                     updatedAt:
                                         new Date()
 
@@ -2016,22 +1892,16 @@ function displayUserSummary(
                             );
 
 
-                            // Update Local Data
+                            // Local update
 
                             user.target =
                                 target;
 
 
-                            user.originalUser.target =
-                                target;
-
-
-                            user.originalUser.targetAmount =
-                                target;
-
-
-                            user.originalUser.manualTarget =
-                                target;
+                            user.targetUnit =
+                                getTargetUnit(
+                                    target
+                                );
 
 
                             user.remaining =
@@ -2042,15 +1912,17 @@ function displayUserSummary(
                                 );
 
 
+                            user.remainingUnit =
+                                getTargetUnit(
+                                    user.remaining
+                                );
+
+
                             user.percentage =
-                                target > 0
-
-                                    ? (
-                                        user.collection /
-                                        target
-                                    ) * 100
-
-                                    : 0;
+                                getPercentage(
+                                    target,
+                                    user.collection
+                                );
 
 
                             displayUserSummary(
@@ -2059,7 +1931,7 @@ function displayUserSummary(
 
 
                             console.log(
-                                "Target Saved:",
+                                "User Target Saved:",
                                 user.userCode,
                                 target
                             );
@@ -2080,12 +1952,137 @@ function displayUserSummary(
                             );
 
 
-                            this.disabled =
+                            button.disabled =
                                 false;
 
 
-                            this.innerHTML =
+                            button.innerHTML =
                                 oldHTML;
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    // ==================================
+    // USER NAME SAVE ON BLUR
+    // ==================================
+
+    document
+        .querySelectorAll(
+            ".user-name-input"
+        )
+        .forEach(
+            (input) => {
+
+                input.addEventListener(
+                    "blur",
+                    async function () {
+
+                        const userId =
+                            this.dataset.id;
+
+
+                        const newName =
+                            this.value.trim();
+
+
+                        const user =
+                            userSummaryData.find(
+                                item =>
+                                    item.id ===
+                                    userId
+                            );
+
+
+                        if (!user) {
+
+                            return;
+
+                        }
+
+
+                        const oldName =
+                            user.userName;
+
+
+                        if (
+                            newName ===
+                            oldName
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        try {
+
+                            const collectionName =
+                                user.originalUser
+                                    .__collectionName ||
+                                "regionUsers";
+
+
+                            await setDoc(
+
+                                doc(
+                                    db,
+                                    collectionName,
+                                    userId
+                                ),
+
+                                {
+
+                                    userName:
+                                        newName,
+
+                                    name:
+                                        newName,
+
+                                    updatedAt:
+                                        new Date()
+
+                                },
+
+                                {
+                                    merge: true
+                                }
+
+                            );
+
+
+                            user.userName =
+                                newName;
+
+
+                            console.log(
+                                "User Name Saved:",
+                                newName
+                            );
+
+                        }
+
+                        catch (error) {
+
+                            console.error(
+                                "User Name Save Error:",
+                                error
+                            );
+
+
+                            alert(
+                                "User Name save nahi hua:\n" +
+                                error.message
+                            );
+
+
+                            this.value =
+                                oldName;
 
                         }
 
@@ -2136,18 +2133,14 @@ if (
                             normalize(
                                 user.userName
                             )
-                            .includes(
-                                search
-                            )
+                            .includes(search)
 
                             ||
 
                             normalize(
                                 user.userCode
                             )
-                            .includes(
-                                search
-                            )
+                            .includes(search)
 
                         );
 
@@ -2166,7 +2159,7 @@ if (
 
 
 // ======================================
-// RECENT COLLECTION
+// OLD / RECENT COLLECTION
 // ======================================
 
 async function loadRecentCollections() {
@@ -2313,14 +2306,18 @@ async function loadRecentCollections() {
                         </td>
 
                         <td>
-
-                            ${escapeHTML(city)},
-                            ${escapeHTML(state)}
-
+                            ${escapeHTML(
+                                city
+                            )},
+                            ${escapeHTML(
+                                state
+                            )}
                         </td>
 
                         <td>
-                            ${escapeHTML(region)}
+                            ${escapeHTML(
+                                region
+                            )}
                         </td>
 
                         <td
@@ -2329,11 +2326,9 @@ async function loadRecentCollections() {
                                 font-weight:bold;
                             "
                         >
-
                             ${formatCurrency(
                                 amount
                             )}
-
                         </td>
 
                     </tr>
@@ -2629,7 +2624,7 @@ async function loadDashboard() {
 
 
 // ======================================
-// START DASHBOARD
+// START
 // ======================================
 
 loadDashboard();
