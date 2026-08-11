@@ -5,10 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Telethon Admin Dashboard</title>
 
@@ -24,6 +21,772 @@
         href="assets/css/dashboard.css"
     >
 
+    <style>
+
+        /* =====================================
+           DASHBOARD MODERN DESIGN
+        ===================================== */
+
+        .main-content {
+            background: #f4f7fb;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: linear-gradient(
+                135deg,
+                #ffffff,
+                #f8fbff
+            );
+
+            border-radius: 18px;
+
+            padding: 22px 25px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 8px 25px rgba(15, 23, 42, 0.07);
+
+            border: 1px solid #e8edf5;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+        .header h2 {
+            margin: 0;
+
+            font-size: 25px;
+
+            font-weight: 700;
+
+            color: #172033;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+
+            color: #718096;
+
+            font-size: 14px;
+        }
+
+        .refresh-btn {
+            border: none;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #1d4ed8
+            );
+
+            color: white;
+
+            padding: 10px 18px;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            box-shadow:
+                0 5px 15px rgba(37, 99, 235, 0.25);
+
+            transition: 0.2s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px rgba(37, 99, 235, 0.35);
+        }
+
+
+        /* =====================================
+           SUMMARY CARDS
+        ===================================== */
+
+        .user-summary-cards {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .user-summary-card {
+
+            background: #ffffff;
+
+            border-radius: 18px;
+
+            padding: 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+            border: 1px solid #e8edf5;
+
+            box-shadow:
+                0 7px 25px rgba(15, 23, 42, 0.06);
+
+            transition: 0.25s;
+        }
+
+        .user-summary-card:hover {
+
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 12px 30px rgba(15, 23, 42, 0.10);
+        }
+
+        .summary-card-icon {
+
+            width: 54px;
+
+            height: 54px;
+
+            min-width: 54px;
+
+            border-radius: 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 22px;
+        }
+
+        .summary-card-icon.target {
+
+            background: #fff4cf;
+
+            color: #e5a900;
+        }
+
+        .summary-card-icon.collection {
+
+            background: #dcfce7;
+
+            color: #16a34a;
+        }
+
+        .summary-card-icon.remaining {
+
+            background: #fee2e2;
+
+            color: #dc2626;
+        }
+
+        .summary-card-icon.percent {
+
+            background: #e0e7ff;
+
+            color: #4f46e5;
+        }
+
+        .user-summary-card span {
+
+            display: block;
+
+            color: #718096;
+
+            font-size: 13px;
+
+            margin-bottom: 5px;
+        }
+
+        .user-summary-card strong {
+
+            display: block;
+
+            font-size: 20px;
+
+            color: #172033;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================
+           SUMMARY SECTION
+        ===================================== */
+
+        .user-summary-container {
+
+            background: #ffffff;
+
+            border-radius: 18px;
+
+            border: 1px solid #e8edf5;
+
+            box-shadow:
+                0 7px 25px rgba(15, 23, 42, 0.06);
+
+            overflow: hidden;
+
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+
+            padding: 20px 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            border-bottom: 1px solid #edf1f7;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff,
+                    #f9fbff
+                );
+        }
+
+        .section-header h3 {
+
+            margin: 0;
+
+            color: #172033;
+
+            font-size: 18px;
+
+            font-weight: 700;
+        }
+
+        .section-header h3 i {
+
+            color: #2563eb;
+
+            margin-right: 7px;
+        }
+
+        .section-header p {
+
+            margin: 5px 0 0;
+
+            color: #8490a5;
+
+            font-size: 12px;
+        }
+
+        #userSummarySearch {
+
+            width: 250px;
+
+            padding: 11px 14px;
+
+            border: 1px solid #d7deea;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            font-size: 13px;
+
+            transition: 0.2s;
+        }
+
+        #userSummarySearch:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
+        }
+
+
+        /* =====================================
+           TABLE
+        ===================================== */
+
+        .user-summary-table-wrapper {
+
+            overflow-x: auto;
+
+            padding: 0 18px 18px;
+        }
+
+        .user-summary-table {
+
+            width: 100%;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
+
+            min-width: 950px;
+        }
+
+        .user-summary-table thead th {
+
+            background: #f7f9fc;
+
+            color: #5d687b;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.3px;
+
+            padding: 14px 10px;
+
+            border-bottom: 1px solid #e5eaf1;
+
+            white-space: nowrap;
+        }
+
+        .user-summary-table tbody td {
+
+            padding: 15px 10px;
+
+            border-bottom: 1px solid #edf1f6;
+
+            color: #273449;
+
+            font-size: 13px;
+
+            vertical-align: middle;
+        }
+
+        .user-summary-table tbody tr {
+
+            transition: 0.2s;
+        }
+
+        .user-summary-table tbody tr:hover {
+
+            background: #f8fbff;
+        }
+
+
+        /* USER NAME */
+
+        .user-name-cell {
+
+            display: block;
+        }
+
+        .user-name-cell strong {
+
+            color: #172033;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+        .user-name-cell small {
+
+            display: none !important;
+        }
+
+
+        /* TARGET INPUT */
+
+        .target-edit-box {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+        }
+
+        .user-target-input {
+
+            width: 125px;
+
+            height: 38px;
+
+            border: 1px solid #d6deea;
+
+            border-radius: 8px;
+
+            padding: 0 10px;
+
+            outline: none;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #172033;
+
+            background: #ffffff;
+        }
+
+        .user-target-input:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    37,
+                    99,
+                    235,
+                    0.08
+                );
+        }
+
+        .save-user-target-btn {
+
+            width: 38px;
+
+            height: 38px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #16a34a;
+
+            color: white;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .save-user-target-btn:hover {
+
+            background: #15803d;
+
+            transform: scale(1.04);
+        }
+
+
+        /* MONEY */
+
+        .collection-cell strong {
+
+            color: #dc2626;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+        .remaining-cell {
+
+            color: #dc2626 !important;
+
+            font-weight: 600;
+
+            white-space: nowrap;
+        }
+
+
+        /* UNIT */
+
+        .unit-cell {
+
+            color: #16a34a;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        /* PERCENTAGE */
+
+        .percentage-wrapper {
+
+            min-width: 150px;
+        }
+
+        .percentage-badge {
+
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+        .percentage-badge.low {
+
+            background: #fee2e2;
+
+            color: #dc2626;
+        }
+
+        .percentage-badge.medium {
+
+            background: #fef3c7;
+
+            color: #b45309;
+        }
+
+        .percentage-badge.good {
+
+            background: #dbeafe;
+
+            color: #2563eb;
+        }
+
+        .percentage-badge.complete {
+
+            background: #dcfce7;
+
+            color: #15803d;
+        }
+
+        .user-progress-container {
+
+            width: 100%;
+
+            height: 7px;
+
+            background: #e5e7eb;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .user-progress-bar {
+
+            height: 100%;
+
+            border-radius: 20px;
+
+            transition: width 0.5s ease;
+        }
+
+        .user-progress-bar.low {
+
+            background: #ef4444;
+        }
+
+        .user-progress-bar.medium {
+
+            background: #f59e0b;
+        }
+
+        .user-progress-bar.good {
+
+            background: #3b82f6;
+        }
+
+        .user-progress-bar.complete {
+
+            background: #16a34a;
+        }
+
+
+        /* =====================================
+           OLD COLLECTION SECTION
+        ===================================== */
+
+        .stats-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+
+            background: #ffffff;
+
+            border-radius: 16px;
+
+            padding: 20px;
+
+            border: 1px solid #e8edf5;
+
+            box-shadow:
+                0 6px 20px rgba(
+                    15,
+                    23,
+                    42,
+                    0.05
+                );
+        }
+
+        .stat-card h4 {
+
+            margin: 0 0 8px;
+
+            color: #718096;
+
+            font-size: 13px;
+        }
+
+        .stat-card p {
+
+            margin: 0;
+
+            color: #172033;
+
+            font-size: 22px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================
+           RECENT TABLE
+        ===================================== */
+
+        .table-container {
+
+            background: #ffffff;
+
+            border-radius: 18px;
+
+            border: 1px solid #e8edf5;
+
+            box-shadow:
+                0 7px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.06
+                );
+
+            padding: 20px;
+
+            margin-bottom: 30px;
+
+            overflow-x: auto;
+        }
+
+        .table-container h3 {
+
+            margin: 0 0 18px;
+
+            color: #172033;
+
+            font-size: 18px;
+        }
+
+        .table-container table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 850px;
+        }
+
+        .table-container th {
+
+            background: #f7f9fc;
+
+            color: #5d687b;
+
+            font-size: 12px;
+
+            padding: 13px 10px;
+
+            text-align: left;
+        }
+
+        .table-container td {
+
+            padding: 13px 10px;
+
+            border-bottom: 1px solid #edf1f6;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 1100px) {
+
+            .user-summary-cards {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .stats-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .user-summary-cards,
+            .stats-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .header,
+            .section-header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            #userSummarySearch {
+
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
@@ -35,8 +798,6 @@
     ====================================== -->
 
     <div class="sidebar">
-
-        <!-- Logo -->
 
         <div class="logo">
 
@@ -53,120 +814,66 @@
         </div>
 
 
-        <!-- Menu -->
-
         <div class="menu">
 
-
-            <a
-                href="dashboard.html"
-                class="active"
-            >
-
+            <a href="dashboard.html" class="active">
                 <i class="fa-solid fa-house"></i>
-
                 <span>Dashboard</span>
-
             </a>
-
 
             <a href="register.html">
-
                 <i class="fa-solid fa-user-plus"></i>
-
                 <span>Registration Form</span>
-
             </a>
-
 
             <a href="users.html">
-
                 <i class="fa-solid fa-users"></i>
-
                 <span>Teachers List</span>
-
             </a>
-
 
             <a href="region-user-management.html">
-
                 <i class="fa-solid fa-user-shield"></i>
-
                 <span>Region User Management</span>
-
             </a>
-
 
             <a href="region-user.html">
-
                 <i class="fa-solid fa-user-shield"></i>
-
                 <span>Region Users</span>
-
             </a>
-
 
             <a href="daily-entry.html">
-
                 <i class="fa-solid fa-file-circle-plus"></i>
-
                 <span>Daily Collection</span>
-
             </a>
-
 
             <a href="all-entry.html">
-
                 <i class="fa-solid fa-list"></i>
-
                 <span>All Entry</span>
-
             </a>
-
 
             <a href="collection-summary.html">
-
                 <i class="fa-solid fa-chart-pie"></i>
-
                 <span>Collection Summary</span>
-
             </a>
-
 
             <a href="target-management.html">
-
                 <i class="fa-solid fa-bullseye"></i>
-
                 <span>Target Management</span>
-
             </a>
-
 
             <a href="reports.html">
-
                 <i class="fa-solid fa-chart-column"></i>
-
                 <span>Reports</span>
-
             </a>
 
-
-            <a
-                href="#"
-                id="logoutBtn"
-            >
-
+            <a href="#" id="logoutBtn">
                 <i class="fa-solid fa-right-from-bracket"></i>
-
                 <span>Logout</span>
-
             </a>
-
 
         </div>
 
     </div>
-
 
 
     <!-- =====================================
@@ -176,20 +883,23 @@
     <div class="main-content">
 
 
-        <!-- =====================================
-             HEADER
-        ====================================== -->
+        <!-- HEADER -->
 
         <div class="header">
 
             <div>
 
                 <h2>
+                    <i
+                        class="fa-solid fa-chart-line"
+                        style="color:#2563eb;margin-right:8px;"
+                    ></i>
+
                     Admin Overview
                 </h2>
 
                 <p>
-                    User Target & Collection Summary
+                    User Target & Collection Performance
                 </p>
 
             </div>
@@ -209,15 +919,14 @@
         </div>
 
 
-
         <!-- =====================================
-             OVERALL SUMMARY CARDS
+             SUMMARY CARDS
         ====================================== -->
 
         <div class="user-summary-cards">
 
 
-            <!-- Total Target -->
+            <!-- TOTAL TARGET -->
 
             <div class="user-summary-card">
 
@@ -229,15 +938,19 @@
 
                 <div>
 
-                    <span>
-                        Total Target
-                    </span>
+                    <span>Total Target</span>
 
                     <strong id="userSummaryTotalTarget">
                         ₹ 0
                     </strong>
 
-                    <small id="userSummaryTotalTargetUnit">
+                    <small
+                        id="userSummaryTargetUnits"
+                        style="
+                            color:#718096;
+                            font-size:12px;
+                        "
+                    >
                         0 Unit
                     </small>
 
@@ -246,8 +959,7 @@
             </div>
 
 
-
-            <!-- Total Collection -->
+            <!-- TOTAL COLLECTION -->
 
             <div class="user-summary-card">
 
@@ -259,15 +971,19 @@
 
                 <div>
 
-                    <span>
-                        Total Collection
-                    </span>
+                    <span>Total Collection</span>
 
                     <strong id="userSummaryTotalCollection">
                         ₹ 0
                     </strong>
 
-                    <small id="userSummaryTotalCollectionUnit">
+                    <small
+                        id="userSummaryCollectionUnits"
+                        style="
+                            color:#718096;
+                            font-size:12px;
+                        "
+                    >
                         0 Unit
                     </small>
 
@@ -276,8 +992,7 @@
             </div>
 
 
-
-            <!-- Remaining Target -->
+            <!-- REMAINING -->
 
             <div class="user-summary-card">
 
@@ -289,15 +1004,19 @@
 
                 <div>
 
-                    <span>
-                        Remaining Target
-                    </span>
+                    <span>Remaining Target</span>
 
                     <strong id="userSummaryTotalRemaining">
                         ₹ 0
                     </strong>
 
-                    <small id="userSummaryTotalRemainingUnit">
+                    <small
+                        id="userSummaryRemainingUnits"
+                        style="
+                            color:#718096;
+                            font-size:12px;
+                        "
+                    >
                         0 Unit
                     </small>
 
@@ -306,12 +1025,11 @@
             </div>
 
 
-
-            <!-- Overall Percentage -->
+            <!-- PERCENTAGE -->
 
             <div class="user-summary-card">
 
-                <div class="summary-card-icon percentage">
+                <div class="summary-card-icon percent">
 
                     <i class="fa-solid fa-percent"></i>
 
@@ -319,9 +1037,7 @@
 
                 <div>
 
-                    <span>
-                        Overall Percentage
-                    </span>
+                    <span>Overall Percentage</span>
 
                     <strong id="userSummaryTotalPercentage">
                         0.00%
@@ -333,7 +1049,6 @@
 
 
         </div>
-
 
 
         <!-- =====================================
@@ -365,58 +1080,37 @@
                 <input
                     type="text"
                     id="userSummarySearch"
-                    placeholder="Search User / User Code..."
+                    placeholder="Search User..."
                 >
 
             </div>
 
 
-
             <div class="user-summary-table-wrapper">
 
-
                 <table class="user-summary-table">
-
 
                     <thead>
 
                         <tr>
 
-                            <th>
-                                #
-                            </th>
+                            <th>#</th>
 
-                            <th>
-                                User Name
-                            </th>
+                            <th>User Name</th>
 
-                            <th>
-                                Target
-                            </th>
+                            <th>Target</th>
 
-                            <th>
-                                Unit
-                            </th>
+                            <th>Unit</th>
 
-                            <th>
-                                Total Collection
-                            </th>
+                            <th>Total Collection</th>
 
-                            <th>
-                                Unit
-                            </th>
+                            <th>Unit</th>
 
-                            <th>
-                                Remaining Target
-                            </th>
+                            <th>Remaining Target</th>
 
-                            <th>
-                                Unit
-                            </th>
+                            <th>Unit</th>
 
-                            <th>
-                                Percentage
-                            </th>
+                            <th>Percentage</th>
 
                         </tr>
 
@@ -440,28 +1134,22 @@
 
                     </tbody>
 
-
                 </table>
 
             </div>
 
-
         </div>
 
 
-
         <!-- =====================================
-             OLD COLLECTION SUMMARY
+             OLD COLLECTION CARDS
         ====================================== -->
 
         <div class="stats-grid">
 
-
             <div class="stat-card">
 
-                <h4>
-                    Total Collection
-                </h4>
+                <h4>Total Collection</h4>
 
                 <p id="totalAmount">
                     ₹ 0
@@ -472,9 +1160,7 @@
 
             <div class="stat-card today">
 
-                <h4>
-                    Today's Collection
-                </h4>
+                <h4>Today's Collection</h4>
 
                 <p id="todayAmount">
                     ₹ 0
@@ -485,9 +1171,7 @@
 
             <div class="stat-card teachers">
 
-                <h4>
-                    Total Entries
-                </h4>
+                <h4>Total Entries</h4>
 
                 <p id="totalEntriesCount">
                     0
@@ -495,9 +1179,7 @@
 
             </div>
 
-
         </div>
-
 
 
         <!-- =====================================
@@ -506,14 +1188,17 @@
 
         <div class="table-container">
 
-
             <h3>
+                <i
+                    class="fa-solid fa-clock-rotate-left"
+                    style="color:#2563eb;margin-right:7px;"
+                ></i>
+
                 Recent Collection Entries
             </h3>
 
 
             <table>
-
 
                 <thead>
 
@@ -555,20 +1240,14 @@
 
                 </tbody>
 
-
             </table>
 
-
         </div>
-
 
     </div>
 
 
-
-    <!-- =====================================
-         DASHBOARD JAVASCRIPT
-    ====================================== -->
+    <!-- DASHBOARD JS -->
 
     <script
         type="module"
@@ -576,9 +1255,7 @@
     ></script>
 
 
-    <!-- =====================================
-         PAGE PROTECTION
-    ====================================== -->
+    <!-- PAGE PROTECTION -->
 
     <script
         type="module"
