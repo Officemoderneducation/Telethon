@@ -1579,28 +1579,21 @@ function displayUserSummary(
 
                     <!-- USER NAME -->
 
-                    <td>
+<td>
 
-                        <div class="user-name-cell">
+    <div class="user-name-cell">
 
-                            <input
-                                type="text"
-                                class="user-name-input"
-                                data-id="${escapeHTML(user.id)}"
-                                value="${userName}"
-                                placeholder="Enter User Name"
-                            >
+        <input
+            type="text"
+            class="user-name-input"
+            data-id="${escapeHTML(user.id)}"
+            value="${userName}"
+            placeholder="Enter User Name"
+        >
 
-                            <small>
-                                ${userCode || "No Code"}
-                                &nbsp; | &nbsp;
-                                ${user.teacherCount} Teachers
-                            </small>
+    </div>
 
-                        </div>
-
-                    </td>
-
+</td>
 
                     <!-- TARGET -->
 
