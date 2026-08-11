@@ -2,6 +2,7 @@
 // Telethon
 // Region User Management
 // Multiple Region / State Access
+// FINAL CORRECTED VERSION
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -9,7 +10,6 @@ import { db } from "./firebase-config.js";
 import {
     collection,
     getDocs,
-    getDoc,
     query,
     where,
     doc,
@@ -23,10 +23,11 @@ import {
 // FIRESTORE COLLECTIONS
 // ======================================
 
-// FINAL / MAIN COLLECTION
+// MAIN COLLECTION
 const REGION_USERS_COLLECTION = "regionUsers";
 
-// OLD COLLECTION - ONLY FOR ONE-TIME MIGRATION
+// OLD COLLECTION
+// Existing old access recover karne ke liye
 const OLD_REGION_USERS_COLLECTION = "region_users";
 
 
@@ -34,20 +35,15 @@ const OLD_REGION_USERS_COLLECTION = "region_users";
 // HTML ELEMENTS
 // ======================================
 
-const form =
-    document.getElementById("regionUserForm");
+const form = document.getElementById("regionUserForm");
 
-const userName =
-    document.getElementById("userName");
+const userName = document.getElementById("userName");
 
-const userCode =
-    document.getElementById("userCode");
+const userCode = document.getElementById("userCode");
 
-const userMobile =
-    document.getElementById("userMobile");
+const userMobile = document.getElementById("userMobile");
 
-const userPassword =
-    document.getElementById("userPassword");
+const userPassword = document.getElementById("userPassword");
 
 const accessContainer =
     document.getElementById("accessContainer");
@@ -76,7 +72,9 @@ const cancelBtn =
 // ======================================
 
 let regions = [];
+
 let states = [];
+
 let editingUserId = null;
 
 
@@ -104,7 +102,250 @@ function showMessage(text, color = "green") {
     if (!message) return;
 
     message.textContent = text;
+
     message.style.color = color;
+}
+
+
+// ======================================
+// NORMALIZE ACCESS
+// ======================================
+
+function normalizeAccess(data) {
+
+    if (!data) {
+        return [];
+    }
+
+    let rawAccess = [];
+
+    // ----------------------------------
+    // Possible field names
+    // ----------------------------------
+
+    if (Array.isArray(data.access)) {
+
+        rawAccess = data.access;
+
+    }
+
+    else if (Array.isArray(data.assignedAccess)) {
+
+        rawAccess = data.assignedAccess;
+
+    }
+
+    else if (Array.isArray(data.permissions)) {
+
+        rawAccess = data.permissions;
+
+    }
+
+    else if (Array.isArray(data.regionAccess)) {
+
+        rawAccess = data.regionAccess;
+
+    }
+
+
+    // ----------------------------------
+    // Convert access into standard format
+    // ----------------------------------
+
+    const result = [];
+
+    rawAccess.forEach((item) => {
+
+        if (!item) return;
+
+
+        // Already object
+        if (typeof item === "object") {
+
+            const region =
+                String(
+                    item.region ||
+                    item.regionName ||
+                    item.region_name ||
+                    ""
+                ).trim();
+
+
+            const state =
+                String(
+                    item.state ||
+                    item.stateName ||
+                    item.state_name ||
+                    "*"
+                ).trim();
+
+
+            if (region) {
+
+                result.push({
+
+                    region: region,
+
+                    state: state || "*"
+
+                });
+
+            }
+
+            return;
+
+        }
+
+
+        // String format
+        if (typeof item === "string") {
+
+            const value = item.trim();
+
+            if (!value) return;
+
+
+            // Example:
+            // Ajmer → Gujarat
+            // Delhi -> Bihar
+
+            if (
+                value.includes("→")
+            ) {
+
+                const parts =
+                    value.split("→");
+
+
+                const region =
+                    String(
+                        parts[0] || ""
+                    ).trim();
+
+
+                const state =
+                    String(
+                        parts[1] || "*"
+                    ).trim();
+
+
+                if (region) {
+
+                    result.push({
+
+                        region: region,
+
+                        state:
+                            state || "*"
+
+                    });
+
+                }
+
+            }
+
+            else if (
+                value.includes("->")
+            ) {
+
+                const parts =
+                    value.split("->");
+
+
+                const region =
+                    String(
+                        parts[0] || ""
+                    ).trim();
+
+
+                const state =
+                    String(
+                        parts[1] || "*"
+                    ).trim();
+
+
+                if (region) {
+
+                    result.push({
+
+                        region: region,
+
+                        state:
+                            state || "*"
+
+                    });
+
+                }
+
+            }
+
+        }
+
+    });
+
+
+    // ----------------------------------
+    // Remove duplicate access
+    // ----------------------------------
+
+    const unique = [];
+
+    const seen = new Set();
+
+
+    result.forEach((item) => {
+
+        const key =
+            `${item.region}|||${item.state}`;
+
+
+        if (!seen.has(key)) {
+
+            seen.add(key);
+
+            unique.push(item);
+
+        }
+
+    });
+
+
+    return unique;
+}
+
+
+// ======================================
+// MERGE ACCESS
+// ======================================
+
+function mergeAccess(existingAccess, oldAccess) {
+
+    const result = [];
+
+    const seen = new Set();
+
+
+    [
+        ...normalizeAccess({ access: existingAccess }),
+        ...normalizeAccess({ access: oldAccess })
+    ].forEach((item) => {
+
+        const key =
+            `${item.region}|||${item.state}`;
+
+
+        if (!seen.has(key)) {
+
+            seen.add(key);
+
+            result.push(item);
+
+        }
+
+    });
+
+
+    return result;
 }
 
 
@@ -124,32 +365,30 @@ async function loadRegions() {
                 )
             );
 
+
         regions = [];
+
 
         snapshot.forEach((item) => {
 
-            const data = item.data();
+            const data =
+                item.data();
+
 
             if (data.name) {
 
                 regions.push(
-                    String(data.name).trim()
+                    String(
+                        data.name
+                    ).trim()
                 );
 
             }
 
         });
 
-        regions = [
-            ...new Set(regions)
-        ];
 
         regions.sort();
-
-        console.log(
-            "Regions Loaded:",
-            regions
-        );
 
     }
 
@@ -160,12 +399,14 @@ async function loadRegions() {
             error
         );
 
+
         showMessage(
             "Region load nahi ho sake.",
             "red"
         );
 
     }
+
 }
 
 
@@ -185,11 +426,15 @@ async function loadStates() {
                 )
             );
 
+
         states = [];
+
 
         snapshot.forEach((item) => {
 
-            const data = item.data();
+            const data =
+                item.data();
+
 
             if (
                 data.name &&
@@ -214,11 +459,6 @@ async function loadStates() {
 
         });
 
-        console.log(
-            "States Loaded:",
-            states.length
-        );
-
     }
 
     catch (error) {
@@ -229,6 +469,7 @@ async function loadStates() {
         );
 
     }
+
 }
 
 
@@ -243,6 +484,7 @@ function createRegionOptions(
     let html =
         '<option value="">Select Region</option>';
 
+
     regions.forEach((regionName) => {
 
         const selected =
@@ -250,18 +492,22 @@ function createRegionOptions(
                 ? "selected"
                 : "";
 
+
         html += `
 
             <option
                 value="${escapeHTML(regionName)}"
                 ${selected}
             >
+
                 ${escapeHTML(regionName)}
+
             </option>
 
         `;
 
     });
+
 
     return html;
 }
@@ -279,11 +525,13 @@ function createStateOptions(
     let html =
         '<option value="">Full Region</option>';
 
+
     if (!selectedRegion) {
 
         return html;
 
     }
+
 
     const filteredStates =
         states.filter(
@@ -300,18 +548,22 @@ function createStateOptions(
                 ? "selected"
                 : "";
 
+
         html += `
 
             <option
                 value="${escapeHTML(item.name)}"
                 ${selected}
             >
+
                 ${escapeHTML(item.name)}
+
             </option>
 
         `;
 
     });
+
 
     return html;
 }
@@ -328,8 +580,10 @@ function addAccessRow(
 
     if (!accessContainer) return;
 
+
     const row =
         document.createElement("div");
+
 
     row.className =
         "access-row";
@@ -379,7 +633,6 @@ function addAccessRow(
         <button
             type="button"
             class="remove-access"
-            title="Remove Access"
         >
 
             <i class="fa-solid fa-trash"></i>
@@ -394,10 +647,12 @@ function addAccessRow(
             ".access-region"
         );
 
+
     const stateSelect =
         row.querySelector(
             ".access-state"
         );
+
 
     const removeBtn =
         row.querySelector(
@@ -453,10 +708,12 @@ function collectAccess() {
 
     }
 
+
     const rows =
         accessContainer.querySelectorAll(
             ".access-row"
         );
+
 
     const access = [];
 
@@ -467,6 +724,7 @@ function collectAccess() {
             row.querySelector(
                 ".access-region"
             );
+
 
         const stateSelect =
             row.querySelector(
@@ -486,6 +744,7 @@ function collectAccess() {
 
         const regionValue =
             regionSelect.value.trim();
+
 
         const stateValue =
             stateSelect.value.trim();
@@ -516,17 +775,7 @@ function collectAccess() {
 
 
 // ======================================
-// MIGRATE OLD USERS
-// ======================================
-//
-// Old:
-// region_users
-//
-// New:
-// regionUsers
-//
-// Existing new records are NOT overwritten.
-//
+// MIGRATE / RECOVER OLD ACCESS
 // ======================================
 
 async function migrateOldRegionUsers() {
@@ -550,7 +799,7 @@ async function migrateOldRegionUsers() {
         if (oldSnapshot.empty) {
 
             console.log(
-                "No old region_users users found."
+                "No old region_users data found."
             );
 
             return;
@@ -567,172 +816,284 @@ async function migrateOldRegionUsers() {
             );
 
 
-        const existingIds =
-            new Set();
-
-
-        const existingCodes =
-            new Set();
+        const newUsers =
+            new Map();
 
 
         newSnapshot.forEach((item) => {
 
-            const data =
-                item.data();
+            newUsers.set(
 
+                String(item.id).trim(),
 
-            existingIds.add(
-                item.id
+                {
+                    id: item.id,
+                    ...item.data()
+                }
+
             );
-
-
-            if (data.userCode) {
-
-                existingCodes.add(
-                    String(
-                        data.userCode
-                    ).trim()
-                );
-
-            }
 
         });
 
 
-        let migratedCount = 0;
+        let recoveredCount = 0;
 
+
+        // ==================================
+        // CHECK EVERY OLD USER
+        // ==================================
 
         for (
             const oldDoc of oldSnapshot.docs
         ) {
 
-            const oldData =
-                oldDoc.data();
-
-
             const oldId =
-                oldDoc.id;
-
-
-            const oldCode =
                 String(
-                    oldData.userCode ||
-                    oldData.employeeCode ||
-                    oldId ||
-                    ""
+                    oldDoc.id
                 ).trim();
 
 
-            // ------------------------------
-            // Already exists by document ID
-            // ------------------------------
-
-            if (
-                existingIds.has(oldId)
-            ) {
-
-                continue;
-
-            }
+            const oldData =
+                oldDoc.data() || {};
 
 
-            // ------------------------------
-            // Already exists by User Code
-            // ------------------------------
+            // ----------------------------------
+            // Find matching new user
+            // ----------------------------------
 
-            if (
-                oldCode &&
-                existingCodes.has(oldCode)
-            ) {
-
-                continue;
-
-            }
+            let newUser =
+                newUsers.get(oldId);
 
 
-            // ------------------------------
-            // Normalize old data
-            // ------------------------------
+            // ----------------------------------
+            // If ID doesn't match,
+            // search by userCode
+            // ----------------------------------
 
-            const migratedData = {
+            if (!newUser) {
 
-                userName:
-                    oldData.userName ||
-                    oldData.name ||
-                    oldData.teacherName ||
-                    "",
-
-                name:
-                    oldData.name ||
-                    oldData.userName ||
-                    oldData.teacherName ||
-                    "",
-
-                userCode:
-                    oldData.userCode ||
-                    oldData.employeeCode ||
-                    oldId,
-
-                mobile:
-                    oldData.mobile ||
-                    "",
-
-                password:
-                    oldData.password ||
-                    "",
-
-                access:
-                    Array.isArray(
-                        oldData.access
-                    )
-                        ? oldData.access
-                        : [],
-
-                status:
-                    oldData.status ||
-                    "Active",
-
-                migratedFrom:
-                    OLD_REGION_USERS_COLLECTION,
-
-                migratedAt:
-                    serverTimestamp(),
-
-                updatedAt:
-                    serverTimestamp()
-
-            };
+                const oldCode =
+                    String(
+                        oldData.userCode ||
+                        oldData.user_code ||
+                        oldData.employeeCode ||
+                        oldId ||
+                        ""
+                    ).trim();
 
 
-            await setDoc(
+                if (oldCode) {
 
-                doc(
-                    db,
-                    REGION_USERS_COLLECTION,
-                    oldId
-                ),
+                    for (
+                        const item
+                        of newUsers.values()
+                    ) {
 
-                migratedData,
+                        const newCode =
+                            String(
+                                item.userCode ||
+                                item.user_code ||
+                                item.employeeCode ||
+                                item.id ||
+                                ""
+                            ).trim();
 
-                {
-                    merge: true
+
+                        if (
+                            newCode ===
+                            oldCode
+                        ) {
+
+                            newUser =
+                                item;
+
+                            break;
+
+                        }
+
+                    }
+
                 }
 
-            );
+            }
 
 
-            migratedCount++;
+            // ----------------------------------
+            // Old access
+            // ----------------------------------
 
-            existingIds.add(
-                oldId
-            );
-
-
-            if (oldCode) {
-
-                existingCodes.add(
-                    oldCode
+            const oldAccess =
+                normalizeAccess(
+                    oldData
                 );
+
+
+            // ----------------------------------
+            // No matching new user
+            // Create it
+            // ----------------------------------
+
+            if (!newUser) {
+
+                if (
+                    oldId
+                ) {
+
+                    await setDoc(
+
+                        doc(
+                            db,
+                            REGION_USERS_COLLECTION,
+                            oldId
+                        ),
+
+                        {
+
+                            ...oldData,
+
+                            access:
+                                oldAccess,
+
+                            migratedFrom:
+                                OLD_REGION_USERS_COLLECTION,
+
+                            migratedAt:
+                                serverTimestamp(),
+
+                            updatedAt:
+                                serverTimestamp()
+
+                        },
+
+                        {
+                            merge: true
+                        }
+
+                    );
+
+
+                    recoveredCount++;
+
+                }
+
+
+                continue;
+
+            }
+
+
+            // ----------------------------------
+            // Existing new user
+            // Recover missing access
+            // ----------------------------------
+
+            const existingAccess =
+                normalizeAccess(
+                    newUser
+                );
+
+
+            const mergedAccess =
+                mergeAccess(
+                    existingAccess,
+                    oldAccess
+                );
+
+
+            // ----------------------------------
+            // Only update if useful data exists
+            // ----------------------------------
+
+            const updateData = {};
+
+
+            if (
+                mergedAccess.length > 0
+            ) {
+
+                updateData.access =
+                    mergedAccess;
+
+            }
+
+
+            // Recover name if missing
+
+            if (
+                !newUser.userName &&
+                !newUser.name &&
+                (
+                    oldData.userName ||
+                    oldData.name
+                )
+            ) {
+
+                updateData.userName =
+                    oldData.userName ||
+                    oldData.name;
+
+
+                updateData.name =
+                    oldData.name ||
+                    oldData.userName;
+
+            }
+
+
+            // Recover mobile if missing
+
+            if (
+                !newUser.mobile &&
+                oldData.mobile
+            ) {
+
+                updateData.mobile =
+                    oldData.mobile;
+
+            }
+
+
+            // Recover password if missing
+
+            if (
+                !newUser.password &&
+                oldData.password
+            ) {
+
+                updateData.password =
+                    oldData.password;
+
+            }
+
+
+            if (
+                Object.keys(
+                    updateData
+                ).length > 0
+            ) {
+
+                updateData.updatedAt =
+                    serverTimestamp();
+
+
+                await setDoc(
+
+                    doc(
+                        db,
+                        REGION_USERS_COLLECTION,
+                        newUser.id
+                    ),
+
+                    updateData,
+
+                    {
+                        merge: true
+                    }
+
+                );
+
+
+                recoveredCount++;
 
             }
 
@@ -740,8 +1101,8 @@ async function migrateOldRegionUsers() {
 
 
         console.log(
-            "Old Region Users Migrated:",
-            migratedCount
+            "Old access recovery completed:",
+            recoveredCount
         );
 
     }
@@ -749,11 +1110,12 @@ async function migrateOldRegionUsers() {
     catch (error) {
 
         console.error(
-            "Migration Error:",
+            "Migration / Access Recovery Error:",
             error
         );
 
     }
+
 }
 
 
@@ -779,14 +1141,18 @@ if (form) {
             const name =
                 userName.value.trim();
 
+
             const code =
                 userCode.value.trim();
+
 
             const mobile =
                 userMobile.value.trim();
 
+
             const password =
                 userPassword.value.trim();
+
 
             const access =
                 collectAccess();
@@ -855,7 +1221,7 @@ if (form) {
             try {
 
                 // ==================================
-                // DUPLICATE USER CODE CHECK
+                // DUPLICATE CODE CHECK
                 // ==================================
 
                 const duplicateQuery =
@@ -956,13 +1322,7 @@ if (form) {
                 };
 
 
-                // ==================================
-                // CREATE DATE
-                // ==================================
-
-                if (
-                    !editingUserId
-                ) {
+                if (!editingUserId) {
 
                     userData.createdAt =
                         serverTimestamp();
@@ -971,7 +1331,7 @@ if (form) {
 
 
                 // ==================================
-                // SAVE ONLY TO regionUsers
+                // SAVE
                 // ==================================
 
                 await setDoc(
@@ -990,10 +1350,6 @@ if (form) {
 
                 );
 
-
-                // ==================================
-                // SUCCESS
-                // ==================================
 
                 showMessage(
 
@@ -1067,14 +1423,14 @@ async function loadUsers() {
     try {
 
         // ==================================
-        // MIGRATE OLD USERS FIRST
+        // FIRST RECOVER OLD ACCESS
         // ==================================
 
         await migrateOldRegionUsers();
 
 
         // ==================================
-        // READ ONLY regionUsers
+        // LOAD MAIN COLLECTION
         // ==================================
 
         const snapshot =
@@ -1088,15 +1444,7 @@ async function loadUsers() {
             );
 
 
-        console.log(
-            "regionUsers Firebase Count:",
-            snapshot.size
-        );
-
-
-        if (
-            snapshot.empty
-        ) {
+        if (snapshot.empty) {
 
             table.innerHTML = `
 
@@ -1123,25 +1471,17 @@ async function loadUsers() {
         }
 
 
-        // ==================================
-        // CREATE USERS ARRAY
-        // ==================================
-
         const users = [];
 
 
         snapshot.forEach((item) => {
-
-            const data =
-                item.data();
-
 
             users.push({
 
                 id:
                     item.id,
 
-                ...data
+                ...item.data()
 
             });
 
@@ -1184,7 +1524,7 @@ async function loadUsers() {
 
 
         // ==================================
-        // TABLE HTML
+        // CREATE TABLE
         // ==================================
 
         let html = "";
@@ -1194,15 +1534,12 @@ async function loadUsers() {
             (user) => {
 
                 const access =
-                    Array.isArray(
-                        user.access
-                    )
-                        ? user.access
-                        : [];
+                    normalizeAccess(
+                        user
+                    );
 
 
-                let accessHTML =
-                    "";
+                let accessHTML = "";
 
 
                 access.forEach(
@@ -1215,9 +1552,7 @@ async function loadUsers() {
 
                         const stateName =
                             item.state === "*"
-
                                 ? "Full Region"
-
                                 : (
                                     item.state ||
                                     "-"
@@ -1253,9 +1588,13 @@ async function loadUsers() {
                     accessHTML = `
 
                         <span
-                            style="color:#999;"
+                            style="
+                                color:#999;
+                            "
                         >
+
                             No Access
+
                         </span>
 
                     `;
@@ -1270,9 +1609,11 @@ async function loadUsers() {
                         <td>
 
                             ${escapeHTML(
+
                                 user.userName ||
                                 user.name ||
                                 "-"
+
                             )}
 
                         </td>
@@ -1281,9 +1622,11 @@ async function loadUsers() {
                         <td>
 
                             ${escapeHTML(
+
                                 user.userCode ||
                                 user.id ||
                                 "-"
+
                             )}
 
                         </td>
@@ -1292,8 +1635,10 @@ async function loadUsers() {
                         <td>
 
                             ${escapeHTML(
+
                                 user.mobile ||
                                 "-"
+
                             )}
 
                         </td>
@@ -1310,9 +1655,7 @@ async function loadUsers() {
 
                             <button
                                 class="edit-btn"
-                                data-edit-id="${escapeHTML(
-                                    user.id
-                                )}"
+                                onclick="editRegionUser('${escapeHTML(user.id)}')"
                             >
 
                                 <i
@@ -1326,9 +1669,7 @@ async function loadUsers() {
 
                             <button
                                 class="delete-btn"
-                                data-delete-id="${escapeHTML(
-                                    user.id
-                                )}"
+                                onclick="deleteRegionUser('${escapeHTML(user.id)}')"
                             >
 
                                 <i
@@ -1353,57 +1694,15 @@ async function loadUsers() {
             html;
 
 
-        // ==================================
-        // EDIT BUTTONS
-        // ==================================
-
-        table
-            .querySelectorAll(
-                "[data-edit-id]"
-            )
-            .forEach((button) => {
-
-                button.addEventListener(
-                    "click",
-                    function () {
-
-                        editRegionUser(
-                            this.dataset.editId
-                        );
-
-                    }
-                );
-
-            });
-
-
-        // ==================================
-        // DELETE BUTTONS
-        // ==================================
-
-        table
-            .querySelectorAll(
-                "[data-delete-id]"
-            )
-            .forEach((button) => {
-
-                button.addEventListener(
-                    "click",
-                    function () {
-
-                        deleteRegionUser(
-                            this.dataset.deleteId
-                        );
-
-                    }
-                );
-
-            });
-
-
         console.log(
             "Region Users Loaded:",
             users.length
+        );
+
+
+        console.log(
+            "Region Users Data:",
+            users
         );
 
     }
@@ -1440,6 +1739,7 @@ async function loadUsers() {
         `;
 
     }
+
 }
 
 
@@ -1447,134 +1747,141 @@ async function loadUsers() {
 // EDIT USER
 // ======================================
 
-async function editRegionUser(userId) {
+window.editRegionUser =
+    async function (userId) {
 
-    try {
+        try {
 
-        const userRef =
-            doc(
-                db,
-                REGION_USERS_COLLECTION,
-                userId
-            );
-
-
-        const userSnapshot =
-            await getDoc(
-                userRef
-            );
+            const userRef =
+                doc(
+                    db,
+                    REGION_USERS_COLLECTION,
+                    userId
+                );
 
 
-        if (
-            !userSnapshot.exists()
-        ) {
+            // getDocs collection ki jagah
+            // direct document read ke liye
+            // existing data find karenge
 
-            alert(
-                "User nahi mila."
-            );
+            const snapshot =
+                await getDocs(
 
-            return;
-
-        }
-
-
-        const selectedUser = {
-
-            id:
-                userSnapshot.id,
-
-            ...userSnapshot.data()
-
-        };
-
-
-        editingUserId =
-            selectedUser.id;
-
-
-        userName.value =
-            selectedUser.userName ||
-            selectedUser.name ||
-            "";
-
-
-        userCode.value =
-            selectedUser.userCode ||
-            selectedUser.id ||
-            "";
-
-
-        userMobile.value =
-            selectedUser.mobile ||
-            "";
-
-
-        userPassword.value =
-            selectedUser.password ||
-            "";
-
-
-        // ==================================
-        // ACCESS
-        // ==================================
-
-        accessContainer.innerHTML =
-            "";
-
-
-        const access =
-            Array.isArray(
-                selectedUser.access
-            )
-                ? selectedUser.access
-                : [];
-
-
-        access.forEach(
-            (item) => {
-
-                addAccessRow(
-
-                    item.region ||
-                    "",
-
-                    item.state === "*"
-
-                        ? ""
-
-                        : (
-                            item.state ||
-                            ""
-                        )
+                    collection(
+                        db,
+                        REGION_USERS_COLLECTION
+                    )
 
                 );
 
+
+            let selectedUser =
+                null;
+
+
+            snapshot.forEach(
+                (item) => {
+
+                    if (
+                        item.id ===
+                        userId
+                    ) {
+
+                        selectedUser = {
+
+                            id:
+                                item.id,
+
+                            ...item.data()
+
+                        };
+
+                    }
+
+                }
+            );
+
+
+            if (!selectedUser) {
+
+                alert(
+                    "User nahi mila."
+                );
+
+                return;
+
             }
-        );
 
 
-        if (
-            access.length === 0
-        ) {
-
-            addAccessRow();
-
-        }
+            editingUserId =
+                selectedUser.id;
 
 
-        // ==================================
-        // FORM UI
-        // ==================================
+            userName.value =
+                selectedUser.userName ||
+                selectedUser.name ||
+                "";
 
-        if (formTitle) {
+
+            userCode.value =
+                selectedUser.userCode ||
+                selectedUser.id ||
+                "";
+
+
+            userMobile.value =
+                selectedUser.mobile ||
+                "";
+
+
+            userPassword.value =
+                selectedUser.password ||
+                "";
+
+
+            accessContainer.innerHTML =
+                "";
+
+
+            const access =
+                normalizeAccess(
+                    selectedUser
+                );
+
+
+            access.forEach(
+                (item) => {
+
+                    addAccessRow(
+
+                        item.region ||
+                        "",
+
+                        item.state === "*"
+                            ? ""
+                            : (
+                                item.state ||
+                                ""
+                            )
+
+                    );
+
+                }
+            );
+
+
+            if (
+                access.length === 0
+            ) {
+
+                addAccessRow();
+
+            }
+
 
             formTitle.textContent =
                 "Edit Region User";
 
-        }
-
-
-        if (saveBtn) {
 
             saveBtn.innerHTML = `
 
@@ -1586,116 +1893,98 @@ async function editRegionUser(userId) {
 
             `;
 
-        }
-
-
-        if (cancelBtn) {
 
             cancelBtn.style.display =
                 "block";
 
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
         }
 
+        catch (error) {
 
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Edit User Error:",
-            error
-        );
-
-        alert(
-            error.message
-        );
-
-    }
-}
+            console.error(
+                "Edit User Error:",
+                error
+            );
 
 
-// ======================================
-// MAKE EDIT AVAILABLE
-// ======================================
+            alert(
+                error.message
+            );
 
-window.editRegionUser =
-    editRegionUser;
+        }
+
+    };
 
 
 // ======================================
 // DELETE USER
 // ======================================
 
-async function deleteRegionUser(userId) {
-
-    const confirmation =
-        confirm(
-            "Kya aap is Region User ko delete karna chahte hain?"
-        );
-
-
-    if (!confirmation) {
-
-        return;
-
-    }
-
-
-    try {
-
-        await deleteDoc(
-
-            doc(
-                db,
-                REGION_USERS_COLLECTION,
-                userId
-            )
-
-        );
-
-
-        alert(
-            "Region User delete ho gaya."
-        );
-
-
-        await loadUsers();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Delete User Error:",
-            error
-        );
-
-
-        alert(
-
-            "User delete nahi ho saka.\n\n" +
-            error.message
-
-        );
-
-    }
-}
-
-
-// ======================================
-// MAKE DELETE AVAILABLE
-// ======================================
-
 window.deleteRegionUser =
-    deleteRegionUser;
+    async function (userId) {
+
+        const confirmation =
+            confirm(
+                "Kya aap is Region User ko delete karna chahte hain?"
+            );
+
+
+        if (!confirmation) {
+
+            return;
+
+        }
+
+
+        try {
+
+            await deleteDoc(
+
+                doc(
+                    db,
+                    REGION_USERS_COLLECTION,
+                    userId
+                )
+
+            );
+
+
+            alert(
+                "Region User delete ho gaya."
+            );
+
+
+            await loadUsers();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Delete User Error:",
+                error
+            );
+
+
+            alert(
+
+                "User delete nahi ho saka.\n\n" +
+                error.message
+
+            );
+
+        }
+
+    };
 
 
 // ======================================
@@ -1798,6 +2087,7 @@ function resetForm() {
             "";
 
     }
+
 }
 
 
@@ -1823,35 +2113,42 @@ async function start() {
 
 
         // Load regions
+
         await loadRegions();
 
 
         // Load states
+
         await loadStates();
 
 
         // Default access row
-        addAccessRow();
+
+        if (
+            accessContainer &&
+            accessContainer.children.length === 0
+        ) {
+
+            addAccessRow();
+
+        }
 
 
-        // Migrate old users + load users
+        // ==================================
+        // IMPORTANT
+        // Recover old access first
+        // ==================================
+
+        await migrateOldRegionUsers();
+
+
+        // Load users
+
         await loadUsers();
 
 
         console.log(
-            "======================================"
-        );
-
-        console.log(
             "Region User Management Loaded Successfully."
-        );
-
-        console.log(
-            "Main Collection: regionUsers"
-        );
-
-        console.log(
-            "======================================"
         );
 
     }
@@ -1864,6 +2161,7 @@ async function start() {
         );
 
     }
+
 }
 
 
