@@ -9,13 +9,11 @@
 
     <title>Telethon Admin Dashboard</title>
 
-
     <!-- Font Awesome -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
-
 
     <!-- Dashboard CSS -->
     <link
@@ -34,7 +32,6 @@
     ====================================== -->
 
     <div class="sidebar">
-
 
         <!-- Logo -->
 
@@ -57,97 +54,66 @@
 
         <div class="menu">
 
-
             <a
                 href="dashboard.html"
                 class="active"
             >
-
                 <i class="fa-solid fa-house"></i>
-
                 <span>Dashboard</span>
-
             </a>
 
 
             <a href="register.html">
-
                 <i class="fa-solid fa-user-plus"></i>
-
                 <span>Registration Form</span>
-
             </a>
 
 
             <a href="users.html">
-
                 <i class="fa-solid fa-users"></i>
-
                 <span>Teachers List</span>
-
             </a>
 
 
             <a href="region-user-management.html">
-
                 <i class="fa-solid fa-user-shield"></i>
-
                 <span>Region User Management</span>
-
             </a>
 
 
             <a href="region-user.html">
-
                 <i class="fa-solid fa-user-shield"></i>
-
                 <span>Region Users</span>
-
             </a>
 
 
             <a href="daily-entry.html">
-
                 <i class="fa-solid fa-file-circle-plus"></i>
-
                 <span>Daily Collection</span>
-
             </a>
 
 
             <a href="all-entry.html">
-
                 <i class="fa-solid fa-list"></i>
-
                 <span>All Entry</span>
-
             </a>
 
 
             <a href="collection-summary.html">
-
                 <i class="fa-solid fa-chart-pie"></i>
-
                 <span>Collection Summary</span>
-
             </a>
 
 
             <a href="target-management.html">
-
                 <i class="fa-solid fa-bullseye"></i>
-
                 <span>Target Management</span>
-
             </a>
 
 
             <a href="reports.html">
-
                 <i class="fa-solid fa-chart-column"></i>
-
                 <span>Reports</span>
-
             </a>
 
 
@@ -155,13 +121,9 @@
                 href="#"
                 id="logoutBtn"
             >
-
                 <i class="fa-solid fa-right-from-bracket"></i>
-
                 <span>Logout</span>
-
             </a>
-
 
         </div>
 
@@ -242,6 +204,7 @@
             </div>
 
 
+
             <!-- Total Target -->
 
             <div class="user-summary-card">
@@ -265,6 +228,7 @@
                 </div>
 
             </div>
+
 
 
             <!-- Total Collection -->
@@ -292,6 +256,7 @@
             </div>
 
 
+
             <!-- Remaining Target -->
 
             <div class="user-summary-card">
@@ -316,19 +281,16 @@
 
             </div>
 
-
         </div>
 
 
 
         <!-- =====================================
-             USER SUMMARY
+             USER COLLECTION SUMMARY
         ====================================== -->
 
         <div class="user-summary-container">
 
-
-            <!-- Section Header -->
 
             <div class="section-header">
 
@@ -349,8 +311,6 @@
                 </div>
 
 
-                <!-- Search -->
-
                 <input
                     type="text"
                     id="userSummarySearch"
@@ -361,43 +321,25 @@
 
 
 
-            <!-- =================================
-                 TABLE
-            ================================== -->
-
             <div class="user-summary-table-wrapper">
 
-
                 <table class="user-summary-table">
-
 
                     <thead>
 
                         <tr>
 
-                            <th>
-                                #
-                            </th>
+                            <th>#</th>
 
-                            <th>
-                                User
-                            </th>
+                            <th>User</th>
 
-                            <th>
-                                Target
-                            </th>
+                            <th>Target</th>
 
-                            <th>
-                                Total Collection
-                            </th>
+                            <th>Total Collection</th>
 
-                            <th>
-                                Remaining Target
-                            </th>
+                            <th>Remaining Target</th>
 
-                            <th>
-                                Percentage
-                            </th>
+                            <th>Percentage</th>
 
                         </tr>
 
@@ -423,11 +365,9 @@
 
                     </tbody>
 
-
                 </table>
 
             </div>
-
 
         </div>
 
@@ -439,8 +379,6 @@
 
         <div class="stats-grid">
 
-
-            <!-- Total Collection -->
 
             <div class="stat-card">
 
@@ -455,8 +393,6 @@
             </div>
 
 
-            <!-- Today's Collection -->
-
             <div class="stat-card today">
 
                 <h4>
@@ -469,8 +405,6 @@
 
             </div>
 
-
-            <!-- Total Entries -->
 
             <div class="stat-card teachers">
 
@@ -495,72 +429,58 @@
 
         <div class="table-container">
 
-
             <h3>
                 Recent Collection Entries
             </h3>
 
 
-            <table>
+            <div style="overflow-x:auto;">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Date</th>
+
+                            <th>Emp Code</th>
+
+                            <th>Teacher Name</th>
+
+                            <th>Jamiatul Madina</th>
+
+                            <th>City / State</th>
+
+                            <th>Region</th>
+
+                            <th>Amount</th>
+
+                        </tr>
+
+                    </thead>
 
 
-                <thead>
+                    <tbody id="entriesTableBody">
 
-                    <tr>
+                        <tr>
 
-                        <th>
-                            Date
-                        </th>
+                            <td
+                                colspan="7"
+                                class="no-data"
+                            >
 
-                        <th>
-                            Emp Code
-                        </th>
+                                Loading live entries...
 
-                        <th>
-                            Teacher Name
-                        </th>
+                            </td>
 
-                        <th>
-                            Jamiatul Madina
-                        </th>
+                        </tr>
 
-                        <th>
-                            City / State
-                        </th>
+                    </tbody>
 
-                        <th>
-                            Region
-                        </th>
+                </table>
 
-                        <th>
-                            Amount
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="entriesTableBody">
-
-                    <tr>
-
-                        <td
-                            colspan="7"
-                            class="no-data"
-                        >
-
-                            Loading live entries...
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-
-            </table>
-
+            </div>
 
         </div>
 
