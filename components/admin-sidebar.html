@@ -1,87 +1,439 @@
 <!-- ======================================
-     TELETHON - ADMIN SIDEBAR
-====================================== -->
+     Telethon - Admin Sidebar
+     ====================================== -->
 
-<aside class="admin-sidebar">
+<aside class="admin-sidebar" id="adminSidebar">
 
-    <!-- Logo -->
-    <div class="sidebar-logo">
-        <div class="logo-icon">
-            <i class="fa-solid fa-chart-line"></i>
-        </div>
+    <!-- ==================================
+         SIDEBAR HEADER
+         ================================== -->
 
-        <div class="logo-text">
-            <h2>Telethon</h2>
-            <span>Management</span>
-        </div>
+    <div class="admin-sidebar-header">
+
+        <a href="../dashboard.html"
+           class="admin-sidebar-logo">
+
+            <div class="admin-sidebar-logo-icon">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+
+            <div class="admin-sidebar-logo-text">
+
+                <div class="admin-sidebar-logo-title">
+                    Telethon
+                </div>
+
+                <div class="admin-sidebar-logo-subtitle">
+                    Admin Panel
+                </div>
+
+            </div>
+
+        </a>
+
     </div>
 
 
-    <!-- Navigation -->
-    <nav class="sidebar-nav">
+    <!-- ==================================
+         ADMIN USER
+         ================================== -->
 
-        <!-- Dashboard -->
-        <a href="dashboard.html" class="sidebar-link">
-            <i class="fa-solid fa-house"></i>
-            <span>Dashboard</span>
-        </a>
+    <div class="admin-sidebar-user">
 
-
-        <!-- Teachers List -->
-        <a href="users.html" class="sidebar-link">
-            <i class="fa-solid fa-users"></i>
-            <span>Teachers List</span>
-        </a>
-
-
-        <!-- Daily Report -->
-        <a href="daily-report.html" class="sidebar-link">
-            <i class="fa-solid fa-calendar-day"></i>
-            <span>Daily Report</span>
-        </a>
-
-
-        <!-- Region User Management -->
-        <a href="region-users.html" class="sidebar-link">
+        <div class="admin-sidebar-user-icon">
             <i class="fa-solid fa-user-shield"></i>
-            <span>Region User Management</span>
+        </div>
+
+        <div class="admin-sidebar-user-info">
+
+            <div class="admin-sidebar-user-name">
+                Administrator
+            </div>
+
+            <div class="admin-sidebar-user-role">
+                Admin
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================
+         MENU
+         ================================== -->
+
+    <nav class="admin-sidebar-menu">
+
+        <div class="admin-sidebar-section-title">
+            Main Menu
+        </div>
+
+
+        <!-- 1. Dashboard -->
+
+        <a href="../dashboard.html"
+           class="admin-sidebar-link"
+           data-page="dashboard.html">
+
+            <i class="fa-solid fa-house"></i>
+
+            <span>
+                Dashboard
+            </span>
+
         </a>
 
 
-        <!-- All Entry -->
-        <a href="all-entry.html" class="sidebar-link">
-            <i class="fa-solid fa-list-check"></i>
-            <span>All Entry</span>
+        <!-- 2. Teachers List -->
+
+        <a href="../users.html"
+           class="admin-sidebar-link"
+           data-page="users.html">
+
+            <i class="fa-solid fa-users"></i>
+
+            <span>
+                Teachers List
+            </span>
+
         </a>
 
 
-        <!-- Target Management -->
-        <a href="target-management.html" class="sidebar-link">
+        <!-- 3. Daily Report -->
+
+        <a href="../daily-report.html"
+           class="admin-sidebar-link"
+           data-page="daily-report.html">
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Daily Report
+            </span>
+
+        </a>
+
+
+        <!-- 4. Region User Management -->
+
+        <a href="../region-users.html"
+           class="admin-sidebar-link"
+           data-page="region-users.html">
+
+            <i class="fa-solid fa-user-group"></i>
+
+            <span>
+                Region User Management
+            </span>
+
+        </a>
+
+
+        <!-- 5. All Entry -->
+
+        <a href="../all-entry.html"
+           class="admin-sidebar-link"
+           data-page="all-entry.html">
+
+            <i class="fa-solid fa-list"></i>
+
+            <span>
+                All Entry
+            </span>
+
+        </a>
+
+
+        <!-- 6. Target Management -->
+
+        <a href="../target-management.html"
+           class="admin-sidebar-link"
+           data-page="target-management.html">
+
             <i class="fa-solid fa-bullseye"></i>
-            <span>Target Management</span>
+
+            <span>
+                Target Management
+            </span>
+
         </a>
 
 
-        <!-- Collection Summary -->
-        <a href="collection-summary.html" class="sidebar-link">
-            <i class="fa-solid fa-money-bill-wave"></i>
-            <span>Collection Summary</span>
+        <!-- 7. Collection Summary -->
+
+        <a href="../collection-summary.html"
+           class="admin-sidebar-link"
+           data-page="collection-summary.html">
+
+            <i class="fa-solid fa-chart-pie"></i>
+
+            <span>
+                Collection Summary
+            </span>
+
         </a>
 
     </nav>
 
 
-    <!-- Logout -->
-    <div class="sidebar-bottom">
+    <!-- ==================================
+         LOGOUT
+         ================================== -->
 
-        <a href="#" id="logoutBtn" class="sidebar-link logout-link">
+    <div class="admin-sidebar-logout">
+
+        <a href="#"
+           class="admin-sidebar-link"
+           id="adminSidebarLogout">
 
             <i class="fa-solid fa-right-from-bracket"></i>
 
-            <span>Logout</span>
+            <span>
+                Logout
+            </span>
 
         </a>
 
     </div>
 
 </aside>
+
+
+<!-- ======================================
+     MOBILE TOGGLE
+     ====================================== -->
+
+<button
+    type="button"
+    class="admin-sidebar-toggle"
+    id="adminSidebarToggle"
+    aria-label="Open Menu">
+
+    <i class="fa-solid fa-bars"></i>
+
+</button>
+
+
+<!-- ======================================
+     MOBILE OVERLAY
+     ====================================== -->
+
+<div
+    class="admin-sidebar-overlay"
+    id="adminSidebarOverlay">
+</div>
+
+
+<!-- ======================================
+     ACTIVE PAGE + MOBILE SIDEBAR JS
+     ====================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* ==================================
+           ACTIVE PAGE
+           ================================== */
+
+        const currentPage =
+            window.location.pathname
+                .split("/")
+                .pop()
+                .toLowerCase();
+
+
+        const sidebarLinks =
+            document.querySelectorAll(
+                ".admin-sidebar-link[data-page]"
+            );
+
+
+        sidebarLinks.forEach(
+            function (link) {
+
+                const page =
+                    String(
+                        link.dataset.page || ""
+                    ).toLowerCase();
+
+
+                if (
+                    page === currentPage
+                ) {
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ==================================
+           MOBILE ELEMENTS
+           ================================== */
+
+        const sidebar =
+            document.getElementById(
+                "adminSidebar"
+            );
+
+
+        const toggle =
+            document.getElementById(
+                "adminSidebarToggle"
+            );
+
+
+        const overlay =
+            document.getElementById(
+                "adminSidebarOverlay"
+            );
+
+
+        /* ==================================
+           OPEN SIDEBAR
+           ================================== */
+
+        if (toggle) {
+
+            toggle.addEventListener(
+                "click",
+                function () {
+
+                    if (sidebar) {
+
+                        sidebar.classList.add(
+                            "open"
+                        );
+
+                    }
+
+                    if (overlay) {
+
+                        overlay.classList.add(
+                            "active"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* ==================================
+           CLOSE SIDEBAR
+           ================================== */
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                function () {
+
+                    if (sidebar) {
+
+                        sidebar.classList.remove(
+                            "open"
+                        );
+
+                    }
+
+                    overlay.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* ==================================
+           CLOSE AFTER MENU CLICK
+           ================================== */
+
+        sidebarLinks.forEach(
+            function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        if (sidebar) {
+
+                            sidebar.classList.remove(
+                                "open"
+                            );
+
+                        }
+
+                        if (overlay) {
+
+                            overlay.classList.remove(
+                                "active"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* ==================================
+           LOGOUT
+           ================================== */
+
+        const logout =
+            document.getElementById(
+                "adminSidebarLogout"
+            );
+
+
+        if (logout) {
+
+            logout.addEventListener(
+                "click",
+                function (e) {
+
+                    e.preventDefault();
+
+
+                    localStorage.removeItem(
+                        "loggedInEmpCode"
+                    );
+
+
+                    localStorage.removeItem(
+                        "userRole"
+                    );
+
+
+                    localStorage.removeItem(
+                        "userName"
+                    );
+
+
+                    window.location.href =
+                        "../index.html";
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
