@@ -5,10 +5,8 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Region User | Telethon</title>
 
@@ -33,12 +31,12 @@
             min-height: 100vh;
         }
 
-
-        /* =========================
+        /* ======================================
            SIDEBAR
-        ========================= */
+        ====================================== */
 
         .sidebar {
+
             position: fixed;
 
             left: 0;
@@ -51,43 +49,49 @@
 
             color: white;
 
-            z-index: 1000;
-
             display: flex;
             flex-direction: column;
 
             box-shadow:
                 2px 0 10px rgba(0,0,0,0.12);
+
+            z-index: 1000;
         }
 
 
-        /* =========================
+        /* ======================================
            SIDEBAR BRAND
-        ========================= */
+        ====================================== */
 
         .sidebar-brand {
-            min-height: 76px;
+
+            height: 76px;
 
             display: flex;
+
             align-items: center;
 
             gap: 12px;
 
-            padding: 12px 20px;
+            padding: 12px 18px;
 
             border-bottom:
                 1px solid
                 rgba(255,255,255,0.08);
         }
 
+
         .sidebar-brand img {
-            width: 48px;
-            height: 48px;
+
+            width: 45px;
+            height: 45px;
 
             object-fit: contain;
         }
 
+
         .sidebar-brand-text h2 {
+
             font-size: 18px;
 
             color: #38bdf8;
@@ -95,45 +99,85 @@
             margin-bottom: 3px;
         }
 
+
         .sidebar-brand-text p {
-            font-size: 12px;
+
+            font-size: 11px;
 
             color: #cbd5e1;
         }
 
 
-        /* =========================
-           SIDEBAR MENU
-        ========================= */
+        /* ======================================
+           USER INFO
+        ====================================== */
+
+        .sidebar-user {
+
+            padding: 18px;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+
+        .sidebar-user-name {
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            color: white;
+
+            margin-bottom: 5px;
+        }
+
+
+        .sidebar-user-role {
+
+            font-size: 11px;
+
+            color: #94a3b8;
+        }
+
+
+        /* ======================================
+           MENU
+        ====================================== */
 
         .sidebar-menu {
-            padding: 20px 12px;
+
+            padding: 18px 12px;
 
             flex: 1;
         }
 
+
         .menu-title {
-            color: #64748b;
 
             font-size: 11px;
 
-            font-weight: bold;
+            color: #64748b;
 
             text-transform: uppercase;
 
-            padding: 0 12px 10px;
+            letter-spacing: 1px;
+
+            padding:
+                0 12px 10px;
         }
 
-        .sidebar-menu a {
+
+        .menu-link {
+
             display: flex;
 
             align-items: center;
 
             gap: 12px;
 
-            text-decoration: none;
-
-            color: #cbd5e1;
+            width: 100%;
 
             padding: 12px 14px;
 
@@ -141,16 +185,20 @@
 
             border-radius: 7px;
 
+            color: #cbd5e1;
+
+            text-decoration: none;
+
             font-size: 14px;
 
-            font-weight: 600;
+            transition: 0.2s;
 
-            transition:
-                background 0.2s,
-                color 0.2s;
+            cursor: pointer;
         }
 
-        .sidebar-menu a i {
+
+        .menu-link i {
+
             width: 20px;
 
             text-align: center;
@@ -158,13 +206,17 @@
             font-size: 15px;
         }
 
-        .sidebar-menu a:hover {
+
+        .menu-link:hover {
+
             background: #1e293b;
 
             color: white;
         }
 
-        .sidebar-menu a.active {
+
+        .menu-link.active {
+
             background: #2563eb;
 
             color: white;
@@ -175,67 +227,55 @@
         }
 
 
-        /* =========================
+        /* ======================================
            LOGOUT
-        ========================= */
+        ====================================== */
 
-        .sidebar-menu .logout-menu {
-            margin-top: 25px;
+        .sidebar-bottom {
 
-            background: #dc2626;
-
-            color: white;
-        }
-
-        .sidebar-menu .logout-menu:hover {
-            background: #b91c1c;
-
-            color: white;
-        }
-
-
-        /* =========================
-           SIDEBAR FOOTER
-        ========================= */
-
-        .sidebar-footer {
-            padding: 15px 12px;
+            padding: 12px;
 
             border-top:
                 1px solid
                 rgba(255,255,255,0.08);
         }
 
-        .sidebar-footer-text {
-            color: #64748b;
 
-            font-size: 11px;
+        .logout-link {
 
-            text-align: center;
+            color: #fca5a5;
         }
 
 
-        /* =========================
-           PAGE WRAPPER
-        ========================= */
+        .logout-link:hover {
 
-        .page-wrapper {
+            background: #450a0a;
+
+            color: #fecaca;
+        }
+
+
+        /* ======================================
+           MAIN AREA
+        ====================================== */
+
+        .main-area {
+
             margin-left: 250px;
 
             min-height: 100vh;
         }
 
 
-        /* =========================
+        /* ======================================
            TOPBAR
-        ========================= */
+        ====================================== */
 
         .topbar-main {
-            min-height: 76px;
 
-            background: #0f172a;
+            height: 76px;
 
-            color: white;
+            background: white;
 
             display: flex;
 
@@ -243,99 +283,75 @@
 
             justify-content: space-between;
 
-            padding: 12px 26px;
+            padding: 0 26px;
 
             box-shadow:
                 0 2px 8px
-                rgba(0,0,0,0.12);
+                rgba(0,0,0,0.06);
         }
 
 
-        .topbar-title {
+        .topbar-title h2 {
+
+            font-size: 20px;
+
+            color: #0f172a;
+
+            margin-bottom: 3px;
+        }
+
+
+        .topbar-title p {
+
+            font-size: 12px;
+
+            color: #64748b;
+        }
+
+
+        .topbar-user {
+
             display: flex;
 
             align-items: center;
 
-            gap: 12px;
+            gap: 10px;
+
+            color: #334155;
+
+            font-size: 13px;
         }
 
-        .topbar-title i {
-            color: #38bdf8;
+
+        .topbar-user i {
+
+            color: #2563eb;
 
             font-size: 20px;
         }
 
-        .topbar-title h3 {
-            font-size: 18px;
 
-            color: #38bdf8;
-        }
-
-        .topbar-title p {
-            font-size: 12px;
-
-            color: #cbd5e1;
-        }
-
-
-        /* =========================
-           USER INFO TOP
-        ========================= */
-
-        .top-user-info {
-            font-size: 14px;
-
-            color: #e2e8f0;
-        }
-
-
-        /* =========================
-           MOBILE MENU
-        ========================= */
-
-        .mobile-menu-btn {
-            display: none;
-
-            border: none;
-
-            background: #2563eb;
-
-            color: white;
-
-            width: 40px;
-
-            height: 40px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-
-            font-size: 17px;
-        }
-
-
-        /* =========================
-           MAIN
-        ========================= */
+        /* ======================================
+           MAIN CONTENT
+        ====================================== */
 
         .main {
-            width: 100%;
 
-            min-height:
-                calc(100vh - 76px);
+            width: 100%;
 
             padding: 22px;
         }
 
 
-        /* =========================
-           TITLE
-        ========================= */
+        /* ======================================
+           PAGE TITLE
+        ====================================== */
 
-        .topbar {
+        .page-title {
+
             background: white;
 
-            border-radius: 10px;
+            border-radius: 12px;
 
             padding: 22px;
 
@@ -346,7 +362,9 @@
                 rgba(0,0,0,0.06);
         }
 
-        .topbar h2 {
+
+        .page-title h2 {
+
             font-size: 24px;
 
             color: #0f172a;
@@ -354,22 +372,24 @@
             margin-bottom: 6px;
         }
 
-        .topbar p {
+
+        .page-title p {
+
             color: #64748b;
 
             font-size: 14px;
         }
 
 
-        /* =========================
+        /* ======================================
            REGION USER INFO
-        ========================= */
+        ====================================== */
 
         .region-user-info {
+
             background: #ecfdf5;
 
-            border:
-                1px solid #bbf7d0;
+            border: 1px solid #bbf7d0;
 
             padding: 14px 18px;
 
@@ -382,19 +402,22 @@
             font-size: 14px;
         }
 
+
         .region-user-info strong {
+
             font-size: 16px;
         }
 
 
-        /* =========================
-           FILTER
-        ========================= */
+        /* ======================================
+           FILTER PANEL
+        ====================================== */
 
         .filter-panel {
+
             background: white;
 
-            border-radius: 10px;
+            border-radius: 12px;
 
             padding: 20px;
 
@@ -405,7 +428,9 @@
                 rgba(0,0,0,0.06);
         }
 
+
         .filter-title {
+
             font-size: 17px;
 
             font-weight: bold;
@@ -415,7 +440,9 @@
             color: #0f172a;
         }
 
+
         .filters {
+
             display: grid;
 
             grid-template-columns:
@@ -424,7 +451,9 @@
             gap: 12px;
         }
 
+
         .filter-group label {
+
             display: block;
 
             margin-bottom: 6px;
@@ -436,16 +465,17 @@
             color: #475569;
         }
 
+
         .filter-group select,
         .filter-group input {
+
             width: 100%;
 
             padding: 10px 12px;
 
-            border:
-                1px solid #cbd5e1;
+            border: 1px solid #cbd5e1;
 
-            border-radius: 6px;
+            border-radius: 7px;
 
             outline: none;
 
@@ -454,8 +484,10 @@
             font-size: 14px;
         }
 
+
         .filter-group select:focus,
         .filter-group input:focus {
+
             border-color: #2563eb;
 
             box-shadow:
@@ -464,24 +496,27 @@
         }
 
 
-        /* =========================
+        /* ======================================
            BUTTONS
-        ========================= */
+        ====================================== */
 
         .filter-buttons {
+
             display: flex;
 
             gap: 10px;
 
-            margin-top: 15px;
+            margin-top: 16px;
         }
 
+
         .filter-btn {
+
             border: none;
 
             padding: 10px 18px;
 
-            border-radius: 6px;
+            border-radius: 7px;
 
             cursor: pointer;
 
@@ -490,35 +525,44 @@
             font-size: 13px;
         }
 
+
         .apply-btn {
+
             background: #2563eb;
 
             color: white;
         }
 
+
         .apply-btn:hover {
+
             background: #1d4ed8;
         }
 
+
         .reset-btn {
+
             background: #e2e8f0;
 
             color: #334155;
         }
 
+
         .reset-btn:hover {
+
             background: #cbd5e1;
         }
 
 
-        /* =========================
+        /* ======================================
            TABLE
-        ========================= */
+        ====================================== */
 
         .table-container {
+
             background: white;
 
-            border-radius: 10px;
+            border-radius: 12px;
 
             padding: 20px;
 
@@ -527,41 +571,51 @@
                 rgba(0,0,0,0.06);
         }
 
+
         .table-header {
+
             display: flex;
 
-            justify-content:
-                space-between;
+            justify-content: space-between;
 
             align-items: center;
 
             margin-bottom: 18px;
+
+            gap: 15px;
         }
 
+
         .table-header h3 {
+
             font-size: 18px;
 
             color: #0f172a;
         }
 
+
         .result-count {
+
             font-size: 13px;
 
             color: #64748b;
         }
 
+
         .table-wrapper {
+
             width: 100%;
 
             overflow-x: auto;
 
-            border:
-                1px solid #e2e8f0;
+            border: 1px solid #e2e8f0;
 
-            border-radius: 7px;
+            border-radius: 8px;
         }
 
+
         table {
+
             width: 100%;
 
             min-width: 1350px;
@@ -571,7 +625,9 @@
             background: white;
         }
 
+
         th {
+
             background: #2563eb;
 
             color: white;
@@ -580,13 +636,15 @@
 
             text-align: left;
 
-            font-size: 13px;
+            font-size: 12px;
 
             white-space: nowrap;
         }
 
+
         td {
-            padding: 13px 14px;
+
+            padding: 12px 14px;
 
             border-bottom:
                 1px solid #e2e8f0;
@@ -598,45 +656,51 @@
             white-space: nowrap;
         }
 
+
         tbody tr:hover {
+
             background: #f8fafc;
         }
 
 
-        /* =========================
-           TABLE DATA
-        ========================= */
-
         .employee-code {
+
             font-weight: bold;
 
             color: #1d4ed8;
         }
 
+
         .target {
+
             color: #0f172a;
 
             font-weight: bold;
         }
 
+
         .collection {
+
             color: #059669;
 
             font-weight: bold;
         }
 
+
         .remaining {
+
             color: #ea580c;
 
             font-weight: bold;
         }
 
 
-        /* =========================
+        /* ======================================
            STATUS
-        ========================= */
+        ====================================== */
 
         .status-badge {
+
             display: inline-block;
 
             padding: 5px 11px;
@@ -648,24 +712,29 @@
             font-weight: bold;
         }
 
+
         .approved {
+
             background: #d1e7dd;
 
             color: #0f5132;
         }
 
+
         .pending {
+
             background: #fff3cd;
 
             color: #664d03;
         }
 
 
-        /* =========================
+        /* ======================================
            PERCENTAGE
-        ========================= */
+        ====================================== */
 
         .percentage-badge {
+
             display: inline-block;
 
             padding: 5px 10px;
@@ -677,81 +746,101 @@
             font-size: 12px;
         }
 
+
         .percentage-low {
+
             background: #fee2e2;
 
             color: #b91c1c;
         }
 
+
         .percentage-medium {
+
             background: #fef3c7;
 
             color: #92400e;
         }
 
+
         .percentage-good {
+
             background: #dbeafe;
 
             color: #1d4ed8;
         }
 
+
         .percentage-complete {
+
             background: #dcfce7;
 
             color: #15803d;
         }
 
 
-        /* =========================
+        /* ======================================
            LOADING
-        ========================= */
+        ====================================== */
 
         .loading-cell,
         .empty-cell,
         .error-cell {
+
             text-align: center;
 
             padding: 35px !important;
         }
 
+
         .loading-cell {
+
             color: #64748b;
         }
+
 
         .empty-cell {
+
             color: #64748b;
         }
 
+
         .error-cell {
+
             color: #dc2626;
         }
 
 
-        /* =========================
-           SIDEBAR OVERLAY
-        ========================= */
+        /* ======================================
+           MOBILE SIDEBAR
+        ====================================== */
 
-        .sidebar-overlay {
+        .mobile-menu-btn {
+
             display: none;
 
-            position: fixed;
+            border: none;
 
-            inset: 0;
+            background: #2563eb;
 
-            background:
-                rgba(0,0,0,0.45);
+            color: white;
 
-            z-index: 999;
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 18px;
         }
 
-
-        /* =========================
-           TABLET
-        ========================= */
 
         @media (max-width: 1000px) {
 
             .filters {
+
                 grid-template-columns:
                     repeat(2, 1fr);
             }
@@ -759,39 +848,37 @@
         }
 
 
-        /* =========================
-           MOBILE
-        ========================= */
-
         @media (max-width: 800px) {
 
             .sidebar {
-                transform:
-                    translateX(-100%);
 
-                transition:
-                    transform 0.25s ease;
+                transform: translateX(-100%);
+
+                transition: 0.25s;
             }
+
 
             .sidebar.open {
-                transform:
-                    translateX(0);
+
+                transform: translateX(0);
             }
 
-            .sidebar-overlay.open {
-                display: block;
-            }
 
-            .page-wrapper {
+            .main-area {
+
                 margin-left: 0;
             }
 
+
             .mobile-menu-btn {
+
                 display: block;
             }
 
+
             .topbar-main {
-                padding: 12px 15px;
+
+                padding: 0 15px;
             }
 
         }
@@ -799,39 +886,34 @@
 
         @media (max-width: 650px) {
 
-            .topbar-main {
-                min-height: 76px;
-
-                padding: 12px;
-            }
-
-            .topbar-title h3 {
-                font-size: 16px;
-            }
-
-            .main {
-                padding: 12px;
-            }
-
             .filters {
+
                 grid-template-columns: 1fr;
             }
 
-            .topbar h2 {
-                font-size: 20px;
-            }
 
-            .table-container,
-            .filter-panel {
+            .main {
+
                 padding: 12px;
             }
 
-            .table-header {
-                align-items: flex-start;
 
-                flex-direction: column;
+            .page-title h2 {
 
-                gap: 6px;
+                font-size: 20px;
+            }
+
+
+            .table-container,
+            .filter-panel {
+
+                padding: 12px;
+            }
+
+
+            .topbar-user {
+
+                display: none;
             }
 
         }
@@ -848,10 +930,7 @@
      SIDEBAR
 ====================================== -->
 
-<aside
-    class="sidebar"
-    id="sidebar"
->
+<aside class="sidebar" id="sidebar">
 
 
     <!-- BRAND -->
@@ -865,13 +944,29 @@
 
         <div class="sidebar-brand-text">
 
-            <h2>
-                Telethon
-            </h2>
+            <h2>Telethon</h2>
 
-            <p>
-                Region User Panel
-            </p>
+            <p>Region User Panel</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- USER -->
+
+    <div class="sidebar-user">
+
+        <div
+            class="sidebar-user-name"
+            id="sidebarUserName"
+        >
+            Region User
+        </div>
+
+        <div class="sidebar-user-role">
+
+            Region User Account
 
         </div>
 
@@ -880,7 +975,7 @@
 
     <!-- MENU -->
 
-    <nav class="sidebar-menu">
+    <div class="sidebar-menu">
 
         <div class="menu-title">
             Menu
@@ -891,11 +986,10 @@
 
         <a
             href="daily-report.html"
+            class="menu-link"
         >
 
-            <i
-                class="fa-solid fa-calendar-days"
-            ></i>
+            <i class="fa-solid fa-calendar-days"></i>
 
             <span>
                 Daily Report
@@ -908,12 +1002,10 @@
 
         <a
             href="region-user.html"
-            class="active"
+            class="menu-link active"
         >
 
-            <i
-                class="fa-solid fa-users"
-            ></i>
+            <i class="fa-solid fa-users"></i>
 
             <span>
                 Region User
@@ -921,18 +1013,20 @@
 
         </a>
 
+    </div>
 
-        <!-- LOGOUT -->
+
+    <!-- LOGOUT -->
+
+    <div class="sidebar-bottom">
 
         <a
             href="#"
-            id="sidebarLogoutBtn"
-            class="logout-menu"
+            id="logoutBtn"
+            class="menu-link logout-link"
         >
 
-            <i
-                class="fa-solid fa-right-from-bracket"
-            ></i>
+            <i class="fa-solid fa-right-from-bracket"></i>
 
             <span>
                 Logout
@@ -940,41 +1034,20 @@
 
         </a>
 
-    </nav>
-
-
-    <!-- FOOTER -->
-
-    <div class="sidebar-footer">
-
-        <div class="sidebar-footer-text">
-            Telethon Management System
-        </div>
-
     </div>
 
 </aside>
 
 
 <!-- ======================================
-     SIDEBAR OVERLAY
+     MAIN AREA
 ====================================== -->
 
-<div
-    class="sidebar-overlay"
-    id="sidebarOverlay"
-></div>
-
-
-<!-- ======================================
-     PAGE WRAPPER
-====================================== -->
-
-<div class="page-wrapper">
+<div class="main-area">
 
 
     <!-- ==================================
-         TOP HEADER
+         TOPBAR
     ================================== -->
 
     <header class="topbar-main">
@@ -986,40 +1059,33 @@
             class="mobile-menu-btn"
         >
 
-            <i
-                class="fa-solid fa-bars"
-            ></i>
+            <i class="fa-solid fa-bars"></i>
 
         </button>
 
 
         <div class="topbar-title">
 
-            <i
-                class="fa-solid fa-users"
-            ></i>
+            <h2>
+                Region User
+            </h2>
 
-            <div>
-
-                <h3>
-                    Region User
-                </h3>
-
-                <p>
-                    Region User Panel
-                </p>
-
-            </div>
+            <p>
+                Assigned Teachers Management
+            </p>
 
         </div>
 
 
-        <span
-            id="regionUserInfoTop"
-            class="top-user-info"
-        >
-            Region User
-        </span>
+        <div class="topbar-user">
+
+            <i class="fa-solid fa-circle-user"></i>
+
+            <span id="regionUserInfoTop">
+                Loading User...
+            </span>
+
+        </div>
 
     </header>
 
@@ -1033,21 +1099,30 @@
 
         <!-- TITLE -->
 
-        <div class="topbar">
+        <div class="page-title">
 
             <h2>
+
+                <i
+                    class="fa-solid fa-users"
+                    style="color:#2563eb;margin-right:8px;"
+                ></i>
+
                 Region User
+
             </h2>
 
             <p>
-                Aapko sirf assigned Region / State
-                ke Teachers ka data dikhaya ja raha hai.
+
+                Aapko sirf aapke assigned
+                Region / State ke Teachers dikhaye jayenge.
+
             </p>
 
         </div>
 
 
-        <!-- REGION USER INFO -->
+        <!-- USER INFO -->
 
         <div
             id="regionUserInfo"
@@ -1068,9 +1143,7 @@
 
             <div class="filter-title">
 
-                <i
-                    class="fa-solid fa-filter"
-                ></i>
+                <i class="fa-solid fa-filter"></i>
 
                 Filter Teachers
 
@@ -1194,9 +1267,7 @@
                     class="filter-btn apply-btn"
                 >
 
-                    <i
-                        class="fa-solid fa-filter"
-                    ></i>
+                    <i class="fa-solid fa-filter"></i>
 
                     Apply Filter
 
@@ -1209,9 +1280,7 @@
                     class="filter-btn reset-btn"
                 >
 
-                    <i
-                        class="fa-solid fa-rotate-left"
-                    ></i>
+                    <i class="fa-solid fa-rotate-left"></i>
 
                     Reset
 
@@ -1234,11 +1303,8 @@
                 <h3>
 
                     <i
-                        class="fa-solid fa-users"
-                        style="
-                            color:#2563eb;
-                            margin-right:7px;
-                        "
+                        class="fa-solid fa-table"
+                        style="color:#2563eb;margin-right:7px;"
                     ></i>
 
                     Assigned Teachers
@@ -1250,9 +1316,7 @@
                     id="resultCount"
                     class="result-count"
                 >
-
                     Loading...
-
                 </span>
 
             </div>
@@ -1345,140 +1409,75 @@
 
 
 <!-- ======================================
-     SIDEBAR JAVASCRIPT
+     JAVASCRIPT
 ====================================== -->
 
-<script>
+<script type="module">
 
     const mobileMenuBtn =
-        document.getElementById(
-            "mobileMenuBtn"
-        );
+        document.getElementById("mobileMenuBtn");
 
     const sidebar =
-        document.getElementById(
-            "sidebar"
-        );
-
-    const sidebarOverlay =
-        document.getElementById(
-            "sidebarOverlay"
-        );
+        document.getElementById("sidebar");
 
 
-    function openSidebar() {
-
-        if (sidebar) {
-
-            sidebar.classList.add(
-                "open"
-            );
-
-        }
-
-        if (sidebarOverlay) {
-
-            sidebarOverlay.classList.add(
-                "open"
-            );
-
-        }
-
-    }
-
-
-    function closeSidebar() {
-
-        if (sidebar) {
-
-            sidebar.classList.remove(
-                "open"
-            );
-
-        }
-
-        if (sidebarOverlay) {
-
-            sidebarOverlay.classList.remove(
-                "open"
-            );
-
-        }
-
-    }
-
-
-    if (mobileMenuBtn) {
+    if (mobileMenuBtn && sidebar) {
 
         mobileMenuBtn.addEventListener(
             "click",
-            openSidebar
-        );
+            function () {
 
-    }
-
-
-    if (sidebarOverlay) {
-
-        sidebarOverlay.addEventListener(
-            "click",
-            closeSidebar
-        );
-
-    }
-
-
-    document
-        .querySelectorAll(
-            ".sidebar-menu a"
-        )
-        .forEach(
-            (link) => {
-
-                link.addEventListener(
-                    "click",
-                    function () {
-
-                        closeSidebar();
-
-                    }
-                );
+                sidebar.classList.toggle("open");
 
             }
         );
 
-
-    /* =========================
-       LOGOUT
-    ========================= */
-
-    const sidebarLogoutBtn =
-        document.getElementById(
-            "sidebarLogoutBtn"
-        );
+    }
 
 
-    if (sidebarLogoutBtn) {
+    // ==================================
+    // ACTIVE MENU
+    // ==================================
 
-        sidebarLogoutBtn.addEventListener(
+    document
+        .querySelectorAll(".menu-link")
+        .forEach((link) => {
+
+            link.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        window.innerWidth <= 800
+                    ) {
+
+                        sidebar.classList.remove(
+                            "open"
+                        );
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    // ==================================
+    // LOGOUT
+    // ==================================
+
+    const logoutBtn =
+        document.getElementById("logoutBtn");
+
+
+    if (logoutBtn) {
+
+        logoutBtn.addEventListener(
             "click",
             function (e) {
 
                 e.preventDefault();
-
-
-                const confirmation =
-                    confirm(
-                        "Kya aap Logout karna chahte hain?"
-                    );
-
-
-                if (!confirmation) {
-
-                    return;
-
-                }
-
 
                 localStorage.removeItem(
                     "loggedInEmpCode"
@@ -1496,7 +1495,6 @@
                     "regionUserAccess"
                 );
 
-
                 window.location.href =
                     "index.html";
 
@@ -1505,12 +1503,52 @@
 
     }
 
+
+    // ==================================
+    // USER NAME
+    // ==================================
+
+    const savedUserName =
+        localStorage.getItem(
+            "regionUserName"
+        );
+
+
+    const sidebarUserName =
+        document.getElementById(
+            "sidebarUserName"
+        );
+
+
+    const regionUserInfoTop =
+        document.getElementById(
+            "regionUserInfoTop"
+        );
+
+
+    if (savedUserName) {
+
+        if (sidebarUserName) {
+
+            sidebarUserName.textContent =
+                savedUserName;
+
+        }
+
+
+        if (regionUserInfoTop) {
+
+            regionUserInfoTop.textContent =
+                savedUserName;
+
+        }
+
+    }
+
 </script>
 
 
-<!-- ======================================
-     REGION USER JAVASCRIPT
-====================================== -->
+<!-- Existing Region User JS -->
 
 <script
     type="module"
