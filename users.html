@@ -23,11 +23,21 @@
     >
 
 
+    <!-- ======================================
+         ADMIN SIDEBAR CSS
+    ======================================= -->
+
+    <link
+        rel="stylesheet"
+        href="components/admin-sidebar.css"
+    >
+
+
     <style>
 
         /* ======================================
            RESET
-        ====================================== */
+        ======================================= */
 
         * {
             margin: 0;
@@ -39,7 +49,7 @@
 
         /* ======================================
            BODY
-        ====================================== */
+        ======================================= */
 
         body {
 
@@ -54,142 +64,8 @@
 
 
         /* ======================================
-           SIDEBAR
-        ====================================== */
-
-        .sidebar {
-
-            width: 235px;
-
-            min-width: 235px;
-
-            min-height: 100vh;
-
-            background: #0f172a;
-
-            color: white;
-
-            display: flex;
-
-            flex-direction: column;
-
-            position: fixed;
-
-            left: 0;
-
-            top: 0;
-
-            bottom: 0;
-
-            z-index: 1000;
-        }
-
-
-        /* ======================================
-           LOGO
-        ====================================== */
-
-        .logo {
-
-            height: 178px;
-
-            padding: 20px 15px;
-
-            text-align: center;
-
-            border-bottom: 1px solid #263247;
-        }
-
-
-        .logo img {
-
-            width: 80px;
-
-            height: 80px;
-
-            object-fit: contain;
-
-            margin-bottom: 5px;
-        }
-
-
-        .logo h2 {
-
-            font-size: 20px;
-
-            color: #38bdf8;
-
-            margin-bottom: 5px;
-        }
-
-
-        .logo p {
-
-            font-size: 13px;
-
-            color: #cbd5e1;
-        }
-
-
-        /* ======================================
-           MENU
-        ====================================== */
-
-        .menu {
-
-            padding-top: 15px;
-        }
-
-
-        .menu a {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            width: 100%;
-
-            padding: 13px 22px;
-
-            color: #cbd5e1;
-
-            text-decoration: none;
-
-            font-size: 14px;
-
-            transition: 0.2s;
-        }
-
-
-        .menu a i {
-
-            width: 18px;
-
-            text-align: center;
-        }
-
-
-        .menu a:hover {
-
-            background: #1e293b;
-
-            color: white;
-        }
-
-
-        .menu a.active {
-
-            background: #2563eb;
-
-            color: white;
-        }
-
-
-        /* ======================================
            MAIN AREA
-        ====================================== */
+        ======================================= */
 
         .main {
 
@@ -205,7 +81,7 @@
 
         /* ======================================
            TOPBAR
-        ====================================== */
+        ======================================= */
 
         .topbar {
 
@@ -242,7 +118,7 @@
 
         /* ======================================
            TABLE CONTAINER
-        ====================================== */
+        ======================================= */
 
         .table-container {
 
@@ -263,7 +139,7 @@
 
         /* ======================================
            TABLE HEADER
-        ====================================== */
+        ======================================= */
 
         .table-header {
 
@@ -291,7 +167,7 @@
 
         /* ======================================
            SEARCH
-        ====================================== */
+        ======================================= */
 
         .search-box {
 
@@ -324,7 +200,7 @@
 
         /* ======================================
            TABLE WRAPPER
-        ====================================== */
+        ======================================= */
 
         .table-wrapper {
 
@@ -340,7 +216,7 @@
 
         /* ======================================
            TABLE
-        ====================================== */
+        ======================================= */
 
         table {
 
@@ -400,7 +276,7 @@
 
         /* ======================================
            EMPLOYEE CODE
-        ====================================== */
+        ======================================= */
 
         .employee-code {
 
@@ -412,7 +288,7 @@
 
         /* ======================================
            STATUS
-        ====================================== */
+        ======================================= */
 
         .status-badge {
 
@@ -446,7 +322,7 @@
 
         /* ======================================
            ACTION BUTTONS
-        ====================================== */
+        ======================================= */
 
         .action-btn {
 
@@ -500,7 +376,7 @@
 
         /* ======================================
            DELETE BUTTON
-        ====================================== */
+        ======================================= */
 
         .delete-btn {
 
@@ -534,7 +410,7 @@
 
         /* ======================================
            LOADING / EMPTY / ERROR
-        ====================================== */
+        ======================================= */
 
         .loading-cell,
         .empty-cell,
@@ -568,17 +444,9 @@
 
         /* ======================================
            MOBILE
-        ====================================== */
+        ======================================= */
 
         @media (max-width: 768px) {
-
-            .sidebar {
-
-                width: 190px;
-
-                min-width: 190px;
-            }
-
 
             .main {
 
@@ -587,34 +455,6 @@
                 width: calc(100% - 190px);
 
                 padding: 15px;
-            }
-
-
-            .logo {
-
-                height: 160px;
-            }
-
-
-            .logo img {
-
-                width: 65px;
-
-                height: 65px;
-            }
-
-
-            .logo h2 {
-
-                font-size: 18px;
-            }
-
-
-            .menu a {
-
-                padding: 12px 15px;
-
-                font-size: 13px;
             }
 
 
@@ -636,18 +476,11 @@
 
                 font-size: 20px;
             }
+
         }
 
 
         @media (max-width: 550px) {
-
-            .sidebar {
-
-                width: 70px;
-
-                min-width: 70px;
-            }
-
 
             .main {
 
@@ -656,44 +489,6 @@
                 width: calc(100% - 70px);
 
                 padding: 10px;
-            }
-
-
-            .logo {
-
-                height: 100px;
-
-                padding: 10px 5px;
-            }
-
-
-            .logo img {
-
-                width: 45px;
-
-                height: 45px;
-            }
-
-
-            .logo h2,
-            .logo p,
-            .menu a span {
-
-                display: none;
-            }
-
-
-            .menu a {
-
-                justify-content: center;
-
-                padding: 15px 5px;
-            }
-
-
-            .menu a i {
-
-                font-size: 17px;
             }
 
 
@@ -713,119 +508,10 @@
 
 
     <!-- ======================================
-         SIDEBAR
+         ADMIN SIDEBAR
     ======================================= -->
 
-    <div class="sidebar">
-
-
-        <div class="logo">
-
-            <img
-                src="assets/images/logo.png"
-                alt="Telethon Logo"
-            >
-
-            <h2>
-                Telethon
-            </h2>
-
-            <p>
-                Management System
-            </p>
-
-        </div>
-
-
-        <div class="menu">
-
-
-            <a href="dashboard.html">
-
-                <i class="fa-solid fa-house"></i>
-
-                <span>
-                    Dashboard
-                </span>
-
-            </a>
-
-
-            <a href="register.html">
-
-                <i class="fa-solid fa-user-plus"></i>
-
-                <span>
-                    Registration Form
-                </span>
-
-            </a>
-
-
-            <a
-                href="users.html"
-                class="active"
-            >
-
-                <i class="fa-solid fa-users"></i>
-
-                <span>
-                    Teachers List
-                </span>
-
-            </a>
-
-
-            <a href="daily-entry.html">
-
-                <i class="fa-solid fa-file-circle-plus"></i>
-
-                <span>
-                    Daily Collection
-                </span>
-
-            </a>
-
-
-            <a href="all-entry.html">
-
-                <i class="fa-solid fa-list"></i>
-
-                <span>
-                    All Entry
-                </span>
-
-            </a>
-
-
-            <a href="reports.html">
-
-                <i class="fa-solid fa-chart-column"></i>
-
-                <span>
-                    Reports
-                </span>
-
-            </a>
-
-
-            <a
-                href="#"
-                id="logoutBtn"
-            >
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                <span>
-                    Logout
-                </span>
-
-            </a>
-
-
-        </div>
-
-    </div>
+    <div id="adminSidebar"></div>
 
 
     <!-- ======================================
@@ -951,6 +637,100 @@
 
 
     <!-- ======================================
+         LOAD ADMIN SIDEBAR
+    ======================================= -->
+
+    <script>
+
+        fetch("components/admin-sidebar.html")
+
+            .then(function(response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Admin Sidebar not found"
+                    );
+
+                }
+
+                return response.text();
+
+            })
+
+            .then(function(data) {
+
+                const sidebar =
+                    document.getElementById(
+                        "adminSidebar"
+                    );
+
+                sidebar.innerHTML = data;
+
+
+                /* ============================
+                   ACTIVE PAGE
+                ============================ */
+
+                const currentPage =
+                    window.location.pathname
+                        .split("/")
+                        .pop();
+
+
+                const menuLinks =
+                    sidebar.querySelectorAll(
+                        ".menu a"
+                    );
+
+
+                menuLinks.forEach(
+                    function(link) {
+
+                        const href =
+                            link.getAttribute(
+                                "href"
+                            );
+
+
+                        if (
+                            href &&
+                            href !== "#" &&
+                            href === currentPage
+                        ) {
+
+                            link.classList.add(
+                                "active"
+                            );
+
+                        }
+
+                        else {
+
+                            link.classList.remove(
+                                "active"
+                            );
+
+                        }
+
+                    }
+                );
+
+            })
+
+            .catch(function(error) {
+
+                console.error(
+                    "Admin Sidebar Error:",
+                    error
+                );
+
+            });
+
+    </script>
+
+
+    <!-- ======================================
          FIREBASE CONFIG
     ======================================= -->
 
@@ -986,36 +766,39 @@
 
     <script>
 
-        const logoutBtn =
-            document.getElementById("logoutBtn");
+        document.addEventListener(
+            "click",
+            function(e) {
 
-
-        if (logoutBtn) {
-
-            logoutBtn.addEventListener(
-                "click",
-                function (e) {
-
-                    e.preventDefault();
-
-
-                    localStorage.removeItem(
-                        "loggedInEmpCode"
+                const logoutBtn =
+                    e.target.closest(
+                        "#logoutBtn"
                     );
 
 
-                    localStorage.removeItem(
-                        "userRole"
-                    );
-
-
-                    window.location.href =
-                        "index.html";
-
+                if (!logoutBtn) {
+                    return;
                 }
-            );
 
-        }
+
+                e.preventDefault();
+
+
+                localStorage.removeItem(
+                    "loggedInEmpCode"
+                );
+
+
+                localStorage.removeItem(
+                    "userRole"
+                );
+
+
+                window.location.href =
+                    "index.html";
+
+            }
+        );
 
     </script>
 
