@@ -3,672 +3,533 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Region User Management | Telethon</title>
+    <title>Region User Management | Telethon</title>
 
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
->
 
-<style>
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
 
-body {
-    background: #f4f6f9;
-    color: #1e293b;
-}
+    <!-- Admin Sidebar CSS -->
+    <link
+        rel="stylesheet"
+        href="components/admin-sidebar.css"
+    >
 
-/* =========================
-   SIDEBAR
-========================= */
 
-.sidebar {
+    <style>
 
-    width: 235px;
-    min-height: 100vh;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-    background: #0f172a;
-    color: white;
 
-    position: fixed;
+        body {
+            background: #f4f6f9;
+            color: #1e293b;
+        }
 
-    left: 0;
-    top: 0;
-    bottom: 0;
 
-    z-index: 1000;
-}
+        /* =========================
+           MAIN
+        ========================= */
 
-.logo {
+        .main {
 
-    height: 178px;
+            margin-left: 235px;
 
-    padding: 20px 15px;
+            width: calc(100% - 235px);
 
-    text-align: center;
+            min-height: 100vh;
 
-    border-bottom: 1px solid #263247;
-}
+            padding: 24px;
+        }
 
-.logo img {
 
-    width: 80px;
-    height: 80px;
+        /* =========================
+           TOPBAR
+        ========================= */
 
-    object-fit: contain;
+        .topbar {
 
-    margin-bottom: 5px;
-}
+            background: white;
 
-.logo h2 {
+            border-radius: 10px;
 
-    font-size: 20px;
-    color: #38bdf8;
+            padding: 20px 24px;
 
-    margin-bottom: 5px;
-}
+            margin-bottom: 20px;
 
-.logo p {
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+        }
 
-    font-size: 13px;
-    color: #cbd5e1;
-}
 
-.menu {
+        .topbar h2 {
 
-    padding-top: 15px;
-}
+            font-size: 24px;
 
-.menu a {
+            color: #0f172a;
 
-    display: flex;
+            margin-bottom: 5px;
+        }
 
-    align-items: center;
 
-    gap: 12px;
+        .topbar p {
 
-    width: 100%;
+            color: #64748b;
 
-    padding: 13px 22px;
+            font-size: 14px;
+        }
 
-    color: #cbd5e1;
 
-    text-decoration: none;
+        /* =========================
+           FORM CARD
+        ========================= */
 
-    font-size: 14px;
-}
+        .card {
 
-.menu a:hover {
+            background: white;
 
-    background: #1e293b;
-    color: white;
-}
+            border-radius: 10px;
 
-.menu a.active {
+            padding: 22px;
 
-    background: #2563eb;
-    color: white;
-}
+            margin-bottom: 20px;
 
-.menu a i {
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+        }
 
-    width: 18px;
-    text-align: center;
-}
 
-/* =========================
-   MAIN
-========================= */
+        .card h3 {
 
-.main {
+            margin-bottom: 18px;
 
-    margin-left: 235px;
+            color: #0f172a;
+        }
 
-    width: calc(100% - 235px);
 
-    min-height: 100vh;
+        /* =========================
+           FORM
+        ========================= */
 
-    padding: 24px;
-}
+        .form-grid {
 
-/* =========================
-   TOPBAR
-========================= */
+            display: grid;
 
-.topbar {
+            grid-template-columns:
+                repeat(2, 1fr);
 
-    background: white;
+            gap: 16px;
+        }
 
-    border-radius: 10px;
 
-    padding: 20px 24px;
+        .form-group {
 
-    margin-bottom: 20px;
+            display: flex;
 
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.06);
-}
+            flex-direction: column;
+        }
 
-.topbar h2 {
 
-    font-size: 24px;
+        .form-group.full {
 
-    color: #0f172a;
+            grid-column: 1 / -1;
+        }
 
-    margin-bottom: 5px;
-}
 
-.topbar p {
+        .form-group label {
 
-    color: #64748b;
+            margin-bottom: 6px;
 
-    font-size: 14px;
-}
+            font-size: 13px;
 
-/* =========================
-   FORM CARD
-========================= */
+            font-weight: bold;
 
-.card {
+            color: #334155;
+        }
 
-    background: white;
 
-    border-radius: 10px;
+        input,
+        select {
 
-    padding: 22px;
+            width: 100%;
 
-    margin-bottom: 20px;
+            padding: 11px;
 
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.06);
-}
+            border: 1px solid #cbd5e1;
 
-.card h3 {
+            border-radius: 6px;
 
-    margin-bottom: 18px;
+            font-size: 14px;
 
-    color: #0f172a;
-}
+            background: white;
+        }
 
-/* =========================
-   FORM
-========================= */
 
-.form-grid {
+        input:focus,
+        select:focus {
 
-    display: grid;
+            outline: none;
 
-    grid-template-columns:
-        repeat(2, 1fr);
+            border-color: #2563eb;
+        }
 
-    gap: 16px;
-}
 
-.form-group {
+        /* =========================
+           ACCESS BOX
+        ========================= */
 
-    display: flex;
+        .access-box {
 
-    flex-direction: column;
-}
+            border: 1px solid #e2e8f0;
 
-.form-group.full {
+            border-radius: 8px;
 
-    grid-column: 1 / -1;
-}
+            padding: 15px;
 
-.form-group label {
+            background: #f8fafc;
+        }
 
-    margin-bottom: 6px;
 
-    font-size: 13px;
+        .access-row {
 
-    font-weight: bold;
+            display: grid;
 
-    color: #334155;
-}
+            grid-template-columns:
+                1fr 1fr auto;
 
-input,
-select {
+            gap: 10px;
 
-    width: 100%;
+            margin-bottom: 10px;
 
-    padding: 11px;
+            align-items: end;
+        }
 
-    border: 1px solid #cbd5e1;
 
-    border-radius: 6px;
+        .access-row label {
 
-    font-size: 14px;
+            display: block;
 
-    background: white;
-}
+            font-size: 12px;
 
-input:focus,
-select:focus {
+            font-weight: bold;
 
-    outline: none;
+            margin-bottom: 5px;
 
-    border-color: #2563eb;
-}
+            color: #64748b;
+        }
 
-/* =========================
-   ACCESS BOX
-========================= */
 
-.access-box {
+        .remove-access {
 
-    border: 1px solid #e2e8f0;
+            background: #dc3545;
 
-    border-radius: 8px;
+            color: white;
 
-    padding: 15px;
+            border: none;
 
-    background: #f8fafc;
-}
+            padding: 10px 13px;
 
-.access-row {
+            border-radius: 6px;
 
-    display: grid;
+            cursor: pointer;
+        }
 
-    grid-template-columns:
-        1fr 1fr auto;
 
-    gap: 10px;
+        .remove-access:hover {
 
-    margin-bottom: 10px;
+            background: #b02a37;
+        }
 
-    align-items: end;
-}
 
-.access-row label {
+        .add-access {
 
-    display: block;
+            background: #2563eb;
 
-    font-size: 12px;
+            color: white;
 
-    font-weight: bold;
+            border: none;
 
-    margin-bottom: 5px;
+            padding: 10px 15px;
 
-    color: #64748b;
-}
+            border-radius: 6px;
 
-.remove-access {
+            cursor: pointer;
 
-    background: #dc3545;
+            font-weight: bold;
 
-    color: white;
+            margin-top: 5px;
+        }
 
-    border: none;
 
-    padding: 10px 13px;
+        .add-access:hover {
 
-    border-radius: 6px;
+            background: #1d4ed8;
+        }
 
-    cursor: pointer;
-}
 
-.remove-access:hover {
+        /* =========================
+           BUTTONS
+        ========================= */
 
-    background: #b02a37;
-}
+        .save-btn {
 
-.add-access {
+            width: 100%;
 
-    background: #2563eb;
+            margin-top: 18px;
 
-    color: white;
+            padding: 12px;
 
-    border: none;
+            border: none;
 
-    padding: 10px 15px;
+            border-radius: 7px;
 
-    border-radius: 6px;
+            background: #198754;
 
-    cursor: pointer;
+            color: white;
 
-    font-weight: bold;
+            font-size: 15px;
 
-    margin-top: 5px;
-}
+            font-weight: bold;
 
-.add-access:hover {
+            cursor: pointer;
+        }
 
-    background: #1d4ed8;
-}
 
-/* =========================
-   BUTTONS
-========================= */
+        .save-btn:hover {
 
-.save-btn {
+            background: #157347;
+        }
 
-    width: 100%;
 
-    margin-top: 18px;
+        .cancel-btn {
 
-    padding: 12px;
+            width: 100%;
 
-    border: none;
+            margin-top: 10px;
 
-    border-radius: 7px;
+            padding: 11px;
 
-    background: #198754;
+            border: none;
 
-    color: white;
+            border-radius: 7px;
 
-    font-size: 15px;
+            background: #64748b;
 
-    font-weight: bold;
+            color: white;
 
-    cursor: pointer;
-}
+            cursor: pointer;
+        }
 
-.save-btn:hover {
 
-    background: #157347;
-}
+        /* =========================
+           MESSAGE
+        ========================= */
 
-.cancel-btn {
+        #message {
 
-    width: 100%;
+            margin-top: 15px;
 
-    margin-top: 10px;
+            text-align: center;
 
-    padding: 11px;
+            font-weight: bold;
 
-    border: none;
+            min-height: 20px;
+        }
 
-    border-radius: 7px;
 
-    background: #64748b;
+        /* =========================
+           TABLE
+        ========================= */
 
-    color: white;
+        .table-wrapper {
 
-    cursor: pointer;
-}
+            width: 100%;
 
-/* =========================
-   MESSAGE
-========================= */
+            overflow-x: auto;
+        }
 
-#message {
 
-    margin-top: 15px;
+        table {
 
-    text-align: center;
+            width: 100%;
 
-    font-weight: bold;
+            min-width: 850px;
 
-    min-height: 20px;
-}
+            border-collapse: collapse;
+        }
 
-/* =========================
-   TABLE
-========================= */
 
-.table-wrapper {
+        th {
 
-    width: 100%;
+            background: #2563eb;
 
-    overflow-x: auto;
-}
+            color: white;
 
-table {
+            padding: 12px;
 
-    width: 100%;
+            text-align: left;
 
-    min-width: 850px;
+            font-size: 13px;
+        }
 
-    border-collapse: collapse;
-}
 
-th {
+        td {
 
-    background: #2563eb;
+            padding: 12px;
 
-    color: white;
+            border-bottom: 1px solid #e2e8f0;
 
-    padding: 12px;
+            font-size: 13px;
+        }
 
-    text-align: left;
 
-    font-size: 13px;
-}
+        tbody tr:hover {
 
-td {
+            background: #f8fafc;
+        }
 
-    padding: 12px;
 
-    border-bottom: 1px solid #e2e8f0;
+        /* =========================
+           ACCESS BADGES
+        ========================= */
 
-    font-size: 13px;
-}
+        .access-badge {
 
-tbody tr:hover {
+            display: inline-block;
 
-    background: #f8fafc;
-}
+            background: #e0f2fe;
 
-/* =========================
-   ACCESS BADGES
-========================= */
+            color: #075985;
 
-.access-badge {
+            padding: 5px 8px;
 
-    display: inline-block;
+            border-radius: 5px;
 
-    background: #e0f2fe;
+            margin: 2px;
 
-    color: #075985;
+            font-size: 11px;
+        }
 
-    padding: 5px 8px;
 
-    border-radius: 5px;
+        /* =========================
+           ACTION
+        ========================= */
 
-    margin: 2px;
+        .edit-btn {
 
-    font-size: 11px;
-}
+            background: #ffc107;
 
-/* =========================
-   ACTION
-========================= */
+            color: #000;
 
-.edit-btn {
+            border: none;
 
-    background: #ffc107;
+            padding: 6px 10px;
 
-    color: #000;
+            border-radius: 5px;
 
-    border: none;
+            cursor: pointer;
 
-    padding: 6px 10px;
+            font-size: 12px;
+        }
 
-    border-radius: 5px;
 
-    cursor: pointer;
+        .delete-btn {
 
-    font-size: 12px;
-}
+            background: #dc3545;
 
-.delete-btn {
+            color: white;
 
-    background: #dc3545;
+            border: none;
 
-    color: white;
+            padding: 6px 10px;
 
-    border: none;
+            border-radius: 5px;
 
-    padding: 6px 10px;
+            cursor: pointer;
 
-    border-radius: 5px;
+            font-size: 12px;
 
-    cursor: pointer;
+            margin-left: 5px;
+        }
 
-    font-size: 12px;
 
-    margin-left: 5px;
-}
+        /* =========================
+           MOBILE
+        ========================= */
 
-/* =========================
-   MOBILE
-========================= */
+        @media (max-width: 700px) {
 
-@media (max-width: 700px) {
+            .main {
 
-    .sidebar {
+                margin-left: 70px;
 
-        width: 70px;
-    }
+                width: calc(100% - 70px);
 
-    .logo h2,
-    .logo p,
-    .menu span {
+                padding: 12px;
+            }
 
-        display: none;
-    }
 
-    .logo {
+            .form-grid {
 
-        height: 100px;
+                grid-template-columns: 1fr;
+            }
 
-        padding: 10px 5px;
-    }
 
-    .logo img {
+            .form-group.full {
 
-        width: 45px;
-        height: 45px;
-    }
+                grid-column: auto;
+            }
 
-    .menu a {
 
-        justify-content: center;
+            .access-row {
 
-        padding: 15px 5px;
-    }
+                grid-template-columns: 1fr;
+            }
 
-    .main {
+        }
 
-        margin-left: 70px;
-
-        width: calc(100% - 70px);
-
-        padding: 12px;
-    }
-
-    .form-grid {
-
-        grid-template-columns: 1fr;
-    }
-
-    .form-group.full {
-
-        grid-column: auto;
-    }
-
-    .access-row {
-
-        grid-template-columns: 1fr;
-    }
-
-}
-
-</style>
+    </style>
 
 </head>
+
 
 <body>
 
 
-<!-- =========================
-     SIDEBAR
-========================= -->
+<!-- =========================================
+     ADMIN SIDEBAR
+========================================= -->
 
-<div class="sidebar">
-
-    <div class="logo">
-
-        <img
-            src="assets/images/logo.png"
-            alt="Telethon Logo"
-        >
-
-        <h2>Telethon</h2>
-
-        <p>Management System</p>
-
-    </div>
+<div id="adminSidebar"></div>
 
 
-    <div class="menu">
 
-        <a href="dashboard.html">
-            <i class="fa-solid fa-house"></i>
-            <span>Dashboard</span>
-        </a>
-
-        <a href="register.html">
-            <i class="fa-solid fa-user-plus"></i>
-            <span>Registration Form</span>
-        </a>
-
-        <a href="users.html">
-            <i class="fa-solid fa-users"></i>
-            <span>Teachers List</span>
-        </a>
-
-        <a href="daily-entry.html">
-            <i class="fa-solid fa-file-circle-plus"></i>
-            <span>Daily Collection</span>
-        </a>
-
-        <a href="all-entry.html">
-            <i class="fa-solid fa-list"></i>
-            <span>All Entry</span>
-        </a>
-
-        <a href="reports.html">
-            <i class="fa-solid fa-chart-column"></i>
-            <span>Reports</span>
-        </a>
-
-        <a
-            href="region-user-management.html"
-            class="active"
-        >
-            <i class="fa-solid fa-user-shield"></i>
-            <span>Region Users</span>
-        </a>
-
-        <a href="index.html">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Logout</span>
-        </a>
-
-    </div>
-
-</div>
-
-
-<!-- =========================
+<!-- =========================================
      MAIN
-========================= -->
+========================================= -->
 
 <div class="main">
 
+
+    <!-- =========================
+         TOPBAR
+    ========================= -->
 
     <div class="topbar">
 
@@ -681,6 +542,7 @@ tbody tr:hover {
         </p>
 
     </div>
+
 
 
     <!-- =========================
@@ -829,6 +691,7 @@ tbody tr:hover {
     </div>
 
 
+
     <!-- =========================
          USERS TABLE
     ========================= -->
@@ -886,8 +749,60 @@ tbody tr:hover {
 
     </div>
 
+
 </div>
 
+
+
+<!-- =========================================
+     LOAD ADMIN SIDEBAR
+========================================= -->
+
+<script>
+
+fetch("components/admin-sidebar.html")
+
+    .then(function(response) {
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Admin Sidebar not found"
+            );
+
+        }
+
+        return response.text();
+
+    })
+
+    .then(function(data) {
+
+        const sidebar =
+            document.getElementById(
+                "adminSidebar"
+            );
+
+        sidebar.innerHTML = data;
+
+    })
+
+    .catch(function(error) {
+
+        console.error(
+            "Admin Sidebar Error:",
+            error
+        );
+
+    });
+
+</script>
+
+
+
+<!-- =========================================
+     REGION USER MANAGEMENT JS
+========================================= -->
 
 <script
     type="module"
