@@ -1,7 +1,5 @@
 // ==========================================
 // Telethon - Collection Summary
-// Updated: Same Employee + Same Date
-// Only LAST Entry will be counted
 // ==========================================
 
 import { db } from "./firebase-config.js";
@@ -10,6 +8,7 @@ import {
     collection,
     getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
 
 // ==========================================
 // HTML ELEMENTS
@@ -57,6 +56,7 @@ const tableFoot =
 const logoutBtn =
     document.getElementById("logoutBtn");
 
+
 // ==========================================
 // DATA
 // ==========================================
@@ -64,6 +64,7 @@ const logoutBtn =
 let employees = [];
 
 let entries = [];
+
 
 // ==========================================
 // LOAD ALL DATA
@@ -81,6 +82,7 @@ async function loadData() {
             </tr>
         `;
 
+
         // ==================================
         // LOAD EMPLOYEES
         // ==================================
@@ -90,12 +92,15 @@ async function loadData() {
                 collection(db, "employees")
             );
 
+
         employees = [];
+
 
         employeeSnapshot.forEach((docSnap) => {
 
             const data =
                 docSnap.data();
+
 
             employees.push({
 
@@ -128,6 +133,7 @@ async function loadData() {
                     data.jamiatulMadina ||
                     data.jamiatul_madina ||
                     data.jamiatuMadina ||
+                    data.jamiatulMadinah ||
                     "-",
 
                 target:
@@ -143,6 +149,7 @@ async function loadData() {
 
         });
 
+
         // ==================================
         // LOAD DAILY ENTRIES
         // ==================================
@@ -152,12 +159,15 @@ async function loadData() {
                 collection(db, "daily_entry")
             );
 
+
         entries = [];
+
 
         entrySnapshot.forEach((docSnap) => {
 
             const data =
                 docSnap.data();
+
 
             entries.push({
 
@@ -165,13 +175,15 @@ async function loadData() {
                     docSnap.id,
 
                 employeeCode:
-                    data.employee_code ||
                     data.employeeCode ||
+                    data.employee_code ||
                     data.emp_code ||
                     "",
 
                 amount:
-                    Number(data.amount) || 0,
+                    Number(
+                        data.amount
+                    ) || 0,
 
                 date:
                     data.date || "",
@@ -183,21 +195,30 @@ async function loadData() {
 
         });
 
+
+        console.log(
+            "All Daily Entries:",
+            entries
+        );
+
+
         // ==================================
-        // IMPORTANT
+        // IMPORTANT:
         // SAME EMPLOYEE + SAME DATE
-        // ONLY LAST ENTRY WILL BE COUNTED
+        // ONLY LAST ENTRY WILL COUNT
         // ==================================
 
         entries =
-            getLatestEntriesByEmployeeAndDate(
+            getLatestEntriesPerEmployeePerDate(
                 entries
             );
 
+
         console.log(
-            "Final Entries After Duplicate-Date Check:",
+            "Latest Entries Per Employee + Date:",
             entries
         );
+
 
         // ==================================
         // DROPDOWNS
@@ -211,7 +232,13 @@ async function loadData() {
 
         updateCityDropdown();
 
+
+        // ==================================
+        // INITIAL DISPLAY
+        // ==================================
+
         applyCurrentFilter();
+
 
     }
     catch (error) {
@@ -220,6 +247,7 @@ async function loadData() {
             "Collection Summary Error:",
             error
         );
+
 
         tableBody.innerHTML = `
             <tr>
@@ -239,15 +267,18 @@ async function loadData() {
 
 }
 
+
 // ==========================================
-// GET LAST ENTRY
-// Same Employee Code + Same Date
+// GET LATEST ENTRY
+// SAME EMPLOYEE + SAME DATE
 // ==========================================
 
-function getLatestEntriesByEmployeeAndDate(allEntries) {
+function getLatestEntriesPerEmployeePerDate(
+    allEntries
+) {
 
-    const latestMap =
-        new Map();
+    const latestEntries = {};
+
 
     allEntries.forEach((entry) => {
 
@@ -256,114 +287,129 @@ function getLatestEntriesByEmployeeAndDate(allEntries) {
                 entry.employeeCode || ""
             ).trim();
 
+
         const date =
             String(
                 entry.date || ""
             ).trim();
 
+
         // Invalid entry ignore
-        if (!employeeCode || !date) {
-            return;
-        }
-
-        const key =
-            `${employeeCode}__${date}`;
-
-        // First entry
-        if (!latestMap.has(key)) {
-
-            latestMap.set(
-                key,
-                entry
-            );
+        if (
+            !employeeCode ||
+            !date
+        ) {
 
             return;
+
         }
+
+
+        // ==================================
+        // UNIQUE KEY
+        // Employee + Date
+        // ==================================
+
+        const uniqueKey =
+            employeeCode +
+            "__" +
+            date;
+
+
+        // ==================================
+        // CREATED TIME
+        // ==================================
+
+        let createdTime = 0;
+
+
+        if (
+            entry.createdAt &&
+            typeof entry.createdAt.toMillis ===
+                "function"
+        ) {
+
+            createdTime =
+                entry.createdAt.toMillis();
+
+        }
+
+
+        // ==================================
+        // FIRST ENTRY
+        // ==================================
+
+        if (
+            !latestEntries[uniqueKey]
+        ) {
+
+            latestEntries[uniqueKey] = {
+
+                ...entry,
+
+                _createdTime:
+                    createdTime
+
+            };
+
+
+            return;
+
+        }
+
+
+        // ==================================
+        // EXISTING ENTRY
+        // CHECK WHICH ONE IS LATEST
+        // ==================================
 
         const existing =
-            latestMap.get(key);
+            latestEntries[uniqueKey];
 
-        // ==================================
-        // Compare createdAt
-        // ==================================
 
         const existingTime =
-            getTimestampValue(
-                existing.createdAt
-            );
+            existing._createdTime || 0;
 
-        const currentTime =
-            getTimestampValue(
-                entry.createdAt
-            );
 
-        if (currentTime >= existingTime) {
+        if (
+            createdTime >=
+            existingTime
+        ) {
 
-            latestMap.set(
-                key,
-                entry
-            );
+            latestEntries[uniqueKey] = {
+
+                ...entry,
+
+                _createdTime:
+                    createdTime
+
+            };
 
         }
 
     });
 
-    return Array.from(
-        latestMap.values()
-    );
+
+    // ==================================
+    // REMOVE INTERNAL FIELD
+    // ==================================
+
+    return Object.values(
+        latestEntries
+    ).map((entry) => {
+
+        const {
+            _createdTime,
+            ...cleanEntry
+        } = entry;
+
+
+        return cleanEntry;
+
+    });
 
 }
 
-// ==========================================
-// TIMESTAMP VALUE
-// ==========================================
-
-function getTimestampValue(timestamp) {
-
-    if (!timestamp) {
-        return 0;
-    }
-
-    // Firebase Timestamp
-    if (
-        typeof timestamp.toMillis ===
-        "function"
-    ) {
-
-        return timestamp.toMillis();
-
-    }
-
-    // Date object
-    if (
-        timestamp instanceof Date
-    ) {
-
-        return timestamp.getTime();
-
-    }
-
-    // Number
-    if (
-        typeof timestamp === "number"
-    ) {
-
-        return timestamp;
-
-    }
-
-    // String date
-    const parsed =
-        new Date(timestamp).getTime();
-
-    if (!isNaN(parsed)) {
-
-        return parsed;
-
-    }
-
-    return 0;
-}
 
 // ==========================================
 // LOAD REGION DROPDOWN
@@ -374,15 +420,18 @@ function loadRegionDropdown() {
     const regions =
         uniqueValues(
             employees.map(
-                item => item.region
+                item =>
+                    item.region
             )
         );
+
 
     regionFilter.innerHTML = `
         <option value="">
             All Regions
         </option>
     `;
+
 
     regions
         .sort()
@@ -398,6 +447,7 @@ function loadRegionDropdown() {
 
 }
 
+
 // ==========================================
 // LOAD STATE DROPDOWN
 // ==========================================
@@ -407,8 +457,10 @@ function updateStateDropdown() {
     const selectedRegion =
         regionFilter.value;
 
+
     let filtered =
         employees;
+
 
     if (selectedRegion) {
 
@@ -421,18 +473,22 @@ function updateStateDropdown() {
 
     }
 
+
     const states =
         uniqueValues(
             filtered.map(
-                item => item.state
+                item =>
+                    item.state
             )
         );
+
 
     stateFilter.innerHTML = `
         <option value="">
             All States
         </option>
     `;
+
 
     states
         .sort()
@@ -446,7 +502,9 @@ function updateStateDropdown() {
 
         });
 
+
     stateFilter.value = "";
+
 
     cityFilter.innerHTML = `
         <option value="">
@@ -455,6 +513,7 @@ function updateStateDropdown() {
     `;
 
 }
+
 
 // ==========================================
 // LOAD CITY DROPDOWN
@@ -468,8 +527,10 @@ function updateCityDropdown() {
     const selectedState =
         stateFilter.value;
 
+
     let filtered =
         employees;
+
 
     if (selectedRegion) {
 
@@ -482,6 +543,7 @@ function updateCityDropdown() {
 
     }
 
+
     if (selectedState) {
 
         filtered =
@@ -493,18 +555,22 @@ function updateCityDropdown() {
 
     }
 
+
     const cities =
         uniqueValues(
             filtered.map(
-                item => item.city
+                item =>
+                    item.city
             )
         );
+
 
     cityFilter.innerHTML = `
         <option value="">
             All Cities
         </option>
     `;
+
 
     cities
         .sort()
@@ -518,9 +584,11 @@ function updateCityDropdown() {
 
         });
 
+
     cityFilter.value = "";
 
 }
+
 
 // ==========================================
 // EMPLOYEE DROPDOWN
@@ -534,21 +602,34 @@ function loadEmployeeDropdown() {
         </option>
     `;
 
+
     employees
         .slice()
         .sort(
             (a, b) =>
-                String(a.employeeCode)
-                    .localeCompare(
-                        String(b.employeeCode)
+                String(
+                    a.employeeCode
+                ).localeCompare(
+                    String(
+                        b.employeeCode
                     )
+                )
         )
         .forEach((employee) => {
 
             employeeFilter.innerHTML += `
-                <option value="${escapeHtml(employee.employeeCode)}">
-                    ${escapeHtml(employee.employeeCode)}
-                    - ${escapeHtml(employee.teacherName)}
+                <option
+                    value="${escapeHtml(
+                        employee.employeeCode
+                    )}"
+                >
+                    ${escapeHtml(
+                        employee.employeeCode
+                    )}
+                    -
+                    ${escapeHtml(
+                        employee.teacherName
+                    )}
                 </option>
             `;
 
@@ -556,63 +637,84 @@ function loadEmployeeDropdown() {
 
 }
 
+
 // ==========================================
 // REGION CHANGE
 // ==========================================
 
-regionFilter.addEventListener(
-    "change",
-    () => {
+if (regionFilter) {
 
-        updateStateDropdown();
+    regionFilter.addEventListener(
+        "change",
+        () => {
 
-        updateCityDropdown();
+            updateStateDropdown();
 
-        employeeFilter.value = "";
+            updateCityDropdown();
 
-    }
-);
+            employeeFilter.value = "";
+
+        }
+    );
+
+}
+
 
 // ==========================================
 // STATE CHANGE
 // ==========================================
 
-stateFilter.addEventListener(
-    "change",
-    () => {
+if (stateFilter) {
 
-        updateCityDropdown();
+    stateFilter.addEventListener(
+        "change",
+        () => {
 
-        employeeFilter.value = "";
+            updateCityDropdown();
 
-    }
-);
+            employeeFilter.value = "";
+
+        }
+    );
+
+}
+
 
 // ==========================================
 // CITY CHANGE
 // ==========================================
 
-cityFilter.addEventListener(
-    "change",
-    () => {
+if (cityFilter) {
 
-        employeeFilter.value = "";
+    cityFilter.addEventListener(
+        "change",
+        () => {
 
-    }
-);
+            employeeFilter.value = "";
+
+        }
+    );
+
+}
+
 
 // ==========================================
 // APPLY FILTER
 // ==========================================
 
-applyFilter.addEventListener(
-    "click",
-    () => {
+if (applyFilter) {
 
-        applyCurrentFilter();
+    applyFilter.addEventListener(
+        "click",
+        () => {
 
-    }
-);
+            applyCurrentFilter();
+
+        }
+    );
+
+}
+
 
 // ==========================================
 // APPLY CURRENT FILTER
@@ -622,6 +724,7 @@ function applyCurrentFilter() {
 
     let filteredEmployees =
         employees.slice();
+
 
     // ==================================
     // REGION
@@ -638,6 +741,7 @@ function applyCurrentFilter() {
 
     }
 
+
     // ==================================
     // STATE
     // ==================================
@@ -652,6 +756,7 @@ function applyCurrentFilter() {
             );
 
     }
+
 
     // ==================================
     // CITY
@@ -668,8 +773,9 @@ function applyCurrentFilter() {
 
     }
 
+
     // ==================================
-    // EMPLOYEE
+    // EMPLOYEE CODE
     // ==================================
 
     if (employeeFilter.value) {
@@ -687,6 +793,7 @@ function applyCurrentFilter() {
 
     }
 
+
     // ==================================
     // DISPLAY
     // ==================================
@@ -695,36 +802,44 @@ function applyCurrentFilter() {
         filteredEmployees
     );
 
+
     displaySummary(
         filteredEmployees
     );
 
 }
 
+
 // ==========================================
 // RESET
 // ==========================================
 
-resetFilter.addEventListener(
-    "click",
-    () => {
+if (resetFilter) {
 
-        regionFilter.value = "";
+    resetFilter.addEventListener(
+        "click",
+        () => {
 
-        stateFilter.value = "";
+            regionFilter.value = "";
 
-        cityFilter.value = "";
+            stateFilter.value = "";
 
-        employeeFilter.value = "";
+            cityFilter.value = "";
 
-        updateStateDropdown();
+            employeeFilter.value = "";
 
-        updateCityDropdown();
 
-        applyCurrentFilter();
+            updateStateDropdown();
 
-    }
-);
+            updateCityDropdown();
+
+            applyCurrentFilter();
+
+        }
+    );
+
+}
+
 
 // ==========================================
 // UPDATE TITLE
@@ -734,6 +849,7 @@ function updateSelectedTitle(list) {
 
     let title =
         "All Teachers";
+
 
     if (employeeFilter.value) {
 
@@ -747,6 +863,7 @@ function updateSelectedTitle(list) {
                         employeeFilter.value
                     )
             );
+
 
         if (employee) {
 
@@ -775,10 +892,16 @@ function updateSelectedTitle(list) {
 
     }
 
-    selectedTitle.textContent =
-        title;
+
+    if (selectedTitle) {
+
+        selectedTitle.textContent =
+            title;
+
+    }
 
 }
+
 
 // ==========================================
 // DISPLAY SUMMARY
@@ -790,18 +913,24 @@ function displaySummary(list) {
 
     let totalCollection = 0;
 
+
     const rows = [];
+
 
     list.forEach((employee) => {
 
         const employeeCode =
             String(
                 employee.employeeCode || ""
-            );
+            ).trim();
+
 
         // ==================================
-        // GET FINAL COLLECTION
-        // FOR EACH DATE
+        // GET COLLECTION
+        //
+        // IMPORTANT:
+        // entries already contain ONLY
+        // LAST ENTRY PER DATE
         // ==================================
 
         const employeeCollection =
@@ -810,24 +939,33 @@ function displaySummary(list) {
 
                     return String(
                         entry.employeeCode || ""
-                    ) === employeeCode;
+                    ).trim() ===
+                    employeeCode;
 
                 })
                 .reduce(
-                    (sum, entry) =>
-                        sum +
-                        (
-                            Number(
-                                entry.amount
-                            ) || 0
-                        ),
+                    (
+                        sum,
+                        entry
+                    ) => {
+
+                        return sum +
+                            (
+                                Number(
+                                    entry.amount
+                                ) || 0
+                            );
+
+                    },
                     0
                 );
+
 
         const target =
             Number(
                 employee.target
             ) || 0;
+
 
         const remaining =
             Math.max(
@@ -836,7 +974,9 @@ function displaySummary(list) {
                 0
             );
 
+
         let percentage = 0;
+
 
         if (target > 0) {
 
@@ -848,11 +988,14 @@ function displaySummary(list) {
 
         }
 
+
         totalTarget +=
             target;
 
+
         totalCollection +=
             employeeCollection;
+
 
         rows.push({
 
@@ -871,6 +1014,11 @@ function displaySummary(list) {
 
     });
 
+
+    // ==================================
+    // TOTAL REMAINING
+    // ==================================
+
     const totalRemaining =
         Math.max(
             totalTarget -
@@ -878,7 +1026,13 @@ function displaySummary(list) {
             0
         );
 
+
+    // ==================================
+    // TOTAL PERCENTAGE
+    // ==================================
+
     let totalPercentage = 0;
+
 
     if (totalTarget > 0) {
 
@@ -890,27 +1044,48 @@ function displaySummary(list) {
 
     }
 
+
     // ==================================
     // CARDS
     // ==================================
 
-    totalTargetEl.textContent =
-        formatMoney(
-            totalTarget
-        );
+    if (totalTargetEl) {
 
-    totalCollectionEl.textContent =
-        formatMoney(
-            totalCollection
-        );
+        totalTargetEl.textContent =
+            formatMoney(
+                totalTarget
+            );
 
-    remainingTargetEl.textContent =
-        formatMoney(
-            totalRemaining
-        );
+    }
 
-    percentageEl.textContent =
-        `${totalPercentage.toFixed(2)}%`;
+
+    if (totalCollectionEl) {
+
+        totalCollectionEl.textContent =
+            formatMoney(
+                totalCollection
+            );
+
+    }
+
+
+    if (remainingTargetEl) {
+
+        remainingTargetEl.textContent =
+            formatMoney(
+                totalRemaining
+            );
+
+    }
+
+
+    if (percentageEl) {
+
+        percentageEl.textContent =
+            `${totalPercentage.toFixed(2)}%`;
+
+    }
+
 
     // ==================================
     // TABLE
@@ -925,6 +1100,7 @@ function displaySummary(list) {
     );
 
 }
+
 
 // ==========================================
 // DISPLAY TABLE
@@ -946,10 +1122,12 @@ function displayTable(
                     colspan="11"
                     class="no-data"
                 >
-                    Is filter ke liye koi Teacher nahi mila.
+                    Is filter ke liye koi
+                    Teacher nahi mila.
                 </td>
             </tr>
         `;
+
 
         tableFoot.innerHTML = "";
 
@@ -957,36 +1135,20 @@ function displayTable(
 
     }
 
+
     let html = "";
+
 
     rows.forEach(
         (employee, index) => {
 
-            let percentageClass =
-                "";
-
-            if (
+            const percentageClass =
                 employee.percentage >= 70
-            ) {
+                    ? ""
+                    : employee.percentage >= 40
+                        ? "medium"
+                        : "low";
 
-                percentageClass =
-                    "";
-
-            }
-            else if (
-                employee.percentage >= 40
-            ) {
-
-                percentageClass =
-                    "medium";
-
-            }
-            else {
-
-                percentageClass =
-                    "low";
-
-            }
 
             html += `
 
@@ -1053,7 +1215,8 @@ function displayTable(
                     <td>
 
                         <span
-                            class="percentage-badge ${percentageClass}"
+                            class="percentage-badge
+                            ${percentageClass}"
                         >
 
                             ${employee.percentage.toFixed(2)}%
@@ -1069,8 +1232,10 @@ function displayTable(
         }
     );
 
+
     tableBody.innerHTML =
         html;
+
 
     // ==================================
     // TOTAL ROW
@@ -1115,6 +1280,7 @@ function displayTable(
 
 }
 
+
 // ==========================================
 // MONEY FORMAT
 // ==========================================
@@ -1126,6 +1292,7 @@ function formatMoney(amount) {
     ).toLocaleString("en-IN")}`;
 
 }
+
 
 // ==========================================
 // UNIQUE VALUES
@@ -1145,6 +1312,7 @@ function uniqueValues(array) {
 
 }
 
+
 // ==========================================
 // HTML ESCAPE
 // ==========================================
@@ -1154,28 +1322,29 @@ function escapeHtml(value) {
     return String(
         value ?? ""
     )
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+    .replaceAll(
+        "'",
+        "&#039;"
+    );
 
 }
+
 
 // ==========================================
 // LOGOUT
@@ -1189,6 +1358,7 @@ if (logoutBtn) {
 
             e.preventDefault();
 
+
             localStorage.removeItem(
                 "loggedInEmpCode"
             );
@@ -1197,13 +1367,6 @@ if (logoutBtn) {
                 "userRole"
             );
 
-            localStorage.removeItem(
-                "regionUserName"
-            );
-
-            localStorage.removeItem(
-                "regionUserAccess"
-            );
 
             window.location.href =
                 "index.html";
@@ -1212,6 +1375,7 @@ if (logoutBtn) {
     );
 
 }
+
 
 // ==========================================
 // START
