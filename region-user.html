@@ -36,748 +36,458 @@
         ====================================== */
 
         .sidebar {
-
             position: fixed;
-
             left: 0;
             top: 0;
-
             width: 250px;
             height: 100vh;
-
             background: #0f172a;
-
             color: white;
-
             display: flex;
             flex-direction: column;
-
-            box-shadow:
-                2px 0 10px rgba(0,0,0,0.12);
-
+            box-shadow: 2px 0 10px rgba(0,0,0,0.12);
             z-index: 1000;
         }
-
 
         /* ======================================
            SIDEBAR BRAND
         ====================================== */
 
         .sidebar-brand {
-
             height: 76px;
-
             display: flex;
-
             align-items: center;
-
             gap: 12px;
-
             padding: 12px 18px;
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
-
         .sidebar-brand img {
-
             width: 45px;
             height: 45px;
-
             object-fit: contain;
         }
 
-
         .sidebar-brand-text h2 {
-
             font-size: 18px;
-
             color: #38bdf8;
-
             margin-bottom: 3px;
         }
 
-
         .sidebar-brand-text p {
-
             font-size: 11px;
-
             color: #cbd5e1;
         }
-
 
         /* ======================================
            USER INFO
         ====================================== */
 
         .sidebar-user {
-
             padding: 18px;
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
-
         .sidebar-user-name {
-
             font-size: 14px;
-
             font-weight: bold;
-
             color: white;
-
             margin-bottom: 5px;
         }
 
-
         .sidebar-user-role {
-
             font-size: 11px;
-
             color: #94a3b8;
         }
-
 
         /* ======================================
            MENU
         ====================================== */
 
         .sidebar-menu {
-
             padding: 18px 12px;
-
             flex: 1;
         }
 
-
         .menu-title {
-
             font-size: 11px;
-
             color: #64748b;
-
             text-transform: uppercase;
-
             letter-spacing: 1px;
-
-            padding:
-                0 12px 10px;
+            padding: 0 12px 10px;
         }
 
-
         .menu-link {
-
             display: flex;
-
             align-items: center;
-
             gap: 12px;
-
             width: 100%;
-
             padding: 12px 14px;
-
             margin-bottom: 6px;
-
             border-radius: 7px;
-
             color: #cbd5e1;
-
             text-decoration: none;
-
             font-size: 14px;
-
             transition: 0.2s;
-
             cursor: pointer;
         }
 
-
         .menu-link i {
-
             width: 20px;
-
             text-align: center;
-
             font-size: 15px;
         }
 
-
         .menu-link:hover {
-
             background: #1e293b;
-
             color: white;
         }
-
 
         .menu-link.active {
-
             background: #2563eb;
-
             color: white;
-
-            box-shadow:
-                0 3px 8px
-                rgba(37,99,235,0.25);
+            box-shadow: 0 3px 8px rgba(37,99,235,0.25);
         }
-
 
         /* ======================================
            LOGOUT
         ====================================== */
 
         .sidebar-bottom {
-
             padding: 12px;
-
-            border-top:
-                1px solid
-                rgba(255,255,255,0.08);
+            border-top: 1px solid rgba(255,255,255,0.08);
         }
 
-
         .logout-link {
-
             color: #fca5a5;
         }
 
-
         .logout-link:hover {
-
             background: #450a0a;
-
             color: #fecaca;
         }
-
 
         /* ======================================
            MAIN AREA
         ====================================== */
 
         .main-area {
-
             margin-left: 250px;
-
             min-height: 100vh;
         }
-
 
         /* ======================================
            TOPBAR
         ====================================== */
 
         .topbar-main {
-
             height: 76px;
-
             background: white;
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             padding: 0 26px;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
         .topbar-title h2 {
-
             font-size: 20px;
-
             color: #0f172a;
-
             margin-bottom: 3px;
         }
 
-
         .topbar-title p {
-
             font-size: 12px;
-
             color: #64748b;
         }
 
-
         .topbar-user {
-
             display: flex;
-
             align-items: center;
-
             gap: 10px;
-
             color: #334155;
-
             font-size: 13px;
         }
 
-
         .topbar-user i {
-
             color: #2563eb;
-
             font-size: 20px;
         }
 
-
         /* ======================================
-           MAIN CONTENT
+           MAIN
         ====================================== */
 
         .main {
-
             width: 100%;
-
             padding: 22px;
         }
-
 
         /* ======================================
            PAGE TITLE
         ====================================== */
 
         .page-title {
-
             background: white;
-
             border-radius: 12px;
-
             padding: 22px;
-
             margin-bottom: 18px;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
         .page-title h2 {
-
             font-size: 24px;
-
             color: #0f172a;
-
             margin-bottom: 6px;
         }
 
-
         .page-title p {
-
             color: #64748b;
-
             font-size: 14px;
         }
-
 
         /* ======================================
            REGION USER INFO
         ====================================== */
 
         .region-user-info {
-
             background: #ecfdf5;
-
             border: 1px solid #bbf7d0;
-
             padding: 14px 18px;
-
             border-radius: 8px;
-
             margin-bottom: 18px;
-
             color: #166534;
-
             font-size: 14px;
         }
 
-
         .region-user-info strong {
-
             font-size: 16px;
         }
-
 
         /* ======================================
            FILTER PANEL
         ====================================== */
 
         .filter-panel {
-
             background: white;
-
             border-radius: 12px;
-
             padding: 20px;
-
             margin-bottom: 18px;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
         .filter-title {
-
             font-size: 17px;
-
             font-weight: bold;
-
             margin-bottom: 16px;
-
             color: #0f172a;
         }
 
-
         .filters {
-
             display: grid;
-
-            grid-template-columns:
-                repeat(4, 1fr);
-
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
         }
 
-
         .filter-group label {
-
             display: block;
-
             margin-bottom: 6px;
-
             font-size: 13px;
-
             font-weight: bold;
-
             color: #475569;
         }
 
-
         .filter-group select,
         .filter-group input {
-
             width: 100%;
-
             padding: 10px 12px;
-
             border: 1px solid #cbd5e1;
-
             border-radius: 7px;
-
             outline: none;
-
             background: white;
-
             font-size: 14px;
         }
 
-
         .filter-group select:focus,
         .filter-group input:focus {
-
             border-color: #2563eb;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(37,99,235,0.10);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
         }
-
 
         /* ======================================
            BUTTONS
         ====================================== */
 
         .filter-buttons {
-
             display: flex;
-
             gap: 10px;
-
             margin-top: 16px;
         }
 
-
         .filter-btn {
-
             border: none;
-
             padding: 10px 18px;
-
             border-radius: 7px;
-
             cursor: pointer;
-
             font-weight: bold;
-
             font-size: 13px;
         }
 
-
         .apply-btn {
-
             background: #2563eb;
-
             color: white;
         }
 
-
         .apply-btn:hover {
-
             background: #1d4ed8;
         }
 
-
         .reset-btn {
-
             background: #e2e8f0;
-
             color: #334155;
         }
 
-
         .reset-btn:hover {
-
             background: #cbd5e1;
         }
-
 
         /* ======================================
            TABLE
         ====================================== */
 
         .table-container {
-
             background: white;
-
             border-radius: 12px;
-
             padding: 20px;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
         .table-header {
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             margin-bottom: 18px;
-
             gap: 15px;
         }
 
-
         .table-header h3 {
-
             font-size: 18px;
-
             color: #0f172a;
         }
 
-
         .result-count {
-
             font-size: 13px;
-
             color: #64748b;
         }
 
-
         .table-wrapper {
-
             width: 100%;
-
             overflow-x: auto;
-
             border: 1px solid #e2e8f0;
-
             border-radius: 8px;
         }
 
-
         table {
-
             width: 100%;
-
             min-width: 1350px;
-
             border-collapse: collapse;
-
             background: white;
         }
 
-
         th {
-
             background: #2563eb;
-
             color: white;
-
             padding: 13px 14px;
-
             text-align: left;
-
             font-size: 12px;
-
             white-space: nowrap;
         }
-
 
         td {
-
             padding: 12px 14px;
-
-            border-bottom:
-                1px solid #e2e8f0;
-
+            border-bottom: 1px solid #e2e8f0;
             font-size: 13px;
-
             color: #334155;
-
             white-space: nowrap;
         }
 
-
         tbody tr:hover {
-
             background: #f8fafc;
         }
 
-
         .employee-code {
-
             font-weight: bold;
-
             color: #1d4ed8;
         }
 
-
         .target {
-
             color: #0f172a;
-
             font-weight: bold;
         }
-
 
         .collection {
-
             color: #059669;
-
             font-weight: bold;
         }
-
 
         .remaining {
-
             color: #ea580c;
-
             font-weight: bold;
         }
-
 
         /* ======================================
            STATUS
         ====================================== */
 
         .status-badge {
-
             display: inline-block;
-
             padding: 5px 11px;
-
             border-radius: 20px;
-
             font-size: 12px;
-
             font-weight: bold;
         }
 
-
         .approved {
-
             background: #d1e7dd;
-
             color: #0f5132;
         }
 
-
         .pending {
-
             background: #fff3cd;
-
             color: #664d03;
         }
-
 
         /* ======================================
            PERCENTAGE
         ====================================== */
 
         .percentage-badge {
-
             display: inline-block;
-
             padding: 5px 10px;
-
             border-radius: 20px;
-
             font-weight: bold;
-
             font-size: 12px;
         }
 
-
         .percentage-low {
-
             background: #fee2e2;
-
             color: #b91c1c;
         }
 
-
         .percentage-medium {
-
             background: #fef3c7;
-
             color: #92400e;
         }
 
-
         .percentage-good {
-
             background: #dbeafe;
-
             color: #1d4ed8;
         }
 
-
         .percentage-complete {
-
             background: #dcfce7;
-
             color: #15803d;
         }
-
 
         /* ======================================
            LOADING
@@ -786,133 +496,95 @@
         .loading-cell,
         .empty-cell,
         .error-cell {
-
             text-align: center;
-
             padding: 35px !important;
         }
 
-
         .loading-cell {
-
             color: #64748b;
         }
-
 
         .empty-cell {
-
             color: #64748b;
         }
 
-
         .error-cell {
-
             color: #dc2626;
         }
 
-
         /* ======================================
-           MOBILE SIDEBAR
+           MOBILE MENU
         ====================================== */
 
         .mobile-menu-btn {
-
             display: none;
-
             border: none;
-
             background: #2563eb;
-
             color: white;
-
             width: 42px;
-
             height: 42px;
-
             border-radius: 7px;
-
             cursor: pointer;
-
             font-size: 18px;
         }
 
+        /* ======================================
+           RESPONSIVE
+        ====================================== */
 
         @media (max-width: 1000px) {
 
             .filters {
-
-                grid-template-columns:
-                    repeat(2, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
 
         }
 
-
         @media (max-width: 800px) {
 
             .sidebar {
-
                 transform: translateX(-100%);
-
                 transition: 0.25s;
             }
 
-
             .sidebar.open {
-
                 transform: translateX(0);
             }
 
-
             .main-area {
-
                 margin-left: 0;
             }
 
-
             .mobile-menu-btn {
-
                 display: block;
             }
 
-
             .topbar-main {
-
                 padding: 0 15px;
             }
 
         }
 
-
         @media (max-width: 650px) {
 
             .filters {
-
                 grid-template-columns: 1fr;
             }
 
-
             .main {
-
                 padding: 12px;
             }
 
-
             .page-title h2 {
-
                 font-size: 20px;
             }
 
-
             .table-container,
             .filter-panel {
-
                 padding: 12px;
             }
 
-
             .topbar-user {
-
                 display: none;
             }
 
@@ -965,9 +637,7 @@
         </div>
 
         <div class="sidebar-user-role">
-
             Region User Account
-
         </div>
 
     </div>
@@ -1046,12 +716,9 @@
 <div class="main-area">
 
 
-    <!-- ==================================
-         TOPBAR
-    ================================== -->
+    <!-- TOPBAR -->
 
     <header class="topbar-main">
-
 
         <button
             type="button"
@@ -1091,13 +758,13 @@
 
 
     <!-- ==================================
-         MAIN
+         MAIN CONTENT
     ================================== -->
 
     <main class="main">
 
 
-        <!-- TITLE -->
+        <!-- PAGE TITLE -->
 
         <div class="page-title">
 
@@ -1113,10 +780,8 @@
             </h2>
 
             <p>
-
                 Aapko sirf aapke assigned
                 Region / State ke Teachers dikhaye jayenge.
-
             </p>
 
         </div>
@@ -1134,12 +799,9 @@
         </div>
 
 
-        <!-- ==================================
-             FILTER PANEL
-        ================================== -->
+        <!-- FILTER PANEL -->
 
         <div class="filter-panel">
-
 
             <div class="filter-title">
 
@@ -1409,10 +1071,14 @@
 
 
 <!-- ======================================
-     JAVASCRIPT
+     SIDEBAR JAVASCRIPT
 ====================================== -->
 
 <script type="module">
+
+    // ==================================
+    // MOBILE MENU
+    // ==================================
 
     const mobileMenuBtn =
         document.getElementById("mobileMenuBtn");
@@ -1436,7 +1102,7 @@
 
 
     // ==================================
-    // ACTIVE MENU
+    // CLOSE MOBILE SIDEBAR
     // ==================================
 
     document
@@ -1447,13 +1113,9 @@
                 "click",
                 function () {
 
-                    if (
-                        window.innerWidth <= 800
-                    ) {
+                    if (window.innerWidth <= 800) {
 
-                        sidebar.classList.remove(
-                            "open"
-                        );
+                        sidebar.classList.remove("open");
 
                     }
 
@@ -1479,6 +1141,7 @@
 
                 e.preventDefault();
 
+
                 localStorage.removeItem(
                     "loggedInEmpCode"
                 );
@@ -1495,6 +1158,7 @@
                     "regionUserAccess"
                 );
 
+
                 window.location.href =
                     "index.html";
 
@@ -1505,7 +1169,7 @@
 
 
     // ==================================
-    // USER NAME
+    // LOAD REGION USER NAME
     // ==================================
 
     const savedUserName =
@@ -1548,7 +1212,9 @@
 </script>
 
 
-<!-- Existing Region User JS -->
+<!-- ======================================
+     EXISTING REGION USER JAVASCRIPT
+====================================== -->
 
 <script
     type="module"
