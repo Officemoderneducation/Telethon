@@ -15,7 +15,6 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-
 // ======================================
 // HTML Elements
 // ======================================
@@ -56,7 +55,6 @@ const regionUserInfoTop =
 const logoutBtn =
     document.getElementById("logoutBtn");
 
-
 // ======================================
 // Data
 // ======================================
@@ -69,7 +67,6 @@ let dailyEntries = [];
 
 let accessRules = [];
 
-
 // ======================================
 // Login Information
 // ======================================
@@ -78,15 +75,14 @@ const currentUserRole =
     String(
         localStorage.getItem("userRole") || ""
     )
-    .trim()
-    .toLowerCase();
+        .trim()
+        .toLowerCase();
 
 const loggedInUser =
     String(
         localStorage.getItem("loggedInEmpCode") || ""
     )
-    .trim();
-
+        .trim();
 
 // ======================================
 // Escape HTML
@@ -102,7 +98,6 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
-
 // ======================================
 // Normalize
 // ======================================
@@ -113,7 +108,6 @@ function normalize(value) {
         .trim()
         .toLowerCase();
 }
-
 
 // ======================================
 // Number Value
@@ -134,7 +128,6 @@ function numberValue(value) {
         : 0;
 }
 
-
 // ======================================
 // Currency
 // ======================================
@@ -145,7 +138,6 @@ function formatCurrency(value) {
         Number(value || 0)
             .toLocaleString("en-IN");
 }
-
 
 // ======================================
 // Employee Code
@@ -177,7 +169,6 @@ function getEmployeeCode(employee) {
 
     ).trim();
 }
-
 
 // ======================================
 // Entry Employee Code
@@ -212,7 +203,6 @@ function getEntryEmployeeCode(entry) {
     ).trim();
 }
 
-
 // ======================================
 // Collection Amount
 // ======================================
@@ -235,7 +225,6 @@ function getEntryAmount(entry) {
 
     );
 }
-
 
 // ======================================
 // Employee Target
@@ -260,33 +249,232 @@ function getEmployeeTarget(employee) {
     );
 }
 
+// ======================================
+// Created Time
+// ======================================
+
+function getCreatedTime(entry) {
+
+    // Firebase Timestamp
+
+    if (
+        entry.createdAt &&
+        typeof entry.createdAt.toMillis === "function"
+    ) {
+
+        return entry.createdAt.toMillis();
+
+    }
+
+    // Timestamp object fallback
+
+    if (
+        entry.createdAt &&
+        typeof entry.createdAt.seconds === "number"
+    ) {
+
+        return (
+            entry.createdAt.seconds * 1000
+        ) +
+        Math.floor(
+            (entry.createdAt.nanoseconds || 0) / 1000000
+        );
+
+    }
+
+    // JS Date fallback
+
+    if (
+        entry.createdAt instanceof Date
+    ) {
+
+        return entry.createdAt.getTime();
+
+    }
+
+    // String date fallback
+
+    if (
+        typeof entry.createdAt === "string"
+    ) {
+
+        const parsed =
+            new Date(
+                entry.createdAt
+            ).getTime();
+
+        if (
+            Number.isFinite(parsed)
+        ) {
+
+            return parsed;
+
+        }
+
+    }
+
+    return 0;
+}
+
+// ======================================
+// IMPORTANT
+// GET LATEST ENTRY PER EMPLOYEE + DATE
+// ======================================
+//
+// Example:
+//
+// Employee A
+//
+// 11 Aug = 2000
+// 12 Aug = 1000
+// 12 Aug = 1500
+//
+// Result:
+//
+// 11 Aug = 2000
+// 12 Aug = 1500
+//
+// Total = 3500
+//
+// ======================================
+
+function getLatestEntriesPerEmployeeDate() {
+
+    const latestEntries = {};
+
+    dailyEntries.forEach(
+        (entry) => {
+
+            const employeeCode =
+                normalize(
+                    getEntryEmployeeCode(
+                        entry
+                    )
+                );
+
+            const entryDate =
+                String(
+                    entry.date || ""
+                ).trim();
+
+            // Employee code and date dono required
+
+            if (
+                !employeeCode ||
+                !entryDate
+            ) {
+
+                return;
+
+            }
+
+            // Unique key:
+            // Employee + Date
+
+            const key =
+                employeeCode +
+                "___" +
+                entryDate;
+
+            const createdTime =
+                getCreatedTime(
+                    entry
+                );
+
+            // Agar is date ki entry pehle nahi hai
+
+            if (
+                !latestEntries[key]
+            ) {
+
+                latestEntries[key] = {
+
+                    ...entry,
+
+                    _createdTime:
+                        createdTime
+
+                };
+
+                return;
+            }
+
+            const existing =
+                latestEntries[key];
+
+            const existingTime =
+                Number(
+                    existing._createdTime || 0
+                );
+
+            // Latest entry replace karein
+
+            if (
+                createdTime >=
+                existingTime
+            ) {
+
+                latestEntries[key] = {
+
+                    ...entry,
+
+                    _createdTime:
+                        createdTime
+
+                };
+
+            }
+
+        }
+    );
+
+    return Object.values(
+        latestEntries
+    );
+}
 
 // ======================================
 // Employee Collection
 // ======================================
 
-function getEmployeeCollection(employeeCode) {
+function getEmployeeCollection(
+    employeeCode
+) {
 
     const code =
-        normalize(employeeCode);
+        normalize(
+            employeeCode
+        );
+
+    // ==================================
+    // IMPORTANT:
+    // Same Employee + Same Date
+    // Sirf LAST entry count hogi
+    // ==================================
+
+    const latestEntries =
+        getLatestEntriesPerEmployeeDate();
 
     let total = 0;
 
-    dailyEntries.forEach(
+    latestEntries.forEach(
         (entry) => {
 
             const entryCode =
                 normalize(
-                    getEntryEmployeeCode(entry)
+                    getEntryEmployeeCode(
+                        entry
+                    )
                 );
 
             if (
-                entryCode &&
                 entryCode === code
             ) {
 
                 total +=
-                    getEntryAmount(entry);
+                    getEntryAmount(
+                        entry
+                    );
 
             }
 
@@ -295,7 +483,6 @@ function getEmployeeCollection(employeeCode) {
 
     return total;
 }
-
 
 // ======================================
 // Loading
@@ -325,7 +512,6 @@ function showLoading() {
 
     }
 }
-
 
 // ======================================
 // Error
@@ -361,7 +547,6 @@ function showError(message) {
     }
 }
 
-
 // ======================================
 // Find Region User
 // ======================================
@@ -390,7 +575,6 @@ async function loadRegionUser() {
 
         }
 
-        // Admin = All Employees
         accessRules = [];
 
         console.log(
@@ -399,7 +583,6 @@ async function loadRegionUser() {
 
         return;
     }
-
 
     // ==================================
     // REGION USER
@@ -421,7 +604,6 @@ async function loadRegionUser() {
 
     }
 
-
     // ==================================
     // Login Code
     // ==================================
@@ -434,15 +616,12 @@ async function loadRegionUser() {
 
     }
 
-
     console.log(
         "Logged In Region User:",
         loggedInUser
     );
 
-
     let userData = null;
-
 
     // ==================================
     // Collections To Check
@@ -455,7 +634,6 @@ async function loadRegionUser() {
         "regionUsers"
 
     ];
-
 
     // ==================================
     // Fields To Check
@@ -477,7 +655,6 @@ async function loadRegionUser() {
 
     ];
 
-
     // ==================================
     // Search Region User
     // ==================================
@@ -491,7 +668,6 @@ async function loadRegionUser() {
             break;
         }
 
-
         for (
             const fieldName
             of fieldsToCheck
@@ -500,7 +676,6 @@ async function loadRegionUser() {
             if (userData) {
                 break;
             }
-
 
             try {
 
@@ -520,10 +695,8 @@ async function loadRegionUser() {
 
                     );
 
-
                 const snapshot =
                     await getDocs(q);
-
 
                 if (
                     !snapshot.empty
@@ -531,7 +704,6 @@ async function loadRegionUser() {
 
                     userData =
                         snapshot.docs[0].data();
-
 
                     console.log(
                         "Region User Found:",
@@ -558,7 +730,6 @@ async function loadRegionUser() {
 
     }
 
-
     // ==================================
     // Search By Document ID
     // ==================================
@@ -574,7 +745,6 @@ async function loadRegionUser() {
                 break;
             }
 
-
             try {
 
                 const userRef =
@@ -584,10 +754,10 @@ async function loadRegionUser() {
                         loggedInUser
                     );
 
-
                 const userSnap =
-                    await getDoc(userRef);
-
+                    await getDoc(
+                        userRef
+                    );
 
                 if (
                     userSnap.exists()
@@ -595,7 +765,6 @@ async function loadRegionUser() {
 
                     userData =
                         userSnap.data();
-
 
                     console.log(
                         "Region User Found By Document ID:",
@@ -621,7 +790,6 @@ async function loadRegionUser() {
 
     }
 
-
     // ==================================
     // User Not Found
     // ==================================
@@ -630,7 +798,6 @@ async function loadRegionUser() {
 
         throw new Error(
             `Region User record nahi mila.
-
 Login Code: ${loggedInUser}
 
 Firestore collections:
@@ -641,7 +808,6 @@ userCode / employeeCode`
         );
 
     }
-
 
     // ==================================
     // User Name
@@ -663,7 +829,6 @@ userCode / employeeCode`
 
         loggedInUser;
 
-
     // ==================================
     // Show User Name
     // ==================================
@@ -679,14 +844,12 @@ userCode / employeeCode`
 
     }
 
-
     if (regionUserInfoTop) {
 
         regionUserInfoTop.textContent =
             userName;
 
     }
-
 
     // ==================================
     // Access Rules
@@ -720,7 +883,6 @@ userCode / employeeCode`
 
     }
 
-
     console.log(
         "Region User Data:",
         userData
@@ -731,7 +893,6 @@ userCode / employeeCode`
         accessRules
     );
 }
-
 
 // ======================================
 // Check Employee Access
@@ -751,7 +912,6 @@ function hasEmployeeAccess(employee) {
 
     }
 
-
     // ==================================
     // No Rules
     // ==================================
@@ -768,7 +928,6 @@ function hasEmployeeAccess(employee) {
         return false;
 
     }
-
 
     // ==================================
     // Employee Region
@@ -787,7 +946,6 @@ function hasEmployeeAccess(employee) {
 
         );
 
-
     // ==================================
     // Employee State
     // ==================================
@@ -805,7 +963,6 @@ function hasEmployeeAccess(employee) {
 
         );
 
-
     // ==================================
     // Check Every Rule
     // ==================================
@@ -816,7 +973,6 @@ function hasEmployeeAccess(employee) {
             if (!rule) {
                 return false;
             }
-
 
             // ==================================
             // Assigned Region
@@ -837,7 +993,6 @@ function hasEmployeeAccess(employee) {
 
                 );
 
-
             // ==================================
             // Region Match
             // ==================================
@@ -851,19 +1006,6 @@ function hasEmployeeAccess(employee) {
                 return false;
 
             }
-
-
-            // ==================================
-            // IMPORTANT:
-            // Your Firestore access format is:
-            //
-            // {
-            //    region: "Ajmer",
-            //    state: "Madhya Pradesh"
-            // }
-            //
-            // ==================================
-
 
             // ==================================
             // Full Region
@@ -889,7 +1031,6 @@ function hasEmployeeAccess(employee) {
                     rule.type
                 ) === "full";
 
-
             if (
                 fullRegion
             ) {
@@ -898,17 +1039,11 @@ function hasEmployeeAccess(employee) {
 
             }
 
-
             // ==================================
             // Get Allowed States
             // ==================================
 
             let states = [];
-
-
-            // ----------------------------------
-            // rule.state
-            // ----------------------------------
 
             if (
                 rule.state
@@ -919,11 +1054,6 @@ function hasEmployeeAccess(employee) {
                 ];
 
             }
-
-
-            // ----------------------------------
-            // rule.states Array
-            // ----------------------------------
 
             else if (
                 Array.isArray(
@@ -936,11 +1066,6 @@ function hasEmployeeAccess(employee) {
 
             }
 
-
-            // ----------------------------------
-            // rule.states String
-            // ----------------------------------
-
             else if (
                 typeof rule.states ===
                 "string"
@@ -951,11 +1076,6 @@ function hasEmployeeAccess(employee) {
                 ];
 
             }
-
-
-            // ----------------------------------
-            // selectedStates
-            // ----------------------------------
 
             else if (
                 Array.isArray(
@@ -968,11 +1088,6 @@ function hasEmployeeAccess(employee) {
 
             }
 
-
-            // ----------------------------------
-            // assignedStates
-            // ----------------------------------
-
             else if (
                 Array.isArray(
                     rule.assignedStates
@@ -984,11 +1099,6 @@ function hasEmployeeAccess(employee) {
 
             }
 
-
-            // ----------------------------------
-            // stateName
-            // ----------------------------------
-
             else if (
                 rule.stateName
             ) {
@@ -998,7 +1108,6 @@ function hasEmployeeAccess(employee) {
                 ];
 
             }
-
 
             // ==================================
             // No State Restriction
@@ -1012,7 +1121,6 @@ function hasEmployeeAccess(employee) {
 
             }
 
-
             // ==================================
             // Check State
             // ==================================
@@ -1023,8 +1131,6 @@ function hasEmployeeAccess(employee) {
                     const allowedState =
                         normalize(state);
 
-
-                    // All States
                     if (
 
                         allowedState === "*" ||
@@ -1040,7 +1146,6 @@ function hasEmployeeAccess(employee) {
 
                     }
 
-
                     return (
                         allowedState ===
                         employeeState
@@ -1051,9 +1156,7 @@ function hasEmployeeAccess(employee) {
 
         }
     );
-
 }
-
 
 // ======================================
 // Load Employees
@@ -1063,7 +1166,6 @@ async function loadEmployees() {
 
     showLoading();
 
-
     try {
 
         // ==================================
@@ -1071,7 +1173,6 @@ async function loadEmployees() {
         // ==================================
 
         await loadRegionUser();
-
 
         // ==================================
         // Employees
@@ -1085,9 +1186,7 @@ async function loadEmployees() {
                 )
             );
 
-
         allEmployees = [];
-
 
         employeeSnapshot.forEach(
             (employeeDoc) => {
@@ -1104,12 +1203,10 @@ async function loadEmployees() {
             }
         );
 
-
         console.log(
             "Total Employees:",
             allEmployees.length
         );
-
 
         // ==================================
         // Daily Entries
@@ -1123,9 +1220,7 @@ async function loadEmployees() {
                 )
             );
 
-
         dailyEntries = [];
-
 
         entrySnapshot.forEach(
             (entryDoc) => {
@@ -1142,12 +1237,19 @@ async function loadEmployees() {
             }
         );
 
-
         console.log(
             "Total Daily Entries:",
             dailyEntries.length
         );
 
+        // ==================================
+        // IMPORTANT DEBUG
+        // ==================================
+
+        console.log(
+            "Latest Entry Per Employee + Date:",
+            getLatestEntriesPerEmployeeDate()
+        );
 
         // ==================================
         // Permission Filter
@@ -1161,19 +1263,16 @@ async function loadEmployees() {
                     )
             );
 
-
         console.log(
             "Visible Employees:",
             visibleEmployees.length
         );
-
 
         // ==================================
         // Filters
         // ==================================
 
         loadRegionOptions();
-
 
         // ==================================
         // Display
@@ -1197,9 +1296,7 @@ async function loadEmployees() {
         );
 
     }
-
 }
-
 
 // ======================================
 // Region Options
@@ -1211,10 +1308,8 @@ function loadRegionOptions() {
         return;
     }
 
-
     const regions =
         new Set();
-
 
     visibleEmployees.forEach(
         (employee) => {
@@ -1223,7 +1318,6 @@ function loadRegionOptions() {
                 String(
                     employee.region || ""
                 ).trim();
-
 
             if (region) {
 
@@ -1236,13 +1330,11 @@ function loadRegionOptions() {
         }
     );
 
-
     regionFilter.innerHTML = `
         <option value="">
             All Regions
         </option>
     `;
-
 
     [...regions]
         .sort()
@@ -1258,11 +1350,8 @@ function loadRegionOptions() {
             }
         );
 
-
     loadStateOptions();
-
 }
-
 
 // ======================================
 // State Options
@@ -1274,16 +1363,13 @@ function loadStateOptions() {
         return;
     }
 
-
     const selectedRegion =
         String(
             regionFilter?.value || ""
         ).trim();
 
-
     const states =
         new Set();
-
 
     visibleEmployees.forEach(
         (employee) => {
@@ -1293,12 +1379,10 @@ function loadStateOptions() {
                     employee.region || ""
                 ).trim();
 
-
             const state =
                 String(
                     employee.state || ""
                 ).trim();
-
 
             const regionMatch =
                 !selectedRegion ||
@@ -1309,7 +1393,6 @@ function loadStateOptions() {
                 normalize(
                     selectedRegion
                 );
-
 
             if (
                 state &&
@@ -1325,13 +1408,11 @@ function loadStateOptions() {
         }
     );
 
-
     stateFilter.innerHTML = `
         <option value="">
             All States
         </option>
     `;
-
 
     [...states]
         .sort()
@@ -1347,11 +1428,8 @@ function loadStateOptions() {
             }
         );
 
-
     loadCityOptions();
-
 }
-
 
 // ======================================
 // City Options
@@ -1363,22 +1441,18 @@ function loadCityOptions() {
         return;
     }
 
-
     const selectedRegion =
         String(
             regionFilter?.value || ""
         ).trim();
-
 
     const selectedState =
         String(
             stateFilter?.value || ""
         ).trim();
 
-
     const cities =
         new Set();
-
 
     visibleEmployees.forEach(
         (employee) => {
@@ -1388,23 +1462,19 @@ function loadCityOptions() {
                     employee.region || ""
                 ).trim();
 
-
             const employeeState =
                 String(
                     employee.state || ""
                 ).trim();
-
 
             const city =
                 String(
                     employee.city || ""
                 ).trim();
 
-
             if (!city) {
                 return;
             }
-
 
             const regionMatch =
                 !selectedRegion ||
@@ -1416,7 +1486,6 @@ function loadCityOptions() {
                     selectedRegion
                 );
 
-
             const stateMatch =
                 !selectedState ||
 
@@ -1426,7 +1495,6 @@ function loadCityOptions() {
                 normalize(
                     selectedState
                 );
-
 
             if (
                 regionMatch &&
@@ -1442,13 +1510,11 @@ function loadCityOptions() {
         }
     );
 
-
     cityFilter.innerHTML = `
         <option value="">
             All Cities
         </option>
     `;
-
 
     [...cities]
         .sort()
@@ -1463,9 +1529,7 @@ function loadCityOptions() {
 
             }
         );
-
 }
-
 
 // ======================================
 // Display Employees
@@ -1476,7 +1540,6 @@ function displayEmployees(list) {
     if (!usersTable) {
         return;
     }
-
 
     // ==================================
     // Empty
@@ -1495,7 +1558,6 @@ function displayEmployees(list) {
             </tr>
         `;
 
-
         if (resultCount) {
 
             resultCount.textContent =
@@ -1503,14 +1565,10 @@ function displayEmployees(list) {
 
         }
 
-
         return;
-
     }
 
-
     let html = "";
-
 
     // ==================================
     // Rows
@@ -1524,7 +1582,6 @@ function displayEmployees(list) {
                     employee
                 );
 
-
             const teacherName =
 
                 employee.teacherName ||
@@ -1534,7 +1591,6 @@ function displayEmployees(list) {
                 employee.name ||
 
                 "-";
-
 
             const mobile =
 
@@ -1546,21 +1602,17 @@ function displayEmployees(list) {
 
                 "-";
 
-
             const region =
                 employee.region ||
                 "-";
-
 
             const state =
                 employee.state ||
                 "-";
 
-
             const city =
                 employee.city ||
                 "-";
-
 
             const status =
 
@@ -1568,18 +1620,20 @@ function displayEmployees(list) {
 
                 "Pending";
 
-
             const target =
                 getEmployeeTarget(
                     employee
                 );
 
+            // ==================================
+            // IMPORTANT:
+            // Latest Entry Per Date Collection
+            // ==================================
 
             const collectionAmount =
                 getEmployeeCollection(
                     employeeCode
                 );
-
 
             const remaining =
                 Math.max(
@@ -1588,9 +1642,7 @@ function displayEmployees(list) {
                     0
                 );
 
-
             let percentage = 0;
-
 
             if (
                 target > 0
@@ -1604,13 +1656,11 @@ function displayEmployees(list) {
 
             }
 
-
             const displayPercentage =
                 Math.min(
                     percentage,
                     100
                 );
-
 
             // ==================================
             // Percentage Class
@@ -1618,7 +1668,6 @@ function displayEmployees(list) {
 
             let percentageClass =
                 "percentage-low";
-
 
             if (
                 displayPercentage >= 100
@@ -1647,13 +1696,11 @@ function displayEmployees(list) {
 
             }
 
-
             // ==================================
             // Status
             // ==================================
 
             let statusHTML = "";
-
 
             if (
                 normalize(status) ===
@@ -1681,7 +1728,6 @@ function displayEmployees(list) {
                 `;
 
             }
-
 
             // ==================================
             // Row
@@ -1773,10 +1819,8 @@ function displayEmployees(list) {
         }
     );
 
-
     usersTable.innerHTML =
         html;
-
 
     if (resultCount) {
 
@@ -1784,9 +1828,7 @@ function displayEmployees(list) {
             `${list.length} Teacher(s)`;
 
     }
-
 }
-
 
 // ======================================
 // Apply Filters
@@ -1799,30 +1841,25 @@ function applyFilters() {
             regionFilter?.value || ""
         ).trim();
 
-
     const selectedState =
         String(
             stateFilter?.value || ""
         ).trim();
-
 
     const selectedCity =
         String(
             cityFilter?.value || ""
         ).trim();
 
-
     const selectedStatus =
         String(
             statusFilter?.value || ""
         ).trim();
 
-
     const search =
         normalize(
             searchFilter?.value || ""
         );
-
 
     const filtered =
         visibleEmployees.filter(
@@ -1833,18 +1870,15 @@ function applyFilters() {
                         employee.region || ""
                     ).trim();
 
-
                 const employeeState =
                     String(
                         employee.state || ""
                     ).trim();
 
-
                 const employeeCity =
                     String(
                         employee.city || ""
                     ).trim();
-
 
                 const employeeStatus =
                     String(
@@ -1852,14 +1886,12 @@ function applyFilters() {
                         "Pending"
                     ).trim();
 
-
                 const employeeCode =
                     normalize(
                         getEmployeeCode(
                             employee
                         )
                     );
-
 
                 const teacherName =
                     normalize(
@@ -1874,7 +1906,6 @@ function applyFilters() {
 
                     );
 
-
                 const mobile =
                     normalize(
 
@@ -1888,7 +1919,6 @@ function applyFilters() {
 
                     );
 
-
                 const regionMatch =
 
                     !selectedRegion ||
@@ -1899,7 +1929,6 @@ function applyFilters() {
                     normalize(
                         selectedRegion
                     );
-
 
                 const stateMatch =
 
@@ -1912,7 +1941,6 @@ function applyFilters() {
                         selectedState
                     );
 
-
                 const cityMatch =
 
                     !selectedCity ||
@@ -1924,7 +1952,6 @@ function applyFilters() {
                         selectedCity
                     );
 
-
                 const statusMatch =
 
                     !selectedStatus ||
@@ -1935,7 +1962,6 @@ function applyFilters() {
                     normalize(
                         selectedStatus
                     );
-
 
                 const searchMatch =
 
@@ -1971,7 +1997,6 @@ function applyFilters() {
                         search
                     );
 
-
                 return (
 
                     regionMatch &&
@@ -1989,13 +2014,10 @@ function applyFilters() {
             }
         );
 
-
     displayEmployees(
         filtered
     );
-
 }
-
 
 // ======================================
 // Region Change
@@ -2011,11 +2033,9 @@ if (regionFilter) {
                 stateFilter.value = "";
             }
 
-
             if (cityFilter) {
                 cityFilter.value = "";
             }
-
 
             loadStateOptions();
 
@@ -2023,9 +2043,7 @@ if (regionFilter) {
 
         }
     );
-
 }
-
 
 // ======================================
 // State Change
@@ -2041,16 +2059,13 @@ if (stateFilter) {
                 cityFilter.value = "";
             }
 
-
             loadCityOptions();
 
             applyFilters();
 
         }
     );
-
 }
-
 
 // ======================================
 // City Change
@@ -2066,9 +2081,7 @@ if (cityFilter) {
 
         }
     );
-
 }
-
 
 // ======================================
 // Status Change
@@ -2084,9 +2097,7 @@ if (statusFilter) {
 
         }
     );
-
 }
-
 
 // ======================================
 // Apply Filter Button
@@ -2102,9 +2113,7 @@ if (applyFilter) {
 
         }
     );
-
 }
-
 
 // ======================================
 // Search
@@ -2120,9 +2129,7 @@ if (searchFilter) {
 
         }
     );
-
 }
-
 
 // ======================================
 // Reset
@@ -2138,26 +2145,21 @@ if (resetFilter) {
                 regionFilter.value = "";
             }
 
-
             if (stateFilter) {
                 stateFilter.value = "";
             }
-
 
             if (cityFilter) {
                 cityFilter.value = "";
             }
 
-
             if (statusFilter) {
                 statusFilter.value = "";
             }
 
-
             if (searchFilter) {
                 searchFilter.value = "";
             }
-
 
             loadRegionOptions();
 
@@ -2167,9 +2169,7 @@ if (resetFilter) {
 
         }
     );
-
 }
-
 
 // ======================================
 // Logout
@@ -2183,31 +2183,32 @@ if (logoutBtn) {
 
             e.preventDefault();
 
-
             localStorage.removeItem(
                 "loggedInEmpCode"
             );
-
 
             localStorage.removeItem(
                 "userRole"
             );
 
-
-            // Optional other login values
             localStorage.removeItem(
                 "userName"
             );
 
+            localStorage.removeItem(
+                "regionUserName"
+            );
+
+            localStorage.removeItem(
+                "regionUserAccess"
+            );
 
             window.location.href =
                 "index.html";
 
         }
     );
-
 }
-
 
 // ======================================
 // START
