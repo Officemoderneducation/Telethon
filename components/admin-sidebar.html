@@ -1,66 +1,201 @@
-<!-- ADMIN SIDEBAR -->
-
-<div class="sidebar">
+<div class="admin-sidebar">
 
     <!-- LOGO -->
-    <div class="logo">
+    <div class="admin-sidebar-logo">
 
         <img
             src="assets/images/logo.png"
-            width="80"
             alt="Telethon Logo"
         >
 
-        <h2>Telethon Admin Panel</h2>
+        <h2>Telethon</h2>
 
-        <p>Management System</p>
+        <p>Admin Panel</p>
 
     </div>
 
 
-    <!-- ADMIN MENU -->
-    <div class="menu">
+    <!-- MENU -->
+    <div class="admin-sidebar-menu">
 
-        <a href="dashboard.html">
+        <!-- 1. DASHBOARD -->
+        <a href="dashboard.html" data-page="dashboard.html">
+
             <i class="fa-solid fa-house"></i>
+
             <span>Dashboard</span>
+
         </a>
 
-        <a href="users.html">
+
+        <!-- 2. TEACHERS LIST -->
+        <a href="users.html" data-page="users.html">
+
             <i class="fa-solid fa-users"></i>
+
             <span>Teachers List</span>
+
         </a>
 
-        <a href="daily-report.html">
-            <i class="fa-solid fa-file-lines"></i>
-            <span>Daily Report</span>
-        </a>
 
-        <a href="region-users.html">
-            <i class="fa-solid fa-user-shield"></i>
-            <span>Region User Management</span>
-        </a>
+        <!-- 3. COLLECTION SUMMARY -->
+        <a
+            href="collection-summary.html"
+            data-page="collection-summary.html"
+        >
 
-        <a href="all-entry.html">
-            <i class="fa-solid fa-list"></i>
-            <span>All Entry</span>
-        </a>
-
-        <a href="target-management.html">
-            <i class="fa-solid fa-bullseye"></i>
-            <span>Target Management</span>
-        </a>
-
-        <a href="collection-summary.html">
             <i class="fa-solid fa-chart-pie"></i>
+
             <span>Collection Summary</span>
+
         </a>
 
-        <a href="#" id="logoutBtn">
+
+        <!-- 4. TARGET MANAGEMENT -->
+        <a
+            href="target-management.html"
+            data-page="target-management.html"
+        >
+
+            <i class="fa-solid fa-bullseye"></i>
+
+            <span>Target Management</span>
+
+        </a>
+
+
+        <!-- 5. REGION USER MANAGEMENT -->
+        <a
+            href="region-user-management.html"
+            data-page="region-user-management.html"
+        >
+
+            <i class="fa-solid fa-user-shield"></i>
+
+            <span>Region User Management</span>
+
+        </a>
+
+
+        <!-- 6. ALL ENTRY -->
+        <a
+            href="all-entry.html"
+            data-page="all-entry.html"
+        >
+
+            <i class="fa-solid fa-list"></i>
+
+            <span>All Entry</span>
+
+        </a>
+
+
+        <!-- 7. LOGOUT -->
+        <a
+            href="#"
+            id="adminLogoutBtn"
+        >
+
             <i class="fa-solid fa-right-from-bracket"></i>
+
             <span>Logout</span>
+
         </a>
 
     </div>
 
 </div>
+
+
+<!-- =========================================
+     ACTIVE PAGE + LOGOUT
+========================================= -->
+
+<script>
+
+(function () {
+
+    const sidebar =
+        document.querySelector(".admin-sidebar");
+
+
+    if (!sidebar) return;
+
+
+    /* ==============================
+       ACTIVE PAGE
+    ============================== */
+
+    const currentPage =
+        window.location.pathname
+            .split("/")
+            .pop()
+            .toLowerCase();
+
+
+    const menuLinks =
+        sidebar.querySelectorAll(
+            ".admin-sidebar-menu a[data-page]"
+        );
+
+
+    menuLinks.forEach(function (link) {
+
+        const page =
+            link
+                .getAttribute("data-page")
+                .toLowerCase();
+
+
+        if (page === currentPage) {
+
+            link.classList.add("active");
+
+        } else {
+
+            link.classList.remove("active");
+
+        }
+
+    });
+
+
+    /* ==============================
+       LOGOUT
+    ============================== */
+
+    const logoutBtn =
+        document.getElementById(
+            "adminLogoutBtn"
+        );
+
+
+    if (logoutBtn) {
+
+        logoutBtn.addEventListener(
+            "click",
+            function (e) {
+
+                e.preventDefault();
+
+
+                localStorage.removeItem(
+                    "loggedInEmpCode"
+                );
+
+                localStorage.removeItem(
+                    "userRole"
+                );
+
+
+                window.location.href =
+                    "index.html";
+
+            }
+        );
+
+    }
+
+})();
+
+</script>
