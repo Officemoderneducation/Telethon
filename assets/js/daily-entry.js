@@ -20,7 +20,6 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-
 // ======================================
 // HTML Elements
 // ======================================
@@ -61,7 +60,6 @@ const submitBtn =
 const message =
     document.getElementById("message");
 
-
 // ======================================
 // PERFORMANCE SUMMARY ELEMENTS
 // ======================================
@@ -77,7 +75,6 @@ const remainingTargetElement =
 
 const collectionPercentageElement =
     document.getElementById("collectionPercentage");
-
 
 // ======================================
 // Set Today's Date
@@ -100,15 +97,14 @@ if (entryDate) {
 
     entryDate.value =
         `${year}-${month}-${day}`;
-}
 
+}
 
 // ======================================
 // Current Employee
 // ======================================
 
 let currentEmployee = null;
-
 
 // ======================================
 // Check Login
@@ -123,7 +119,6 @@ onAuthStateChanged(auth, async () => {
                 "loggedInEmpCode"
             );
 
-
         if (!empCode) {
 
             window.location.href =
@@ -132,16 +127,13 @@ onAuthStateChanged(auth, async () => {
             return;
         }
 
-
         await loadEmployee(empCode);
-
 
         // ==================================
         // Load Performance
         // ==================================
 
         await loadPerformance(empCode);
-
 
     } catch (error) {
 
@@ -150,17 +142,16 @@ onAuthStateChanged(auth, async () => {
             error
         );
 
-
         if (userInfo) {
 
             userInfo.textContent =
                 "Error loading user";
+
         }
 
     }
 
 });
-
 
 // ======================================
 // Load Employee Details
@@ -177,10 +168,10 @@ async function loadEmployee(empCode) {
                 empCode
             );
 
-
         const employeeSnap =
-            await getDoc(employeeRef);
-
+            await getDoc(
+                employeeRef
+            );
 
         if (!employeeSnap.exists()) {
 
@@ -188,6 +179,7 @@ async function loadEmployee(empCode) {
 
                 userInfo.textContent =
                     "Employee not found";
+
             }
 
             console.error(
@@ -198,10 +190,8 @@ async function loadEmployee(empCode) {
             return;
         }
 
-
         const data =
             employeeSnap.data();
-
 
         currentEmployee = {
 
@@ -211,7 +201,6 @@ async function loadEmployee(empCode) {
             ...data
 
         };
-
 
         // ==================================
         // Header - Teacher Name
@@ -224,8 +213,8 @@ async function loadEmployee(empCode) {
                 data.teacher_name ||
                 data.employeeCode ||
                 empCode;
-        }
 
+        }
 
         // ==================================
         // Employee Badge
@@ -235,8 +224,8 @@ async function loadEmployee(empCode) {
 
             employeeBadge.style.display =
                 "block";
-        }
 
+        }
 
         // ==================================
         // Teacher Name
@@ -251,8 +240,8 @@ async function loadEmployee(empCode) {
                     data.teacher_name ||
                     "-"
                 );
-        }
 
+        }
 
         // ==================================
         // Jamiatul Madina
@@ -267,15 +256,14 @@ async function loadEmployee(empCode) {
                 data.jamiatulMadinah ||
                 "";
 
-
             badgeMadina.textContent =
                 "Jamiatul Madina: " +
                 (
                     madinaName ||
                     "-"
                 );
-        }
 
+        }
 
         // ==================================
         // Location
@@ -285,30 +273,29 @@ async function loadEmployee(empCode) {
 
             const locationParts = [];
 
-
             if (data.city) {
 
                 locationParts.push(
                     data.city
                 );
-            }
 
+            }
 
             if (data.state) {
 
                 locationParts.push(
                     data.state
                 );
-            }
 
+            }
 
             if (data.region) {
 
                 locationParts.push(
                     data.region
                 );
-            }
 
+            }
 
             badgeLocation.textContent =
                 "Location: " +
@@ -317,8 +304,8 @@ async function loadEmployee(empCode) {
                         ? locationParts.join(", ")
                         : "-"
                 );
-        }
 
+        }
 
     } catch (error) {
 
@@ -327,17 +314,16 @@ async function loadEmployee(empCode) {
             error
         );
 
-
         if (userInfo) {
 
             userInfo.textContent =
                 "Unable to load employee";
+
         }
 
     }
 
 }
-
 
 // ======================================
 // LOAD PERFORMANCE
@@ -352,7 +338,6 @@ async function loadPerformance(empCode) {
             empCode
         );
 
-
         // ==================================
         // GET EMPLOYEE TARGET
         // ==================================
@@ -364,21 +349,17 @@ async function loadPerformance(empCode) {
                 empCode
             );
 
-
         const employeeSnap =
-            await getDoc(employeeRef);
-
+            await getDoc(
+                employeeRef
+            );
 
         let target = 0;
-
 
         if (employeeSnap.exists()) {
 
             const employeeData =
                 employeeSnap.data();
-
-
-            // Support multiple possible field names
 
             target =
                 Number(
@@ -389,7 +370,6 @@ async function loadPerformance(empCode) {
                     0
                 );
 
-
             console.log(
                 "Employee Target:",
                 target
@@ -397,9 +377,8 @@ async function loadPerformance(empCode) {
 
         }
 
-
         // ==================================
-        // GET TOTAL COLLECTION
+        // GET DAILY COLLECTION ENTRIES
         // ==================================
 
         const dailyEntryQuery =
@@ -415,15 +394,18 @@ async function loadPerformance(empCode) {
                 )
             );
 
-
         const dailyEntrySnapshot =
             await getDocs(
                 dailyEntryQuery
             );
 
+        // ==================================
+        // IMPORTANT
+        // Same Employee + Same Date
+        // Sirf LAST entry count hogi
+        // ==================================
 
-        let totalCollection = 0;
-
+        const latestEntriesByDate = {};
 
         dailyEntrySnapshot.forEach(
             (entryDoc) => {
@@ -431,42 +413,134 @@ async function loadPerformance(empCode) {
                 const data =
                     entryDoc.data();
 
+                const entryDate =
+                    data.date;
+
+                if (!entryDate) {
+                    return;
+                }
+
+                // ----------------------------------
+                // CreatedAt ko compare karne ke liye
+                // ----------------------------------
+
+                let createdTime = 0;
+
+                if (
+                    data.createdAt &&
+                    typeof data.createdAt.toMillis ===
+                        "function"
+                ) {
+
+                    createdTime =
+                        data.createdAt.toMillis();
+
+                }
+
+                // ----------------------------------
+                // Agar same date ki entry pehle se hai
+                // to latest entry rakhenge
+                // ----------------------------------
+
+                if (
+                    !latestEntriesByDate[entryDate]
+                ) {
+
+                    latestEntriesByDate[entryDate] = {
+
+                        amount:
+                            Number(
+                                data.amount || 0
+                            ),
+
+                        createdTime:
+                            createdTime
+
+                    };
+
+                } else {
+
+                    const existing =
+                        latestEntriesByDate[
+                            entryDate
+                        ];
+
+                    if (
+                        createdTime >=
+                        existing.createdTime
+                    ) {
+
+                        latestEntriesByDate[
+                            entryDate
+                        ] = {
+
+                            amount:
+                                Number(
+                                    data.amount || 0
+                                ),
+
+                            createdTime:
+                                createdTime
+
+                        };
+
+                    }
+
+                }
+
+            }
+        );
+
+        // ==================================
+        // TOTAL COLLECTION
+        // ==================================
+
+        let totalCollection = 0;
+
+        Object.keys(
+            latestEntriesByDate
+        ).forEach(
+            (date) => {
 
                 totalCollection +=
                     Number(
-                        data.amount || 0
+                        latestEntriesByDate[
+                            date
+                        ].amount || 0
                     );
 
             }
         );
 
+        console.log(
+            "Latest Entry Per Date:",
+            latestEntriesByDate
+        );
 
         console.log(
             "Total Collection:",
             totalCollection
         );
 
-
         // ==================================
         // REMAINING TARGET
         // ==================================
 
         let remainingTarget =
-            target - totalCollection;
-
+            target -
+            totalCollection;
 
         if (remainingTarget < 0) {
 
             remainingTarget = 0;
-        }
 
+        }
 
         // ==================================
         // PERCENTAGE
         // ==================================
 
         let percentage = 0;
-
 
         if (target > 0) {
 
@@ -475,16 +549,16 @@ async function loadPerformance(empCode) {
                     totalCollection /
                     target
                 ) * 100;
-        }
 
+        }
 
         // Maximum 100% display
 
         if (percentage > 100) {
 
             percentage = 100;
-        }
 
+        }
 
         // ==================================
         // SHOW VALUES
@@ -497,8 +571,8 @@ async function loadPerformance(empCode) {
                 formatNumber(
                     totalCollection
                 );
-        }
 
+        }
 
         if (targetAmountElement) {
 
@@ -507,8 +581,8 @@ async function loadPerformance(empCode) {
                 formatNumber(
                     target
                 );
-        }
 
+        }
 
         if (remainingTargetElement) {
 
@@ -517,16 +591,16 @@ async function loadPerformance(empCode) {
                 formatNumber(
                     remainingTarget
                 );
-        }
 
+        }
 
         if (collectionPercentageElement) {
 
             collectionPercentageElement.textContent =
                 percentage.toFixed(2) +
                 "%";
-        }
 
+        }
 
     } catch (error) {
 
@@ -535,38 +609,37 @@ async function loadPerformance(empCode) {
             error
         );
 
-
         if (totalCollectionElement) {
 
             totalCollectionElement.textContent =
                 "₹ 0";
-        }
 
+        }
 
         if (targetAmountElement) {
 
             targetAmountElement.textContent =
                 "₹ 0";
-        }
 
+        }
 
         if (remainingTargetElement) {
 
             remainingTargetElement.textContent =
                 "₹ 0";
-        }
 
+        }
 
         if (collectionPercentageElement) {
 
             collectionPercentageElement.textContent =
                 "0%";
+
         }
 
     }
 
 }
-
 
 // ======================================
 // Number Formatting
@@ -576,8 +649,8 @@ function formatNumber(number) {
 
     return Number(number || 0)
         .toLocaleString("en-IN");
-}
 
+}
 
 // ======================================
 // Submit Daily Collection
@@ -591,7 +664,6 @@ if (dailyEntryForm) {
 
             e.preventDefault();
 
-
             // ==================================
             // Check Employee
             // ==================================
@@ -604,8 +676,8 @@ if (dailyEntryForm) {
                 );
 
                 return;
-            }
 
+            }
 
             // ==================================
             // Get Values
@@ -614,12 +686,10 @@ if (dailyEntryForm) {
             const selectedDate =
                 entryDate.value;
 
-
             const collectionAmount =
                 Number(
                     amount.value
                 );
-
 
             // ==================================
             // Validation
@@ -633,8 +703,8 @@ if (dailyEntryForm) {
                 );
 
                 return;
-            }
 
+            }
 
             if (
                 !collectionAmount ||
@@ -647,18 +717,18 @@ if (dailyEntryForm) {
                 );
 
                 return;
-            }
 
+            }
 
             // ==================================
             // Disable Button
             // ==================================
 
-            submitBtn.disabled = true;
+            submitBtn.disabled =
+                true;
 
             submitBtn.textContent =
                 "Saving...";
-
 
             try {
 
@@ -711,7 +781,6 @@ if (dailyEntryForm) {
                     }
                 );
 
-
                 // ==================================
                 // Success Message
                 // ==================================
@@ -721,11 +790,9 @@ if (dailyEntryForm) {
                     "success"
                 );
 
-
                 // Clear Amount
 
                 amount.value = "";
-
 
                 // ==================================
                 // REFRESH PERFORMANCE
@@ -735,14 +802,12 @@ if (dailyEntryForm) {
                     currentEmployee.employeeCode
                 );
 
-
             } catch (error) {
 
                 console.error(
                     "Daily Entry Error:",
                     error
                 );
-
 
                 showMessage(
                     "Failed to save: " +
@@ -752,17 +817,18 @@ if (dailyEntryForm) {
 
             } finally {
 
-                submitBtn.disabled = false;
+                submitBtn.disabled =
+                    false;
 
                 submitBtn.textContent =
                     "Submit Collection";
+
             }
 
         }
     );
 
 }
-
 
 // ======================================
 // Logout Function
@@ -792,11 +858,11 @@ async function logoutUser() {
         );
 
         window.location.href =
-    "index.html";
+            "index.html";
+
     }
 
 }
-
 
 // ======================================
 // Sidebar Logout
@@ -817,7 +883,6 @@ if (logoutBtn) {
 
 }
 
-
 // ======================================
 // Top Logout
 // ======================================
@@ -835,22 +900,23 @@ if (logoutBtnTop) {
 
 }
 
-
 // ======================================
 // Show Message
 // ======================================
 
-function showMessage(text, type) {
+function showMessage(
+    text,
+    type
+) {
 
     if (!message) {
 
         return;
-    }
 
+    }
 
     message.textContent =
         text;
-
 
     if (type === "success") {
 
@@ -861,6 +927,7 @@ function showMessage(text, type) {
 
         message.style.color =
             "red";
+
     }
 
 }
