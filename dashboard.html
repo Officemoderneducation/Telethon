@@ -4,9 +4,14 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Telethon Admin Dashboard</title>
+
 
     <!-- Font Awesome -->
     <link
@@ -14,11 +19,20 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
+
     <!-- Dashboard CSS -->
     <link
         rel="stylesheet"
         href="assets/css/dashboard.css"
     >
+
+
+    <!-- Admin Sidebar CSS -->
+    <link
+        rel="stylesheet"
+        href="components/admin-sidebar.css"
+    >
+
 
     <style>
 
@@ -26,16 +40,25 @@
             box-sizing: border-box;
         }
 
+
+        body {
+            margin: 0;
+            background: #f4f7fb;
+        }
+
+
         .main-content {
             background: #f4f7fb;
             min-height: 100vh;
         }
+
 
         /* ================================
            HEADER
         ================================= */
 
         .header {
+
             background: linear-gradient(
                 135deg,
                 #ffffff,
@@ -43,34 +66,55 @@
             );
 
             border-radius: 18px;
+
             padding: 22px 25px;
+
             margin-bottom: 22px;
 
             box-shadow:
-                0 8px 25px rgba(15, 23, 42, 0.07);
+                0 8px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.07
+                );
 
             border: 1px solid #e8edf5;
 
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
+
             gap: 15px;
         }
 
+
         .header h2 {
+
             margin: 0;
+
             font-size: 25px;
+
             font-weight: 700;
+
             color: #172033;
         }
 
+
         .header p {
+
             margin: 6px 0 0;
+
             color: #718096;
+
             font-size: 14px;
         }
 
+
         .refresh-btn {
+
             border: none;
 
             background: linear-gradient(
@@ -92,12 +136,19 @@
             font-weight: 600;
 
             box-shadow:
-                0 5px 15px rgba(37, 99, 235, 0.25);
+                0 5px 15px rgba(
+                    37,
+                    99,
+                    235,
+                    0.25
+                );
 
             transition: 0.2s;
         }
 
+
         .refresh-btn:hover {
+
             transform: translateY(-2px);
         }
 
@@ -118,6 +169,7 @@
             margin-bottom: 25px;
         }
 
+
         .user-summary-card {
 
             background: #ffffff;
@@ -135,12 +187,19 @@
             border: 1px solid #e8edf5;
 
             box-shadow:
-                0 7px 25px rgba(15, 23, 42, 0.06);
+                0 7px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.06
+                );
         }
+
 
         .summary-card-icon {
 
             width: 54px;
+
             height: 54px;
 
             min-width: 54px;
@@ -150,50 +209,79 @@
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             font-size: 22px;
         }
 
+
         .summary-card-icon.target {
+
             background: #fff4cf;
+
             color: #e5a900;
         }
 
+
         .summary-card-icon.collection {
+
             background: #dcfce7;
+
             color: #16a34a;
         }
 
+
         .summary-card-icon.remaining {
+
             background: #fee2e2;
+
             color: #dc2626;
         }
 
+
         .summary-card-icon.percent {
+
             background: #e0e7ff;
+
             color: #4f46e5;
         }
 
+
         .user-summary-card span {
+
             display: block;
+
             color: #718096;
+
             font-size: 13px;
+
             margin-bottom: 5px;
         }
 
+
         .user-summary-card strong {
+
             display: block;
+
             font-size: 20px;
+
             color: #172033;
+
             font-weight: 700;
         }
 
+
         .summary-unit {
+
             display: block;
+
             margin-top: 4px;
+
             color: #64748b;
+
             font-size: 12px;
+
             font-weight: 600;
         }
 
@@ -211,12 +299,18 @@
             border: 1px solid #e8edf5;
 
             box-shadow:
-                0 7px 25px rgba(15, 23, 42, 0.06);
+                0 7px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.06
+                );
 
             overflow: hidden;
 
             margin-bottom: 25px;
         }
+
 
         .section-header {
 
@@ -232,31 +326,43 @@
 
             border-bottom: 1px solid #edf1f7;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #ffffff,
-                    #f9fbff
-                );
+            background: linear-gradient(
+                135deg,
+                #ffffff,
+                #f9fbff
+            );
         }
 
+
         .section-header h3 {
+
             margin: 0;
+
             color: #172033;
+
             font-size: 18px;
+
             font-weight: 700;
         }
 
+
         .section-header h3 i {
+
             color: #2563eb;
+
             margin-right: 7px;
         }
 
+
         .section-header p {
+
             margin: 5px 0 0;
+
             color: #8490a5;
+
             font-size: 12px;
         }
+
 
         #userSummarySearch {
 
@@ -274,6 +380,12 @@
         }
 
 
+        #userSummarySearch:focus {
+
+            border-color: #2563eb;
+        }
+
+
         /* ================================
            TABLE
         ================================= */
@@ -285,6 +397,7 @@
             padding: 0 18px 18px;
         }
 
+
         .user-summary-table {
 
             width: 100%;
@@ -295,6 +408,7 @@
 
             min-width: 900px;
         }
+
 
         .user-summary-table thead th {
 
@@ -319,6 +433,7 @@
             text-align: left;
         }
 
+
         .user-summary-table tbody td {
 
             padding: 16px 12px;
@@ -332,7 +447,9 @@
             vertical-align: middle;
         }
 
+
         .user-summary-table tbody tr:hover {
+
             background: #f8fbff;
         }
 
@@ -362,7 +479,9 @@
             color: #172033;
         }
 
+
         .user-name-input:focus {
+
             border-color: #2563eb;
         }
 
@@ -379,6 +498,7 @@
 
             gap: 7px;
         }
+
 
         .user-target-input {
 
@@ -401,9 +521,12 @@
             color: #172033;
         }
 
+
         .user-target-input:focus {
+
             border-color: #2563eb;
         }
+
 
         .save-user-target-btn {
 
@@ -422,7 +545,9 @@
             cursor: pointer;
         }
 
+
         .save-user-target-btn:hover {
+
             background: #15803d;
         }
 
@@ -442,6 +567,7 @@
             white-space: nowrap;
         }
 
+
         .amount-unit {
 
             display: block;
@@ -457,15 +583,21 @@
             white-space: nowrap;
         }
 
+
         .target-main {
+
             color: #2563eb;
         }
 
+
         .collection-main {
+
             color: #16a34a;
         }
 
+
         .remaining-main {
+
             color: #dc2626;
         }
 
@@ -475,8 +607,10 @@
         ================================= */
 
         .percentage-wrapper {
+
             min-width: 150px;
         }
+
 
         .percentage-badge {
 
@@ -493,25 +627,38 @@
             margin-bottom: 7px;
         }
 
+
         .percentage-badge.low {
+
             background: #fee2e2;
+
             color: #dc2626;
         }
 
+
         .percentage-badge.medium {
+
             background: #fef3c7;
+
             color: #b45309;
         }
 
+
         .percentage-badge.good {
+
             background: #dbeafe;
+
             color: #2563eb;
         }
 
+
         .percentage-badge.complete {
+
             background: #dcfce7;
+
             color: #15803d;
         }
+
 
         .user-progress-container {
 
@@ -526,6 +673,7 @@
             overflow: hidden;
         }
 
+
         .user-progress-bar {
 
             height: 100%;
@@ -535,19 +683,27 @@
             transition: width 0.5s ease;
         }
 
+
         .user-progress-bar.low {
+
             background: #ef4444;
         }
 
+
         .user-progress-bar.medium {
+
             background: #f59e0b;
         }
 
+
         .user-progress-bar.good {
+
             background: #3b82f6;
         }
 
+
         .user-progress-bar.complete {
+
             background: #16a34a;
         }
 
@@ -568,6 +724,7 @@
             margin-bottom: 25px;
         }
 
+
         .stat-card {
 
             background: #ffffff;
@@ -587,6 +744,7 @@
                 );
         }
 
+
         .stat-card h4 {
 
             margin: 0 0 8px;
@@ -595,6 +753,7 @@
 
             font-size: 13px;
         }
+
 
         .stat-card p {
 
@@ -635,6 +794,7 @@
             overflow-x: auto;
         }
 
+
         .table-container h3 {
 
             margin: 0 0 18px;
@@ -644,6 +804,7 @@
             font-size: 18px;
         }
 
+
         .table-container table {
 
             width: 100%;
@@ -652,6 +813,7 @@
 
             min-width: 850px;
         }
+
 
         .table-container th {
 
@@ -666,6 +828,7 @@
             text-align: left;
         }
 
+
         .table-container td {
 
             padding: 13px 10px;
@@ -676,6 +839,16 @@
         }
 
 
+        .no-data {
+
+            text-align: center;
+
+            color: #718096;
+
+            padding: 30px !important;
+        }
+
+
         /* ================================
            RESPONSIVE
         ================================= */
@@ -683,32 +856,50 @@
         @media (max-width: 1100px) {
 
             .user-summary-cards {
+
                 grid-template-columns:
                     repeat(2, 1fr);
             }
 
+
             .stats-grid {
+
                 grid-template-columns:
                     repeat(2, 1fr);
             }
+
         }
+
 
         @media (max-width: 700px) {
 
             .user-summary-cards,
             .stats-grid {
+
                 grid-template-columns: 1fr;
             }
 
+
             .header,
             .section-header {
+
                 flex-direction: column;
+
                 align-items: flex-start;
             }
 
+
             #userSummarySearch {
+
                 width: 100%;
             }
+
+
+            .refresh-btn {
+
+                width: 100%;
+            }
+
         }
 
     </style>
@@ -719,88 +910,16 @@
 <body>
 
 
-    <!-- SIDEBAR -->
+    <!-- ==========================================
+         ADMIN SIDEBAR
+    =========================================== -->
 
-    <div class="sidebar">
-
-        <div class="logo">
-
-            <img
-                src="assets/images/logo.png"
-                width="80"
-                alt="Telethon Logo"
-            >
-
-            <h2>Telethon</h2>
-
-            <p>Management System</p>
-
-        </div>
+    <div id="adminSidebar"></div>
 
 
-        <div class="menu">
-
-            <a href="dashboard.html" class="active">
-                <i class="fa-solid fa-house"></i>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="register.html">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Registration Form</span>
-            </a>
-
-            <a href="users.html">
-                <i class="fa-solid fa-users"></i>
-                <span>Teachers List</span>
-            </a>
-
-            <a href="region-user-management.html">
-                <i class="fa-solid fa-user-shield"></i>
-                <span>Region User Management</span>
-            </a>
-
-            <a href="region-user.html">
-                <i class="fa-solid fa-user-shield"></i>
-                <span>Region Users</span>
-            </a>
-
-            <a href="daily-entry.html">
-                <i class="fa-solid fa-file-circle-plus"></i>
-                <span>Daily Collection</span>
-            </a>
-
-            <a href="all-entry.html">
-                <i class="fa-solid fa-list"></i>
-                <span>All Entry</span>
-            </a>
-
-            <a href="collection-summary.html">
-                <i class="fa-solid fa-chart-pie"></i>
-                <span>Collection Summary</span>
-            </a>
-
-            <a href="target-management.html">
-                <i class="fa-solid fa-bullseye"></i>
-                <span>Target Management</span>
-            </a>
-
-            <a href="reports.html">
-                <i class="fa-solid fa-chart-column"></i>
-                <span>Reports</span>
-            </a>
-
-            <a href="#" id="logoutBtn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <!-- MAIN CONTENT -->
+    <!-- ==========================================
+         MAIN CONTENT
+    =========================================== -->
 
     <div class="main-content">
 
@@ -822,6 +941,7 @@
 
                 </h2>
 
+
                 <p>
                     User Target & Collection Performance
                 </p>
@@ -830,6 +950,7 @@
 
 
             <button
+                type="button"
                 onclick="window.location.reload()"
                 class="refresh-btn"
             >
@@ -843,10 +964,14 @@
         </div>
 
 
-        <!-- SUMMARY CARDS -->
+        <!-- ==========================================
+             SUMMARY CARDS
+        =========================================== -->
 
         <div class="user-summary-cards">
 
+
+            <!-- TOTAL TARGET -->
 
             <div class="user-summary-card">
 
@@ -856,6 +981,7 @@
 
                 </div>
 
+
                 <div>
 
                     <span>Total Target</span>
@@ -863,6 +989,7 @@
                     <strong id="userSummaryTotalTarget">
                         ₹ 0
                     </strong>
+
 
                     <small
                         id="userSummaryTargetUnits"
@@ -876,6 +1003,8 @@
             </div>
 
 
+            <!-- TOTAL COLLECTION -->
+
             <div class="user-summary-card">
 
                 <div class="summary-card-icon collection">
@@ -884,6 +1013,7 @@
 
                 </div>
 
+
                 <div>
 
                     <span>Total Collection</span>
@@ -891,6 +1021,7 @@
                     <strong id="userSummaryTotalCollection">
                         ₹ 0
                     </strong>
+
 
                     <small
                         id="userSummaryCollectionUnits"
@@ -904,6 +1035,8 @@
             </div>
 
 
+            <!-- REMAINING -->
+
             <div class="user-summary-card">
 
                 <div class="summary-card-icon remaining">
@@ -912,6 +1045,7 @@
 
                 </div>
 
+
                 <div>
 
                     <span>Remaining Target</span>
@@ -919,6 +1053,7 @@
                     <strong id="userSummaryTotalRemaining">
                         ₹ 0
                     </strong>
+
 
                     <small
                         id="userSummaryRemainingUnits"
@@ -932,6 +1067,8 @@
             </div>
 
 
+            <!-- PERCENTAGE -->
+
             <div class="user-summary-card">
 
                 <div class="summary-card-icon percent">
@@ -939,6 +1076,7 @@
                     <i class="fa-solid fa-percent"></i>
 
                 </div>
+
 
                 <div>
 
@@ -952,11 +1090,12 @@
 
             </div>
 
-
         </div>
 
 
-        <!-- USER COLLECTION SUMMARY -->
+        <!-- ==========================================
+             USER COLLECTION SUMMARY
+        =========================================== -->
 
         <div class="user-summary-container">
 
@@ -972,6 +1111,7 @@
                         User Collection Summary
 
                     </h3>
+
 
                     <p>
                         Region User-wise target and assigned teachers collection
@@ -991,7 +1131,9 @@
 
             <div class="user-summary-table-wrapper">
 
+
                 <table class="user-summary-table">
+
 
                     <thead>
 
@@ -1031,6 +1173,7 @@
 
                     </tbody>
 
+
                 </table>
 
             </div>
@@ -1038,9 +1181,12 @@
         </div>
 
 
-        <!-- OLD COLLECTION CARDS -->
+        <!-- ==========================================
+             COLLECTION STATS
+        =========================================== -->
 
         <div class="stats-grid">
+
 
             <div class="stat-card">
 
@@ -1074,12 +1220,16 @@
 
             </div>
 
+
         </div>
 
 
-        <!-- RECENT COLLECTION -->
+        <!-- ==========================================
+             RECENT COLLECTION
+        =========================================== -->
 
         <div class="table-container">
+
 
             <h3>
 
@@ -1094,6 +1244,7 @@
 
 
             <table>
+
 
                 <thead>
 
@@ -1135,14 +1286,112 @@
 
                 </tbody>
 
+
             </table>
 
         </div>
 
+
     </div>
 
 
-    <!-- DASHBOARD JS -->
+    <!-- ==========================================
+         LOAD ADMIN SIDEBAR
+    =========================================== -->
+
+    <script>
+
+        fetch("components/admin-sidebar.html")
+
+            .then(function(response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Admin Sidebar not found"
+                    );
+
+                }
+
+                return response.text();
+
+            })
+
+            .then(function(data) {
+
+                const sidebar =
+                    document.getElementById(
+                        "adminSidebar"
+                    );
+
+                sidebar.innerHTML = data;
+
+
+                /*
+                 * Active page highlight
+                 */
+
+                const currentPage =
+                    window.location.pathname
+                        .split("/")
+                        .pop();
+
+
+                const menuLinks =
+                    sidebar.querySelectorAll(
+                        ".menu a"
+                    );
+
+
+                menuLinks.forEach(
+                    function(link) {
+
+                        const href =
+                            link.getAttribute(
+                                "href"
+                            );
+
+
+                        if (
+                            href &&
+                            href !== "#" &&
+                            href === currentPage
+                        ) {
+
+                            link.classList.add(
+                                "active"
+                            );
+
+                        }
+
+                        else {
+
+                            link.classList.remove(
+                                "active"
+                            );
+
+                        }
+
+                    }
+                );
+
+            })
+
+            .catch(function(error) {
+
+                console.error(
+                    "Admin Sidebar Error:",
+                    error
+                );
+
+            });
+
+    </script>
+
+
+    <!-- ==========================================
+         DASHBOARD JS
+    =========================================== -->
 
     <script
         type="module"
@@ -1150,7 +1399,9 @@
     ></script>
 
 
-    <!-- PAGE PROTECTION -->
+    <!-- ==========================================
+         PAGE PROTECTION
+    =========================================== -->
 
     <script
         type="module"
