@@ -18,10 +18,6 @@
 
     <style>
 
-        /* ======================================
-           RESET
-        ====================================== */
-
         * {
             margin: 0;
             padding: 0;
@@ -29,44 +25,33 @@
             font-family: Arial, sans-serif;
         }
 
-
         body {
             background: #f4f6f9;
             color: #1e293b;
             min-height: 100vh;
         }
 
-
-        /* ======================================
+        /* =========================
            SIDEBAR
-        ====================================== */
+        ========================= */
 
         .sidebar {
-
             width: 235px;
-
             min-height: 100vh;
 
             background: #0f172a;
-
             color: white;
 
             position: fixed;
 
             left: 0;
-
             top: 0;
-
             bottom: 0;
 
             z-index: 1000;
         }
 
-
-        /* LOGO */
-
         .logo {
-
             height: 178px;
 
             padding: 20px 15px;
@@ -76,11 +61,8 @@
             border-bottom: 1px solid #263247;
         }
 
-
         .logo img {
-
             width: 80px;
-
             height: 80px;
 
             object-fit: contain;
@@ -88,35 +70,23 @@
             margin-bottom: 5px;
         }
 
-
         .logo h2 {
-
             font-size: 20px;
-
             color: #38bdf8;
 
             margin-bottom: 5px;
         }
 
-
         .logo p {
-
             font-size: 13px;
-
             color: #cbd5e1;
         }
 
-
-        /* MENU */
-
         .menu {
-
             padding-top: 15px;
         }
 
-
         .menu a {
-
             display: flex;
 
             align-items: center;
@@ -125,7 +95,7 @@
 
             width: 100%;
 
-            padding: 14px 22px;
+            padding: 13px 22px;
 
             color: #cbd5e1;
 
@@ -136,197 +106,109 @@
             transition: 0.2s;
         }
 
-
         .menu a:hover {
-
             background: #1e293b;
-
             color: white;
         }
-
 
         .menu a.active {
-
             background: #2563eb;
-
             color: white;
         }
 
-
         .menu a i {
-
             width: 18px;
-
             text-align: center;
         }
 
-
-        /* ======================================
+        /* =========================
            MAIN
-        ====================================== */
+        ========================= */
 
         .main {
-
             margin-left: 235px;
 
             width: calc(100% - 235px);
 
             min-height: 100vh;
 
-            padding: 22px;
+            padding: 24px;
         }
 
-
-        /* ======================================
+        /* =========================
            TOPBAR
-        ====================================== */
+        ========================= */
 
-        .topbar-main {
-
-            min-height: 76px;
-
-            background: #0f172a;
-
-            color: white;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            padding: 12px 26px;
-
-            margin-left: 235px;
-
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.12);
-        }
-
-
-        .brand {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-        }
-
-
-        .brand img {
-
-            width: 48px;
-
-            height: 48px;
-
-            object-fit: contain;
-        }
-
-
-        .brand-text h2 {
-
-            font-size: 18px;
-
-            color: #38bdf8;
-
-            margin-bottom: 3px;
-        }
-
-
-        .brand-text p {
-
-            font-size: 12px;
-
-            color: #cbd5e1;
-        }
-
-
-        .user-area {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 16px;
-        }
-
-
-        #regionUserInfoTop {
-
-            font-size: 14px;
-
-            color: #e2e8f0;
-        }
-
-
-        .logout-btn {
-
-            border: none;
-
-            background: #ef3340;
-
-            color: white;
-
-            padding: 10px 16px;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-            font-weight: bold;
-        }
-
-
-        .logout-btn:hover {
-
-            background: #dc2626;
-        }
-
-
-        /* ======================================
-           PAGE TITLE
-        ====================================== */
-
-        .page-title {
-
+        .topbar {
             background: white;
 
-            border-radius: 12px;
+            border-radius: 10px;
 
-            padding: 22px;
+            padding: 20px 24px;
 
-            margin-bottom: 18px;
+            margin-bottom: 20px;
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
         }
 
-
-        .page-title h2 {
-
+        .topbar h2 {
             font-size: 24px;
 
             color: #0f172a;
 
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
 
-
-        .page-title p {
-
+        .topbar p {
             color: #64748b;
 
             font-size: 14px;
         }
 
+        .user-info {
+            display: flex;
 
-        /* ======================================
-           USER INFO
-        ====================================== */
+            align-items: center;
+
+            gap: 10px;
+
+            color: #334155;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+        .user-icon {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* =========================
+           REGION USER INFO
+        ========================= */
 
         .region-user-info {
-
             background: #ecfdf5;
 
             border: 1px solid #bbf7d0;
@@ -342,19 +224,15 @@
             font-size: 14px;
         }
 
-
         .region-user-info strong {
-
             font-size: 16px;
         }
 
-
-        /* ======================================
+        /* =========================
            FILTER PANEL
-        ====================================== */
+        ========================= */
 
         .filter-panel {
-
             background: white;
 
             border-radius: 12px;
@@ -367,9 +245,7 @@
                 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
         .filter-title {
-
             font-size: 17px;
 
             font-weight: bold;
@@ -379,9 +255,7 @@
             color: #0f172a;
         }
 
-
         .filters {
-
             display: grid;
 
             grid-template-columns:
@@ -390,9 +264,7 @@
             gap: 13px;
         }
 
-
         .filter-group label {
-
             display: block;
 
             margin-bottom: 6px;
@@ -404,10 +276,8 @@
             color: #475569;
         }
 
-
         .filter-group select,
         .filter-group input {
-
             width: 100%;
 
             padding: 10px 12px;
@@ -423,10 +293,8 @@
             font-size: 14px;
         }
 
-
         .filter-group select:focus,
         .filter-group input:focus {
-
             border-color: #2563eb;
 
             box-shadow:
@@ -434,13 +302,11 @@
                 rgba(37,99,235,0.10);
         }
 
-
-        /* ======================================
+        /* =========================
            QUICK DATE
-        ====================================== */
+        ========================= */
 
         .quick-date-title {
-
             margin-top: 18px;
 
             margin-bottom: 9px;
@@ -452,9 +318,7 @@
             color: #475569;
         }
 
-
         .quick-dates {
-
             display: flex;
 
             flex-wrap: wrap;
@@ -462,9 +326,7 @@
             gap: 8px;
         }
 
-
         .quick-date-btn {
-
             border: 1px solid #cbd5e1;
 
             background: #f8fafc;
@@ -480,11 +342,11 @@
             font-size: 12px;
 
             font-weight: bold;
+
+            transition: 0.2s;
         }
 
-
         .quick-date-btn:hover {
-
             background: #eff6ff;
 
             border-color: #2563eb;
@@ -492,9 +354,7 @@
             color: #2563eb;
         }
 
-
         .quick-date-btn.active {
-
             background: #2563eb;
 
             color: white;
@@ -502,13 +362,11 @@
             border-color: #2563eb;
         }
 
-
-        /* ======================================
-           FILTER BUTTONS
-        ====================================== */
+        /* =========================
+           BUTTONS
+        ========================= */
 
         .filter-buttons {
-
             display: flex;
 
             gap: 10px;
@@ -516,9 +374,7 @@
             margin-top: 18px;
         }
 
-
         .filter-btn {
-
             border: none;
 
             padding: 10px 18px;
@@ -532,41 +388,31 @@
             font-size: 13px;
         }
 
-
         .apply-btn {
-
             background: #2563eb;
 
             color: white;
         }
 
-
         .apply-btn:hover {
-
             background: #1d4ed8;
         }
 
-
         .reset-btn {
-
             background: #e2e8f0;
 
             color: #334155;
         }
 
-
         .reset-btn:hover {
-
             background: #cbd5e1;
         }
 
-
-        /* ======================================
+        /* =========================
            REPORT INFO
-        ====================================== */
+        ========================= */
 
         .report-info {
-
             display: grid;
 
             grid-template-columns:
@@ -577,9 +423,7 @@
             margin-bottom: 18px;
         }
 
-
         .info-card {
-
             background: white;
 
             border-radius: 10px;
@@ -592,9 +436,7 @@
             border-left: 4px solid #2563eb;
         }
 
-
         .info-card span {
-
             display: block;
 
             color: #64748b;
@@ -604,9 +446,7 @@
             margin-bottom: 5px;
         }
 
-
         .info-card strong {
-
             display: block;
 
             color: #0f172a;
@@ -614,13 +454,11 @@
             font-size: 20px;
         }
 
-
-        /* ======================================
+        /* =========================
            TABLE
-        ====================================== */
+        ========================= */
 
         .table-container {
-
             background: white;
 
             border-radius: 12px;
@@ -631,9 +469,7 @@
                 0 2px 8px rgba(0,0,0,0.06);
         }
 
-
         .table-header {
-
             display: flex;
 
             justify-content: space-between;
@@ -645,25 +481,19 @@
             gap: 15px;
         }
 
-
         .table-header h3 {
-
             font-size: 18px;
 
             color: #0f172a;
         }
 
-
         .result-count {
-
             font-size: 13px;
 
             color: #64748b;
         }
 
-
         .table-wrapper {
-
             width: 100%;
 
             overflow-x: auto;
@@ -673,9 +503,7 @@
             border-radius: 8px;
         }
 
-
         table {
-
             width: 100%;
 
             border-collapse: collapse;
@@ -685,9 +513,7 @@
             min-width: 900px;
         }
 
-
         th {
-
             background: #2563eb;
 
             color: white;
@@ -705,16 +531,12 @@
                 rgba(255,255,255,0.15);
         }
 
-
         th:first-child,
         th:nth-child(2) {
-
             text-align: left;
         }
 
-
         td {
-
             padding: 12px 14px;
 
             border-bottom:
@@ -732,54 +554,40 @@
             text-align: center;
         }
 
-
         td:first-child,
         td:nth-child(2) {
-
             text-align: left;
         }
 
-
         tbody tr:hover {
-
             background: #f8fafc;
         }
 
-
         .jamiatul {
-
             font-weight: bold;
 
             color: #0f172a;
         }
 
-
         .teacher-name {
-
             font-weight: bold;
 
             color: #1d4ed8;
         }
 
-
         .date-amount {
-
             color: #059669;
 
             font-weight: bold;
         }
 
-
         .no-entry {
-
             color: #94a3b8;
 
             font-weight: normal;
         }
 
-
         .total-collection {
-
             color: #dc2626;
 
             font-weight: bold;
@@ -787,13 +595,11 @@
             background: #fff7ed;
         }
 
-
-        /* ======================================
-           FOOTER TOTAL
-        ====================================== */
+        /* =========================
+           TOTAL ROW
+        ========================= */
 
         .total-row td {
-
             background: #f1f5f9;
 
             font-weight: bold;
@@ -801,140 +607,115 @@
             color: #0f172a;
         }
 
-
         .total-row .date-total {
-
             color: #059669;
         }
 
-
         .total-row .grand-total {
-
             color: #dc2626;
 
             background: #ffedd5;
         }
 
-
-        /* ======================================
-           LOADING
-        ====================================== */
+        /* =========================
+           LOADING / EMPTY / ERROR
+        ========================= */
 
         .loading-cell,
         .empty-cell,
         .error-cell {
-
             text-align: center !important;
 
             padding: 40px !important;
         }
 
-
         .loading-cell {
-
             color: #64748b;
         }
-
 
         .empty-cell {
-
             color: #64748b;
         }
 
-
         .error-cell {
-
             color: #dc2626;
         }
 
+        /* =========================
+           LOGOUT
+        ========================= */
 
-        /* ======================================
-           RESPONSIVE
-        ====================================== */
+        .logout-btn {
+            border: none;
+
+            background: #ef3340;
+
+            color: white;
+
+            padding: 9px 14px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 12px;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 1000px) {
 
             .filters {
-
                 grid-template-columns:
                     repeat(2, 1fr);
             }
 
-
             .report-info {
-
                 grid-template-columns:
                     repeat(2, 1fr);
             }
 
         }
 
-
         @media (max-width: 700px) {
 
             .sidebar {
-
                 width: 70px;
             }
 
-
-            .logo h2,
-            .logo p,
-            .menu span {
-
-                display: none;
-            }
-
-
             .logo {
-
                 height: 100px;
 
                 padding: 10px 5px;
             }
 
-
             .logo img {
-
                 width: 45px;
 
                 height: 45px;
             }
 
+            .logo h2,
+            .logo p,
+            .menu span {
+                display: none;
+            }
 
             .menu a {
-
                 justify-content: center;
 
                 padding: 15px 5px;
             }
 
-
-            .topbar-main {
-
-                margin-left: 70px;
-
-                padding: 12px 15px;
-            }
-
-
-            .brand-text {
-
-                display: none;
-            }
-
-
-            .user-area {
-
-                width: 100%;
-
-                justify-content:
-                    flex-end;
-            }
-
-
             .main {
-
                 margin-left: 70px;
 
                 width: calc(100% - 70px);
@@ -942,28 +723,32 @@
                 padding: 12px;
             }
 
+            .topbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .user-info {
+                width: 100%;
+
+                justify-content: space-between;
+            }
 
             .filters {
-
                 grid-template-columns: 1fr;
             }
-
 
             .report-info {
-
                 grid-template-columns: 1fr;
             }
 
-
             .page-title h2 {
-
                 font-size: 20px;
             }
 
-
             .table-container,
             .filter-panel {
-
                 padding: 12px;
             }
 
@@ -977,646 +762,547 @@
 <body>
 
 
-    <!-- ======================================
-         SIDEBAR
-    ====================================== -->
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
 
-    <div class="sidebar">
+<div class="sidebar">
 
-        <div class="logo">
+    <div class="logo">
 
-            <img
-                src="assets/images/logo.png"
-                alt="Telethon Logo"
-            >
+        <img
+            src="assets/images/logo.png"
+            alt="Telethon Logo"
+        >
 
-            <h2>Telethon</h2>
+        <h2>Telethon</h2>
 
-            <p>Region User Panel</p>
-
-        </div>
-
-
-        <div class="menu">
-
-            <!-- DAILY REPORT -->
-
-            <a
-                href="daily-report.html"
-                class="active"
-            >
-
-                <i class="fa-solid fa-calendar-days"></i>
-
-                <span>
-                    Daily Report
-                </span>
-
-            </a>
-
-
-            <!-- COLLECTION SUMMARY -->
-
-            <a href="collection-summary.html">
-
-                <i class="fa-solid fa-chart-column"></i>
-
-                <span>
-                    Collection Summary
-                </span>
-
-            </a>
-
-
-            <!-- LOGOUT -->
-
-            <a
-                href="#"
-                id="logoutBtnSide"
-            >
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                <span>
-                    Logout
-                </span>
-
-            </a>
-
-        </div>
+        <p>Region User Panel</p>
 
     </div>
 
 
-    <!-- ======================================
-         TOP HEADER
-    ====================================== -->
+    <div class="menu">
 
-    <header class="topbar-main">
+        <!-- DAILY REPORT -->
 
-        <div class="brand">
+        <a
+            href="daily-report.html"
+            class="active"
+        >
 
-            <img
-                src="assets/images/logo.png"
-                alt="Telethon Logo"
-            >
+            <i class="fa-solid fa-calendar-days"></i>
 
-            <div class="brand-text">
-
-                <h2>
-                    Telethon
-                </h2>
-
-                <p>
-                    Daily Collection Report
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="user-area">
-
-            <span id="regionUserInfoTop">
-                Loading User...
+            <span>
+                Daily Report
             </span>
 
+        </a>
 
-            <button
-                type="button"
-                id="logoutBtn"
-                class="logout-btn"
-            >
 
-                <i class="fa-solid fa-right-from-bracket"></i>
+        <!-- REGION USER -->
 
+        <a href="region-user.html">
+
+            <i class="fa-solid fa-user-shield"></i>
+
+            <span>
+                Region User
+            </span>
+
+        </a>
+
+
+        <!-- LOGOUT -->
+
+        <a
+            href="index.html"
+            id="logoutLink"
+        >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            <span>
                 Logout
+            </span>
 
-            </button>
+        </a>
 
-        </div>
+    </div>
 
-    </header>
-
-
-    <!-- ======================================
-         MAIN
-    ====================================== -->
-
-    <main class="main">
+</div>
 
 
-        <!-- ==================================
-             PAGE TITLE
-        ================================== -->
+<!-- =====================================================
+     MAIN
+===================================================== -->
 
-        <div class="page-title">
+<div class="main">
+
+
+    <!-- =================================================
+         TOPBAR
+    ================================================== -->
+
+    <div class="topbar">
+
+        <div>
 
             <h2>
-
                 <i
                     class="fa-solid fa-calendar-days"
                     style="color:#2563eb;margin-right:8px;"
                 ></i>
 
                 Daily Collection Report
-
             </h2>
 
-
             <p>
-
-                Teacher-wise daily collection report.
-                Aap ek din, 5 din, 10 din, 15 din ya kisi bhi date range ka data check kar sakte hain.
-
+                Teacher-wise daily collection report
             </p>
 
         </div>
 
 
-        <!-- ==================================
-             REGION USER INFO
-        ================================== -->
+        <div class="user-info">
 
-        <div
-            id="regionUserInfo"
-            class="region-user-info"
-        >
+            <div class="user-icon">
 
-            Loading Region User...
+                <i class="fa-solid fa-user"></i>
+
+            </div>
+
+            <span id="regionUserInfoTop">
+                Loading User...
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         REGION USER INFO
+    ================================================== -->
+
+    <div
+        id="regionUserInfo"
+        class="region-user-info"
+    >
+
+        Loading Region User...
+
+    </div>
+
+
+    <!-- =================================================
+         FILTER PANEL
+    ================================================== -->
+
+    <div class="filter-panel">
+
+
+        <div class="filter-title">
+
+            <i class="fa-solid fa-filter"></i>
+
+            Report Filters
 
         </div>
 
 
-        <!-- ==================================
-             FILTER PANEL
-        ================================== -->
-
-        <div class="filter-panel">
+        <div class="filters">
 
 
-            <div class="filter-title">
+            <!-- REGION -->
 
-                <i class="fa-solid fa-filter"></i>
+            <div class="filter-group">
 
-                Report Filters
+                <label for="regionFilter">
+                    Region
+                </label>
+
+                <select id="regionFilter">
+
+                    <option value="">
+                        All Assigned Regions
+                    </option>
+
+                </select>
 
             </div>
 
 
-            <div class="filters">
+            <!-- STATE -->
 
+            <div class="filter-group">
 
-                <!-- REGION -->
+                <label for="stateFilter">
+                    State
+                </label>
 
-                <div class="filter-group">
+                <select id="stateFilter">
 
-                    <label for="regionFilter">
+                    <option value="">
+                        All Assigned States
+                    </option>
 
-                        Region
-
-                    </label>
-
-
-                    <select id="regionFilter">
-
-                        <option value="">
-
-                            All Regions
-
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- STATE -->
-
-                <div class="filter-group">
-
-                    <label for="stateFilter">
-
-                        State
-
-                    </label>
-
-
-                    <select id="stateFilter">
-
-                        <option value="">
-
-                            All States
-
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- CITY -->
-
-                <div class="filter-group">
-
-                    <label for="cityFilter">
-
-                        City
-
-                    </label>
-
-
-                    <select id="cityFilter">
-
-                        <option value="">
-
-                            All Cities
-
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- JAMIATUL MADINA -->
-
-                <div class="filter-group">
-
-                    <label for="jamiatulFilter">
-
-                        Jamiatul Madina
-
-                    </label>
-
-
-                    <select id="jamiatulFilter">
-
-                        <option value="">
-
-                            All Jamiatul Madina
-
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- FROM DATE -->
-
-                <div class="filter-group">
-
-                    <label for="fromDate">
-
-                        From Date
-
-                    </label>
-
-
-                    <input
-                        type="date"
-                        id="fromDate"
-                    >
-
-                </div>
-
-
-                <!-- TO DATE -->
-
-                <div class="filter-group">
-
-                    <label for="toDate">
-
-                        To Date
-
-                    </label>
-
-
-                    <input
-                        type="date"
-                        id="toDate"
-                    >
-
-                </div>
-
-
-                <!-- SEARCH -->
-
-                <div class="filter-group">
-
-                    <label for="searchFilter">
-
-                        Search Teacher
-
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="searchFilter"
-                        placeholder="Teacher / Emp Code"
-                        autocomplete="off"
-                    >
-
-                </div>
+                </select>
 
             </div>
 
 
-            <!-- ==================================
-                 QUICK DATE RANGE
-            ================================== -->
+            <!-- CITY -->
 
-            <div class="quick-date-title">
+            <div class="filter-group">
 
-                Quick Date Range
+                <label for="cityFilter">
+                    City
+                </label>
 
-            </div>
+                <select id="cityFilter">
 
+                    <option value="">
+                        All Cities
+                    </option>
 
-            <div class="quick-dates">
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="1"
-                >
-
-                    1 Day
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="5"
-                >
-
-                    5 Days
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="10"
-                >
-
-                    10 Days
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="15"
-                >
-
-                    15 Days
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="30"
-                >
-
-                    30 Days
-
-                </button>
+                </select>
 
             </div>
 
 
-            <!-- ==================================
-                 BUTTONS
-            ================================== -->
+            <!-- JAMIATUL MADINA -->
 
-            <div class="filter-buttons">
+            <div class="filter-group">
+
+                <label for="jamiatulFilter">
+                    Jamiatul Madina
+                </label>
+
+                <select id="jamiatulFilter">
+
+                    <option value="">
+                        All Jamiatul Madina
+                    </option>
+
+                </select>
+
+            </div>
 
 
-                <button
-                    type="button"
-                    id="applyFilter"
-                    class="filter-btn apply-btn"
+            <!-- FROM DATE -->
+
+            <div class="filter-group">
+
+                <label for="fromDate">
+                    From Date
+                </label>
+
+                <input
+                    type="date"
+                    id="fromDate"
                 >
 
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                    Show Report
-
-                </button>
+            </div>
 
 
-                <button
-                    type="button"
-                    id="resetFilter"
-                    class="filter-btn reset-btn"
+            <!-- TO DATE -->
+
+            <div class="filter-group">
+
+                <label for="toDate">
+                    To Date
+                </label>
+
+                <input
+                    type="date"
+                    id="toDate"
                 >
 
-                    <i class="fa-solid fa-rotate-left"></i>
+            </div>
 
-                    Reset
 
-                </button>
+            <!-- SEARCH TEACHER -->
+
+            <div class="filter-group">
+
+                <label for="searchFilter">
+                    Search Teacher
+                </label>
+
+                <input
+                    type="text"
+                    id="searchFilter"
+                    placeholder="Teacher / Emp Code"
+                    autocomplete="off"
+                >
 
             </div>
 
         </div>
 
 
-        <!-- ==================================
-             REPORT INFO
-        ================================== -->
+        <!-- QUICK DATE -->
 
-        <div class="report-info">
-
-
-            <div class="info-card">
-
-                <span>
-
-                    Selected Date Range
-
-                </span>
+        <div class="quick-date-title">
+            Quick Date Range
+        </div>
 
 
-                <strong id="selectedDateRange">
-
-                    —
-
-                </strong>
-
-            </div>
+        <div class="quick-dates">
 
 
-            <div class="info-card">
-
-                <span>
-
-                    Total Teachers
-
-                </span>
-
-
-                <strong id="totalTeachers">
-
-                    0
-
-                </strong>
-
-            </div>
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="1"
+            >
+                1 Day
+            </button>
 
 
-            <div class="info-card">
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="5"
+            >
+                5 Days
+            </button>
 
-                <span>
 
-                    Total Collection
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="10"
+            >
+                10 Days
+            </button>
 
-                </span>
+
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="15"
+            >
+                15 Days
+            </button>
 
 
-                <strong id="grandTotal">
-
-                    ₹ 0
-
-                </strong>
-
-            </div>
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="30"
+            >
+                30 Days
+            </button>
 
         </div>
 
 
-        <!-- ==================================
-             REPORT TABLE
-        ================================== -->
+        <!-- BUTTONS -->
 
-        <div class="table-container">
+        <div class="filter-buttons">
 
 
-            <div class="table-header">
+            <button
+                type="button"
+                id="applyFilter"
+                class="filter-btn apply-btn"
+            >
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                Show Report
+
+            </button>
 
 
-                <h3>
+            <button
+                type="button"
+                id="resetFilter"
+                class="filter-btn reset-btn"
+            >
 
-                    <i
-                        class="fa-solid fa-table"
-                        style="color:#2563eb;margin-right:7px;"
-                    ></i>
+                <i class="fa-solid fa-rotate-left"></i>
 
-                    Teachers Daily Collection
+                Reset
 
-                </h3>
-
-
-                <span
-                    id="resultCount"
-                    class="result-count"
-                >
-
-                    Select Date Range
-
-                </span>
-
-            </div>
-
-
-            <div class="table-wrapper">
-
-
-                <table>
-
-
-                    <thead id="reportTableHead">
-
-                        <tr>
-
-                            <th>
-                                Jamiatul Madina
-                            </th>
-
-                            <th>
-                                Teacher Name
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="reportTableBody">
-
-                        <tr>
-
-                            <td
-                                colspan="2"
-                                class="empty-cell"
-                            >
-
-                                Date range select karke
-
-                                <b>
-                                    Show Report
-                                </b>
-
-                                click karein.
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-
-                    <tfoot id="reportTableFoot">
-                    </tfoot>
-
-
-                </table>
-
-            </div>
+            </button>
 
         </div>
 
-    </main>
+    </div>
 
 
-    <!-- ======================================
-         JAVASCRIPT
-    ====================================== -->
+    <!-- =================================================
+         REPORT INFO
+    ================================================== -->
 
-    <script
-        type="module"
-        src="assets/js/daily-report.js"
-    ></script>
+    <div class="report-info">
 
 
-    <!-- ======================================
-         SIDEBAR LOGOUT
-    ====================================== -->
+        <div class="info-card">
 
-    <script>
+            <span>
+                Selected Date Range
+            </span>
 
-        const logoutBtnSide =
-            document.getElementById("logoutBtnSide");
+            <strong id="selectedDateRange">
+                —
+            </strong>
+
+        </div>
 
 
-        if (logoutBtnSide) {
+        <div class="info-card">
 
-            logoutBtnSide.addEventListener(
+            <span>
+                Assigned Teachers
+            </span>
+
+            <strong id="totalTeachers">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <span>
+                Total Collection
+            </span>
+
+            <strong id="grandTotal">
+                ₹ 0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         REPORT TABLE
+    ================================================== -->
+
+    <div class="table-container">
+
+
+        <div class="table-header">
+
+            <h3>
+
+                <i
+                    class="fa-solid fa-table"
+                    style="color:#2563eb;margin-right:7px;"
+                ></i>
+
+                Teachers Daily Collection
+
+            </h3>
+
+
+            <span
+                id="resultCount"
+                class="result-count"
+            >
+                Select Date Range
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+
+            <table>
+
+
+                <thead id="reportTableHead">
+
+                    <tr>
+
+                        <th>
+                            Jamiatul Madina
+                        </th>
+
+                        <th>
+                            Teacher Name
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="reportTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="2"
+                            class="empty-cell"
+                        >
+
+                            Date range select karke
+                            <b>Show Report</b>
+                            click karein.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+
+                <tfoot id="reportTableFoot">
+                </tfoot>
+
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script
+    type="module"
+    src="assets/js/daily-report.js"
+></script>
+
+
+<!-- =====================================================
+     LOGOUT
+===================================================== -->
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const logoutLink =
+                document.getElementById(
+                    "logoutLink"
+                );
+
+            if (!logoutLink) return;
+
+
+            logoutLink.addEventListener(
                 "click",
                 function (e) {
 
                     e.preventDefault();
+
 
                     localStorage.removeItem(
                         "loggedInEmpCode"
@@ -1634,6 +1320,7 @@
                         "regionUserAccess"
                     );
 
+
                     window.location.href =
                         "index.html";
 
@@ -1641,8 +1328,9 @@
             );
 
         }
+    );
 
-    </script>
+</script>
 
 
 </body>
