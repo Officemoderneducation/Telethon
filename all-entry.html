@@ -10,15 +10,23 @@
 
     <title>All Entry | Telethon</title>
 
+
     <!-- Main CSS -->
     <link rel="stylesheet"
           href="assets/css/style.css">
 
+
     <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 
     <style>
+
+        /* =====================================
+           PAGE
+        ===================================== */
 
         * {
             box-sizing: border-box;
@@ -29,67 +37,277 @@
             background: #f4f6f9;
         }
 
-        /* ==============================
+
+        /* =====================================
+           ADMIN SIDEBAR
+        ===================================== */
+
+        .admin-sidebar {
+
+            width: 235px;
+            min-width: 235px;
+            height: 100vh;
+
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            background: #0f172a;
+            color: #ffffff;
+
+            display: flex;
+            flex-direction: column;
+
+            z-index: 9999;
+
+            overflow-y: auto;
+        }
+
+
+        /* =====================================
+           SIDEBAR LOGO
+        ===================================== */
+
+        .admin-sidebar-logo {
+
+            width: 100%;
+            height: 150px;
+
+            padding: 12px 15px;
+
+            text-align: center;
+
+            border-bottom: 1px solid #263247;
+
+            flex-shrink: 0;
+        }
+
+        .admin-sidebar-logo img {
+
+            width: 55px;
+            height: 55px;
+
+            object-fit: contain;
+
+            display: block;
+
+            margin: 0 auto 5px;
+        }
+
+        .admin-sidebar-logo h2 {
+
+            margin: 0 0 3px;
+
+            font-size: 19px;
+            font-weight: 700;
+
+            color: #38bdf8;
+        }
+
+        .admin-sidebar-logo p {
+
+            margin: 0;
+
+            font-size: 12px;
+
+            color: #cbd5e1;
+        }
+
+
+        /* =====================================
+           SIDEBAR MENU
+        ===================================== */
+
+        .admin-sidebar-menu {
+
+            width: 100%;
+
+            padding: 10px 0;
+        }
+
+        .admin-sidebar-menu a {
+
+            width: 100%;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 11px 22px;
+
+            color: #cbd5e1;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            transition: all 0.2s ease;
+        }
+
+        .admin-sidebar-menu a i {
+
+            width: 20px;
+            min-width: 20px;
+
+            text-align: center;
+
+            font-size: 15px;
+        }
+
+        .admin-sidebar-menu a span {
+
+            display: inline-block;
+
+            white-space: nowrap;
+        }
+
+
+        /* =====================================
+           HOVER
+        ===================================== */
+
+        .admin-sidebar-menu a:hover {
+
+            background: #1e293b;
+
+            color: #ffffff;
+        }
+
+
+        /* =====================================
+           ACTIVE
+        ===================================== */
+
+        .admin-sidebar-menu a.active {
+
+            background: #2563eb;
+
+            color: #ffffff;
+        }
+
+
+        /* =====================================
+           SCROLLBAR
+        ===================================== */
+
+        .admin-sidebar::-webkit-scrollbar {
+
+            width: 5px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-track {
+
+            background: #0f172a;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb {
+
+            background: #334155;
+
+            border-radius: 10px;
+        }
+
+
+        /* =====================================
            MAIN
-        ============================== */
+        ===================================== */
 
         .main {
-            margin-left: 250px;
+
+            margin-left: 235px;
+
             padding: 25px;
+
             min-height: 100vh;
+
             overflow-x: auto;
         }
 
+
+        /* =====================================
+           TOPBAR
+        ===================================== */
+
         .topbar {
+
             background: #ffffff;
+
             padding: 20px 25px;
+
             border-radius: 12px;
+
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
         }
 
         .topbar h2 {
+
             margin: 0 0 5px;
+
             color: #1e293b;
         }
 
         .topbar p {
+
             margin: 0;
+
             color: #64748b;
+
             font-size: 14px;
         }
 
 
-        /* ==============================
+        /* =====================================
            FILTER CARD
-        ============================== */
+        ===================================== */
 
         .filter-card {
+
             background: #ffffff;
+
             padding: 20px;
+
             border-radius: 12px;
+
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
         }
 
         .filter-title {
+
             display: flex;
+
             align-items: center;
+
             gap: 10px;
+
             margin-bottom: 18px;
         }
 
         .filter-title h3 {
+
             margin: 0;
+
             color: #1e293b;
         }
 
         .filter-title i {
+
             color: #2563eb;
         }
 
         .filter-grid {
+
             display: grid;
+
             grid-template-columns:
                 repeat(5, minmax(150px, 1fr));
 
@@ -97,198 +315,356 @@
         }
 
         .filter-group label {
+
             display: block;
+
             margin-bottom: 7px;
+
             font-size: 13px;
+
             font-weight: bold;
+
             color: #475569;
         }
 
         .filter-group select,
         .filter-group input {
+
             width: 100%;
+
             height: 42px;
+
             padding: 8px 12px;
+
             border: 1px solid #cbd5e1;
+
             border-radius: 7px;
+
             background: #ffffff;
+
             font-size: 14px;
+
             outline: none;
         }
 
         .filter-group select:focus,
         .filter-group input:focus {
+
             border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+
+            box-shadow:
+                0 0 0 3px rgba(37,99,235,0.10);
         }
 
 
-        /* ==============================
+        /* =====================================
            BUTTONS
-        ============================== */
+        ===================================== */
 
         .filter-buttons {
+
             display: flex;
+
             gap: 10px;
+
             margin-top: 18px;
         }
 
         .reset-btn {
+
             height: 42px;
+
             padding: 0 20px;
+
             border: none;
+
             border-radius: 7px;
+
             background: #64748b;
+
             color: white;
+
             font-weight: bold;
+
             cursor: pointer;
         }
 
         .reset-btn:hover {
+
             background: #475569;
         }
 
 
-        /* ==============================
+        /* =====================================
            SUMMARY
-        ============================== */
+        ===================================== */
 
         .summary-grid {
+
             display: grid;
+
             grid-template-columns:
                 repeat(3, 1fr);
 
             gap: 15px;
+
             margin-bottom: 20px;
         }
 
         .summary-card {
+
             background: #ffffff;
+
             padding: 18px 20px;
+
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
         }
 
         .summary-card span {
+
             display: block;
+
             color: #64748b;
+
             font-size: 13px;
+
             margin-bottom: 5px;
         }
 
         .summary-card strong {
+
             font-size: 23px;
+
             color: #1e293b;
         }
 
 
-        /* ==============================
+        /* =====================================
            TABLE
-        ============================== */
+        ===================================== */
 
         .table-card {
+
             background: #ffffff;
+
             border-radius: 12px;
+
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
         }
 
         .table-header {
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
+
             margin-bottom: 15px;
         }
 
         .table-header h3 {
+
             margin: 0;
+
             color: #1e293b;
         }
 
         .table-wrapper {
+
             width: 100%;
+
             overflow-x: auto;
         }
 
         table {
+
             width: 100%;
+
             min-width: 1200px;
+
             border-collapse: collapse;
         }
 
         th,
         td {
+
             padding: 11px 12px;
-            border-bottom: 1px solid #e2e8f0;
+
+            border-bottom:
+                1px solid #e2e8f0;
+
             text-align: left;
+
             white-space: nowrap;
+
             font-size: 13px;
         }
 
         th {
+
             background: #f8fafc;
+
             color: #475569;
+
             font-weight: bold;
         }
 
         tr:hover {
+
             background: #f8fafc;
         }
 
         .emp-code {
+
             font-weight: bold;
+
             color: #2563eb;
         }
 
         .amount {
+
             font-weight: bold;
+
             color: #059669;
         }
 
         .no-data {
+
             text-align: center;
+
             padding: 25px;
+
             color: #94a3b8;
         }
 
 
-        /* ==============================
+        /* =====================================
            MOBILE
-        ============================== */
+        ===================================== */
 
         @media (max-width: 1100px) {
 
             .filter-grid {
+
                 grid-template-columns:
                     repeat(3, 1fr);
             }
-
         }
+
 
         @media (max-width: 800px) {
 
+            .admin-sidebar {
+
+                width: 190px;
+
+                min-width: 190px;
+            }
+
+            .admin-sidebar-logo {
+
+                height: 140px;
+            }
+
+            .admin-sidebar-logo img {
+
+                width: 50px;
+                height: 50px;
+            }
+
+            .admin-sidebar-menu a {
+
+                padding: 11px 15px;
+
+                font-size: 13px;
+            }
+
             .main {
-                margin-left: 0;
+
+                margin-left: 190px;
+
+                width:
+                    calc(100% - 190px);
+
                 padding: 15px;
             }
 
             .filter-grid {
+
                 grid-template-columns:
                     repeat(2, 1fr);
             }
 
             .summary-grid {
+
                 grid-template-columns: 1fr;
             }
-
         }
 
-        @media (max-width: 500px) {
 
-            .filter-grid {
-                grid-template-columns: 1fr;
+        @media (max-width: 550px) {
+
+            .admin-sidebar {
+
+                width: 70px;
+
+                min-width: 70px;
             }
 
+            .admin-sidebar-logo {
+
+                height: 90px;
+
+                padding: 8px 5px;
+            }
+
+            .admin-sidebar-logo img {
+
+                width: 45px;
+
+                height: 45px;
+            }
+
+            .admin-sidebar-logo h2,
+            .admin-sidebar-logo p,
+            .admin-sidebar-menu a span {
+
+                display: none;
+            }
+
+            .admin-sidebar-menu a {
+
+                justify-content: center;
+
+                padding: 14px 5px;
+            }
+
+            .admin-sidebar-menu a i {
+
+                font-size: 17px;
+            }
+
+            .main {
+
+                margin-left: 70px;
+
+                width:
+                    calc(100% - 70px);
+
+                padding: 10px;
+            }
+
+            .filter-grid {
+
+                grid-template-columns: 1fr;
+            }
         }
 
     </style>
@@ -300,67 +676,131 @@
 
 
 <!-- =====================================
-     SIDEBAR
+     ADMIN SIDEBAR
 ====================================== -->
 
-<div class="sidebar">
+<div class="admin-sidebar">
 
-    <div class="logo">
 
-        <img src="assets/images/logo.png"
-             width="80"
-             alt="Telethon Logo">
+    <!-- LOGO -->
+
+    <div class="admin-sidebar-logo">
+
+        <img
+            src="assets/images/logo.png"
+            alt="Telethon Logo"
+        >
 
         <h2>Telethon</h2>
 
-        <p>Management System</p>
+        <p>Admin Panel</p>
 
     </div>
 
 
-    <div class="menu">
+    <!-- MENU -->
 
-        <a href="dashboard.html">
+    <div class="admin-sidebar-menu">
+
+
+        <!-- 1. DASHBOARD -->
+
+        <a
+            href="dashboard.html"
+            data-page="dashboard.html"
+        >
+
             <i class="fa-solid fa-house"></i>
+
             <span>Dashboard</span>
+
         </a>
 
-        <a href="register.html">
-            <i class="fa-solid fa-user-plus"></i>
-            <span>Registration Form</span>
-        </a>
 
-        <a href="users.html">
+        <!-- 2. TEACHERS LIST -->
+
+        <a
+            href="users.html"
+            data-page="users.html"
+        >
+
             <i class="fa-solid fa-users"></i>
+
             <span>Teachers List</span>
+
         </a>
 
-        <a href="daily-entry.html">
-            <i class="fa-solid fa-file-circle-plus"></i>
-            <span>Daily Collection</span>
+
+        <!-- 3. COLLECTION SUMMARY -->
+
+        <a
+            href="collection-summary.html"
+            data-page="collection-summary.html"
+        >
+
+            <i class="fa-solid fa-chart-pie"></i>
+
+            <span>Collection Summary</span>
+
         </a>
 
-        <a href="all-entry.html"
-           class="active">
-            <i class="fa-solid fa-list"></i>
-            <span>All Entry</span>
-        </a>
 
-        <a href="target-management.html">
+        <!-- 4. TARGET MANAGEMENT -->
+
+        <a
+            href="target-management.html"
+            data-page="target-management.html"
+        >
+
             <i class="fa-solid fa-bullseye"></i>
+
             <span>Target Management</span>
+
         </a>
 
-        <a href="reports.html">
-            <i class="fa-solid fa-chart-column"></i>
-            <span>Reports</span>
+
+        <!-- 5. REGION USER MANAGEMENT -->
+
+        <a
+            href="region-user-management.html"
+            data-page="region-user-management.html"
+        >
+
+            <i class="fa-solid fa-user-shield"></i>
+
+            <span>Region User Management</span>
+
         </a>
 
-        <a href="#"
-           id="logoutBtn">
+
+        <!-- 6. ALL ENTRY -->
+
+        <a
+            href="all-entry.html"
+            data-page="all-entry.html"
+            class="active"
+        >
+
+            <i class="fa-solid fa-list"></i>
+
+            <span>All Entry</span>
+
+        </a>
+
+
+        <!-- 7. LOGOUT -->
+
+        <a
+            href="#"
+            id="adminLogoutBtn"
+        >
+
             <i class="fa-solid fa-right-from-bracket"></i>
+
             <span>Logout</span>
+
         </a>
+
 
     </div>
 
@@ -396,6 +836,7 @@
     ====================================== -->
 
     <div class="filter-card">
+
 
         <div class="filter-title">
 
@@ -438,8 +879,10 @@
                     State
                 </label>
 
-                <select id="filterState"
-                        disabled>
+                <select
+                    id="filterState"
+                    disabled
+                >
 
                     <option value="">
                         All States
@@ -458,8 +901,10 @@
                     City
                 </label>
 
-                <select id="filterCity"
-                        disabled>
+                <select
+                    id="filterCity"
+                    disabled
+                >
 
                     <option value="">
                         All Cities
@@ -481,7 +926,8 @@
                 <input
                     type="text"
                     id="filterEmployeeCode"
-                    placeholder="Enter Employee Code">
+                    placeholder="Enter Employee Code"
+                >
 
             </div>
 
@@ -496,7 +942,8 @@
 
                 <input
                     type="date"
-                    id="filterDate">
+                    id="filterDate"
+                >
 
             </div>
 
@@ -509,7 +956,8 @@
             <button
                 type="button"
                 id="resetFilters"
-                class="reset-btn">
+                class="reset-btn"
+            >
 
                 <i class="fa-solid fa-rotate-left"></i>
 
@@ -626,8 +1074,10 @@
 
                     <tr>
 
-                        <td colspan="10"
-                            class="no-data">
+                        <td
+                            colspan="10"
+                            class="no-data"
+                        >
 
                             Loading entries...
 
@@ -657,6 +1107,7 @@
     src="assets/js/all-entry.js">
 </script>
 
+
 <!-- =====================================
      PAGE PROTECTION
 ====================================== -->
@@ -665,6 +1116,101 @@
     type="module"
     src="assets/js/page-protection.js">
 </script>
+
+
+<!-- =====================================
+     ACTIVE PAGE + LOGOUT
+====================================== -->
+
+<script>
+
+(function () {
+
+    const sidebar =
+        document.querySelector(".admin-sidebar");
+
+
+    if (!sidebar) return;
+
+
+    /* ==============================
+       ACTIVE PAGE
+    ============================== */
+
+    const currentPage =
+        window.location.pathname
+            .split("/")
+            .pop()
+            .toLowerCase();
+
+
+    const menuLinks =
+        sidebar.querySelectorAll(
+            ".admin-sidebar-menu a[data-page]"
+        );
+
+
+    menuLinks.forEach(function (link) {
+
+        const page =
+            link
+                .getAttribute("data-page")
+                .toLowerCase();
+
+
+        if (page === currentPage) {
+
+            link.classList.add("active");
+
+        } else {
+
+            link.classList.remove("active");
+
+        }
+
+    });
+
+
+    /* ==============================
+       LOGOUT
+    ============================== */
+
+    const logoutBtn =
+        document.getElementById(
+            "adminLogoutBtn"
+        );
+
+
+    if (logoutBtn) {
+
+        logoutBtn.addEventListener(
+            "click",
+            function (e) {
+
+                e.preventDefault();
+
+
+                localStorage.removeItem(
+                    "loggedInEmpCode"
+                );
+
+                localStorage.removeItem(
+                    "userRole"
+                );
+
+
+                window.location.href =
+                    "index.html";
+
+            }
+        );
+
+    }
+
+})();
+
+</script>
+
 
 </body>
 
