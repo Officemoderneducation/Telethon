@@ -1,206 +1,66 @@
-<!-- =========================================
-     TELETHON - ADMIN SIDEBAR
-     Only Admin Menu
-     ========================================= -->
+<!-- ADMIN SIDEBAR -->
 
-<aside class="admin-sidebar" id="adminSidebar">
+<div class="sidebar">
 
-    <!-- Logo -->
-    <div class="sidebar-logo">
-        <div class="logo-icon">
-            <i class="fa-solid fa-chart-line"></i>
-        </div>
+    <!-- LOGO -->
+    <div class="logo">
 
-        <div class="logo-text">
-            <span class="logo-title">Telethon</span>
-            <span class="logo-subtitle">Admin Panel</span>
-        </div>
+        <img
+            src="assets/images/logo.png"
+            width="80"
+            alt="Telethon Logo"
+        >
+
+        <h2>Telethon Admin Panel</h2>
+
+        <p>Management System</p>
+
     </div>
 
 
-    <!-- Navigation -->
-    <nav class="sidebar-nav">
+    <!-- ADMIN MENU -->
+    <div class="menu">
 
-        <!-- 1. Dashboard -->
-        <a href="dashboard.html"
-           class="sidebar-link"
-           data-page="dashboard.html">
-
-            <i class="fa-solid fa-gauge-high"></i>
-
+        <a href="dashboard.html">
+            <i class="fa-solid fa-house"></i>
             <span>Dashboard</span>
-
         </a>
 
-
-        <!-- 2. Teachers List -->
-        <a href="users.html"
-           class="sidebar-link"
-           data-page="users.html">
-
+        <a href="users.html">
             <i class="fa-solid fa-users"></i>
-
             <span>Teachers List</span>
-
         </a>
 
-
-        <!-- 3. Daily Report -->
-        <a href="daily-report.html"
-           class="sidebar-link"
-           data-page="daily-report.html">
-
-            <i class="fa-solid fa-calendar-day"></i>
-
+        <a href="daily-report.html">
+            <i class="fa-solid fa-file-lines"></i>
             <span>Daily Report</span>
-
         </a>
 
-
-        <!-- 4. Region User Management -->
-        <a href="region-users.html"
-           class="sidebar-link"
-           data-page="region-users.html">
-
+        <a href="region-users.html">
             <i class="fa-solid fa-user-shield"></i>
-
             <span>Region User Management</span>
-
         </a>
 
-
-        <!-- 5. All Entry -->
-        <a href="all-entry.html"
-           class="sidebar-link"
-           data-page="all-entry.html">
-
+        <a href="all-entry.html">
             <i class="fa-solid fa-list"></i>
-
             <span>All Entry</span>
-
         </a>
 
-
-        <!-- 6. Target Management -->
-        <a href="target-management.html"
-           class="sidebar-link"
-           data-page="target-management.html">
-
+        <a href="target-management.html">
             <i class="fa-solid fa-bullseye"></i>
-
             <span>Target Management</span>
-
         </a>
 
-
-        <!-- 7. Collection Summary -->
-        <a href="collection-summary.html"
-           class="sidebar-link"
-           data-page="collection-summary.html">
-
-            <i class="fa-solid fa-chart-column"></i>
-
+        <a href="collection-summary.html">
+            <i class="fa-solid fa-chart-pie"></i>
             <span>Collection Summary</span>
-
         </a>
 
-
-        <!-- 8. Logout -->
-        <a href="#"
-           class="sidebar-link logout-link"
-           id="logoutBtn">
-
+        <a href="#" id="logoutBtn">
             <i class="fa-solid fa-right-from-bracket"></i>
-
             <span>Logout</span>
-
         </a>
 
-    </nav>
+    </div>
 
-</aside>
-
-
-<!-- =========================================
-     ACTIVE PAGE SCRIPT
-     ========================================= -->
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const currentPage =
-        window.location.pathname
-            .split("/")
-            .pop()
-            .toLowerCase();
-
-
-    const sidebarLinks =
-        document.querySelectorAll(
-            ".admin-sidebar .sidebar-link[data-page]"
-        );
-
-
-    sidebarLinks.forEach(function (link) {
-
-        const page =
-            link
-                .getAttribute("data-page")
-                .toLowerCase();
-
-
-        if (page === currentPage) {
-
-            link.classList.add("active");
-
-        } else {
-
-            link.classList.remove("active");
-
-        }
-
-    });
-
-
-    // =====================================
-    // LOGOUT
-    // =====================================
-
-    const logoutBtn =
-        document.getElementById("logoutBtn");
-
-
-    if (logoutBtn) {
-
-        logoutBtn.addEventListener(
-            "click",
-            function (e) {
-
-                e.preventDefault();
-
-
-                localStorage.removeItem(
-                    "loggedInEmpCode"
-                );
-
-                localStorage.removeItem(
-                    "userRole"
-                );
-
-                localStorage.removeItem(
-                    "userName"
-                );
-
-
-                window.location.href =
-                    "index.html";
-
-            }
-        );
-
-    }
-
-});
-
-</script>
+</div>
