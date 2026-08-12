@@ -33,6 +33,7 @@
             min-height: 100vh;
         }
 
+
         /* =========================
            SIDEBAR
         ========================= */
@@ -56,6 +57,11 @@
             display: flex;
             flex-direction: column;
         }
+
+
+        /* =========================
+           SIDEBAR BRAND
+        ========================= */
 
         .sidebar-brand {
             height: 76px;
@@ -81,17 +87,26 @@
 
         .sidebar-brand-text h2 {
             font-size: 18px;
+
             color: #38bdf8;
+
             margin-bottom: 3px;
         }
 
         .sidebar-brand-text p {
             font-size: 11px;
+
             color: #94a3b8;
         }
 
+
+        /* =========================
+           SIDEBAR MENU
+        ========================= */
+
         .sidebar-menu {
             padding: 20px 12px;
+
             flex: 1;
         }
 
@@ -99,6 +114,7 @@
             color: #64748b;
 
             font-size: 11px;
+
             font-weight: bold;
 
             text-transform: uppercase;
@@ -109,6 +125,7 @@
 
         .sidebar-menu a {
             display: flex;
+
             align-items: center;
 
             gap: 12px;
@@ -134,23 +151,51 @@
 
         .sidebar-menu a i {
             width: 20px;
+
             text-align: center;
+
             font-size: 15px;
         }
 
         .sidebar-menu a:hover {
             background: #1e293b;
+
             color: white;
         }
 
         .sidebar-menu a.active {
             background: #2563eb;
+
             color: white;
 
             box-shadow:
                 0 3px 8px
                 rgba(37,99,235,0.25);
         }
+
+
+        /* =========================
+           LOGOUT MENU
+        ========================= */
+
+        .sidebar-menu a.logout-menu {
+            margin-top: 25px;
+
+            background: #dc2626;
+
+            color: white;
+        }
+
+        .sidebar-menu a.logout-menu:hover {
+            background: #b91c1c;
+
+            color: white;
+        }
+
+
+        /* =========================
+           SIDEBAR FOOTER
+        ========================= */
 
         .sidebar-footer {
             padding: 15px 12px;
@@ -162,18 +207,23 @@
 
         .sidebar-footer-text {
             color: #64748b;
+
             font-size: 11px;
+
             text-align: center;
         }
 
+
         /* =========================
-           MAIN WRAPPER
+           PAGE WRAPPER
         ========================= */
 
         .page-wrapper {
             margin-left: 250px;
+
             min-height: 100vh;
         }
+
 
         /* =========================
            TOPBAR
@@ -187,8 +237,10 @@
             color: #0f172a;
 
             display: flex;
+
             align-items: center;
-            justify-content: space-between;
+
+            gap: 15px;
 
             padding: 0 26px;
 
@@ -197,10 +249,16 @@
                 rgba(0,0,0,0.08);
 
             position: sticky;
+
             top: 0;
 
             z-index: 900;
         }
+
+
+        /* =========================
+           MOBILE MENU BUTTON
+        ========================= */
 
         .mobile-menu-btn {
             display: none;
@@ -212,6 +270,7 @@
             color: white;
 
             width: 40px;
+
             height: 40px;
 
             border-radius: 7px;
@@ -221,8 +280,14 @@
             font-size: 17px;
         }
 
+
+        /* =========================
+           TOPBAR TITLE
+        ========================= */
+
         .topbar-title {
             display: flex;
+
             align-items: center;
 
             gap: 10px;
@@ -230,49 +295,16 @@
 
         .topbar-title i {
             color: #2563eb;
+
             font-size: 20px;
         }
 
         .topbar-title h3 {
             font-size: 18px;
+
             color: #0f172a;
         }
 
-        .user-area {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        #regionUserInfoTop {
-            font-size: 14px;
-            color: #475569;
-
-            font-weight: 600;
-        }
-
-        .logout-btn {
-            border: none;
-
-            background: #ef3340;
-
-            color: white;
-
-            padding: 10px 16px;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-            font-weight: bold;
-
-            transition:
-                background 0.2s;
-        }
-
-        .logout-btn:hover {
-            background: #dc2626;
-        }
 
         /* =========================
            MAIN
@@ -287,8 +319,9 @@
             padding: 22px;
         }
 
+
         /* =========================
-           TITLE
+           PAGE TITLE
         ========================= */
 
         .topbar {
@@ -319,6 +352,7 @@
             font-size: 14px;
         }
 
+
         /* =========================
            REGION USER INFO
         ========================= */
@@ -343,6 +377,7 @@
         .region-user-info strong {
             font-size: 16px;
         }
+
 
         /* =========================
            FILTER
@@ -420,6 +455,11 @@
                 rgba(37,99,235,0.10);
         }
 
+
+        /* =========================
+           FILTER BUTTONS
+        ========================= */
+
         .filter-buttons {
             display: flex;
 
@@ -444,6 +484,7 @@
 
         .apply-btn {
             background: #2563eb;
+
             color: white;
         }
 
@@ -453,12 +494,14 @@
 
         .reset-btn {
             background: #e2e8f0;
+
             color: #334155;
         }
 
         .reset-btn:hover {
             background: #cbd5e1;
         }
+
 
         /* =========================
            TABLE
@@ -551,6 +594,11 @@
             background: #f8fafc;
         }
 
+
+        /* =========================
+           TABLE DATA
+        ========================= */
+
         .employee-code {
             font-weight: bold;
 
@@ -574,6 +622,7 @@
 
             font-weight: bold;
         }
+
 
         /* =========================
            STATUS
@@ -602,6 +651,7 @@
 
             color: #664d03;
         }
+
 
         /* =========================
            PERCENTAGE
@@ -643,6 +693,7 @@
             color: #15803d;
         }
 
+
         /* =========================
            LOADING
         ========================= */
@@ -667,6 +718,7 @@
             color: #dc2626;
         }
 
+
         /* =========================
            SIDEBAR OVERLAY
         ========================= */
@@ -684,8 +736,9 @@
             z-index: 999;
         }
 
+
         /* =========================
-           MOBILE
+           TABLET
         ========================= */
 
         @media (max-width: 1000px) {
@@ -696,6 +749,11 @@
             }
 
         }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 800px) {
 
@@ -728,41 +786,19 @@
                 padding: 0 15px;
             }
 
-            .topbar-title {
-                gap: 7px;
-            }
-
-            .topbar-title h3 {
-                font-size: 16px;
-            }
-
         }
+
 
         @media (max-width: 650px) {
 
             .topbar-main {
-                height: auto;
+                height: 76px;
 
-                min-height: 76px;
-
-                padding: 12px 15px;
-
-                gap: 10px;
+                padding: 0 12px;
             }
 
-            .user-area {
-                gap: 8px;
-            }
-
-            #regionUserInfoTop {
-                font-size: 12px;
-            }
-
-            .logout-btn {
-                padding:
-                    9px 11px;
-
-                font-size: 12px;
+            .topbar-title h3 {
+                font-size: 16px;
             }
 
             .main {
@@ -804,7 +840,10 @@
      SIDEBAR
 ====================================== -->
 
-<aside class="sidebar" id="sidebar">
+<aside
+    class="sidebar"
+    id="sidebar"
+>
 
 
     <!-- SIDEBAR BRAND -->
@@ -818,16 +857,20 @@
 
         <div class="sidebar-brand-text">
 
-            <h2>Telethon</h2>
+            <h2>
+                Telethon
+            </h2>
 
-            <p>Region User Panel</p>
+            <p>
+                Region User Panel
+            </p>
 
         </div>
 
     </div>
 
 
-    <!-- MENU -->
+    <!-- SIDEBAR MENU -->
 
     <nav class="sidebar-menu">
 
@@ -842,7 +885,9 @@
             href="daily-report.html"
         >
 
-            <i class="fa-solid fa-calendar-days"></i>
+            <i
+                class="fa-solid fa-calendar-days"
+            ></i>
 
             <span>
                 Daily Report
@@ -858,10 +903,31 @@
             class="active"
         >
 
-            <i class="fa-solid fa-users"></i>
+            <i
+                class="fa-solid fa-users"
+            ></i>
 
             <span>
                 Region User
+            </span>
+
+        </a>
+
+
+        <!-- LOGOUT -->
+
+        <a
+            href="#"
+            id="sidebarLogoutBtn"
+            class="logout-menu"
+        >
+
+            <i
+                class="fa-solid fa-right-from-bracket"
+            ></i>
+
+            <span>
+                Logout
             </span>
 
         </a>
@@ -882,7 +948,9 @@
 </aside>
 
 
-<!-- SIDEBAR OVERLAY -->
+<!-- ======================================
+     SIDEBAR OVERLAY
+====================================== -->
 
 <div
     class="sidebar-overlay"
@@ -912,7 +980,9 @@
             class="mobile-menu-btn"
         >
 
-            <i class="fa-solid fa-bars"></i>
+            <i
+                class="fa-solid fa-bars"
+            ></i>
 
         </button>
 
@@ -921,37 +991,13 @@
 
         <div class="topbar-title">
 
-            <i class="fa-solid fa-users"></i>
+            <i
+                class="fa-solid fa-users"
+            ></i>
 
             <h3>
                 Region User
             </h3>
-
-        </div>
-
-
-        <!-- USER AREA -->
-
-        <div class="user-area">
-
-            <span id="regionUserInfoTop">
-                Region User
-            </span>
-
-
-            <button
-                type="button"
-                id="logoutBtn"
-                class="logout-btn"
-            >
-
-                <i
-                    class="fa-solid fa-right-from-bracket"
-                ></i>
-
-                Logout
-
-            </button>
 
         </div>
 
@@ -1002,7 +1048,9 @@
 
             <div class="filter-title">
 
-                <i class="fa-solid fa-filter"></i>
+                <i
+                    class="fa-solid fa-filter"
+                ></i>
 
                 Filter Teachers
 
@@ -1116,7 +1164,7 @@
             </div>
 
 
-            <!-- BUTTONS -->
+            <!-- FILTER BUTTONS -->
 
             <div class="filter-buttons">
 
@@ -1168,7 +1216,10 @@
 
                     <i
                         class="fa-solid fa-users"
-                        style="color:#2563eb;margin-right:7px;"
+                        style="
+                            color:#2563eb;
+                            margin-right:7px;
+                        "
                     ></i>
 
                     Assigned Teachers
@@ -1296,6 +1347,10 @@
         );
 
 
+    /* =========================
+       OPEN SIDEBAR
+    ========================= */
+
     function openSidebar() {
 
         if (sidebar) {
@@ -1316,6 +1371,10 @@
 
     }
 
+
+    /* =========================
+       CLOSE SIDEBAR
+    ========================= */
 
     function closeSidebar() {
 
@@ -1338,6 +1397,10 @@
     }
 
 
+    /* =========================
+       MOBILE MENU
+    ========================= */
+
     if (mobileMenuBtn) {
 
         mobileMenuBtn.addEventListener(
@@ -1348,6 +1411,10 @@
     }
 
 
+    /* =========================
+       OVERLAY
+    ========================= */
+
     if (sidebarOverlay) {
 
         sidebarOverlay.addEventListener(
@@ -1357,6 +1424,10 @@
 
     }
 
+
+    /* =========================
+       SIDEBAR LINKS
+    ========================= */
 
     document
         .querySelectorAll(
@@ -1376,6 +1447,64 @@
 
             }
         );
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    const sidebarLogoutBtn =
+        document.getElementById(
+            "sidebarLogoutBtn"
+        );
+
+
+    if (sidebarLogoutBtn) {
+
+        sidebarLogoutBtn.addEventListener(
+            "click",
+            function (e) {
+
+                e.preventDefault();
+
+
+                const confirmation =
+                    confirm(
+                        "Kya aap Logout karna chahte hain?"
+                    );
+
+
+                if (!confirmation) {
+
+                    return;
+
+                }
+
+
+                localStorage.removeItem(
+                    "loggedInEmpCode"
+                );
+
+                localStorage.removeItem(
+                    "userRole"
+                );
+
+                localStorage.removeItem(
+                    "regionUserName"
+                );
+
+                localStorage.removeItem(
+                    "regionUserAccess"
+                );
+
+
+                window.location.href =
+                    "index.html";
+
+            }
+        );
+
+    }
 
 </script>
 
