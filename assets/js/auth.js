@@ -1,5 +1,6 @@
 // ======================================
-// Telethon - Admin / Teacher / Region User Login
+// Telethon
+// Admin / Teacher / Region User Login
 // ======================================
 
 import { db } from "./firebase-config.js";
@@ -9,139 +10,441 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const loginForm = document.getElementById("loginForm");
+
+// ======================================
+// LOGIN FORM
+// ======================================
+
+const loginForm =
+    document.getElementById("loginForm");
+
+
+// ======================================
+// LOGIN
+// ======================================
 
 if (loginForm) {
 
-    loginForm.addEventListener("submit", async function (e) {
+    loginForm.addEventListener(
+        "submit",
+        async function (e) {
 
-        e.preventDefault();
-
-        const loginInput =
-            document.getElementById("employeeCode");
-
-        const passwordInput =
-            document.getElementById("password");
-
-        const errorMsg =
-            document.getElementById("errorMsg");
-
-        const loginId =
-            loginInput.value.trim();
-
-        const password =
-            passwordInput.value.trim();
+            e.preventDefault();
 
 
-        // ======================================
-        // Message
-        // ======================================
+            // ==================================
+            // HTML ELEMENTS
+            // ==================================
 
-        function showMessage(message) {
+            const loginInput =
+                document.getElementById("employeeCode");
 
-            if (errorMsg) {
-                errorMsg.textContent = message;
-            } else {
-                alert(message);
+            const passwordInput =
+                document.getElementById("password");
+
+            const errorMsg =
+                document.getElementById("errorMsg");
+
+
+            // ==================================
+            // VALUES
+            // ==================================
+
+            const loginId =
+                String(
+                    loginInput?.value || ""
+                ).trim();
+
+            const password =
+                String(
+                    passwordInput?.value || ""
+                ).trim();
+
+
+            // ==================================
+            // MESSAGE FUNCTION
+            // ==================================
+
+            function showMessage(message) {
+
+                if (errorMsg) {
+
+                    errorMsg.textContent =
+                        message;
+
+                }
+
+                else {
+
+                    alert(message);
+
+                }
+
             }
 
-        }
+
+            // ==================================
+            // CLEAR OLD MESSAGE
+            // ==================================
+
+            if (errorMsg) {
+
+                errorMsg.textContent =
+                    "";
+
+            }
 
 
-        // ======================================
-        // Empty Validation
-        // ======================================
+            // ==================================
+            // EMPTY VALIDATION
+            // ==================================
 
-        if (!loginId || !password) {
+            if (
+                !loginId ||
+                !password
+            ) {
 
-            showMessage(
-                "Employee Code / User Code / Admin Email aur Password enter karein."
-            );
-
-            return;
-        }
-
-
-        // ======================================
-        // ADMIN LOGIN
-        // ======================================
-
-        if (
-            loginId.toLowerCase() ===
-            "office.moderneducation@gmail.com"
-        ) {
-
-            if (password === "123789") {
-
-                localStorage.setItem(
-                    "loggedInEmpCode",
-                    "admin"
+                showMessage(
+                    "Employee Code / User Code / Admin Email aur Password enter karein."
                 );
-
-                localStorage.setItem(
-                    "userRole",
-                    "admin"
-                );
-
-                // Admin Dashboard
-                window.location.href =
-                    "dashboard.html";
 
                 return;
 
-            } else {
+            }
+
+
+            // ======================================
+            // ADMIN LOGIN
+            // ======================================
+
+            if (
+                loginId.toLowerCase() ===
+                "office.moderneducation@gmail.com"
+            ) {
+
+                // ----------------------------------
+                // ADMIN PASSWORD
+                // ----------------------------------
+
+                if (
+                    password ===
+                    "123789"
+                ) {
+
+                    // --------------------------------
+                    // LOGIN INFORMATION
+                    // --------------------------------
+
+                    localStorage.setItem(
+                        "loggedInEmpCode",
+                        "admin"
+                    );
+
+                    localStorage.setItem(
+                        "userRole",
+                        "admin"
+                    );
+
+                    localStorage.setItem(
+                        "userName",
+                        "Administrator"
+                    );
+
+
+                    // --------------------------------
+                    // ADMIN ACCESS
+                    // --------------------------------
+
+                    localStorage.removeItem(
+                        "regionUserName"
+                    );
+
+                    localStorage.removeItem(
+                        "regionUserAccess"
+                    );
+
+
+                    // --------------------------------
+                    // ADMIN DASHBOARD
+                    // --------------------------------
+
+                    window.location.href =
+                        "dashboard.html";
+
+                    return;
+
+                }
+
+
+                // ----------------------------------
+                // WRONG ADMIN PASSWORD
+                // ----------------------------------
 
                 showMessage(
                     "Admin Password Galat Hai!"
                 );
 
                 return;
+
             }
-        }
-
-
-        // ======================================
-        // CHECK REGION USER
-        // ======================================
-
-        showMessage(
-            "Checking User..."
-        );
-
-
-        try {
-
-            const regionUserRef =
-                doc(
-                    db,
-                    "region_users",
-                    loginId
-                );
-
-
-            const regionUserSnap =
-                await getDoc(
-                    regionUserRef
-                );
 
 
             // ======================================
-            // REGION USER FOUND
+            // CHECK REGION USER
             // ======================================
 
-            if (regionUserSnap.exists()) {
+            showMessage(
+                "Checking User..."
+            );
 
-                const data =
-                    regionUserSnap.data();
+
+            try {
+
+                // ==================================
+                // REGION USER DOCUMENT
+                //
+                // IMPORTANT:
+                // Collection = regionUsers
+                // Document ID = User Code
+                // ==================================
+
+                const regionUserRef =
+                    doc(
+                        db,
+                        "regionUsers",
+                        loginId
+                    );
+
+
+                const regionUserSnap =
+                    await getDoc(
+                        regionUserRef
+                    );
 
 
                 // ==================================
-                // Password Check
+                // REGION USER FOUND
                 // ==================================
 
                 if (
-                    String(data.password || "").trim()
-                    !== password
+                    regionUserSnap.exists()
+                ) {
+
+                    const regionUserData =
+                        regionUserSnap.data();
+
+
+                    console.log(
+                        "Region User Found:",
+                        regionUserData
+                    );
+
+
+                    // ==================================
+                    // REGION USER PASSWORD
+                    // ==================================
+
+                    const savedPassword =
+                        String(
+                            regionUserData.password ||
+                            ""
+                        ).trim();
+
+
+                    if (
+                        savedPassword !==
+                        password
+                    ) {
+
+                        showMessage(
+                            "Wrong Password!"
+                        );
+
+                        return;
+
+                    }
+
+
+                    // ==================================
+                    // REGION USER STATUS
+                    // ==================================
+
+                    const regionUserStatus =
+                        String(
+                            regionUserData.status ||
+                            ""
+                        )
+                        .trim()
+                        .toLowerCase();
+
+
+                    if (
+                        regionUserStatus !==
+                        "active"
+                    ) {
+
+                        showMessage(
+                            "Aapka Region User Account Active nahi hai."
+                        );
+
+                        return;
+
+                    }
+
+
+                    // ==================================
+                    // REGION USER NAME
+                    // ==================================
+
+                    const regionUserName =
+
+                        regionUserData.userName ||
+
+                        regionUserData.name ||
+
+                        loginId;
+
+
+                    // ==================================
+                    // REGION USER ACCESS
+                    // ==================================
+
+                    const regionUserAccess =
+
+                        Array.isArray(
+                            regionUserData.access
+                        )
+
+                            ? regionUserData.access
+
+                            : [];
+
+
+                    // ==================================
+                    // SAVE LOGIN SESSION
+                    // ==================================
+
+                    localStorage.setItem(
+                        "loggedInEmpCode",
+                        loginId
+                    );
+
+
+                    // IMPORTANT:
+                    // Region User pages check
+                    // "regionuser"
+                    localStorage.setItem(
+                        "userRole",
+                        "regionuser"
+                    );
+
+
+                    localStorage.setItem(
+                        "regionUserName",
+                        regionUserName
+                    );
+
+
+                    localStorage.setItem(
+                        "regionUserAccess",
+                        JSON.stringify(
+                            regionUserAccess
+                        )
+                    );
+
+
+                    // ==================================
+                    // REMOVE OTHER USER DATA
+                    // ==================================
+
+                    localStorage.removeItem(
+                        "userName"
+                    );
+
+
+                    // ==================================
+                    // REGION USER PANEL
+                    // ==================================
+
+                    window.location.href =
+                        "region-user.html";
+
+                    return;
+
+                }
+
+
+                // ======================================
+                // TEACHER LOGIN
+                // ======================================
+
+                showMessage(
+                    "Checking Employee Code..."
+                );
+
+
+                // ==================================
+                // TEACHER DOCUMENT
+                //
+                // Collection = employees
+                // Document ID = Employee Code
+                // ==================================
+
+                const employeeRef =
+                    doc(
+                        db,
+                        "employees",
+                        loginId
+                    );
+
+
+                const employeeSnap =
+                    await getDoc(
+                        employeeRef
+                    );
+
+
+                // ==================================
+                // EMPLOYEE NOT FOUND
+                // ==================================
+
+                if (
+                    !employeeSnap.exists()
+                ) {
+
+                    showMessage(
+                        "User / Employee Code not found!"
+                    );
+
+                    return;
+
+                }
+
+
+                const employeeData =
+                    employeeSnap.data();
+
+
+                console.log(
+                    "Teacher Found:",
+                    employeeData
+                );
+
+
+                // ==================================
+                // TEACHER PASSWORD
+                // ==================================
+
+                const teacherPassword =
+                    String(
+                        employeeData.password ||
+                        ""
+                    ).trim();
+
+
+                if (
+                    teacherPassword !==
+                    password
                 ) {
 
                     showMessage(
@@ -149,28 +452,39 @@ if (loginForm) {
                     );
 
                     return;
+
                 }
 
 
                 // ==================================
-                // Status Check
+                // TEACHER APPROVAL
                 // ==================================
 
+                const teacherStatus =
+                    String(
+                        employeeData.status ||
+                        ""
+                    )
+                    .trim()
+                    .toLowerCase();
+
+
                 if (
-                    String(data.status || "").toLowerCase()
-                    !== "active"
+                    teacherStatus !==
+                    "approved"
                 ) {
 
                     showMessage(
-                        "Aapka Region User Account Active nahi hai."
+                        "Aapka account Admin Approval ke liye pending hai!"
                     );
 
                     return;
+
                 }
 
 
                 // ==================================
-                // REGION USER LOGIN SUCCESS
+                // TEACHER LOGIN SUCCESS
                 // ==================================
 
                 localStorage.setItem(
@@ -178,148 +492,76 @@ if (loginForm) {
                     loginId
                 );
 
+
                 localStorage.setItem(
                     "userRole",
-                    "regionUser"
-                );
-
-
-                // Region User Information
-                localStorage.setItem(
-                    "regionUserName",
-                    data.userName || ""
-                );
-
-
-                localStorage.setItem(
-                    "regionUserAccess",
-                    JSON.stringify(
-                        data.access || {}
-                    )
+                    "teacher"
                 );
 
 
                 // ==================================
-                // REGION USER PANEL
+                // TEACHER NAME
+                // ==================================
+
+                const teacherName =
+
+                    employeeData.teacherName ||
+
+                    employeeData.teacher_name ||
+
+                    employeeData.name ||
+
+                    "";
+
+
+                localStorage.setItem(
+                    "userName",
+                    teacherName
+                );
+
+
+                // ==================================
+                // REMOVE REGION USER DATA
+                // ==================================
+
+                localStorage.removeItem(
+                    "regionUserName"
+                );
+
+                localStorage.removeItem(
+                    "regionUserAccess"
+                );
+
+
+                // ==================================
+                // TEACHER → DAILY COLLECTION
                 // ==================================
 
                 window.location.href =
-                    "region-user.html";
+                    "daily-entry.html";
 
-                return;
             }
 
+            catch (error) {
 
-            // ======================================
-            // TEACHER LOGIN
-            // ======================================
-
-            showMessage(
-                "Checking Employee Code..."
-            );
-
-
-            const employeeRef =
-                doc(
-                    db,
-                    "employees",
-                    loginId
+                console.error(
+                    "Login Error:",
+                    error
                 );
 
 
-            const employeeSnap =
-                await getDoc(
-                    employeeRef
-                );
-
-
-            // ======================================
-            // Employee Not Found
-            // ======================================
-
-            if (!employeeSnap.exists()) {
+                // ==================================
+                // FIREBASE ERROR
+                // ==================================
 
                 showMessage(
-                    "User / Employee Code not found!"
+                    "Login Error: " +
+                    error.message
                 );
 
-                return;
             }
-
-
-            const data =
-                employeeSnap.data();
-
-
-            // ======================================
-            // Teacher Password Check
-            // ======================================
-
-            if (
-                String(data.password || "").trim()
-                !== password
-            ) {
-
-                showMessage(
-                    "Wrong Password!"
-                );
-
-                return;
-            }
-
-
-            // ======================================
-            // Teacher Approval Check
-            // ======================================
-
-            if (
-                String(data.status || "").toLowerCase()
-                !== "approved"
-            ) {
-
-                showMessage(
-                    "Aapka account Admin Approval ke liye pending hai!"
-                );
-
-                return;
-            }
-
-
-            // ======================================
-            // TEACHER LOGIN SUCCESS
-            // ======================================
-
-            localStorage.setItem(
-                "loggedInEmpCode",
-                loginId
-            );
-
-            localStorage.setItem(
-                "userRole",
-                "teacher"
-            );
-
-
-            // Teacher → Daily Collection
-            window.location.href =
-                "daily-entry.html";
 
         }
-
-        catch (error) {
-
-            console.error(
-                "Login Error:",
-                error
-            );
-
-            showMessage(
-                "Login Error: " +
-                error.message
-            );
-
-        }
-
-    });
+    );
 
 }
