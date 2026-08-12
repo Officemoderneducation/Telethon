@@ -40,6 +40,7 @@
 
         .sidebar {
             position: fixed;
+
             left: 0;
             top: 0;
 
@@ -47,15 +48,16 @@
             height: 100vh;
 
             background: #0f172a;
+
             color: white;
 
             z-index: 1000;
 
-            box-shadow:
-                2px 0 10px rgba(0,0,0,0.12);
-
             display: flex;
             flex-direction: column;
+
+            box-shadow:
+                2px 0 10px rgba(0,0,0,0.12);
         }
 
 
@@ -64,14 +66,14 @@
         ========================= */
 
         .sidebar-brand {
-            height: 76px;
+            min-height: 76px;
 
             display: flex;
             align-items: center;
 
             gap: 12px;
 
-            padding: 0 20px;
+            padding: 12px 20px;
 
             border-bottom:
                 1px solid
@@ -79,8 +81,8 @@
         }
 
         .sidebar-brand img {
-            width: 42px;
-            height: 42px;
+            width: 48px;
+            height: 48px;
 
             object-fit: contain;
         }
@@ -94,9 +96,9 @@
         }
 
         .sidebar-brand-text p {
-            font-size: 11px;
+            font-size: 12px;
 
-            color: #94a3b8;
+            color: #cbd5e1;
         }
 
 
@@ -119,8 +121,7 @@
 
             text-transform: uppercase;
 
-            padding:
-                0 12px 10px;
+            padding: 0 12px 10px;
         }
 
         .sidebar-menu a {
@@ -175,10 +176,10 @@
 
 
         /* =========================
-           LOGOUT MENU
+           LOGOUT
         ========================= */
 
-        .sidebar-menu a.logout-menu {
+        .sidebar-menu .logout-menu {
             margin-top: 25px;
 
             background: #dc2626;
@@ -186,7 +187,7 @@
             color: white;
         }
 
-        .sidebar-menu a.logout-menu:hover {
+        .sidebar-menu .logout-menu:hover {
             background: #b91c1c;
 
             color: white;
@@ -230,34 +231,66 @@
         ========================= */
 
         .topbar-main {
-            height: 76px;
+            min-height: 76px;
 
-            background: #ffffff;
+            background: #0f172a;
 
-            color: #0f172a;
+            color: white;
 
             display: flex;
 
             align-items: center;
 
-            gap: 15px;
+            justify-content: space-between;
 
-            padding: 0 26px;
+            padding: 12px 26px;
 
             box-shadow:
                 0 2px 8px
-                rgba(0,0,0,0.08);
+                rgba(0,0,0,0.12);
+        }
 
-            position: sticky;
 
-            top: 0;
+        .topbar-title {
+            display: flex;
 
-            z-index: 900;
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .topbar-title i {
+            color: #38bdf8;
+
+            font-size: 20px;
+        }
+
+        .topbar-title h3 {
+            font-size: 18px;
+
+            color: #38bdf8;
+        }
+
+        .topbar-title p {
+            font-size: 12px;
+
+            color: #cbd5e1;
         }
 
 
         /* =========================
-           MOBILE MENU BUTTON
+           USER INFO TOP
+        ========================= */
+
+        .top-user-info {
+            font-size: 14px;
+
+            color: #e2e8f0;
+        }
+
+
+        /* =========================
+           MOBILE MENU
         ========================= */
 
         .mobile-menu-btn {
@@ -282,31 +315,6 @@
 
 
         /* =========================
-           TOPBAR TITLE
-        ========================= */
-
-        .topbar-title {
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-        }
-
-        .topbar-title i {
-            color: #2563eb;
-
-            font-size: 20px;
-        }
-
-        .topbar-title h3 {
-            font-size: 18px;
-
-            color: #0f172a;
-        }
-
-
-        /* =========================
            MAIN
         ========================= */
 
@@ -321,7 +329,7 @@
 
 
         /* =========================
-           PAGE TITLE
+           TITLE
         ========================= */
 
         .topbar {
@@ -457,7 +465,7 @@
 
 
         /* =========================
-           FILTER BUTTONS
+           BUTTONS
         ========================= */
 
         .filter-buttons {
@@ -783,7 +791,7 @@
             }
 
             .topbar-main {
-                padding: 0 15px;
+                padding: 12px 15px;
             }
 
         }
@@ -792,9 +800,9 @@
         @media (max-width: 650px) {
 
             .topbar-main {
-                height: 76px;
+                min-height: 76px;
 
-                padding: 0 12px;
+                padding: 12px;
             }
 
             .topbar-title h3 {
@@ -846,7 +854,7 @@
 >
 
 
-    <!-- SIDEBAR BRAND -->
+    <!-- BRAND -->
 
     <div class="sidebar-brand">
 
@@ -870,7 +878,7 @@
     </div>
 
 
-    <!-- SIDEBAR MENU -->
+    <!-- MENU -->
 
     <nav class="sidebar-menu">
 
@@ -935,7 +943,7 @@
     </nav>
 
 
-    <!-- SIDEBAR FOOTER -->
+    <!-- FOOTER -->
 
     <div class="sidebar-footer">
 
@@ -972,8 +980,6 @@
     <header class="topbar-main">
 
 
-        <!-- MOBILE MENU -->
-
         <button
             type="button"
             id="mobileMenuBtn"
@@ -987,19 +993,33 @@
         </button>
 
 
-        <!-- PAGE TITLE -->
-
         <div class="topbar-title">
 
             <i
                 class="fa-solid fa-users"
             ></i>
 
-            <h3>
-                Region User
-            </h3>
+            <div>
+
+                <h3>
+                    Region User
+                </h3>
+
+                <p>
+                    Region User Panel
+                </p>
+
+            </div>
 
         </div>
+
+
+        <span
+            id="regionUserInfoTop"
+            class="top-user-info"
+        >
+            Region User
+        </span>
 
     </header>
 
@@ -1164,10 +1184,9 @@
             </div>
 
 
-            <!-- FILTER BUTTONS -->
+            <!-- BUTTONS -->
 
             <div class="filter-buttons">
-
 
                 <button
                     type="button"
@@ -1347,10 +1366,6 @@
         );
 
 
-    /* =========================
-       OPEN SIDEBAR
-    ========================= */
-
     function openSidebar() {
 
         if (sidebar) {
@@ -1371,10 +1386,6 @@
 
     }
 
-
-    /* =========================
-       CLOSE SIDEBAR
-    ========================= */
 
     function closeSidebar() {
 
@@ -1397,10 +1408,6 @@
     }
 
 
-    /* =========================
-       MOBILE MENU
-    ========================= */
-
     if (mobileMenuBtn) {
 
         mobileMenuBtn.addEventListener(
@@ -1411,10 +1418,6 @@
     }
 
 
-    /* =========================
-       OVERLAY
-    ========================= */
-
     if (sidebarOverlay) {
 
         sidebarOverlay.addEventListener(
@@ -1424,10 +1427,6 @@
 
     }
 
-
-    /* =========================
-       SIDEBAR LINKS
-    ========================= */
 
     document
         .querySelectorAll(
