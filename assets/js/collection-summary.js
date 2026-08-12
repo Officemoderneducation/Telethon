@@ -1,5 +1,7 @@
 // ==========================================
 // Telethon - Collection Summary
+// Updated: Same Employee + Same Date
+// Only LAST Entry will be counted
 // ==========================================
 
 import { db } from "./firebase-config.js";
@@ -8,7 +10,6 @@ import {
     collection,
     getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
 
 // ==========================================
 // HTML ELEMENTS
@@ -56,7 +57,6 @@ const tableFoot =
 const logoutBtn =
     document.getElementById("logoutBtn");
 
-
 // ==========================================
 // DATA
 // ==========================================
@@ -64,7 +64,6 @@ const logoutBtn =
 let employees = [];
 
 let entries = [];
-
 
 // ==========================================
 // LOAD ALL DATA
@@ -82,9 +81,8 @@ async function loadData() {
             </tr>
         `;
 
-
         // ==================================
-        // Employees
+        // LOAD EMPLOYEES
         // ==================================
 
         const employeeSnapshot =
@@ -92,19 +90,17 @@ async function loadData() {
                 collection(db, "employees")
             );
 
-
         employees = [];
-
 
         employeeSnapshot.forEach((docSnap) => {
 
             const data =
                 docSnap.data();
 
-
             employees.push({
 
-                id: docSnap.id,
+                id:
+                    docSnap.id,
 
                 employeeCode:
                     data.employeeCode ||
@@ -131,22 +127,24 @@ async function loadData() {
                 jamiatulMadina:
                     data.jamiatulMadina ||
                     data.jamiatul_madina ||
+                    data.jamiatuMadina ||
                     "-",
 
                 target:
-    Number(
-        data.targetAmount ??
-        data.target ??
-        0
-    )
+                    Number(
+                        data.targetAmount ??
+                        data.target ??
+                        data.target_amount ??
+                        data.Target ??
+                        0
+                    )
 
             });
 
         });
 
-
         // ==================================
-        // Daily Entries
+        // LOAD DAILY ENTRIES
         // ==================================
 
         const entrySnapshot =
@@ -154,19 +152,17 @@ async function loadData() {
                 collection(db, "daily_entry")
             );
 
-
         entries = [];
-
 
         entrySnapshot.forEach((docSnap) => {
 
             const data =
                 docSnap.data();
 
-
             entries.push({
 
-                id: docSnap.id,
+                id:
+                    docSnap.id,
 
                 employeeCode:
                     data.employee_code ||
@@ -178,25 +174,38 @@ async function loadData() {
                     Number(data.amount) || 0,
 
                 date:
-                    data.date || ""
+                    data.date || "",
+
+                createdAt:
+                    data.createdAt || null
 
             });
 
         });
 
+        // ==================================
+        // IMPORTANT
+        // SAME EMPLOYEE + SAME DATE
+        // ONLY LAST ENTRY WILL BE COUNTED
+        // ==================================
+
+        entries =
+            getLatestEntriesByEmployeeAndDate(
+                entries
+            );
+
+        console.log(
+            "Final Entries After Duplicate-Date Check:",
+            entries
+        );
 
         // ==================================
-        // Dropdowns
+        // DROPDOWNS
         // ==================================
 
         loadRegionDropdown();
 
         loadEmployeeDropdown();
-
-
-        // ==================================
-        // Initial Display
-        // ==================================
 
         updateStateDropdown();
 
@@ -212,7 +221,6 @@ async function loadData() {
             error
         );
 
-
         tableBody.innerHTML = `
             <tr>
                 <td
@@ -222,7 +230,7 @@ async function loadData() {
                 >
                     Data load nahi ho paaya.
                     <br><br>
-                    ${error.message}
+                    ${escapeHtml(error.message)}
                 </td>
             </tr>
         `;
@@ -231,6 +239,131 @@ async function loadData() {
 
 }
 
+// ==========================================
+// GET LAST ENTRY
+// Same Employee Code + Same Date
+// ==========================================
+
+function getLatestEntriesByEmployeeAndDate(allEntries) {
+
+    const latestMap =
+        new Map();
+
+    allEntries.forEach((entry) => {
+
+        const employeeCode =
+            String(
+                entry.employeeCode || ""
+            ).trim();
+
+        const date =
+            String(
+                entry.date || ""
+            ).trim();
+
+        // Invalid entry ignore
+        if (!employeeCode || !date) {
+            return;
+        }
+
+        const key =
+            `${employeeCode}__${date}`;
+
+        // First entry
+        if (!latestMap.has(key)) {
+
+            latestMap.set(
+                key,
+                entry
+            );
+
+            return;
+        }
+
+        const existing =
+            latestMap.get(key);
+
+        // ==================================
+        // Compare createdAt
+        // ==================================
+
+        const existingTime =
+            getTimestampValue(
+                existing.createdAt
+            );
+
+        const currentTime =
+            getTimestampValue(
+                entry.createdAt
+            );
+
+        if (currentTime >= existingTime) {
+
+            latestMap.set(
+                key,
+                entry
+            );
+
+        }
+
+    });
+
+    return Array.from(
+        latestMap.values()
+    );
+
+}
+
+// ==========================================
+// TIMESTAMP VALUE
+// ==========================================
+
+function getTimestampValue(timestamp) {
+
+    if (!timestamp) {
+        return 0;
+    }
+
+    // Firebase Timestamp
+    if (
+        typeof timestamp.toMillis ===
+        "function"
+    ) {
+
+        return timestamp.toMillis();
+
+    }
+
+    // Date object
+    if (
+        timestamp instanceof Date
+    ) {
+
+        return timestamp.getTime();
+
+    }
+
+    // Number
+    if (
+        typeof timestamp === "number"
+    ) {
+
+        return timestamp;
+
+    }
+
+    // String date
+    const parsed =
+        new Date(timestamp).getTime();
+
+    if (!isNaN(parsed)) {
+
+        return parsed;
+
+    }
+
+    return 0;
+}
 
 // ==========================================
 // LOAD REGION DROPDOWN
@@ -245,13 +378,11 @@ function loadRegionDropdown() {
             )
         );
 
-
     regionFilter.innerHTML = `
         <option value="">
             All Regions
         </option>
     `;
-
 
     regions
         .sort()
@@ -267,7 +398,6 @@ function loadRegionDropdown() {
 
 }
 
-
 // ==========================================
 // LOAD STATE DROPDOWN
 // ==========================================
@@ -277,21 +407,19 @@ function updateStateDropdown() {
     const selectedRegion =
         regionFilter.value;
 
-
     let filtered =
         employees;
-
 
     if (selectedRegion) {
 
         filtered =
             employees.filter(
                 item =>
-                    item.region === selectedRegion
+                    item.region ===
+                    selectedRegion
             );
 
     }
-
 
     const states =
         uniqueValues(
@@ -300,13 +428,11 @@ function updateStateDropdown() {
             )
         );
 
-
     stateFilter.innerHTML = `
         <option value="">
             All States
         </option>
     `;
-
 
     states
         .sort()
@@ -320,7 +446,6 @@ function updateStateDropdown() {
 
         });
 
-
     stateFilter.value = "";
 
     cityFilter.innerHTML = `
@@ -330,7 +455,6 @@ function updateStateDropdown() {
     `;
 
 }
-
 
 // ==========================================
 // LOAD CITY DROPDOWN
@@ -344,32 +468,30 @@ function updateCityDropdown() {
     const selectedState =
         stateFilter.value;
 
-
     let filtered =
         employees;
-
 
     if (selectedRegion) {
 
         filtered =
             filtered.filter(
                 item =>
-                    item.region === selectedRegion
+                    item.region ===
+                    selectedRegion
             );
 
     }
-
 
     if (selectedState) {
 
         filtered =
             filtered.filter(
                 item =>
-                    item.state === selectedState
+                    item.state ===
+                    selectedState
             );
 
     }
-
 
     const cities =
         uniqueValues(
@@ -378,13 +500,11 @@ function updateCityDropdown() {
             )
         );
 
-
     cityFilter.innerHTML = `
         <option value="">
             All Cities
         </option>
     `;
-
 
     cities
         .sort()
@@ -398,11 +518,9 @@ function updateCityDropdown() {
 
         });
 
-
     cityFilter.value = "";
 
 }
-
 
 // ==========================================
 // EMPLOYEE DROPDOWN
@@ -415,7 +533,6 @@ function loadEmployeeDropdown() {
             All Employees
         </option>
     `;
-
 
     employees
         .slice()
@@ -439,7 +556,6 @@ function loadEmployeeDropdown() {
 
 }
 
-
 // ==========================================
 // REGION CHANGE
 // ==========================================
@@ -457,7 +573,6 @@ regionFilter.addEventListener(
     }
 );
 
-
 // ==========================================
 // STATE CHANGE
 // ==========================================
@@ -473,7 +588,6 @@ stateFilter.addEventListener(
     }
 );
 
-
 // ==========================================
 // CITY CHANGE
 // ==========================================
@@ -486,7 +600,6 @@ cityFilter.addEventListener(
 
     }
 );
-
 
 // ==========================================
 // APPLY FILTER
@@ -501,7 +614,6 @@ applyFilter.addEventListener(
     }
 );
 
-
 // ==========================================
 // APPLY CURRENT FILTER
 // ==========================================
@@ -511,8 +623,9 @@ function applyCurrentFilter() {
     let filteredEmployees =
         employees.slice();
 
-
-    // Region
+    // ==================================
+    // REGION
+    // ==================================
 
     if (regionFilter.value) {
 
@@ -525,8 +638,9 @@ function applyCurrentFilter() {
 
     }
 
-
-    // State
+    // ==================================
+    // STATE
+    // ==================================
 
     if (stateFilter.value) {
 
@@ -539,8 +653,9 @@ function applyCurrentFilter() {
 
     }
 
-
-    // City
+    // ==================================
+    // CITY
+    // ==================================
 
     if (cityFilter.value) {
 
@@ -553,8 +668,9 @@ function applyCurrentFilter() {
 
     }
 
-
-    // Employee Code
+    // ==================================
+    // EMPLOYEE
+    // ==================================
 
     if (employeeFilter.value) {
 
@@ -571,20 +687,19 @@ function applyCurrentFilter() {
 
     }
 
-
-    // Display
+    // ==================================
+    // DISPLAY
+    // ==================================
 
     updateSelectedTitle(
         filteredEmployees
     );
-
 
     displaySummary(
         filteredEmployees
     );
 
 }
-
 
 // ==========================================
 // RESET
@@ -602,17 +717,14 @@ resetFilter.addEventListener(
 
         employeeFilter.value = "";
 
-
         updateStateDropdown();
 
         updateCityDropdown();
-
 
         applyCurrentFilter();
 
     }
 );
-
 
 // ==========================================
 // UPDATE TITLE
@@ -622,7 +734,6 @@ function updateSelectedTitle(list) {
 
     let title =
         "All Teachers";
-
 
     if (employeeFilter.value) {
 
@@ -636,7 +747,6 @@ function updateSelectedTitle(list) {
                         employeeFilter.value
                     )
             );
-
 
         if (employee) {
 
@@ -665,12 +775,10 @@ function updateSelectedTitle(list) {
 
     }
 
-
     selectedTitle.textContent =
         title;
 
 }
-
 
 // ==========================================
 // DISPLAY SUMMARY
@@ -682,9 +790,7 @@ function displaySummary(list) {
 
     let totalCollection = 0;
 
-
     const rows = [];
-
 
     list.forEach((employee) => {
 
@@ -693,8 +799,10 @@ function displaySummary(list) {
                 employee.employeeCode || ""
             );
 
-
-        // Find collection of this employee
+        // ==================================
+        // GET FINAL COLLECTION
+        // FOR EACH DATE
+        // ==================================
 
         const employeeCollection =
             entries
@@ -708,14 +816,18 @@ function displaySummary(list) {
                 .reduce(
                     (sum, entry) =>
                         sum +
-                        (Number(entry.amount) || 0),
+                        (
+                            Number(
+                                entry.amount
+                            ) || 0
+                        ),
                     0
                 );
 
-
         const target =
-            Number(employee.target) || 0;
-
+            Number(
+                employee.target
+            ) || 0;
 
         const remaining =
             Math.max(
@@ -724,9 +836,7 @@ function displaySummary(list) {
                 0
             );
 
-
         let percentage = 0;
-
 
         if (target > 0) {
 
@@ -738,12 +848,11 @@ function displaySummary(list) {
 
         }
 
-
-        totalTarget += target;
+        totalTarget +=
+            target;
 
         totalCollection +=
             employeeCollection;
-
 
         rows.push({
 
@@ -762,7 +871,6 @@ function displaySummary(list) {
 
     });
 
-
     const totalRemaining =
         Math.max(
             totalTarget -
@@ -770,9 +878,7 @@ function displaySummary(list) {
             0
         );
 
-
     let totalPercentage = 0;
-
 
     if (totalTarget > 0) {
 
@@ -784,29 +890,30 @@ function displaySummary(list) {
 
     }
 
-
     // ==================================
-    // Cards
+    // CARDS
     // ==================================
 
     totalTargetEl.textContent =
-        formatMoney(totalTarget);
-
+        formatMoney(
+            totalTarget
+        );
 
     totalCollectionEl.textContent =
-        formatMoney(totalCollection);
-
+        formatMoney(
+            totalCollection
+        );
 
     remainingTargetEl.textContent =
-        formatMoney(totalRemaining);
-
+        formatMoney(
+            totalRemaining
+        );
 
     percentageEl.textContent =
         `${totalPercentage.toFixed(2)}%`;
 
-
     // ==================================
-    // Table
+    // TABLE
     // ==================================
 
     displayTable(
@@ -818,7 +925,6 @@ function displaySummary(list) {
     );
 
 }
-
 
 // ==========================================
 // DISPLAY TABLE
@@ -845,27 +951,42 @@ function displayTable(
             </tr>
         `;
 
-
         tableFoot.innerHTML = "";
 
         return;
 
     }
 
-
     let html = "";
-
 
     rows.forEach(
         (employee, index) => {
 
-            const percentageClass =
-                employee.percentage >= 70
-                    ? ""
-                    : employee.percentage >= 40
-                        ? "medium"
-                        : "low";
+            let percentageClass =
+                "";
 
+            if (
+                employee.percentage >= 70
+            ) {
+
+                percentageClass =
+                    "";
+
+            }
+            else if (
+                employee.percentage >= 40
+            ) {
+
+                percentageClass =
+                    "medium";
+
+            }
+            else {
+
+                percentageClass =
+                    "low";
+
+            }
 
             html += `
 
@@ -876,39 +997,57 @@ function displayTable(
                     </td>
 
                     <td>
-                        ${escapeHtml(employee.region)}
+                        ${escapeHtml(
+                            employee.region
+                        )}
                     </td>
 
                     <td>
-                        ${escapeHtml(employee.state)}
+                        ${escapeHtml(
+                            employee.state
+                        )}
                     </td>
 
                     <td>
-                        ${escapeHtml(employee.city)}
+                        ${escapeHtml(
+                            employee.city
+                        )}
                     </td>
 
                     <td>
-                        ${escapeHtml(employee.jamiatulMadina)}
+                        ${escapeHtml(
+                            employee.jamiatulMadina
+                        )}
                     </td>
 
                     <td class="employee-code">
-                        ${escapeHtml(employee.employeeCode)}
+                        ${escapeHtml(
+                            employee.employeeCode
+                        )}
                     </td>
 
                     <td>
-                        ${escapeHtml(employee.teacherName)}
+                        ${escapeHtml(
+                            employee.teacherName
+                        )}
                     </td>
 
                     <td class="target-amount">
-                        ${formatMoney(employee.target)}
+                        ${formatMoney(
+                            employee.target
+                        )}
                     </td>
 
                     <td class="collection-amount">
-                        ${formatMoney(employee.collection)}
+                        ${formatMoney(
+                            employee.collection
+                        )}
                     </td>
 
                     <td class="remaining-amount">
-                        ${formatMoney(employee.remaining)}
+                        ${formatMoney(
+                            employee.remaining
+                        )}
                     </td>
 
                     <td>
@@ -930,13 +1069,11 @@ function displayTable(
         }
     );
 
-
     tableBody.innerHTML =
         html;
 
-
     // ==================================
-    // Total Row
+    // TOTAL ROW
     // ==================================
 
     tableFoot.innerHTML = `
@@ -951,15 +1088,21 @@ function displayTable(
             </td>
 
             <td>
-                ${formatMoney(totalTarget)}
+                ${formatMoney(
+                    totalTarget
+                )}
             </td>
 
             <td>
-                ${formatMoney(totalCollection)}
+                ${formatMoney(
+                    totalCollection
+                )}
             </td>
 
             <td>
-                ${formatMoney(totalRemaining)}
+                ${formatMoney(
+                    totalRemaining
+                )}
             </td>
 
             <td>
@@ -972,17 +1115,17 @@ function displayTable(
 
 }
 
-
 // ==========================================
 // MONEY FORMAT
 // ==========================================
 
 function formatMoney(amount) {
 
-    return `₹ ${Number(amount || 0).toLocaleString("en-IN")}`;
+    return `₹ ${Number(
+        amount || 0
+    ).toLocaleString("en-IN")}`;
 
 }
-
 
 // ==========================================
 // UNIQUE VALUES
@@ -1002,22 +1145,37 @@ function uniqueValues(array) {
 
 }
 
-
 // ==========================================
 // HTML ESCAPE
 // ==========================================
 
 function escapeHtml(value) {
 
-    return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+    return String(
+        value ?? ""
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 
 }
-
 
 // ==========================================
 // LOGOUT
@@ -1031,7 +1189,6 @@ if (logoutBtn) {
 
             e.preventDefault();
 
-
             localStorage.removeItem(
                 "loggedInEmpCode"
             );
@@ -1040,6 +1197,13 @@ if (logoutBtn) {
                 "userRole"
             );
 
+            localStorage.removeItem(
+                "regionUserName"
+            );
+
+            localStorage.removeItem(
+                "regionUserAccess"
+            );
 
             window.location.href =
                 "index.html";
@@ -1048,7 +1212,6 @@ if (logoutBtn) {
     );
 
 }
-
 
 // ==========================================
 // START
