@@ -5,10 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Telethon Admin Dashboard</title>
 
@@ -40,22 +37,34 @@
             box-sizing: border-box;
         }
 
-
+        html,
         body {
             margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
             background: #f4f7fb;
         }
 
+
+        /* ==========================================
+           MAIN CONTENT
+        ========================================== */
 
         .main-content {
-            background: #f4f7fb;
+            margin-left: 260px;
+            padding: 30px;
             min-height: 100vh;
+            background: #f4f7fb;
         }
 
 
-        /* ================================
+        /* ==========================================
            HEADER
-        ================================= */
+        ========================================== */
 
         .header {
 
@@ -153,9 +162,9 @@
         }
 
 
-        /* ================================
+        /* ==========================================
            SUMMARY CARDS
-        ================================= */
+        ========================================== */
 
         .user-summary-cards {
 
@@ -286,9 +295,9 @@
         }
 
 
-        /* ================================
+        /* ==========================================
            USER SUMMARY
-        ================================= */
+        ========================================== */
 
         .user-summary-container {
 
@@ -326,11 +335,12 @@
 
             border-bottom: 1px solid #edf1f7;
 
-            background: linear-gradient(
-                135deg,
-                #ffffff,
-                #f9fbff
-            );
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff,
+                    #f9fbff
+                );
         }
 
 
@@ -386,9 +396,9 @@
         }
 
 
-        /* ================================
+        /* ==========================================
            TABLE
-        ================================= */
+        ========================================== */
 
         .user-summary-table-wrapper {
 
@@ -454,9 +464,9 @@
         }
 
 
-        /* ================================
+        /* ==========================================
            USER NAME
-        ================================= */
+        ========================================== */
 
         .user-name-input {
 
@@ -486,9 +496,9 @@
         }
 
 
-        /* ================================
+        /* ==========================================
            TARGET
-        ================================= */
+        ========================================== */
 
         .target-edit-box {
 
@@ -552,9 +562,9 @@
         }
 
 
-        /* ================================
+        /* ==========================================
            AMOUNT
-        ================================= */
+        ========================================== */
 
         .amount-main {
 
@@ -602,9 +612,9 @@
         }
 
 
-        /* ================================
-           PERCENT
-        ================================= */
+        /* ==========================================
+           PERCENTAGE
+        ========================================== */
 
         .percentage-wrapper {
 
@@ -708,9 +718,9 @@
         }
 
 
-        /* ================================
-           OLD COLLECTION
-        ================================= */
+        /* ==========================================
+           COLLECTION STATS
+        ========================================== */
 
         .stats-grid {
 
@@ -767,9 +777,9 @@
         }
 
 
-        /* ================================
-           RECENT TABLE
-        ================================= */
+        /* ==========================================
+           RECENT COLLECTION
+        ========================================== */
 
         .table-container {
 
@@ -849,9 +859,9 @@
         }
 
 
-        /* ================================
-           RESPONSIVE
-        ================================= */
+        /* ==========================================
+           MOBILE / TABLET
+        ========================================== */
 
         @media (max-width: 1100px) {
 
@@ -871,7 +881,15 @@
         }
 
 
-        @media (max-width: 700px) {
+        @media (max-width: 768px) {
+
+            .main-content {
+
+                margin-left: 0;
+
+                padding: 15px;
+            }
+
 
             .user-summary-cards,
             .stats-grid {
@@ -921,10 +939,12 @@
          MAIN CONTENT
     =========================================== -->
 
-    <div class="main-content">
+    <main class="main-content">
 
 
-        <!-- HEADER -->
+        <!-- ======================================
+             HEADER
+        ======================================= -->
 
         <div class="header">
 
@@ -964,9 +984,9 @@
         </div>
 
 
-        <!-- ==========================================
+        <!-- ======================================
              SUMMARY CARDS
-        =========================================== -->
+        ======================================= -->
 
         <div class="user-summary-cards">
 
@@ -1090,12 +1110,13 @@
 
             </div>
 
+
         </div>
 
 
-        <!-- ==========================================
+        <!-- ======================================
              USER COLLECTION SUMMARY
-        =========================================== -->
+        ======================================= -->
 
         <div class="user-summary-container">
 
@@ -1131,9 +1152,7 @@
 
             <div class="user-summary-table-wrapper">
 
-
                 <table class="user-summary-table">
-
 
                     <thead>
 
@@ -1173,7 +1192,6 @@
 
                     </tbody>
 
-
                 </table>
 
             </div>
@@ -1181,9 +1199,9 @@
         </div>
 
 
-        <!-- ==========================================
+        <!-- ======================================
              COLLECTION STATS
-        =========================================== -->
+        ======================================= -->
 
         <div class="stats-grid">
 
@@ -1224,9 +1242,9 @@
         </div>
 
 
-        <!-- ==========================================
+        <!-- ======================================
              RECENT COLLECTION
-        =========================================== -->
+        ======================================= -->
 
         <div class="table-container">
 
@@ -1244,7 +1262,6 @@
 
 
             <table>
-
 
                 <thead>
 
@@ -1286,13 +1303,12 @@
 
                 </tbody>
 
-
             </table>
 
         </div>
 
 
-    </div>
+    </main>
 
 
     <!-- ==========================================
@@ -1301,90 +1317,169 @@
 
     <script>
 
-        fetch("components/admin-sidebar.html")
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
 
-            .then(function(response) {
+                fetch("components/admin-sidebar.html")
 
-                if (!response.ok) {
+                    .then(function (response) {
 
-                    throw new Error(
-                        "Admin Sidebar not found"
-                    );
+                        if (!response.ok) {
 
-                }
-
-                return response.text();
-
-            })
-
-            .then(function(data) {
-
-                const sidebar =
-                    document.getElementById(
-                        "adminSidebar"
-                    );
-
-                sidebar.innerHTML = data;
-
-
-                /*
-                 * Active page highlight
-                 */
-
-                const currentPage =
-                    window.location.pathname
-                        .split("/")
-                        .pop();
-
-
-                const menuLinks =
-                    sidebar.querySelectorAll(
-                        ".menu a"
-                    );
-
-
-                menuLinks.forEach(
-                    function(link) {
-
-                        const href =
-                            link.getAttribute(
-                                "href"
+                            throw new Error(
+                                "Admin Sidebar not found: " +
+                                response.status
                             );
+
+                        }
+
+                        return response.text();
+
+                    })
+
+                    .then(function (data) {
+
+                        const sidebar =
+                            document.getElementById(
+                                "adminSidebar"
+                            );
+
+
+                        if (!sidebar) {
+                            return;
+                        }
+
+
+                        sidebar.innerHTML = data;
+
+
+                        /*
+                         * ==================================
+                         * ACTIVE PAGE
+                         * ==================================
+                         */
+
+                        let currentPage =
+                            window.location.pathname
+                                .split("/")
+                                .pop();
 
 
                         if (
-                            href &&
-                            href !== "#" &&
-                            href === currentPage
+                            !currentPage ||
+                            currentPage === ""
                         ) {
 
-                            link.classList.add(
-                                "active"
+                            currentPage =
+                                "dashboard.html";
+
+                        }
+
+
+                        const menuLinks =
+                            sidebar.querySelectorAll(
+                                ".menu a"
+                            );
+
+
+                        menuLinks.forEach(
+                            function (link) {
+
+                                const href =
+                                    link.getAttribute(
+                                        "href"
+                                    );
+
+
+                                if (!href || href === "#") {
+
+                                    return;
+
+                                }
+
+
+                                const linkPage =
+                                    href
+                                        .split("/")
+                                        .pop();
+
+
+                                if (
+                                    linkPage ===
+                                    currentPage
+                                ) {
+
+                                    link.classList.add(
+                                        "active"
+                                    );
+
+                                }
+
+                                else {
+
+                                    link.classList.remove(
+                                        "active"
+                                    );
+
+                                }
+
+                            }
+                        );
+
+
+                        /*
+                         * ==================================
+                         * LOGOUT
+                         * ==================================
+                         */
+
+                        const logoutBtn =
+                            sidebar.querySelector(
+                                "#logoutBtn"
+                            );
+
+
+                        if (logoutBtn) {
+
+                            logoutBtn.addEventListener(
+                                "click",
+                                function (e) {
+
+                                    e.preventDefault();
+
+
+                                    localStorage.removeItem(
+                                        "loggedInEmpCode"
+                                    );
+
+
+                                    localStorage.removeItem(
+                                        "userRole"
+                                    );
+
+
+                                    window.location.href =
+                                        "index.html";
+
+                                }
                             );
 
                         }
 
-                        else {
+                    })
 
-                            link.classList.remove(
-                                "active"
-                            );
+                    .catch(function (error) {
 
-                        }
+                        console.error(
+                            "Admin Sidebar Error:",
+                            error
+                        );
 
-                    }
-                );
+                    });
 
-            })
-
-            .catch(function(error) {
-
-                console.error(
-                    "Admin Sidebar Error:",
-                    error
-                );
-
-            });
+            }
+        );
 
     </script>
 
