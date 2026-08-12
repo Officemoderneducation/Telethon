@@ -1,0 +1,440 @@
+/* ======================================
+   Telethon - Admin Sidebar
+   ====================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+
+/* ======================================
+   Sidebar
+   ====================================== */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    width: 260px;
+    height: 100vh;
+
+    background: linear-gradient(
+        180deg,
+        #111827 0%,
+        #0f172a 100%
+    );
+
+    color: #ffffff;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px 14px;
+
+    z-index: 1000;
+
+    border-right: 1px solid
+        rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+        8px 0 30px
+        rgba(15, 23, 42, 0.12);
+
+    overflow-y: auto;
+}
+
+
+/* ======================================
+   Logo
+   ====================================== */
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 8px 10px 24px;
+
+    border-bottom: 1px solid
+        rgba(255, 255, 255, 0.08);
+
+    margin-bottom: 18px;
+}
+
+
+.logo-icon {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, 0.35);
+
+    font-size: 19px;
+}
+
+
+.logo-text h2 {
+    margin: 0;
+
+    font-size: 21px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.3px;
+}
+
+
+.logo-text span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 11px;
+
+    color: #94a3b8;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* ======================================
+   Navigation
+   ====================================== */
+
+.sidebar-nav {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+
+/* ======================================
+   Sidebar Link
+   ====================================== */
+
+.sidebar-link {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 12px 14px;
+
+    border-radius: 11px;
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+
+    cursor: pointer;
+}
+
+
+/* ======================================
+   Icons
+   ====================================== */
+
+.sidebar-link i {
+    width: 22px;
+
+    text-align: center;
+
+    font-size: 16px;
+
+    color: #94a3b8;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* ======================================
+   Hover
+   ====================================== */
+
+.sidebar-link:hover {
+    background: rgba(
+        255,
+        255,
+        255,
+        0.07
+    );
+
+    color: #ffffff;
+
+    transform: translateX(3px);
+}
+
+
+.sidebar-link:hover i {
+    color: #60a5fa;
+
+    transform: scale(1.08);
+}
+
+
+/* ======================================
+   Active
+   ====================================== */
+
+.sidebar-link.active {
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, 0.25);
+}
+
+
+.sidebar-link.active i {
+    color: #ffffff;
+}
+
+
+/* Active Left Line */
+
+.sidebar-link.active::before {
+    content: "";
+
+    position: absolute;
+
+    left: -14px;
+
+    top: 9px;
+
+    width: 4px;
+
+    height: 30px;
+
+    background: #60a5fa;
+
+    border-radius: 0 5px 5px 0;
+}
+
+
+/* ======================================
+   Sidebar Bottom
+   ====================================== */
+
+.sidebar-bottom {
+    padding-top: 15px;
+
+    margin-top: 15px;
+
+    border-top: 1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+/* ======================================
+   Logout
+   ====================================== */
+
+.logout-link {
+    color: #fca5a5;
+}
+
+
+.logout-link i {
+    color: #f87171;
+}
+
+
+.logout-link:hover {
+    background: rgba(
+        239,
+        68,
+        68,
+        0.12
+    );
+
+    color: #fecaca;
+
+    transform: translateX(3px);
+}
+
+
+.logout-link:hover i {
+    color: #f87171;
+}
+
+
+/* ======================================
+   Scrollbar
+   ====================================== */
+
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(
+        148,
+        163,
+        184,
+        0.25
+    );
+
+    border-radius: 10px;
+}
+
+
+/* ======================================
+   Main Content
+   ====================================== */
+
+.main-content {
+    margin-left: 260px;
+
+    min-height: 100vh;
+
+    width: calc(
+        100% - 260px
+    );
+}
+
+
+/* ======================================
+   Responsive
+   ====================================== */
+
+@media (
+    max-width: 900px
+) {
+
+    .sidebar {
+        width: 230px;
+    }
+
+    .main-content {
+        margin-left: 230px;
+
+        width: calc(
+            100% - 230px
+        );
+    }
+
+}
+
+
+/* ======================================
+   Mobile
+   ====================================== */
+
+@media (
+    max-width: 650px
+) {
+
+    .sidebar {
+        width: 72px;
+
+        padding: 15px 10px;
+    }
+
+
+    .sidebar-logo {
+        justify-content: center;
+
+        padding: 5px 0 18px;
+    }
+
+
+    .logo-text {
+        display: none;
+    }
+
+
+    .logo-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+
+    .sidebar-link {
+        justify-content: center;
+
+        padding: 12px 8px;
+    }
+
+
+    .sidebar-link span {
+        display: none;
+    }
+
+
+    .sidebar-link i {
+        width: auto;
+
+        font-size: 18px;
+    }
+
+
+    .sidebar-link.active::before {
+        left: -10px;
+    }
+
+
+    .main-content {
+        margin-left: 72px;
+
+        width: calc(
+            100% - 72px
+        );
+    }
+
+}
+
+
+/* ======================================
+   Prevent Selection
+   ====================================== */
+
+.sidebar {
+    user-select: none;
+}
