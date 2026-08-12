@@ -34,13 +34,157 @@
         }
 
         /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+
+            width: 250px;
+            height: 100vh;
+
+            background: #0f172a;
+            color: white;
+
+            z-index: 1000;
+
+            box-shadow:
+                2px 0 10px rgba(0,0,0,0.12);
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand {
+            height: 76px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 0 20px;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+        .sidebar-brand img {
+            width: 42px;
+            height: 42px;
+
+            object-fit: contain;
+        }
+
+        .sidebar-brand-text h2 {
+            font-size: 18px;
+            color: #38bdf8;
+            margin-bottom: 3px;
+        }
+
+        .sidebar-brand-text p {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .sidebar-menu {
+            padding: 20px 12px;
+            flex: 1;
+        }
+
+        .menu-title {
+            color: #64748b;
+
+            font-size: 11px;
+            font-weight: bold;
+
+            text-transform: uppercase;
+
+            padding:
+                0 12px 10px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            text-decoration: none;
+
+            color: #cbd5e1;
+
+            padding: 12px 14px;
+
+            margin-bottom: 6px;
+
+            border-radius: 7px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition:
+                background 0.2s,
+                color 0.2s;
+        }
+
+        .sidebar-menu a i {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .sidebar-menu a:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .sidebar-menu a.active {
+            background: #2563eb;
+            color: white;
+
+            box-shadow:
+                0 3px 8px
+                rgba(37,99,235,0.25);
+        }
+
+        .sidebar-footer {
+            padding: 15px 12px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+        .sidebar-footer-text {
+            color: #64748b;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* =========================
+           MAIN WRAPPER
+        ========================= */
+
+        .page-wrapper {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        /* =========================
            TOPBAR
         ========================= */
 
         .topbar-main {
             height: 76px;
-            background: #0f172a;
-            color: white;
+
+            background: #ffffff;
+
+            color: #0f172a;
 
             display: flex;
             align-items: center;
@@ -49,30 +193,49 @@
             padding: 0 26px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.12);
+                0 2px 8px
+                rgba(0,0,0,0.08);
+
+            position: sticky;
+            top: 0;
+
+            z-index: 900;
         }
 
-        .brand {
+        .mobile-menu-btn {
+            display: none;
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            width: 40px;
+            height: 40px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 17px;
+        }
+
+        .topbar-title {
             display: flex;
             align-items: center;
-            gap: 12px;
+
+            gap: 10px;
         }
 
-        .brand img {
-            width: 48px;
-            height: 48px;
-            object-fit: contain;
+        .topbar-title i {
+            color: #2563eb;
+            font-size: 20px;
         }
 
-        .brand-text h2 {
+        .topbar-title h3 {
             font-size: 18px;
-            color: #38bdf8;
-            margin-bottom: 3px;
-        }
-
-        .brand-text p {
-            font-size: 12px;
-            color: #cbd5e1;
+            color: #0f172a;
         }
 
         .user-area {
@@ -83,12 +246,16 @@
 
         #regionUserInfoTop {
             font-size: 14px;
-            color: #e2e8f0;
+            color: #475569;
+
+            font-weight: 600;
         }
 
         .logout-btn {
             border: none;
+
             background: #ef3340;
+
             color: white;
 
             padding: 10px 16px;
@@ -98,6 +265,9 @@
             cursor: pointer;
 
             font-weight: bold;
+
+            transition:
+                background 0.2s;
         }
 
         .logout-btn:hover {
@@ -110,7 +280,10 @@
 
         .main {
             width: 100%;
-            min-height: calc(100vh - 76px);
+
+            min-height:
+                calc(100vh - 76px);
+
             padding: 22px;
         }
 
@@ -120,6 +293,7 @@
 
         .topbar {
             background: white;
+
             border-radius: 10px;
 
             padding: 22px;
@@ -127,17 +301,21 @@
             margin-bottom: 18px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
+                0 2px 8px
+                rgba(0,0,0,0.06);
         }
 
         .topbar h2 {
             font-size: 24px;
+
             color: #0f172a;
+
             margin-bottom: 6px;
         }
 
         .topbar p {
             color: #64748b;
+
             font-size: 14px;
         }
 
@@ -147,7 +325,9 @@
 
         .region-user-info {
             background: #ecfdf5;
-            border: 1px solid #bbf7d0;
+
+            border:
+                1px solid #bbf7d0;
 
             padding: 14px 18px;
 
@@ -178,11 +358,13 @@
             margin-bottom: 18px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
+                0 2px 8px
+                rgba(0,0,0,0.06);
         }
 
         .filter-title {
             font-size: 17px;
+
             font-weight: bold;
 
             margin-bottom: 16px;
@@ -217,7 +399,8 @@
 
             padding: 10px 12px;
 
-            border: 1px solid #cbd5e1;
+            border:
+                1px solid #cbd5e1;
 
             border-radius: 6px;
 
@@ -289,13 +472,15 @@
             padding: 20px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
+                0 2px 8px
+                rgba(0,0,0,0.06);
         }
 
         .table-header {
             display: flex;
 
-            justify-content: space-between;
+            justify-content:
+                space-between;
 
             align-items: center;
 
@@ -319,7 +504,8 @@
 
             overflow-x: auto;
 
-            border: 1px solid #e2e8f0;
+            border:
+                1px solid #e2e8f0;
 
             border-radius: 7px;
         }
@@ -435,21 +621,25 @@
 
         .percentage-low {
             background: #fee2e2;
+
             color: #b91c1c;
         }
 
         .percentage-medium {
             background: #fef3c7;
+
             color: #92400e;
         }
 
         .percentage-good {
             background: #dbeafe;
+
             color: #1d4ed8;
         }
 
         .percentage-complete {
             background: #dcfce7;
+
             color: #15803d;
         }
 
@@ -478,6 +668,23 @@
         }
 
         /* =========================
+           SIDEBAR OVERLAY
+        ========================= */
+
+        .sidebar-overlay {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,0.45);
+
+            z-index: 999;
+        }
+
+        /* =========================
            MOBILE
         ========================= */
 
@@ -490,25 +697,72 @@
 
         }
 
+        @media (max-width: 800px) {
+
+            .sidebar {
+                transform:
+                    translateX(-100%);
+
+                transition:
+                    transform 0.25s ease;
+            }
+
+            .sidebar.open {
+                transform:
+                    translateX(0);
+            }
+
+            .sidebar-overlay.open {
+                display: block;
+            }
+
+            .page-wrapper {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .topbar-main {
+                padding: 0 15px;
+            }
+
+            .topbar-title {
+                gap: 7px;
+            }
+
+            .topbar-title h3 {
+                font-size: 16px;
+            }
+
+        }
+
         @media (max-width: 650px) {
 
             .topbar-main {
                 height: auto;
 
+                min-height: 76px;
+
                 padding: 12px 15px;
 
-                flex-direction: column;
-
                 gap: 10px;
-
-                align-items: flex-start;
             }
 
             .user-area {
-                width: 100%;
+                gap: 8px;
+            }
 
-                justify-content:
-                    space-between;
+            #regionUserInfoTop {
+                font-size: 12px;
+            }
+
+            .logout-btn {
+                padding:
+                    9px 11px;
+
+                font-size: 12px;
             }
 
             .main {
@@ -528,6 +782,14 @@
                 padding: 12px;
             }
 
+            .table-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 6px;
+            }
+
         }
 
     </style>
@@ -539,348 +801,593 @@
 
 
 <!-- ======================================
-     TOP HEADER
+     SIDEBAR
 ====================================== -->
 
-<header class="topbar-main">
+<aside class="sidebar" id="sidebar">
 
-    <div class="brand">
+
+    <!-- SIDEBAR BRAND -->
+
+    <div class="sidebar-brand">
 
         <img
             src="assets/images/logo.png"
             alt="Telethon Logo"
         >
 
-        <div class="brand-text">
+        <div class="sidebar-brand-text">
 
             <h2>Telethon</h2>
 
+            <p>Region User Panel</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- MENU -->
+
+    <nav class="sidebar-menu">
+
+        <div class="menu-title">
+            Menu
+        </div>
+
+
+        <!-- DAILY REPORT -->
+
+        <a
+            href="daily-report.html"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Daily Report
+            </span>
+
+        </a>
+
+
+        <!-- REGION USER -->
+
+        <a
+            href="region-user.html"
+            class="active"
+        >
+
+            <i class="fa-solid fa-users"></i>
+
+            <span>
+                Region User
+            </span>
+
+        </a>
+
+    </nav>
+
+
+    <!-- SIDEBAR FOOTER -->
+
+    <div class="sidebar-footer">
+
+        <div class="sidebar-footer-text">
+            Telethon Management System
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- SIDEBAR OVERLAY -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay"
+></div>
+
+
+<!-- ======================================
+     PAGE WRAPPER
+====================================== -->
+
+<div class="page-wrapper">
+
+
+    <!-- ==================================
+         TOP HEADER
+    ================================== -->
+
+    <header class="topbar-main">
+
+
+        <!-- MOBILE MENU -->
+
+        <button
+            type="button"
+            id="mobileMenuBtn"
+            class="mobile-menu-btn"
+        >
+
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+
+        <!-- PAGE TITLE -->
+
+        <div class="topbar-title">
+
+            <i class="fa-solid fa-users"></i>
+
+            <h3>
+                Region User
+            </h3>
+
+        </div>
+
+
+        <!-- USER AREA -->
+
+        <div class="user-area">
+
+            <span id="regionUserInfoTop">
+                Region User
+            </span>
+
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="logout-btn"
+            >
+
+                <i
+                    class="fa-solid fa-right-from-bracket"
+                ></i>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==================================
+         MAIN
+    ================================== -->
+
+    <main class="main">
+
+
+        <!-- TITLE -->
+
+        <div class="topbar">
+
+            <h2>
+                Region User
+            </h2>
+
             <p>
-                Region User Panel
+                Aapko sirf assigned Region / State
+                ke Teachers ka data dikhaya ja raha hai.
             </p>
 
         </div>
 
-    </div>
 
+        <!-- REGION USER INFO -->
 
-    <div class="user-area">
-
-        <span id="regionUserInfoTop">
-            Region User
-        </span>
-
-        <button
-            type="button"
-            id="logoutBtn"
-            class="logout-btn"
+        <div
+            id="regionUserInfo"
+            class="region-user-info"
         >
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
-        </button>
 
-    </div>
-
-</header>
-
-
-<!-- ======================================
-     MAIN
-====================================== -->
-
-<main class="main">
-
-
-    <!-- TITLE -->
-
-    <div class="topbar">
-
-        <h2>
-            Collection Summary
-        </h2>
-
-        <p>
-            Aapko sirf assigned Region / State ka data dikhaya ja raha hai.
-        </p>
-
-    </div>
-
-
-    <!-- REGION USER INFO -->
-
-    <div
-        id="regionUserInfo"
-        class="region-user-info"
-    >
-        Loading Region User...
-    </div>
-
-
-    <!-- ==================================
-         FILTER PANEL
-    ================================== -->
-
-    <div class="filter-panel">
-
-        <div class="filter-title">
-
-            <i class="fa-solid fa-filter"></i>
-
-            Filter Teachers
+            Loading Region User...
 
         </div>
 
 
-        <div class="filters">
+        <!-- ==================================
+             FILTER PANEL
+        ================================== -->
+
+        <div class="filter-panel">
 
 
-            <!-- REGION -->
-
-            <div class="filter-group">
-
-                <label for="regionFilter">
-                    Region
-                </label>
-
-                <select id="regionFilter">
-
-                    <option value="">
-                        All Regions
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- STATE -->
-
-            <div class="filter-group">
-
-                <label for="stateFilter">
-                    State
-                </label>
-
-                <select id="stateFilter">
-
-                    <option value="">
-                        All States
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- CITY -->
-
-            <div class="filter-group">
-
-                <label for="cityFilter">
-                    City
-                </label>
-
-                <select id="cityFilter">
-
-                    <option value="">
-                        All Cities
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- STATUS -->
-
-            <div class="filter-group">
-
-                <label for="statusFilter">
-                    Status
-                </label>
-
-                <select id="statusFilter">
-
-                    <option value="">
-                        All Status
-                    </option>
-
-                    <option value="Approved">
-                        Approved
-                    </option>
-
-                    <option value="Pending">
-                        Pending
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- SEARCH -->
-
-            <div class="filter-group">
-
-                <label for="searchFilter">
-                    Search
-                </label>
-
-                <input
-                    type="text"
-                    id="searchFilter"
-                    placeholder="Teacher / Employee Code / Mobile"
-                    autocomplete="off"
-                >
-
-            </div>
-
-
-        </div>
-
-
-        <div class="filter-buttons">
-
-            <button
-                type="button"
-                id="applyFilter"
-                class="filter-btn apply-btn"
-            >
+            <div class="filter-title">
 
                 <i class="fa-solid fa-filter"></i>
 
-                Apply Filter
+                Filter Teachers
 
-            </button>
+            </div>
 
 
-            <button
-                type="button"
-                id="resetFilter"
-                class="filter-btn reset-btn"
-            >
+            <div class="filters">
 
-                <i class="fa-solid fa-rotate-left"></i>
 
-                Reset
+                <!-- REGION -->
 
-            </button>
+                <div class="filter-group">
+
+                    <label for="regionFilter">
+                        Region
+                    </label>
+
+                    <select id="regionFilter">
+
+                        <option value="">
+                            All Regions
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- STATE -->
+
+                <div class="filter-group">
+
+                    <label for="stateFilter">
+                        State
+                    </label>
+
+                    <select id="stateFilter">
+
+                        <option value="">
+                            All States
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CITY -->
+
+                <div class="filter-group">
+
+                    <label for="cityFilter">
+                        City
+                    </label>
+
+                    <select id="cityFilter">
+
+                        <option value="">
+                            All Cities
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="filter-group">
+
+                    <label for="statusFilter">
+                        Status
+                    </label>
+
+                    <select id="statusFilter">
+
+                        <option value="">
+                            All Status
+                        </option>
+
+                        <option value="Approved">
+                            Approved
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="filter-group">
+
+                    <label for="searchFilter">
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        id="searchFilter"
+                        placeholder="Teacher / Employee Code / Mobile"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="filter-buttons">
+
+
+                <button
+                    type="button"
+                    id="applyFilter"
+                    class="filter-btn apply-btn"
+                >
+
+                    <i
+                        class="fa-solid fa-filter"
+                    ></i>
+
+                    Apply Filter
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="resetFilter"
+                    class="filter-btn reset-btn"
+                >
+
+                    <i
+                        class="fa-solid fa-rotate-left"
+                    ></i>
+
+                    Reset
+
+                </button>
+
+            </div>
 
         </div>
 
-    </div>
+
+        <!-- ==================================
+             TEACHERS TABLE
+        ================================== -->
+
+        <div class="table-container">
 
 
-    <!-- ==================================
-         TEACHERS TABLE
-    ================================== -->
+            <div class="table-header">
 
-    <div class="table-container">
+                <h3>
+
+                    <i
+                        class="fa-solid fa-users"
+                        style="color:#2563eb;margin-right:7px;"
+                    ></i>
+
+                    Assigned Teachers
+
+                </h3>
 
 
-        <div class="table-header">
+                <span
+                    id="resultCount"
+                    class="result-count"
+                >
 
-            <h3>
-                Teachers Data
-            </h3>
+                    Loading...
 
-            <span
-                id="resultCount"
-                class="result-count"
-            >
-                Loading...
-            </span>
+                </span>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Employee Code
+                            </th>
+
+                            <th>
+                                Teacher Name
+                            </th>
+
+                            <th>
+                                Mobile
+                            </th>
+
+                            <th>
+                                Region
+                            </th>
+
+                            <th>
+                                State
+                            </th>
+
+                            <th>
+                                City
+                            </th>
+
+                            <th>
+                                Target
+                            </th>
+
+                            <th>
+                                Total Collection
+                            </th>
+
+                            <th>
+                                Remaining Target
+                            </th>
+
+                            <th>
+                                Percentage
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="regionUsersTable">
+
+                        <tr>
+
+                            <td
+                                colspan="11"
+                                class="loading-cell"
+                            >
+
+                                Loading Assigned Teachers...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
 
-        <div class="table-wrapper">
+    </main>
 
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Employee Code
-                        </th>
-
-                        <th>
-                            Teacher Name
-                        </th>
-
-                        <th>
-                            Mobile
-                        </th>
-
-                        <th>
-                            Region
-                        </th>
-
-                        <th>
-                            State
-                        </th>
-
-                        <th>
-                            City
-                        </th>
-
-                        <th>
-                            Target
-                        </th>
-
-                        <th>
-                            Total Collection
-                        </th>
-
-                        <th>
-                            Remaining Target
-                        </th>
-
-                        <th>
-                            Percentage
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="regionUsersTable">
-
-                    <tr>
-
-                        <td
-                            colspan="11"
-                            class="loading-cell"
-                        >
-                            Loading Teachers...
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-
-</main>
+</div>
 
 
 <!-- ======================================
-     JAVASCRIPT
+     SIDEBAR JAVASCRIPT
 ====================================== -->
 
-<script type="module" src="assets/js/region-user.js"></script>
+<script>
+
+    const mobileMenuBtn =
+        document.getElementById(
+            "mobileMenuBtn"
+        );
+
+    const sidebar =
+        document.getElementById(
+            "sidebar"
+        );
+
+    const sidebarOverlay =
+        document.getElementById(
+            "sidebarOverlay"
+        );
+
+
+    function openSidebar() {
+
+        if (sidebar) {
+
+            sidebar.classList.add(
+                "open"
+            );
+
+        }
+
+        if (sidebarOverlay) {
+
+            sidebarOverlay.classList.add(
+                "open"
+            );
+
+        }
+
+    }
+
+
+    function closeSidebar() {
+
+        if (sidebar) {
+
+            sidebar.classList.remove(
+                "open"
+            );
+
+        }
+
+        if (sidebarOverlay) {
+
+            sidebarOverlay.classList.remove(
+                "open"
+            );
+
+        }
+
+    }
+
+
+    if (mobileMenuBtn) {
+
+        mobileMenuBtn.addEventListener(
+            "click",
+            openSidebar
+        );
+
+    }
+
+
+    if (sidebarOverlay) {
+
+        sidebarOverlay.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".sidebar-menu a"
+        )
+        .forEach(
+            (link) => {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        closeSidebar();
+
+                    }
+                );
+
+            }
+        );
+
+</script>
+
+
+<!-- ======================================
+     REGION USER JAVASCRIPT
+====================================== -->
+
+<script
+    type="module"
+    src="assets/js/region-user.js"
+></script>
 
 
 </body>
