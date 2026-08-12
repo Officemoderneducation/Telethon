@@ -1,1 +1,194 @@
+<!-- ======================================
+     Telethon - Admin Sidebar
+     ====================================== -->
 
+<aside class="sidebar" id="adminSidebar">
+
+    <!-- Logo -->
+    <div class="sidebar-logo">
+        <div class="logo-icon">
+            <i class="fa-solid fa-chart-line"></i>
+        </div>
+
+        <div class="logo-text">
+            <h2>Telethon</h2>
+            <span>Admin Panel</span>
+        </div>
+    </div>
+
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+
+        <!-- Dashboard -->
+        <a href="dashboard.html"
+           class="sidebar-link"
+           data-page="dashboard">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+
+
+        <!-- Teachers List -->
+        <a href="users.html"
+           class="sidebar-link"
+           data-page="teachers">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span>Teachers List</span>
+        </a>
+
+
+        <!-- Daily Report -->
+        <a href="daily-report.html"
+           class="sidebar-link"
+           data-page="daily-report">
+            <i class="fa-solid fa-calendar-day"></i>
+            <span>Daily Report</span>
+        </a>
+
+
+        <!-- Region User Management -->
+        <a href="region-users.html"
+           class="sidebar-link"
+           data-page="region-users">
+            <i class="fa-solid fa-users-gear"></i>
+            <span>Region User Management</span>
+        </a>
+
+
+        <!-- All Entry -->
+        <a href="all-entry.html"
+           class="sidebar-link"
+           data-page="all-entry">
+            <i class="fa-solid fa-list-check"></i>
+            <span>All Entry</span>
+        </a>
+
+
+        <!-- Target Management -->
+        <a href="target-management.html"
+           class="sidebar-link"
+           data-page="target-management">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Target Management</span>
+        </a>
+
+
+        <!-- Collection Summary -->
+        <a href="collection-summary.html"
+           class="sidebar-link"
+           data-page="collection-summary">
+            <i class="fa-solid fa-money-bill-trend-up"></i>
+            <span>Collection Summary</span>
+        </a>
+
+    </nav>
+
+
+    <!-- Logout -->
+    <div class="sidebar-bottom">
+
+        <a href="#"
+           class="sidebar-link logout-link"
+           id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </a>
+
+    </div>
+
+</aside>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        // ==================================
+        // Active Page
+        // ==================================
+
+        const currentPage =
+            window.location.pathname
+                .split("/")
+                .pop()
+                .replace(".html", "")
+                .toLowerCase();
+
+
+        document
+            .querySelectorAll(
+                ".sidebar-link[data-page]"
+            )
+            .forEach(
+                function (link) {
+
+                    const page =
+                        String(
+                            link.dataset.page || ""
+                        ).toLowerCase();
+
+
+                    if (
+                        currentPage === page
+                    ) {
+
+                        link.classList.add(
+                            "active"
+                        );
+
+                    }
+
+                }
+            );
+
+
+        // ==================================
+        // Logout
+        // ==================================
+
+        const logoutBtn =
+            document.getElementById(
+                "logoutBtn"
+            );
+
+
+        if (logoutBtn) {
+
+            logoutBtn.addEventListener(
+                "click",
+                function (e) {
+
+                    e.preventDefault();
+
+
+                    localStorage.removeItem(
+                        "loggedInEmpCode"
+                    );
+
+
+                    localStorage.removeItem(
+                        "userRole"
+                    );
+
+
+                    localStorage.removeItem(
+                        "userName"
+                    );
+
+
+                    window.location.href =
+                        "index.html";
+
+                }
+            );
+
+        }
+
+    }
+
+);
+
+</script>
