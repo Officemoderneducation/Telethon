@@ -5,18 +5,38 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Collection Summary | Telethon</title>
 
-    <!-- Font Awesome -->
+
+    <!-- =========================================
+         FONT AWESOME
+    ========================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
-    <!-- Collection Summary CSS -->
+
+    <!-- =========================================
+         ADMIN SIDEBAR CSS
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="components/admin-sidebar.css"
+    >
+
+
+    <!-- =========================================
+         COLLECTION SUMMARY CSS
+    ========================================== -->
+
     <link
         rel="stylesheet"
         href="assets/css/collection-summary.css"
@@ -24,418 +44,38 @@
 
 </head>
 
+
 <body>
 
-<!-- =========================================
-     SIDEBAR
-========================================= -->
 
-<div class="sidebar">
+    <!-- =========================================
+         ADMIN SIDEBAR
+    ========================================== -->
 
-    <div>
-
-        <!-- Logo -->
-        <div class="logo">
-
-            <img
-                src="assets/images/logo.png"
-                alt="Telethon Logo"
-            >
-
-            <h2>Telethon</h2>
-
-            <p>Management System</p>
-
-        </div>
-
-
-        <!-- Menu -->
-        <div class="menu">
-
-            <a href="dashboard.html">
-                <i class="fa-solid fa-house"></i>
-                <span>Dashboard</span>
-            </a>
-
-
-            <a href="register.html">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Registration Form</span>
-            </a>
-
-
-            <a href="users.html">
-                <i class="fa-solid fa-users"></i>
-                <span>Teachers List</span>
-            </a>
-
-
-            <a href="daily-entry.html">
-                <i class="fa-solid fa-file-circle-plus"></i>
-                <span>Daily Collection</span>
-            </a>
-
-
-            <a href="all-entry.html">
-                <i class="fa-solid fa-list"></i>
-                <span>All Entry</span>
-            </a>
-
-
-            <a href="collection-summary.html"
-               class="active">
-
-                <i class="fa-solid fa-chart-pie"></i>
-
-                <span>Collection Summary</span>
-
-            </a>
-
-
-            <a href="target-management.html">
-
-                <i class="fa-solid fa-bullseye"></i>
-
-                <span>Target Management</span>
-
-            </a>
-
-
-            <a href="reports.html">
-
-                <i class="fa-solid fa-chart-column"></i>
-
-                <span>Reports</span>
-
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <!-- Logout -->
-
-    <a href="#"
-       id="logoutBtn"
-       class="logout">
-
-        <i class="fa-solid fa-right-from-bracket"></i>
-
-        <span>Logout</span>
-
-    </a>
-
-</div>
-
-
-<!-- =========================================
-     MAIN CONTENT
-========================================= -->
-
-<div class="main-content">
-
-
-    <!-- Header -->
-
-    <div class="page-header">
-
-        <div>
-
-            <h1>
-                Collection Summary
-            </h1>
-
-            <p>
-                View collection summary by Region, State, City or Employee
-            </p>
-
-        </div>
-
-    </div>
+    <div id="adminSidebar"></div>
 
 
     <!-- =========================================
-         FILTER CARD
-    ========================================= -->
+         MAIN CONTENT
+    ========================================== -->
 
-    <div class="filter-card">
+    <div class="main-content">
 
-        <div class="filter-grid">
 
+        <!-- =====================================
+             HEADER
+        ====================================== -->
 
-            <!-- Region -->
-
-            <div class="filter-group">
-
-                <label>
-                    Filter By Region
-                </label>
-
-                <select id="regionFilter">
-
-                    <option value="">
-                        All Regions
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- State -->
-
-            <div class="filter-group">
-
-                <label>
-                    Filter By State
-                </label>
-
-                <select id="stateFilter">
-
-                    <option value="">
-                        All States
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- City -->
-
-            <div class="filter-group">
-
-                <label>
-                    Filter By City
-                </label>
-
-                <select id="cityFilter">
-
-                    <option value="">
-                        All Cities
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- Employee -->
-
-            <div class="filter-group">
-
-                <label>
-                    Filter By Employee Code
-                </label>
-
-                <select id="employeeFilter">
-
-                    <option value="">
-                        All Employees
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- Buttons -->
-
-            <div class="filter-buttons">
-
-                <button
-                    type="button"
-                    id="applyFilter"
-                    class="apply-btn"
-                >
-
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                    Apply Filter
-
-                </button>
-
-
-                <button
-                    type="button"
-                    id="resetFilter"
-                    class="reset-btn"
-                >
-
-                    <i class="fa-solid fa-rotate-right"></i>
-
-                    Reset
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================================
-         SELECTED FILTER
-    ========================================= -->
-
-    <div
-        class="selected-info"
-        id="selectedInfo"
-    >
-
-        <div class="success-icon">
-
-            <i class="fa-solid fa-check"></i>
-
-        </div>
-
-        <div>
-
-            <span>
-                You are viewing summary for:
-            </span>
-
-            <strong id="selectedTitle">
-                All Teachers
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================================
-         SUMMARY CARDS
-    ========================================= -->
-
-    <div class="summary-grid">
-
-
-        <!-- Target -->
-
-        <div class="summary-card target-card">
-
-            <div class="summary-icon">
-
-                <i class="fa-solid fa-bullseye"></i>
-
-            </div>
+        <div class="page-header">
 
             <div>
 
-                <span>
-                    Total Target
-                </span>
-
-                <strong id="totalTarget">
-                    ₹ 0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <!-- Collection -->
-
-        <div class="summary-card collection-card">
-
-            <div class="summary-icon">
-
-                <i class="fa-solid fa-indian-rupee-sign"></i>
-
-            </div>
-
-            <div>
-
-                <span>
-                    Total Collection
-                </span>
-
-                <strong id="totalCollection">
-                    ₹ 0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <!-- Remaining -->
-
-        <div class="summary-card remaining-card">
-
-            <div class="summary-icon">
-
-                <i class="fa-solid fa-chart-pie"></i>
-
-            </div>
-
-            <div>
-
-                <span>
-                    Remaining Target
-                </span>
-
-                <strong id="remainingTarget">
-                    ₹ 0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <!-- Percentage -->
-
-        <div class="summary-card percentage-card">
-
-            <div class="summary-icon">
-
-                <i class="fa-solid fa-percent"></i>
-
-            </div>
-
-            <div>
-
-                <span>
-                    Achievement
-                </span>
-
-                <strong id="percentage">
-                    0%
-                </strong>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================================
-         DETAILS TABLE
-    ========================================= -->
-
-    <div class="details-card">
-
-
-        <div class="details-header">
-
-            <div>
-
-                <h2>
-
-                    <i class="fa-solid fa-list"></i>
-
-                    Details
-
-                </h2>
+                <h1>
+                    Collection Summary
+                </h1>
 
                 <p>
-                    Teacher target and collection details
+                    View collection summary by Region, State, City or Employee
                 </p>
 
             </div>
@@ -443,88 +83,449 @@
         </div>
 
 
-        <div class="table-wrapper">
+        <!-- =====================================
+             FILTER CARD
+        ====================================== -->
 
-            <table>
+        <div class="filter-card">
 
-                <thead>
-
-                    <tr>
-
-                        <th>#</th>
-
-                        <th>Region</th>
-
-                        <th>State</th>
-
-                        <th>City</th>
-
-                        <th>Jamiatul Madina</th>
-
-                        <th>Employee Code</th>
-
-                        <th>Teacher Name</th>
-
-                        <th>Target</th>
-
-                        <th>Total Collection</th>
-
-                        <th>Remaining Target</th>
-
-                        <th>Percentage</th>
-
-                    </tr>
-
-                </thead>
+            <div class="filter-grid">
 
 
-                <tbody id="summaryTableBody">
+                <!-- REGION -->
 
-                    <tr>
+                <div class="filter-group">
 
-                        <td
-                            colspan="11"
-                            class="loading"
-                        >
+                    <label>
+                        Filter By Region
+                    </label>
 
-                            Loading data...
+                    <select id="regionFilter">
 
-                        </td>
+                        <option value="">
+                            All Regions
+                        </option>
 
-                    </tr>
+                    </select>
 
-                </tbody>
+                </div>
 
 
-                <tfoot id="summaryTableFoot">
+                <!-- STATE -->
 
-                </tfoot>
+                <div class="filter-group">
 
-            </table>
+                    <label>
+                        Filter By State
+                    </label>
+
+                    <select id="stateFilter">
+
+                        <option value="">
+                            All States
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CITY -->
+
+                <div class="filter-group">
+
+                    <label>
+                        Filter By City
+                    </label>
+
+                    <select id="cityFilter">
+
+                        <option value="">
+                            All Cities
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- EMPLOYEE -->
+
+                <div class="filter-group">
+
+                    <label>
+                        Filter By Employee Code
+                    </label>
+
+                    <select id="employeeFilter">
+
+                        <option value="">
+                            All Employees
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="filter-buttons">
+
+                    <button
+                        type="button"
+                        id="applyFilter"
+                        class="apply-btn"
+                    >
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        Apply Filter
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="resetFilter"
+                        class="reset-btn"
+                    >
+
+                        <i class="fa-solid fa-rotate-right"></i>
+
+                        Reset
+
+                    </button>
+
+                </div>
+
+            </div>
 
         </div>
 
+
+        <!-- =====================================
+             SELECTED FILTER
+        ====================================== -->
+
+        <div
+            class="selected-info"
+            id="selectedInfo"
+        >
+
+            <div class="success-icon">
+
+                <i class="fa-solid fa-check"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    You are viewing summary for:
+                </span>
+
+                <strong id="selectedTitle">
+                    All Teachers
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             SUMMARY CARDS
+        ====================================== -->
+
+        <div class="summary-grid">
+
+
+            <!-- TOTAL TARGET -->
+
+            <div class="summary-card target-card">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Target
+                    </span>
+
+                    <strong id="totalTarget">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL COLLECTION -->
+
+            <div class="summary-card collection-card">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Collection
+                    </span>
+
+                    <strong id="totalCollection">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- REMAINING TARGET -->
+
+            <div class="summary-card remaining-card">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-chart-pie"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Remaining Target
+                    </span>
+
+                    <strong id="remainingTarget">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- PERCENTAGE -->
+
+            <div class="summary-card percentage-card">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-percent"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Achievement
+                    </span>
+
+                    <strong id="percentage">
+                        0%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             DETAILS TABLE
+        ====================================== -->
+
+        <div class="details-card">
+
+
+            <div class="details-header">
+
+                <div>
+
+                    <h2>
+
+                        <i class="fa-solid fa-list"></i>
+
+                        Details
+
+                    </h2>
+
+                    <p>
+                        Teacher target and collection details
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Region
+                            </th>
+
+                            <th>
+                                State
+                            </th>
+
+                            <th>
+                                City
+                            </th>
+
+                            <th>
+                                Jamiatul Madina
+                            </th>
+
+                            <th>
+                                Employee Code
+                            </th>
+
+                            <th>
+                                Teacher Name
+                            </th>
+
+                            <th>
+                                Target
+                            </th>
+
+                            <th>
+                                Total Collection
+                            </th>
+
+                            <th>
+                                Remaining Target
+                            </th>
+
+                            <th>
+                                Percentage
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="summaryTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="11"
+                                class="loading"
+                            >
+
+                                Loading data...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                    <tfoot id="summaryTableFoot">
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             FOOTER NOTE
+        ====================================== -->
+
+        <div class="footer-note">
+
+            Data is calculated based on selected filters.
+
+        </div>
+
+
     </div>
 
 
-    <div class="footer-note">
+    <!-- =========================================
+         ADMIN SIDEBAR LOADER
+    ========================================== -->
 
-        Data is calculated based on selected filters.
+    <script>
 
-    </div>
+        fetch("components/admin-sidebar.html")
+
+            .then(function(response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Admin Sidebar not found"
+                    );
+
+                }
+
+                return response.text();
+
+            })
+
+            .then(function(data) {
+
+                const sidebarContainer =
+                    document.getElementById(
+                        "adminSidebar"
+                    );
+
+                sidebarContainer.innerHTML =
+                    data;
+
+            })
+
+            .catch(function(error) {
+
+                console.error(
+                    "Admin Sidebar Error:",
+                    error
+                );
+
+            });
+
+    </script>
 
 
-</div>
+    <!-- =========================================
+         COLLECTION SUMMARY JS
+    ========================================== -->
 
+    <script
+        type="module"
+        src="assets/js/collection-summary.js"
+    ></script>
 
-<!-- =========================================
-     JAVASCRIPT
-========================================= -->
-
-<script
-    type="module"
-    src="assets/js/collection-summary.js"
-></script>
 
 </body>
 
