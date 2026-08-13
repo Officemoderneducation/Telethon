@@ -5,22 +5,37 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Daily Report | Telethon</title>
 
-    <!-- Font Awesome -->
+
+    <!-- ==========================================
+         FONT AWESOME
+    =========================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
-    <!-- Region Sidebar CSS -->
+
+    <!-- ==========================================
+         REGION SIDEBAR CSS
+    =========================================== -->
+
     <link
         rel="stylesheet"
         href="assets/css/region-sidebar.css"
     >
+
+
+    <!-- ==========================================
+         PAGE CSS
+    =========================================== -->
 
     <style>
 
@@ -31,11 +46,22 @@
             font-family: Arial, sans-serif;
         }
 
+
         body {
             background: #f4f6f9;
             color: #1e293b;
             min-height: 100vh;
         }
+
+
+        /* ======================================
+           SIDEBAR CONTAINER
+        ====================================== */
+
+        #regionSidebar {
+            display: block;
+        }
+
 
         /* ======================================
            MAIN AREA
@@ -46,16 +72,20 @@
             min-height: 100vh;
         }
 
+
         /* ======================================
            TOPBAR
         ====================================== */
 
         .topbar-main {
             height: 76px;
+
             background: white;
 
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
 
             padding: 0 26px;
@@ -64,36 +94,51 @@
                 0 2px 8px rgba(0,0,0,0.06);
         }
 
+
         .topbar-left {
             display: flex;
+
             align-items: center;
+
             gap: 15px;
         }
 
+
         .topbar-title h2 {
             font-size: 20px;
+
             color: #0f172a;
+
             margin-bottom: 3px;
         }
 
+
         .topbar-title p {
             font-size: 12px;
+
             color: #64748b;
         }
 
+
         .topbar-user {
             display: flex;
+
             align-items: center;
+
             gap: 10px;
 
             color: #334155;
+
             font-size: 13px;
         }
 
+
         .topbar-user i {
             color: #2563eb;
+
             font-size: 20px;
         }
+
 
         /* ======================================
            MOBILE MENU BUTTON
@@ -103,10 +148,13 @@
             display: none;
 
             border: none;
+
             background: #2563eb;
+
             color: white;
 
             width: 42px;
+
             height: 42px;
 
             border-radius: 7px;
@@ -116,14 +164,17 @@
             font-size: 18px;
         }
 
+
         /* ======================================
            MAIN CONTENT
         ====================================== */
 
         .main {
             width: 100%;
+
             padding: 22px;
         }
+
 
         /* ======================================
            REGION USER INFO
@@ -145,9 +196,11 @@
             font-size: 14px;
         }
 
+
         .region-user-info strong {
             font-size: 16px;
         }
+
 
         /* ======================================
            FILTER PANEL
@@ -166,6 +219,7 @@
                 0 2px 8px rgba(0,0,0,0.06);
         }
 
+
         .filter-title {
             font-size: 17px;
 
@@ -176,6 +230,7 @@
             color: #0f172a;
         }
 
+
         .filters {
             display: grid;
 
@@ -184,6 +239,7 @@
 
             gap: 13px;
         }
+
 
         .filter-group label {
             display: block;
@@ -197,8 +253,10 @@
             color: #475569;
         }
 
+
         .filter-group select,
         .filter-group input {
+
             width: 100%;
 
             padding: 10px 12px;
@@ -214,8 +272,10 @@
             font-size: 14px;
         }
 
+
         .filter-group select:focus,
         .filter-group input:focus {
+
             border-color: #2563eb;
 
             box-shadow:
@@ -223,11 +283,13 @@
                 rgba(37,99,235,0.10);
         }
 
+
         /* ======================================
            QUICK DATE
         ====================================== */
 
         .quick-date-title {
+
             margin-top: 18px;
 
             margin-bottom: 9px;
@@ -239,7 +301,9 @@
             color: #475569;
         }
 
+
         .quick-dates {
+
             display: flex;
 
             flex-wrap: wrap;
@@ -247,7 +311,9 @@
             gap: 8px;
         }
 
+
         .quick-date-btn {
+
             border: 1px solid #cbd5e1;
 
             background: #f8fafc;
@@ -267,7 +333,9 @@
             transition: 0.2s;
         }
 
+
         .quick-date-btn:hover {
+
             background: #eff6ff;
 
             border-color: #2563eb;
@@ -275,7 +343,9 @@
             color: #2563eb;
         }
 
+
         .quick-date-btn.active {
+
             background: #2563eb;
 
             color: white;
@@ -283,11 +353,13 @@
             border-color: #2563eb;
         }
 
+
         /* ======================================
            BUTTONS
         ====================================== */
 
         .filter-buttons {
+
             display: flex;
 
             gap: 10px;
@@ -295,7 +367,9 @@
             margin-top: 18px;
         }
 
+
         .filter-btn {
+
             border: none;
 
             padding: 10px 18px;
@@ -309,31 +383,41 @@
             font-size: 13px;
         }
 
+
         .apply-btn {
+
             background: #2563eb;
 
             color: white;
         }
 
+
         .apply-btn:hover {
+
             background: #1d4ed8;
         }
 
+
         .reset-btn {
+
             background: #e2e8f0;
 
             color: #334155;
         }
 
+
         .reset-btn:hover {
+
             background: #cbd5e1;
         }
+
 
         /* ======================================
            REPORT INFO
         ====================================== */
 
         .report-info {
+
             display: grid;
 
             grid-template-columns:
@@ -344,7 +428,9 @@
             margin-bottom: 18px;
         }
 
+
         .info-card {
+
             background: white;
 
             border-radius: 10px;
@@ -357,7 +443,9 @@
             border-left: 4px solid #2563eb;
         }
 
+
         .info-card span {
+
             display: block;
 
             color: #64748b;
@@ -367,7 +455,9 @@
             margin-bottom: 5px;
         }
 
+
         .info-card strong {
+
             display: block;
 
             color: #0f172a;
@@ -375,11 +465,13 @@
             font-size: 20px;
         }
 
+
         /* ======================================
            TABLE
         ====================================== */
 
         .table-container {
+
             background: white;
 
             border-radius: 12px;
@@ -390,7 +482,9 @@
                 0 2px 8px rgba(0,0,0,0.06);
         }
 
+
         .table-header {
+
             display: flex;
 
             justify-content: space-between;
@@ -402,19 +496,25 @@
             gap: 15px;
         }
 
+
         .table-header h3 {
+
             font-size: 18px;
 
             color: #0f172a;
         }
 
+
         .result-count {
+
             font-size: 13px;
 
             color: #64748b;
         }
 
+
         .table-wrapper {
+
             width: 100%;
 
             overflow-x: auto;
@@ -424,7 +524,9 @@
             border-radius: 8px;
         }
 
+
         table {
+
             width: 100%;
 
             border-collapse: collapse;
@@ -434,7 +536,9 @@
             min-width: 900px;
         }
 
+
         th {
+
             background: #2563eb;
 
             color: white;
@@ -452,12 +556,16 @@
                 rgba(255,255,255,0.15);
         }
 
+
         th:first-child,
         th:nth-child(2) {
+
             text-align: left;
         }
 
+
         td {
+
             padding: 12px 14px;
 
             border-bottom:
@@ -475,40 +583,54 @@
             text-align: center;
         }
 
+
         td:first-child,
         td:nth-child(2) {
+
             text-align: left;
         }
 
+
         tbody tr:hover {
+
             background: #f8fafc;
         }
 
+
         .jamiatul {
+
             font-weight: bold;
 
             color: #0f172a;
         }
 
+
         .teacher-name {
+
             font-weight: bold;
 
             color: #1d4ed8;
         }
 
+
         .date-amount {
+
             color: #059669;
 
             font-weight: bold;
         }
 
+
         .no-entry {
+
             color: #94a3b8;
 
             font-weight: normal;
         }
 
+
         .total-collection {
+
             color: #dc2626;
 
             font-weight: bold;
@@ -516,11 +638,13 @@
             background: #fff7ed;
         }
 
+
         /* ======================================
            TOTAL ROW
         ====================================== */
 
         .total-row td {
+
             background: #f1f5f9;
 
             font-weight: bold;
@@ -528,15 +652,20 @@
             color: #0f172a;
         }
 
+
         .total-row .date-total {
+
             color: #059669;
         }
 
+
         .total-row .grand-total {
+
             color: #dc2626;
 
             background: #ffedd5;
         }
+
 
         /* ======================================
            LOADING / EMPTY / ERROR
@@ -545,22 +674,30 @@
         .loading-cell,
         .empty-cell,
         .error-cell {
+
             text-align: center !important;
 
             padding: 40px !important;
         }
 
+
         .loading-cell {
+
             color: #64748b;
         }
+
 
         .empty-cell {
+
             color: #64748b;
         }
 
+
         .error-cell {
+
             color: #dc2626;
         }
+
 
         /* ======================================
            RESPONSIVE
@@ -569,36 +706,47 @@
         @media (max-width: 1000px) {
 
             .filters {
+
                 grid-template-columns:
                     repeat(2, 1fr);
             }
 
+
             .report-info {
+
                 grid-template-columns:
                     repeat(2, 1fr);
             }
 
         }
 
+
         @media (max-width: 800px) {
 
             .main-area {
+
                 margin-left: 0;
             }
 
+
             .mobile-menu-btn {
+
                 display: block;
             }
 
+
             .topbar-main {
+
                 padding: 0 15px;
             }
 
         }
 
+
         @media (max-width: 700px) {
 
             .topbar-main {
+
                 height: auto;
 
                 min-height: 76px;
@@ -606,32 +754,46 @@
                 padding: 12px 15px;
             }
 
+
             .topbar-left {
+
                 width: 100%;
             }
 
+
             .topbar-title h2 {
+
                 font-size: 17px;
             }
 
+
             .topbar-user {
+
                 display: none;
             }
 
+
             .filters {
+
                 grid-template-columns: 1fr;
             }
+
 
             .report-info {
+
                 grid-template-columns: 1fr;
             }
 
+
             .main {
+
                 padding: 12px;
             }
 
+
             .table-container,
             .filter-panel {
+
                 padding: 12px;
             }
 
@@ -646,10 +808,22 @@
 
 
 <!-- =====================================================
-     REGION SIDEBAR
+     NEW REGION SIDEBAR
 ===================================================== -->
 
-<div id="regionSidebar"></div>
+<div id="regionSidebar">
+
+    <div
+        style="
+            padding:20px;
+            margin-left:250px;
+            color:#64748b;
+        "
+    >
+        Loading Region Sidebar...
+    </div>
+
+</div>
 
 
 <!-- =====================================================
@@ -690,12 +864,16 @@
 
                     <i
                         class="fa-solid fa-calendar-days"
-                        style="color:#2563eb;margin-right:8px;"
+                        style="
+                            color:#2563eb;
+                            margin-right:8px;
+                        "
                     ></i>
 
                     Daily Collection Report
 
                 </h2>
+
 
                 <p>
                     Teacher-wise daily collection report
@@ -711,10 +889,15 @@
 
         <div class="topbar-user">
 
-            <i class="fa-solid fa-circle-user"></i>
+            <i
+                class="fa-solid fa-circle-user"
+            ></i>
+
 
             <span id="regionUserInfoTop">
+
                 Loading User...
+
             </span>
 
         </div>
@@ -730,9 +913,7 @@
     <main class="main">
 
 
-        <!-- =================================================
-             REGION USER INFO
-        ================================================== -->
+        <!-- REGION USER INFO -->
 
         <div
             id="regionUserInfo"
@@ -746,14 +927,16 @@
 
         <!-- =================================================
              FILTER PANEL
-        ================================================== -->
+        ================================================= -->
 
         <div class="filter-panel">
 
 
             <div class="filter-title">
 
-                <i class="fa-solid fa-filter"></i>
+                <i
+                    class="fa-solid fa-filter"
+                ></i>
 
                 Report Filters
 
@@ -770,6 +953,7 @@
                     <label for="regionFilter">
                         Region
                     </label>
+
 
                     <select id="regionFilter">
 
@@ -790,6 +974,7 @@
                         State
                     </label>
 
+
                     <select id="stateFilter">
 
                         <option value="">
@@ -809,6 +994,7 @@
                         City
                     </label>
 
+
                     <select id="cityFilter">
 
                         <option value="">
@@ -820,13 +1006,14 @@
                 </div>
 
 
-                <!-- JAMIATUL MADINA -->
+                <!-- JAMIATUL -->
 
                 <div class="filter-group">
 
                     <label for="jamiatulFilter">
                         Jamiatul Madina
                     </label>
+
 
                     <select id="jamiatulFilter">
 
@@ -847,6 +1034,7 @@
                         From Date
                     </label>
 
+
                     <input
                         type="date"
                         id="fromDate"
@@ -862,6 +1050,7 @@
                     <label for="toDate">
                         To Date
                     </label>
+
 
                     <input
                         type="date"
@@ -879,6 +1068,7 @@
                         Search Teacher
                     </label>
 
+
                     <input
                         type="text"
                         id="searchFilter"
@@ -895,7 +1085,9 @@
             <!-- QUICK DATE -->
 
             <div class="quick-date-title">
+
                 Quick Date Range
+
             </div>
 
 
@@ -998,13 +1190,12 @@
         <div class="report-info">
 
 
-            <!-- DATE RANGE -->
-
             <div class="info-card">
 
                 <span>
                     Selected Date Range
                 </span>
+
 
                 <strong id="selectedDateRange">
                     —
@@ -1013,13 +1204,12 @@
             </div>
 
 
-            <!-- TEACHERS -->
-
             <div class="info-card">
 
                 <span>
                     Assigned Teachers
                 </span>
+
 
                 <strong id="totalTeachers">
                     0
@@ -1028,13 +1218,12 @@
             </div>
 
 
-            <!-- COLLECTION -->
-
             <div class="info-card">
 
                 <span>
                     Total Collection
                 </span>
+
 
                 <strong id="grandTotal">
                     ₹ 0
@@ -1060,7 +1249,10 @@
 
                     <i
                         class="fa-solid fa-table"
-                        style="color:#2563eb;margin-right:7px;"
+                        style="
+                            color:#2563eb;
+                            margin-right:7px;
+                        "
                     ></i>
 
                     Teachers Daily Collection
@@ -1124,7 +1316,9 @@
                     </tbody>
 
 
-                    <tfoot id="reportTableFoot">
+                    <tfoot
+                        id="reportTableFoot"
+                    >
                     </tfoot>
 
 
@@ -1144,92 +1338,297 @@
 
 
 <!-- =====================================================
-     REGION SIDEBAR LOADER
+     LOAD REGION SIDEBAR
 ===================================================== -->
 
-<script type="module">
+<script>
 
-    /*
-     * IMPORTANT:
-     * Yahan old sidebar ka koi HTML nahi hai.
-     *
-     * Sirf region-sidebar.html load hoga.
-     */
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        async function () {
+        loadRegionSidebar();
 
-            const sidebarContainer =
-                document.getElementById(
-                    "regionSidebar"
-                );
+    }
+);
 
 
-            if (!sidebarContainer) {
-                return;
-            }
+async function loadRegionSidebar() {
+
+    const container =
+        document.getElementById(
+            "regionSidebar"
+        );
 
 
-            try {
+    if (!container) {
 
-                const response =
-                    await fetch(
-                        "region-sidebar.html"
+        console.error(
+            "regionSidebar container not found"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "region-sidebar.html"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "region-sidebar.html not found"
+            );
+
+        }
+
+
+        const html =
+            await response.text();
+
+
+        container.innerHTML =
+            html;
+
+
+        console.log(
+            "New Region Sidebar Loaded"
+        );
+
+
+        // ======================================
+        // ACTIVE MENU
+        // ======================================
+
+        const currentPage =
+            window.location.pathname
+                .split("/")
+                .pop();
+
+
+        const menuLinks =
+            container.querySelectorAll(
+                ".menu-link"
+            );
+
+
+        menuLinks.forEach(
+            function (link) {
+
+                const href =
+                    link.getAttribute(
+                        "href"
                     );
 
 
-                if (!response.ok) {
+                if (
+                    href === currentPage
+                ) {
 
-                    throw new Error(
-                        "Region Sidebar load nahi ho saka."
+                    link.classList.add(
+                        "active"
                     );
 
                 }
 
-
-                const sidebarHTML =
-                    await response.text();
-
-
-                sidebarContainer.innerHTML =
-                    sidebarHTML;
+            }
+        );
 
 
-                /*
-                 * Region Sidebar JS
-                 */
+        // ======================================
+        // USER NAME
+        // ======================================
 
-                const sidebarScript =
-                    document.createElement(
-                        "script"
-                    );
-
-
-                sidebarScript.type =
-                    "module";
+        const savedUserName =
+            localStorage.getItem(
+                "regionUserName"
+            );
 
 
-                sidebarScript.src =
-                    "assets/js/region-sidebar.js";
+        const sidebarUserName =
+            document.getElementById(
+                "sidebarUserName"
+            );
 
 
-                document.body.appendChild(
-                    sidebarScript
-                );
+        const topUser =
+            document.getElementById(
+                "regionUserInfoTop"
+            );
 
 
-            } catch (error) {
+        if (savedUserName) {
 
-                console.error(
-                    "Region Sidebar Error:",
-                    error
-                );
+            if (sidebarUserName) {
+
+                sidebarUserName.textContent =
+                    savedUserName;
+
+            }
+
+
+            if (topUser) {
+
+                topUser.textContent =
+                    savedUserName;
 
             }
 
         }
-    );
+
+
+        // ======================================
+        // MOBILE MENU
+        // ======================================
+
+        const sidebar =
+            document.getElementById(
+                "sidebar"
+            );
+
+
+        const mobileMenuBtn =
+            document.getElementById(
+                "mobileMenuBtn"
+            );
+
+
+        if (
+            sidebar &&
+            mobileMenuBtn
+        ) {
+
+            mobileMenuBtn.addEventListener(
+                "click",
+                function () {
+
+                    sidebar.classList.toggle(
+                        "open"
+                    );
+
+                }
+            );
+
+        }
+
+
+        // ======================================
+        // CLOSE SIDEBAR AFTER MENU CLICK
+        // ======================================
+
+        menuLinks.forEach(
+            function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        if (
+                            window.innerWidth <= 800 &&
+                            sidebar
+                        ) {
+
+                            sidebar.classList.remove(
+                                "open"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        // ======================================
+        // LOGOUT
+        // ======================================
+
+        const logoutBtn =
+            document.getElementById(
+                "logoutBtn"
+            );
+
+
+        if (logoutBtn) {
+
+            logoutBtn.addEventListener(
+                "click",
+                function (e) {
+
+                    e.preventDefault();
+
+
+                    localStorage.removeItem(
+                        "loggedInEmpCode"
+                    );
+
+
+                    localStorage.removeItem(
+                        "userRole"
+                    );
+
+
+                    localStorage.removeItem(
+                        "regionUserName"
+                    );
+
+
+                    localStorage.removeItem(
+                        "regionUserAccess"
+                    );
+
+
+                    window.location.href =
+                        "index.html";
+
+                }
+            );
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "Region Sidebar Error:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div
+                style="
+                    padding:20px;
+                    color:#dc2626;
+                    margin-left:250px;
+                "
+            >
+
+                Region Sidebar load nahi ho rahi.
+
+                <br>
+
+                <small>
+                    Check:
+                    region-sidebar.html
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+}
 
 </script>
 
