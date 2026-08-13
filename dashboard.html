@@ -5,7 +5,8 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Telethon Admin Dashboard</title>
 
@@ -55,9 +56,13 @@
         ========================================== */
 
         .main-content {
+
             margin-left: 260px;
+
             padding: 30px;
+
             min-height: 100vh;
+
             background: #f4f7fb;
         }
 
@@ -1010,7 +1015,6 @@
                         ₹ 0
                     </strong>
 
-
                     <small
                         id="userSummaryTargetUnits"
                         class="summary-unit"
@@ -1042,7 +1046,6 @@
                         ₹ 0
                     </strong>
 
-
                     <small
                         id="userSummaryCollectionUnits"
                         class="summary-unit"
@@ -1073,7 +1076,6 @@
                     <strong id="userSummaryTotalRemaining">
                         ₹ 0
                     </strong>
-
 
                     <small
                         id="userSummaryRemainingUnits"
@@ -1354,16 +1356,15 @@
                         sidebar.innerHTML = data;
 
 
-                        /*
-                         * ==================================
-                         * ACTIVE PAGE
-                         * ==================================
-                         */
+                        /* ==================================
+                           ACTIVE PAGE
+                        ================================== */
 
                         let currentPage =
                             window.location.pathname
                                 .split("/")
-                                .pop();
+                                .pop()
+                                .toLowerCase();
 
 
                         if (
@@ -1379,34 +1380,23 @@
 
                         const menuLinks =
                             sidebar.querySelectorAll(
-                                ".menu a"
+                                ".admin-sidebar-menu a[data-page]"
                             );
 
 
                         menuLinks.forEach(
                             function (link) {
 
-                                const href =
-                                    link.getAttribute(
-                                        "href"
-                                    );
-
-
-                                if (!href || href === "#") {
-
-                                    return;
-
-                                }
-
-
-                                const linkPage =
-                                    href
-                                        .split("/")
-                                        .pop();
+                                const page =
+                                    link
+                                        .getAttribute(
+                                            "data-page"
+                                        )
+                                        .toLowerCase();
 
 
                                 if (
-                                    linkPage ===
+                                    page ===
                                     currentPage
                                 ) {
 
@@ -1414,9 +1404,7 @@
                                         "active"
                                     );
 
-                                }
-
-                                else {
+                                } else {
 
                                     link.classList.remove(
                                         "active"
@@ -1428,15 +1416,13 @@
                         );
 
 
-                        /*
-                         * ==================================
-                         * LOGOUT
-                         * ==================================
-                         */
+                        /* ==================================
+                           LOGOUT
+                        ================================== */
 
                         const logoutBtn =
                             sidebar.querySelector(
-                                "#logoutBtn"
+                                "#adminLogoutBtn"
                             );
 
 
@@ -1449,20 +1435,41 @@
                                     e.preventDefault();
 
 
+                                    /* Remove login data */
+
                                     localStorage.removeItem(
                                         "loggedInEmpCode"
                                     );
-
 
                                     localStorage.removeItem(
                                         "userRole"
                                     );
 
 
+                                    /* Extra cleanup if used */
+
+                                    localStorage.removeItem(
+                                        "adminLoggedIn"
+                                    );
+
+
+                                    localStorage.removeItem(
+                                        "isAdmin"
+                                    );
+
+
+                                    /* Go to login page */
+
                                     window.location.href =
                                         "index.html";
 
                                 }
+                            );
+
+                        } else {
+
+                            console.error(
+                                "Logout button #adminLogoutBtn not found."
                             );
 
                         }
