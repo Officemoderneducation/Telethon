@@ -78,7 +78,7 @@
             width: 240px;
             height: 100vh;
 
-            z-index: 9999;
+            z-index: 99999;
         }
 
 
@@ -178,6 +178,16 @@
             cursor: pointer;
 
             font-size: 18px;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+        }
+
+
+        .mobile-menu-btn:active {
+            transform: scale(0.97);
         }
 
 
@@ -876,12 +886,19 @@
 
                 transition:
                     transform 0.25s ease;
+
+                visibility: visible;
             }
 
 
-            #regionSidebar.open {
+            #regionSidebar .region-sidebar {
+                width: 220px;
+            }
+
+
+            #regionSidebar .region-sidebar.open {
                 transform:
-                    translateX(0);
+                    translateX(0) !important;
             }
 
 
@@ -893,7 +910,7 @@
 
 
             .mobile-menu-btn {
-                display: block;
+                display: flex;
             }
 
 
@@ -1019,6 +1036,7 @@
             id="mobileMenuBtn"
             class="mobile-menu-btn"
             aria-label="Open Menu"
+            aria-expanded="false"
         >
 
             <i class="fa-solid fa-bars"></i>
@@ -1530,6 +1548,12 @@ document.addEventListener(
             );
 
 
+        const mobileMenuBtn =
+            document.getElementById(
+                "mobileMenuBtn"
+            );
+
+
         if (!sidebarContainer) {
             return;
         }
@@ -1564,6 +1588,25 @@ document.addEventListener(
 
             sidebarContainer.innerHTML =
                 data;
+
+
+            /* ==================================
+               SIDEBAR ELEMENT
+            ================================== */
+
+            const sidebar =
+                sidebarContainer.querySelector(
+                    ".region-sidebar"
+                );
+
+
+            if (!sidebar) {
+
+                throw new Error(
+                    "'.region-sidebar' element not found in region-sidebar.html"
+                );
+
+            }
 
 
             /* ==================================
@@ -1625,41 +1668,74 @@ document.addEventListener(
             });
 
 
-
             /* ==================================
                MOBILE MENU
+               IMPORTANT FIX
             ================================== */
 
-            const mobileMenuBtn =
-                document.getElementById(
-                    "mobileMenuBtn"
-                );
+            if (mobileMenuBtn) {
 
 
-            const sidebar =
-                sidebarContainer.querySelector(
-                    ".region-sidebar"
-                );
+                mobileMenuBtn.onclick =
+                    function (event) {
 
+                        event.preventDefault();
 
-            if (
-                mobileMenuBtn &&
-                sidebar
-            ) {
+                        event.stopPropagation();
 
-                mobileMenuBtn.addEventListener(
-                    "click",
-                    function () {
 
                         sidebar.classList.toggle(
                             "open"
                         );
 
-                    }
-                );
+
+                        const isOpen =
+                            sidebar.classList.contains(
+                                "open"
+                            );
+
+
+                        mobileMenuBtn.setAttribute(
+                            "aria-expanded",
+                            isOpen ? "true" : "false"
+                        );
+
+
+                        const icon =
+                            mobileMenuBtn.querySelector(
+                                "i"
+                            );
+
+
+                        if (icon) {
+
+                            if (isOpen) {
+
+                                icon.classList.remove(
+                                    "fa-bars"
+                                );
+
+                                icon.classList.add(
+                                    "fa-xmark"
+                                );
+
+                            } else {
+
+                                icon.classList.remove(
+                                    "fa-xmark"
+                                );
+
+                                icon.classList.add(
+                                    "fa-bars"
+                                );
+
+                            }
+
+                        }
+
+                    };
 
             }
-
 
 
             /* ==================================
@@ -1677,15 +1753,44 @@ document.addEventListener(
                         "click",
                         function () {
 
+
                             if (
                                 window.innerWidth <=
                                 800
                             ) {
 
-                                if (sidebar) {
 
-                                    sidebar.classList.remove(
-                                        "open"
+                                sidebar.classList.remove(
+                                    "open"
+                                );
+
+
+                                if (mobileMenuBtn) {
+
+                                    mobileMenuBtn.setAttribute(
+                                        "aria-expanded",
+                                        "false"
+                                    );
+
+                                }
+
+
+                                const icon =
+                                    mobileMenuBtn
+                                        ? mobileMenuBtn.querySelector(
+                                            "i"
+                                        )
+                                        : null;
+
+
+                                if (icon) {
+
+                                    icon.classList.remove(
+                                        "fa-xmark"
+                                    );
+
+                                    icon.classList.add(
+                                        "fa-bars"
                                     );
 
                                 }
@@ -1696,7 +1801,6 @@ document.addEventListener(
                     );
 
                 });
-
 
 
             /* ==================================
@@ -1742,7 +1846,6 @@ document.addEventListener(
                 );
 
             }
-
 
 
             /* ==================================
