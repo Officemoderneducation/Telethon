@@ -1,0 +1,424 @@
+/* ======================================
+   REGION USER SIDEBAR
+======================================= */
+
+.region-sidebar {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 250px;
+
+    height: 100vh;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    display: flex;
+
+    flex-direction: column;
+
+    z-index: 9999;
+
+    box-shadow:
+        3px 0 12px rgba(0, 0, 0, 0.12);
+
+}
+
+
+/* ======================================
+   LOGO AREA
+======================================= */
+
+.region-sidebar-logo {
+
+    height: 85px;
+
+    padding: 14px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
+
+}
+
+
+/* ======================================
+   LOGO IMAGE
+======================================= */
+
+.region-sidebar-logo img {
+
+    width: 46px;
+
+    height: 46px;
+
+    object-fit: contain;
+
+    display: block;
+
+}
+
+
+/* ======================================
+   LOGO TEXT
+======================================= */
+
+.region-logo-text {
+
+    min-width: 0;
+
+}
+
+
+.region-logo-text h2 {
+
+    margin: 0;
+
+    font-size: 19px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    color: #ffffff;
+
+}
+
+
+.region-logo-text span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 11px;
+
+    color: #94a3b8;
+
+}
+
+
+/* ======================================
+   MENU
+======================================= */
+
+.region-sidebar-menu {
+
+    flex: 1;
+
+    padding: 18px 12px;
+
+    overflow-y: auto;
+
+}
+
+
+/* ======================================
+   MENU LINK
+======================================= */
+
+.region-menu-link {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    width: 100%;
+
+    min-height: 46px;
+
+    padding: 11px 14px;
+
+    margin-bottom: 6px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+/* ======================================
+   ICON
+======================================= */
+
+.region-menu-link i {
+
+    width: 20px;
+
+    min-width: 20px;
+
+    text-align: center;
+
+    font-size: 16px;
+
+}
+
+
+/* ======================================
+   HOVER
+======================================= */
+
+.region-menu-link:hover {
+
+    background: rgba(255,255,255,0.08);
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+
+}
+
+
+/* ======================================
+   ACTIVE
+======================================= */
+
+.region-menu-link.active {
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 4px 10px rgba(37,99,235,0.25);
+
+}
+
+
+.region-menu-link.active i {
+
+    color: #ffffff;
+
+}
+
+
+/* ======================================
+   BOTTOM
+======================================= */
+
+.region-sidebar-bottom {
+
+    padding: 12px;
+
+    border-top:
+        1px solid rgba(255,255,255,0.08);
+
+}
+
+
+/* ======================================
+   LOGOUT
+======================================= */
+
+.region-logout-link {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    width: 100%;
+
+    min-height: 45px;
+
+    padding: 11px 14px;
+
+    border-radius: 8px;
+
+    color: #fca5a5;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+
+}
+
+
+.region-logout-link i {
+
+    width: 20px;
+
+    min-width: 20px;
+
+    text-align: center;
+
+    font-size: 16px;
+
+}
+
+
+.region-logout-link:hover {
+
+    background: rgba(239,68,68,0.12);
+
+    color: #fecaca;
+
+}
+
+
+/* ======================================
+   SCROLLBAR
+======================================= */
+
+.region-sidebar-menu::-webkit-scrollbar {
+
+    width: 5px;
+
+}
+
+
+.region-sidebar-menu::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+.region-sidebar-menu::-webkit-scrollbar-thumb {
+
+    background: rgba(255,255,255,0.15);
+
+    border-radius: 10px;
+
+}
+
+
+/* ======================================
+   TABLET
+======================================= */
+
+@media (max-width: 768px) {
+
+    .region-sidebar {
+
+        width: 210px;
+
+    }
+
+}
+
+
+/* ======================================
+   SMALL MOBILE
+======================================= */
+
+@media (max-width: 550px) {
+
+    .region-sidebar {
+
+        width: 68px;
+
+    }
+
+
+    .region-sidebar-logo {
+
+        height: 75px;
+
+        padding: 12px;
+
+        justify-content: center;
+
+    }
+
+
+    .region-sidebar-logo img {
+
+        width: 40px;
+
+        height: 40px;
+
+    }
+
+
+    .region-logo-text {
+
+        display: none;
+
+    }
+
+
+    .region-sidebar-menu {
+
+        padding: 15px 8px;
+
+    }
+
+
+    .region-menu-link {
+
+        justify-content: center;
+
+        padding: 12px 8px;
+
+    }
+
+
+    .region-menu-link span {
+
+        display: none;
+
+    }
+
+
+    .region-menu-link i {
+
+        font-size: 17px;
+
+    }
+
+
+    .region-sidebar-bottom {
+
+        padding: 8px;
+
+    }
+
+
+    .region-logout-link {
+
+        justify-content: center;
+
+        padding: 12px 8px;
+
+    }
+
+
+    .region-logout-link span {
+
+        display: none;
+
+    }
+
+}
