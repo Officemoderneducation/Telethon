@@ -37,7 +37,7 @@
 
         /* ======================================
            RESET
-        ======================================= */
+        ====================================== */
 
         * {
             margin: 0;
@@ -56,24 +56,20 @@
         body {
             width: 100%;
             min-height: 100vh;
-
             background: #f4f6f9;
             color: #1e293b;
-
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
 
 
         /* ======================================
-           SIDEBAR CONTAINER
-           IMPORTANT:
-           Do NOT make sidebar relative.
-        ======================================= */
+           SIDEBAR OUTER CONTAINER
+        ====================================== */
 
         #regionSidebar {
             position: fixed;
-
             left: 0;
             top: 0;
 
@@ -81,15 +77,17 @@
             height: 100vh;
 
             z-index: 9999;
+
+            margin: 0;
+            padding: 0;
         }
 
 
         /* ======================================
            MAIN AREA
-        ======================================= */
+        ====================================== */
 
         .main-area {
-
             margin-left: 240px;
 
             width: calc(100% - 240px);
@@ -102,49 +100,48 @@
 
         /* ======================================
            TOPBAR
-        ======================================= */
+        ====================================== */
 
         .topbar-main {
-
             height: 76px;
 
             background: #ffffff;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             padding: 0 26px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
+                0 2px 8px rgba(0, 0, 0, 0.06);
+
+            position: relative;
+            z-index: 10;
+        }
+
+
+        .topbar-title {
+            flex: 1;
+            margin-left: 14px;
         }
 
 
         .topbar-title h2 {
-
             font-size: 20px;
-
             color: #0f172a;
-
             margin-bottom: 3px;
         }
 
 
         .topbar-title p {
-
             font-size: 12px;
-
             color: #64748b;
         }
 
 
         .topbar-user {
-
             display: flex;
-
             align-items: center;
 
             gap: 10px;
@@ -156,19 +153,16 @@
 
 
         .topbar-user i {
-
             color: #2563eb;
-
             font-size: 20px;
         }
 
 
         /* ======================================
            MOBILE MENU BUTTON
-        ======================================= */
+        ====================================== */
 
         .mobile-menu-btn {
-
             display: none;
 
             border: none;
@@ -178,7 +172,6 @@
             color: #ffffff;
 
             width: 42px;
-
             height: 42px;
 
             border-radius: 7px;
@@ -186,27 +179,57 @@
             cursor: pointer;
 
             font-size: 18px;
+
+            flex-shrink: 0;
+        }
+
+
+        .mobile-menu-btn:hover {
+            background: #1d4ed8;
+        }
+
+
+        /* ======================================
+           SIDEBAR OVERLAY
+        ====================================== */
+
+        .sidebar-overlay {
+            display: none;
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100vh;
+
+            background: rgba(0, 0, 0, 0.35);
+
+            z-index: 9998;
+        }
+
+
+        .sidebar-overlay.show {
+            display: block;
         }
 
 
         /* ======================================
            MAIN CONTENT
-        ======================================= */
+        ====================================== */
 
         .main {
-
             width: 100%;
-
             padding: 22px;
         }
 
 
         /* ======================================
            PAGE TITLE
-        ======================================= */
+        ====================================== */
 
         .page-title {
-
             background: #ffffff;
 
             border-radius: 12px;
@@ -216,12 +239,11 @@
             margin-bottom: 18px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
+                0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
 
         .page-title h2 {
-
             font-size: 24px;
 
             color: #0f172a;
@@ -231,19 +253,19 @@
 
 
         .page-title p {
-
             color: #64748b;
 
             font-size: 14px;
+
+            line-height: 1.5;
         }
 
 
         /* ======================================
            REGION USER INFO
-        ======================================= */
+        ====================================== */
 
         .region-user-info {
-
             background: #ecfdf5;
 
             border: 1px solid #bbf7d0;
@@ -261,17 +283,15 @@
 
 
         .region-user-info strong {
-
             font-size: 16px;
         }
 
 
         /* ======================================
            FILTER PANEL
-        ======================================= */
+        ====================================== */
 
         .filter-panel {
-
             background: #ffffff;
 
             border-radius: 12px;
@@ -281,12 +301,11 @@
             margin-bottom: 18px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
+                0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
 
         .filter-title {
-
             font-size: 17px;
 
             font-weight: bold;
@@ -298,7 +317,6 @@
 
 
         .filters {
-
             display: grid;
 
             grid-template-columns:
@@ -309,7 +327,6 @@
 
 
         .filter-group label {
-
             display: block;
 
             margin-bottom: 6px;
@@ -324,7 +341,6 @@
 
         .filter-group select,
         .filter-group input {
-
             width: 100%;
 
             padding: 10px 12px;
@@ -343,31 +359,30 @@
 
         .filter-group select:focus,
         .filter-group input:focus {
-
             border-color: #2563eb;
 
             box-shadow:
                 0 0 0 3px
-                rgba(37,99,235,0.10);
+                rgba(37, 99, 235, 0.10);
         }
 
 
         /* ======================================
            FILTER BUTTONS
-        ======================================= */
+        ====================================== */
 
         .filter-buttons {
-
             display: flex;
 
             gap: 10px;
 
             margin-top: 16px;
+
+            flex-wrap: wrap;
         }
 
 
         .filter-btn {
-
             border: none;
 
             padding: 10px 18px;
@@ -383,7 +398,6 @@
 
 
         .apply-btn {
-
             background: #2563eb;
 
             color: #ffffff;
@@ -391,13 +405,11 @@
 
 
         .apply-btn:hover {
-
             background: #1d4ed8;
         }
 
 
         .reset-btn {
-
             background: #e2e8f0;
 
             color: #334155;
@@ -405,17 +417,15 @@
 
 
         .reset-btn:hover {
-
             background: #cbd5e1;
         }
 
 
         /* ======================================
            TABLE
-        ======================================= */
+        ====================================== */
 
         .table-container {
-
             background: #ffffff;
 
             border-radius: 12px;
@@ -423,12 +433,11 @@
             padding: 20px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
+                0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
 
         .table-header {
-
             display: flex;
 
             justify-content: space-between;
@@ -438,11 +447,12 @@
             margin-bottom: 18px;
 
             gap: 15px;
+
+            flex-wrap: wrap;
         }
 
 
         .table-header h3 {
-
             font-size: 18px;
 
             color: #0f172a;
@@ -450,7 +460,6 @@
 
 
         .result-count {
-
             font-size: 13px;
 
             color: #64748b;
@@ -458,7 +467,6 @@
 
 
         .table-wrapper {
-
             width: 100%;
 
             overflow-x: auto;
@@ -470,7 +478,6 @@
 
 
         table {
-
             width: 100%;
 
             min-width: 1350px;
@@ -482,7 +489,6 @@
 
 
         th {
-
             background: #2563eb;
 
             color: #ffffff;
@@ -498,7 +504,6 @@
 
 
         td {
-
             padding: 12px 14px;
 
             border-bottom:
@@ -513,13 +518,11 @@
 
 
         tbody tr:hover {
-
             background: #f8fafc;
         }
 
 
         .employee-code {
-
             font-weight: bold;
 
             color: #1d4ed8;
@@ -527,7 +530,6 @@
 
 
         .target {
-
             color: #0f172a;
 
             font-weight: bold;
@@ -535,7 +537,6 @@
 
 
         .collection {
-
             color: #059669;
 
             font-weight: bold;
@@ -543,7 +544,6 @@
 
 
         .remaining {
-
             color: #ea580c;
 
             font-weight: bold;
@@ -552,10 +552,9 @@
 
         /* ======================================
            STATUS
-        ======================================= */
+        ====================================== */
 
         .status-badge {
-
             display: inline-block;
 
             padding: 5px 11px;
@@ -569,7 +568,6 @@
 
 
         .approved {
-
             background: #d1e7dd;
 
             color: #0f5132;
@@ -577,7 +575,6 @@
 
 
         .pending {
-
             background: #fff3cd;
 
             color: #664d03;
@@ -586,10 +583,9 @@
 
         /* ======================================
            PERCENTAGE
-        ======================================= */
+        ====================================== */
 
         .percentage-badge {
-
             display: inline-block;
 
             padding: 5px 10px;
@@ -603,7 +599,6 @@
 
 
         .percentage-low {
-
             background: #fee2e2;
 
             color: #b91c1c;
@@ -611,7 +606,6 @@
 
 
         .percentage-medium {
-
             background: #fef3c7;
 
             color: #92400e;
@@ -619,7 +613,6 @@
 
 
         .percentage-good {
-
             background: #dbeafe;
 
             color: #1d4ed8;
@@ -627,7 +620,6 @@
 
 
         .percentage-complete {
-
             background: #dcfce7;
 
             color: #15803d;
@@ -636,12 +628,11 @@
 
         /* ======================================
            LOADING
-        ======================================= */
+        ====================================== */
 
         .loading-cell,
         .empty-cell,
         .error-cell {
-
             text-align: center;
 
             padding: 35px !important;
@@ -649,31 +640,27 @@
 
 
         .loading-cell {
-
             color: #64748b;
         }
 
 
         .empty-cell {
-
             color: #64748b;
         }
 
 
         .error-cell {
-
             color: #dc2626;
         }
 
 
         /* ======================================
-           RESPONSIVE
-        ======================================= */
+           TABLET
+        ====================================== */
 
         @media (max-width: 1000px) {
 
             .filters {
-
                 grid-template-columns:
                     repeat(2, 1fr);
             }
@@ -682,45 +669,95 @@
 
 
         /* ======================================
-           TABLET / MOBILE
-        ======================================= */
+           MOBILE
+        ====================================== */
 
         @media (max-width: 800px) {
 
-            #regionSidebar {
+            /* ------------------------------
+               SIDEBAR
+            ------------------------------ */
 
+            #regionSidebar {
                 width: 220px;
 
-                transform: translateX(-100%);
+                height: 100vh;
+
+                transform:
+                    translateX(-100%);
 
                 transition:
                     transform 0.25s ease;
+
+                z-index: 10000;
+            }
+
+
+            #regionSidebar .region-sidebar {
+                width: 100%;
+
+                height: 100vh;
+
+                transform: none !important;
             }
 
 
             #regionSidebar.open {
-
-                transform: translateX(0);
+                transform:
+                    translateX(0);
             }
 
 
-            .main-area {
+            #regionSidebar .region-sidebar.open {
+                transform: none !important;
+            }
 
+
+            /* ------------------------------
+               MAIN
+            ------------------------------ */
+
+            .main-area {
                 margin-left: 0;
 
                 width: 100%;
             }
 
 
-            .mobile-menu-btn {
+            /* ------------------------------
+               MOBILE BUTTON
+            ------------------------------ */
 
-                display: block;
+            .mobile-menu-btn {
+                display: flex;
+
+                align-items: center;
+
+                justify-content: center;
             }
 
 
-            .topbar-main {
+            /* ------------------------------
+               TOPBAR
+            ------------------------------ */
 
+            .topbar-main {
                 padding: 0 15px;
+            }
+
+
+            .topbar-title {
+                margin-left: 10px;
+            }
+
+
+            .topbar-title h2 {
+                font-size: 18px;
+            }
+
+
+            .topbar-title p {
+                font-size: 11px;
             }
 
         }
@@ -728,38 +765,48 @@
 
         /* ======================================
            SMALL MOBILE
-        ======================================= */
+        ====================================== */
 
         @media (max-width: 650px) {
 
             .filters {
-
                 grid-template-columns: 1fr;
             }
 
 
             .main {
-
                 padding: 12px;
             }
 
 
-            .page-title h2 {
+            .page-title {
+                padding: 17px;
+            }
 
+
+            .page-title h2 {
                 font-size: 20px;
             }
 
 
             .table-container,
             .filter-panel {
-
                 padding: 12px;
             }
 
 
             .topbar-user {
-
                 display: none;
+            }
+
+
+            .filter-buttons {
+                width: 100%;
+            }
+
+
+            .filter-btn {
+                flex: 1;
             }
 
         }
@@ -773,11 +820,20 @@
 
 
 <!-- ======================================
-     SIDEBAR CONTAINER
+     SIDEBAR
 ====================================== -->
 
 <div id="regionSidebar"></div>
 
+
+<!-- ======================================
+     MOBILE OVERLAY
+====================================== -->
+
+<div
+    id="sidebarOverlay"
+    class="sidebar-overlay"
+></div>
 
 
 <!-- ======================================
@@ -794,16 +850,21 @@
     <header class="topbar-main">
 
 
+        <!-- MOBILE MENU -->
+
         <button
             type="button"
             id="mobileMenuBtn"
             class="mobile-menu-btn"
+            aria-label="Open Menu"
         >
 
             <i class="fa-solid fa-bars"></i>
 
         </button>
 
+
+        <!-- TITLE -->
 
         <div class="topbar-title">
 
@@ -818,6 +879,8 @@
         </div>
 
 
+        <!-- USER -->
+
         <div class="topbar-user">
 
             <i class="fa-solid fa-circle-user"></i>
@@ -831,7 +894,6 @@
     </header>
 
 
-
     <!-- ==================================
          MAIN CONTENT
     ================================== -->
@@ -839,7 +901,9 @@
     <main class="main">
 
 
-        <!-- PAGE TITLE -->
+        <!-- ==================================
+             PAGE TITLE
+        ================================== -->
 
         <div class="page-title">
 
@@ -869,8 +933,9 @@
         </div>
 
 
-
-        <!-- REGION USER INFO -->
+        <!-- ==================================
+             REGION USER INFORMATION
+        ================================== -->
 
         <div
             id="regionUserInfo"
@@ -882,8 +947,9 @@
         </div>
 
 
-
-        <!-- FILTER PANEL -->
+        <!-- ==================================
+             FILTER PANEL
+        ================================== -->
 
         <div class="filter-panel">
 
@@ -895,7 +961,6 @@
                 Filter Teachers
 
             </div>
-
 
 
             <div class="filters">
@@ -920,7 +985,6 @@
                 </div>
 
 
-
                 <!-- STATE -->
 
                 <div class="filter-group">
@@ -940,7 +1004,6 @@
                 </div>
 
 
-
                 <!-- CITY -->
 
                 <div class="filter-group">
@@ -958,7 +1021,6 @@
                     </select>
 
                 </div>
-
 
 
                 <!-- STATUS -->
@@ -988,7 +1050,6 @@
                 </div>
 
 
-
                 <!-- SEARCH -->
 
                 <div class="filter-group">
@@ -1009,7 +1070,6 @@
             </div>
 
 
-
             <!-- FILTER BUTTONS -->
 
             <div class="filter-buttons">
@@ -1028,7 +1088,6 @@
                 </button>
 
 
-
                 <button
                     type="button"
                     id="resetFilter"
@@ -1044,7 +1103,6 @@
             </div>
 
         </div>
-
 
 
         <!-- ==================================
@@ -1081,7 +1139,6 @@
                 </span>
 
             </div>
-
 
 
             <div class="table-wrapper">
@@ -1175,7 +1232,6 @@
 </div>
 
 
-
 <!-- ======================================
      SIDEBAR LOADER
 ====================================== -->
@@ -1186,15 +1242,30 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-
         const sidebarContainer =
             document.getElementById(
                 "regionSidebar"
             );
 
+        const mobileMenuBtn =
+            document.getElementById(
+                "mobileMenuBtn"
+            );
+
+        const sidebarOverlay =
+            document.getElementById(
+                "sidebarOverlay"
+            );
+
 
         if (!sidebarContainer) {
+
+            console.error(
+                "regionSidebar container not found."
+            );
+
             return;
+
         }
 
 
@@ -1206,296 +1277,411 @@ document.addEventListener(
             "components/region-sidebar.html"
         )
 
-        .then(function (response) {
+        .then(
+            function (response) {
 
-            if (!response.ok) {
+                if (!response.ok) {
 
-                throw new Error(
-                    "Region Sidebar not found. Status: " +
-                    response.status
-                );
-
-            }
-
-            return response.text();
-
-        })
-
-
-        .then(function (data) {
-
-
-            sidebarContainer.innerHTML =
-                data;
-
-
-            /* ==================================
-               CURRENT PAGE
-            ================================== */
-
-            let currentPage =
-                window.location.pathname
-                    .split("/")
-                    .pop()
-                    .toLowerCase();
-
-
-            if (!currentPage) {
-
-                currentPage =
-                    "region-user.html";
-            }
-
-
-            /* ==================================
-               ACTIVE MENU
-            ================================== */
-
-            const menuLinks =
-                sidebarContainer.querySelectorAll(
-                    ".region-menu-link[data-page]"
-                );
-
-
-            menuLinks.forEach(function (link) {
-
-
-                const page =
-                    (
-                        link.getAttribute(
-                            "data-page"
-                        ) || ""
-                    )
-                    .trim()
-                    .toLowerCase();
-
-
-                if (page === currentPage) {
-
-                    link.classList.add(
-                        "active"
-                    );
-
-                } else {
-
-                    link.classList.remove(
-                        "active"
+                    throw new Error(
+                        "Region Sidebar not found. Status: " +
+                        response.status
                     );
 
                 }
 
-            });
+                return response.text();
+
+            }
+        )
 
 
+        .then(
+            function (data) {
 
-            /* ==================================
-               MOBILE MENU
-            ================================== */
-
-            const mobileMenuBtn =
-                document.getElementById(
-                    "mobileMenuBtn"
-                );
+                sidebarContainer.innerHTML =
+                    data;
 
 
-            const sidebar =
-                sidebarContainer.querySelector(
-                    ".region-sidebar"
-                );
+                /* ==============================
+                   GET ACTUAL SIDEBAR
+                ============================== */
+
+                const sidebar =
+                    sidebarContainer.querySelector(
+                        ".region-sidebar"
+                    );
 
 
-            if (
-                mobileMenuBtn &&
-                sidebar
-            ) {
+                if (!sidebar) {
 
-                mobileMenuBtn.addEventListener(
-                    "click",
-                    function () {
+                    throw new Error(
+                        ".region-sidebar element not found."
+                    );
 
-                        sidebar.classList.toggle(
-                            "open"
-                        );
+                }
+
+
+                /* ==============================
+                   CURRENT PAGE
+                ============================== */
+
+                let currentPage =
+                    window.location.pathname
+                        .split("/")
+                        .pop()
+                        .toLowerCase();
+
+
+                if (!currentPage) {
+
+                    currentPage =
+                        "region-user.html";
+
+                }
+
+
+                /* ==============================
+                   ACTIVE MENU
+                ============================== */
+
+                const menuLinks =
+                    sidebarContainer.querySelectorAll(
+                        ".region-menu-link[data-page]"
+                    );
+
+
+                menuLinks.forEach(
+                    function (link) {
+
+                        const page =
+                            (
+                                link.getAttribute(
+                                    "data-page"
+                                ) || ""
+                            )
+                            .trim()
+                            .toLowerCase();
+
+
+                        if (
+                            page ===
+                            currentPage
+                        ) {
+
+                            link.classList.add(
+                                "active"
+                            );
+
+                        } else {
+
+                            link.classList.remove(
+                                "active"
+                            );
+
+                        }
 
                     }
                 );
 
-            }
+
+                /* ==============================
+                   OPEN SIDEBAR
+                ============================== */
+
+                function openSidebar() {
+
+                    sidebarContainer.classList.add(
+                        "open"
+                    );
+
+                    sidebar.classList.add(
+                        "open"
+                    );
 
 
+                    if (sidebarOverlay) {
 
-            /* ==================================
-               CLOSE MOBILE SIDEBAR
-            ================================== */
+                        sidebarOverlay.classList.add(
+                            "show"
+                        );
 
-            sidebarContainer
-                .querySelectorAll(
-                    ".region-menu-link"
-                )
-                .forEach(function (link) {
+                    }
 
 
-                    link.addEventListener(
+                    if (mobileMenuBtn) {
+
+                        mobileMenuBtn
+                            .setAttribute(
+                                "aria-label",
+                                "Close Menu"
+                            );
+
+                    }
+
+                }
+
+
+                /* ==============================
+                   CLOSE SIDEBAR
+                ============================== */
+
+                function closeSidebar() {
+
+                    sidebarContainer.classList.remove(
+                        "open"
+                    );
+
+                    sidebar.classList.remove(
+                        "open"
+                    );
+
+
+                    if (sidebarOverlay) {
+
+                        sidebarOverlay.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+
+                    if (mobileMenuBtn) {
+
+                        mobileMenuBtn
+                            .setAttribute(
+                                "aria-label",
+                                "Open Menu"
+                            );
+
+                    }
+
+                }
+
+
+                /* ==============================
+                   MOBILE BUTTON
+                ============================== */
+
+                if (mobileMenuBtn) {
+
+                    mobileMenuBtn.addEventListener(
                         "click",
-                        function () {
+                        function (event) {
 
-                            if (
-                                window.innerWidth <=
-                                800
-                            ) {
+                            event.preventDefault();
 
-                                if (sidebar) {
+                            event.stopPropagation();
 
-                                    sidebar.classList.remove(
+
+                            const isOpen =
+                                sidebarContainer
+                                    .classList
+                                    .contains(
                                         "open"
                                     );
 
-                                }
+
+                            if (isOpen) {
+
+                                closeSidebar();
+
+                            } else {
+
+                                openSidebar();
 
                             }
 
                         }
                     );
 
-                });
+                }
 
 
+                /* ==============================
+                   OVERLAY CLICK
+                ============================== */
 
-            /* ==================================
-               LOGOUT
-            ================================== */
+                if (sidebarOverlay) {
 
-            const logoutBtn =
-                sidebarContainer.querySelector(
-                    "#regionSidebarLogout"
-                );
+                    sidebarOverlay.addEventListener(
+                        "click",
+                        function () {
 
+                            closeSidebar();
 
-            if (logoutBtn) {
+                        }
+                    );
 
-                logoutBtn.addEventListener(
-                    "click",
-                    function (event) {
-
-                        event.preventDefault();
+                }
 
 
-                        localStorage.removeItem(
-                            "loggedInEmpCode"
-                        );
+                /* ==============================
+                   MENU CLICK
+                ============================== */
 
-                        localStorage.removeItem(
-                            "userRole"
-                        );
+                sidebarContainer
+                    .querySelectorAll(
+                        ".region-menu-link"
+                    )
+                    .forEach(
+                        function (link) {
 
-                        localStorage.removeItem(
-                            "regionUserName"
-                        );
+                            link.addEventListener(
+                                "click",
+                                function () {
 
-                        localStorage.removeItem(
-                            "regionUserAccess"
-                        );
+                                    if (
+                                        window.innerWidth <=
+                                        800
+                                    ) {
+
+                                        closeSidebar();
+
+                                    }
+
+                                }
+                            );
+
+                        }
+                    );
 
 
-                        window.location.href =
-                            "index.html";
+                /* ==============================
+                   LOGOUT
+                ============================== */
+
+                const logoutBtn =
+                    sidebarContainer.querySelector(
+                        "#regionSidebarLogout"
+                    );
+
+
+                if (logoutBtn) {
+
+                    logoutBtn.addEventListener(
+                        "click",
+                        function (event) {
+
+                            event.preventDefault();
+
+
+                            localStorage.removeItem(
+                                "loggedInEmpCode"
+                            );
+
+                            localStorage.removeItem(
+                                "userRole"
+                            );
+
+                            localStorage.removeItem(
+                                "userName"
+                            );
+
+                            localStorage.removeItem(
+                                "regionUserName"
+                            );
+
+                            localStorage.removeItem(
+                                "regionUserAccess"
+                            );
+
+
+                            window.location.href =
+                                "index.html";
+
+                        }
+                    );
+
+                }
+
+
+                /* ==============================
+                   REGION USER NAME
+                ============================== */
+
+                const savedUserName =
+                    localStorage.getItem(
+                        "regionUserName"
+                    );
+
+
+                const sidebarUserName =
+                    sidebarContainer.querySelector(
+                        "#regionSidebarUserName"
+                    );
+
+
+                const regionUserInfoTop =
+                    document.getElementById(
+                        "regionUserInfoTop"
+                    );
+
+
+                if (savedUserName) {
+
+                    if (sidebarUserName) {
+
+                        sidebarUserName.textContent =
+                            savedUserName;
 
                     }
-                );
-
-            }
 
 
+                    if (regionUserInfoTop) {
 
-            /* ==================================
-               REGION USER NAME
-            ================================== */
+                        regionUserInfoTop.textContent =
+                            savedUserName;
 
-            const savedUserName =
-                localStorage.getItem(
-                    "regionUserName"
-                );
-
-
-            const sidebarUserName =
-                sidebarContainer.querySelector(
-                    "#regionSidebarUserName"
-                );
-
-
-            const regionUserInfoTop =
-                document.getElementById(
-                    "regionUserInfoTop"
-                );
-
-
-            if (savedUserName) {
-
-
-                if (sidebarUserName) {
-
-                    sidebarUserName.textContent =
-                        savedUserName;
-
-                }
-
-
-                if (regionUserInfoTop) {
-
-                    regionUserInfoTop.textContent =
-                        savedUserName;
+                    }
 
                 }
 
             }
+        )
 
 
-        })
+        .catch(
+            function (error) {
+
+                console.error(
+                    "Region Sidebar Error:",
+                    error
+                );
 
 
-        .catch(function (error) {
+                sidebarContainer.innerHTML = `
 
+                    <div
+                        style="
+                            padding:20px;
+                            color:#dc2626;
+                            background:#fee2e2;
+                            margin:10px;
+                            border-radius:8px;
+                        "
+                    >
 
-            console.error(
-                "Region Sidebar Error:",
-                error
-            );
+                        Region Sidebar load nahi hua.
 
+                        <br><br>
 
-            sidebarContainer.innerHTML = `
+                        ${error.message}
 
-                <div
-                    style="
-                        padding:20px;
-                        color:#dc2626;
-                        background:#fee2e2;
-                        margin:10px;
-                        border-radius:8px;
-                    "
-                >
+                    </div>
 
-                    Region Sidebar load nahi hua.
+                `;
 
-                    <br><br>
-
-                    ${error.message}
-
-                </div>
-
-            `;
-
-        });
+            }
+        );
 
     }
-
 );
 
 </script>
 
 
-
 <!-- ======================================
-     EXISTING REGION USER JS
+     REGION USER JS
      DO NOT CHANGE
 ====================================== -->
 
