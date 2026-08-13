@@ -5,8 +5,10 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Region User | Telethon</title>
 
@@ -35,7 +37,7 @@
 
         /* ======================================
            RESET
-        ====================================== */
+        ======================================= */
 
         * {
             margin: 0;
@@ -45,42 +47,68 @@
         }
 
 
+        html {
+            width: 100%;
+            min-height: 100%;
+        }
+
+
         body {
+            width: 100%;
+            min-height: 100vh;
+
             background: #f4f6f9;
             color: #1e293b;
-            min-height: 100vh;
+
+            margin: 0;
+            padding: 0;
         }
 
 
         /* ======================================
            SIDEBAR CONTAINER
-        ====================================== */
+           IMPORTANT:
+           Do NOT make sidebar relative.
+        ======================================= */
 
         #regionSidebar {
-            position: relative;
-            z-index: 1000;
+            position: fixed;
+
+            left: 0;
+            top: 0;
+
+            width: 240px;
+            height: 100vh;
+
+            z-index: 9999;
         }
 
 
         /* ======================================
            MAIN AREA
-        ====================================== */
+        ======================================= */
 
         .main-area {
-            margin-left: 250px;
+
+            margin-left: 240px;
+
+            width: calc(100% - 240px);
+
             min-height: 100vh;
+
+            background: #f4f6f9;
         }
 
 
         /* ======================================
            TOPBAR
-        ====================================== */
+        ======================================= */
 
         .topbar-main {
 
             height: 76px;
 
-            background: white;
+            background: #ffffff;
 
             display: flex;
 
@@ -92,7 +120,6 @@
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
-
         }
 
 
@@ -103,7 +130,6 @@
             color: #0f172a;
 
             margin-bottom: 3px;
-
         }
 
 
@@ -112,7 +138,6 @@
             font-size: 12px;
 
             color: #64748b;
-
         }
 
 
@@ -127,7 +152,6 @@
             color: #334155;
 
             font-size: 13px;
-
         }
 
 
@@ -136,13 +160,12 @@
             color: #2563eb;
 
             font-size: 20px;
-
         }
 
 
         /* ======================================
            MOBILE MENU BUTTON
-        ====================================== */
+        ======================================= */
 
         .mobile-menu-btn {
 
@@ -152,7 +175,7 @@
 
             background: #2563eb;
 
-            color: white;
+            color: #ffffff;
 
             width: 42px;
 
@@ -163,30 +186,28 @@
             cursor: pointer;
 
             font-size: 18px;
-
         }
 
 
         /* ======================================
-           MAIN
-        ====================================== */
+           MAIN CONTENT
+        ======================================= */
 
         .main {
 
             width: 100%;
 
             padding: 22px;
-
         }
 
 
         /* ======================================
            PAGE TITLE
-        ====================================== */
+        ======================================= */
 
         .page-title {
 
-            background: white;
+            background: #ffffff;
 
             border-radius: 12px;
 
@@ -196,7 +217,6 @@
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
-
         }
 
 
@@ -207,7 +227,6 @@
             color: #0f172a;
 
             margin-bottom: 6px;
-
         }
 
 
@@ -216,13 +235,12 @@
             color: #64748b;
 
             font-size: 14px;
-
         }
 
 
         /* ======================================
            REGION USER INFO
-        ====================================== */
+        ======================================= */
 
         .region-user-info {
 
@@ -239,24 +257,22 @@
             color: #166534;
 
             font-size: 14px;
-
         }
 
 
         .region-user-info strong {
 
             font-size: 16px;
-
         }
 
 
         /* ======================================
            FILTER PANEL
-        ====================================== */
+        ======================================= */
 
         .filter-panel {
 
-            background: white;
+            background: #ffffff;
 
             border-radius: 12px;
 
@@ -266,7 +282,6 @@
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
-
         }
 
 
@@ -279,7 +294,6 @@
             margin-bottom: 16px;
 
             color: #0f172a;
-
         }
 
 
@@ -291,7 +305,6 @@
                 repeat(4, 1fr);
 
             gap: 12px;
-
         }
 
 
@@ -306,7 +319,6 @@
             font-weight: bold;
 
             color: #475569;
-
         }
 
 
@@ -323,10 +335,9 @@
 
             outline: none;
 
-            background: white;
+            background: #ffffff;
 
             font-size: 14px;
-
         }
 
 
@@ -338,13 +349,12 @@
             box-shadow:
                 0 0 0 3px
                 rgba(37,99,235,0.10);
-
         }
 
 
         /* ======================================
-           BUTTONS
-        ====================================== */
+           FILTER BUTTONS
+        ======================================= */
 
         .filter-buttons {
 
@@ -353,7 +363,6 @@
             gap: 10px;
 
             margin-top: 16px;
-
         }
 
 
@@ -370,7 +379,6 @@
             font-weight: bold;
 
             font-size: 13px;
-
         }
 
 
@@ -378,15 +386,13 @@
 
             background: #2563eb;
 
-            color: white;
-
+            color: #ffffff;
         }
 
 
         .apply-btn:hover {
 
             background: #1d4ed8;
-
         }
 
 
@@ -395,24 +401,22 @@
             background: #e2e8f0;
 
             color: #334155;
-
         }
 
 
         .reset-btn:hover {
 
             background: #cbd5e1;
-
         }
 
 
         /* ======================================
            TABLE
-        ====================================== */
+        ======================================= */
 
         .table-container {
 
-            background: white;
+            background: #ffffff;
 
             border-radius: 12px;
 
@@ -420,7 +424,6 @@
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
-
         }
 
 
@@ -435,7 +438,6 @@
             margin-bottom: 18px;
 
             gap: 15px;
-
         }
 
 
@@ -444,7 +446,6 @@
             font-size: 18px;
 
             color: #0f172a;
-
         }
 
 
@@ -453,7 +454,6 @@
             font-size: 13px;
 
             color: #64748b;
-
         }
 
 
@@ -466,7 +466,6 @@
             border: 1px solid #e2e8f0;
 
             border-radius: 8px;
-
         }
 
 
@@ -478,8 +477,7 @@
 
             border-collapse: collapse;
 
-            background: white;
-
+            background: #ffffff;
         }
 
 
@@ -487,7 +485,7 @@
 
             background: #2563eb;
 
-            color: white;
+            color: #ffffff;
 
             padding: 13px 14px;
 
@@ -496,7 +494,6 @@
             font-size: 12px;
 
             white-space: nowrap;
-
         }
 
 
@@ -512,14 +509,12 @@
             color: #334155;
 
             white-space: nowrap;
-
         }
 
 
         tbody tr:hover {
 
             background: #f8fafc;
-
         }
 
 
@@ -528,7 +523,6 @@
             font-weight: bold;
 
             color: #1d4ed8;
-
         }
 
 
@@ -537,7 +531,6 @@
             color: #0f172a;
 
             font-weight: bold;
-
         }
 
 
@@ -546,7 +539,6 @@
             color: #059669;
 
             font-weight: bold;
-
         }
 
 
@@ -555,13 +547,12 @@
             color: #ea580c;
 
             font-weight: bold;
-
         }
 
 
         /* ======================================
            STATUS
-        ====================================== */
+        ======================================= */
 
         .status-badge {
 
@@ -574,7 +565,6 @@
             font-size: 12px;
 
             font-weight: bold;
-
         }
 
 
@@ -583,7 +573,6 @@
             background: #d1e7dd;
 
             color: #0f5132;
-
         }
 
 
@@ -592,13 +581,12 @@
             background: #fff3cd;
 
             color: #664d03;
-
         }
 
 
         /* ======================================
            PERCENTAGE
-        ====================================== */
+        ======================================= */
 
         .percentage-badge {
 
@@ -611,7 +599,6 @@
             font-weight: bold;
 
             font-size: 12px;
-
         }
 
 
@@ -620,7 +607,6 @@
             background: #fee2e2;
 
             color: #b91c1c;
-
         }
 
 
@@ -629,7 +615,6 @@
             background: #fef3c7;
 
             color: #92400e;
-
         }
 
 
@@ -638,7 +623,6 @@
             background: #dbeafe;
 
             color: #1d4ed8;
-
         }
 
 
@@ -647,13 +631,12 @@
             background: #dcfce7;
 
             color: #15803d;
-
         }
 
 
         /* ======================================
            LOADING
-        ====================================== */
+        ======================================= */
 
         .loading-cell,
         .empty-cell,
@@ -662,34 +645,30 @@
             text-align: center;
 
             padding: 35px !important;
-
         }
 
 
         .loading-cell {
 
             color: #64748b;
-
         }
 
 
         .empty-cell {
 
             color: #64748b;
-
         }
 
 
         .error-cell {
 
             color: #dc2626;
-
         }
 
 
         /* ======================================
            RESPONSIVE
-        ====================================== */
+        ======================================= */
 
         @media (max-width: 1000px) {
 
@@ -697,57 +676,77 @@
 
                 grid-template-columns:
                     repeat(2, 1fr);
-
             }
 
         }
 
 
+        /* ======================================
+           TABLET / MOBILE
+        ======================================= */
+
         @media (max-width: 800px) {
+
+            #regionSidebar {
+
+                width: 220px;
+
+                transform: translateX(-100%);
+
+                transition:
+                    transform 0.25s ease;
+            }
+
+
+            #regionSidebar.open {
+
+                transform: translateX(0);
+            }
+
 
             .main-area {
 
                 margin-left: 0;
 
+                width: 100%;
             }
 
 
             .mobile-menu-btn {
 
                 display: block;
-
             }
 
 
             .topbar-main {
 
                 padding: 0 15px;
-
             }
 
         }
 
+
+        /* ======================================
+           SMALL MOBILE
+        ======================================= */
 
         @media (max-width: 650px) {
 
             .filters {
 
                 grid-template-columns: 1fr;
-
             }
 
 
             .main {
 
                 padding: 12px;
-
             }
 
 
             .page-title h2 {
 
                 font-size: 20px;
-
             }
 
 
@@ -755,14 +754,12 @@
             .filter-panel {
 
                 padding: 12px;
-
             }
 
 
             .topbar-user {
 
                 display: none;
-
             }
 
         }
@@ -776,7 +773,7 @@
 
 
 <!-- ======================================
-     REGION SIDEBAR CONTAINER
+     SIDEBAR CONTAINER
 ====================================== -->
 
 <div id="regionSidebar"></div>
@@ -823,9 +820,7 @@
 
         <div class="topbar-user">
 
-            <i
-                class="fa-solid fa-circle-user"
-            ></i>
+            <i class="fa-solid fa-circle-user"></i>
 
             <span id="regionUserInfoTop">
                 Loading User...
@@ -844,9 +839,7 @@
     <main class="main">
 
 
-        <!-- ==================================
-             PAGE TITLE
-        ================================== -->
+        <!-- PAGE TITLE -->
 
         <div class="page-title">
 
@@ -877,9 +870,7 @@
 
 
 
-        <!-- ==================================
-             REGION USER INFO
-        ================================== -->
+        <!-- REGION USER INFO -->
 
         <div
             id="regionUserInfo"
@@ -892,18 +883,14 @@
 
 
 
-        <!-- ==================================
-             FILTER PANEL
-        ================================== -->
+        <!-- FILTER PANEL -->
 
         <div class="filter-panel">
 
 
             <div class="filter-title">
 
-                <i
-                    class="fa-solid fa-filter"
-                ></i>
+                <i class="fa-solid fa-filter"></i>
 
                 Filter Teachers
 
@@ -918,16 +905,11 @@
 
                 <div class="filter-group">
 
-                    <label
-                        for="regionFilter"
-                    >
+                    <label for="regionFilter">
                         Region
                     </label>
 
-
-                    <select
-                        id="regionFilter"
-                    >
+                    <select id="regionFilter">
 
                         <option value="">
                             All Regions
@@ -943,16 +925,11 @@
 
                 <div class="filter-group">
 
-                    <label
-                        for="stateFilter"
-                    >
+                    <label for="stateFilter">
                         State
                     </label>
 
-
-                    <select
-                        id="stateFilter"
-                    >
+                    <select id="stateFilter">
 
                         <option value="">
                             All States
@@ -968,16 +945,11 @@
 
                 <div class="filter-group">
 
-                    <label
-                        for="cityFilter"
-                    >
+                    <label for="cityFilter">
                         City
                     </label>
 
-
-                    <select
-                        id="cityFilter"
-                    >
+                    <select id="cityFilter">
 
                         <option value="">
                             All Cities
@@ -993,26 +965,19 @@
 
                 <div class="filter-group">
 
-                    <label
-                        for="statusFilter"
-                    >
+                    <label for="statusFilter">
                         Status
                     </label>
 
-
-                    <select
-                        id="statusFilter"
-                    >
+                    <select id="statusFilter">
 
                         <option value="">
                             All Status
                         </option>
 
-
                         <option value="Approved">
                             Approved
                         </option>
-
 
                         <option value="Pending">
                             Pending
@@ -1028,12 +993,9 @@
 
                 <div class="filter-group">
 
-                    <label
-                        for="searchFilter"
-                    >
+                    <label for="searchFilter">
                         Search
                     </label>
-
 
                     <input
                         type="text"
@@ -1048,9 +1010,7 @@
 
 
 
-            <!-- ==================================
-                 FILTER BUTTONS
-            ================================== -->
+            <!-- FILTER BUTTONS -->
 
             <div class="filter-buttons">
 
@@ -1061,9 +1021,7 @@
                     class="filter-btn apply-btn"
                 >
 
-                    <i
-                        class="fa-solid fa-filter"
-                    ></i>
+                    <i class="fa-solid fa-filter"></i>
 
                     Apply Filter
 
@@ -1077,9 +1035,7 @@
                     class="filter-btn reset-btn"
                 >
 
-                    <i
-                        class="fa-solid fa-rotate-left"
-                    ></i>
+                    <i class="fa-solid fa-rotate-left"></i>
 
                     Reset
 
@@ -1100,7 +1056,6 @@
 
             <div class="table-header">
 
-
                 <h3>
 
                     <i
@@ -1114,7 +1069,6 @@
                     Assigned Teachers
 
                 </h3>
-
 
 
                 <span
@@ -1132,12 +1086,9 @@
 
             <div class="table-wrapper">
 
-
                 <table>
 
-
                     <thead>
-
 
                         <tr>
 
@@ -1145,51 +1096,41 @@
                                 Employee Code
                             </th>
 
-
                             <th>
                                 Teacher Name
                             </th>
-
 
                             <th>
                                 Mobile
                             </th>
 
-
                             <th>
                                 Region
                             </th>
-
 
                             <th>
                                 State
                             </th>
 
-
                             <th>
                                 City
                             </th>
-
 
                             <th>
                                 Target
                             </th>
 
-
                             <th>
                                 Total Collection
                             </th>
-
 
                             <th>
                                 Remaining Target
                             </th>
 
-
                             <th>
                                 Percentage
                             </th>
-
 
                             <th>
                                 Status
@@ -1200,11 +1141,7 @@
                     </thead>
 
 
-
-                    <tbody
-                        id="regionUsersTable"
-                    >
-
+                    <tbody id="regionUsersTable">
 
                         <tr>
 
@@ -1214,11 +1151,7 @@
                             >
 
                                 <i
-                                    class="
-                                        fa-solid
-                                        fa-spinner
-                                        fa-spin
-                                    "
+                                    class="fa-solid fa-spinner fa-spin"
                                 ></i>
 
                                 Loading Assigned
@@ -1227,7 +1160,6 @@
                             </td>
 
                         </tr>
-
 
                     </tbody>
 
@@ -1255,6 +1187,17 @@ document.addEventListener(
     function () {
 
 
+        const sidebarContainer =
+            document.getElementById(
+                "regionSidebar"
+            );
+
+
+        if (!sidebarContainer) {
+            return;
+        }
+
+
         /* ==================================
            LOAD SIDEBAR
         ================================== */
@@ -1263,332 +1206,288 @@ document.addEventListener(
             "components/region-sidebar.html"
         )
 
-        .then(
-            function (response) {
+        .then(function (response) {
 
-                if (!response.ok) {
+            if (!response.ok) {
 
-                    throw new Error(
-                        "Region Sidebar not found. Status: " +
-                        response.status
-                    );
-
-                }
-
-                return response.text();
+                throw new Error(
+                    "Region Sidebar not found. Status: " +
+                    response.status
+                );
 
             }
-        )
 
-        .then(
-            function (data) {
+            return response.text();
+
+        })
 
 
-                const sidebarContainer =
-                    document.getElementById(
-                        "regionSidebar"
+        .then(function (data) {
+
+
+            sidebarContainer.innerHTML =
+                data;
+
+
+            /* ==================================
+               CURRENT PAGE
+            ================================== */
+
+            let currentPage =
+                window.location.pathname
+                    .split("/")
+                    .pop()
+                    .toLowerCase();
+
+
+            if (!currentPage) {
+
+                currentPage =
+                    "region-user.html";
+            }
+
+
+            /* ==================================
+               ACTIVE MENU
+            ================================== */
+
+            const menuLinks =
+                sidebarContainer.querySelectorAll(
+                    ".region-menu-link[data-page]"
+                );
+
+
+            menuLinks.forEach(function (link) {
+
+
+                const page =
+                    (
+                        link.getAttribute(
+                            "data-page"
+                        ) || ""
+                    )
+                    .trim()
+                    .toLowerCase();
+
+
+                if (page === currentPage) {
+
+                    link.classList.add(
+                        "active"
                     );
 
+                } else {
 
-                if (!sidebarContainer) {
-
-                    return;
+                    link.classList.remove(
+                        "active"
+                    );
 
                 }
 
-
-                sidebarContainer.innerHTML =
-                    data;
+            });
 
 
 
-                /* ==============================
-                   CURRENT PAGE
-                ============================== */
+            /* ==================================
+               MOBILE MENU
+            ================================== */
 
-                let currentPage =
-                    window.location.pathname
-                        .split("/")
-                        .pop()
-                        .toLowerCase();
-
-
-                if (!currentPage) {
-
-                    currentPage =
-                        "region-user.html";
-
-                }
+            const mobileMenuBtn =
+                document.getElementById(
+                    "mobileMenuBtn"
+                );
 
 
-
-                /* ==============================
-                   ACTIVE MENU
-                ============================== */
-
-                const menuLinks =
-                    sidebarContainer.querySelectorAll(
-                        "a[data-page]"
-                    );
+            const sidebar =
+                sidebarContainer.querySelector(
+                    ".region-sidebar"
+                );
 
 
-                menuLinks.forEach(
-                    function (link) {
+            if (
+                mobileMenuBtn &&
+                sidebar
+            ) {
 
+                mobileMenuBtn.addEventListener(
+                    "click",
+                    function () {
 
-                        const page =
-                            (
-                                link.getAttribute(
-                                    "data-page"
-                                ) || ""
-                            )
-                            .trim()
-                            .toLowerCase();
-
-
-                        if (
-                            page ===
-                            currentPage
-                        ) {
-
-                            link.classList.add(
-                                "active"
-                            );
-
-                        }
-
-                        else {
-
-                            link.classList.remove(
-                                "active"
-                            );
-
-                        }
+                        sidebar.classList.toggle(
+                            "open"
+                        );
 
                     }
                 );
 
+            }
 
 
-                /* ==============================
-                   MOBILE MENU
-                ============================== */
 
-                const mobileMenuBtn =
-                    document.getElementById(
-                        "mobileMenuBtn"
-                    );
+            /* ==================================
+               CLOSE MOBILE SIDEBAR
+            ================================== */
 
-
-                const sidebar =
-                    sidebarContainer.querySelector(
-                        ".sidebar"
-                    );
+            sidebarContainer
+                .querySelectorAll(
+                    ".region-menu-link"
+                )
+                .forEach(function (link) {
 
 
-                if (
-                    mobileMenuBtn &&
-                    sidebar
-                ) {
-
-
-                    mobileMenuBtn.addEventListener(
+                    link.addEventListener(
                         "click",
                         function () {
 
-                            sidebar.classList.toggle(
-                                "open"
-                            );
+                            if (
+                                window.innerWidth <=
+                                800
+                            ) {
 
-                        }
-                    );
+                                if (sidebar) {
 
-                }
-
-
-
-                /* ==============================
-                   CLOSE SIDEBAR
-                ============================== */
-
-                sidebarContainer
-                    .querySelectorAll(
-                        ".menu-link"
-                    )
-                    .forEach(
-                        function (link) {
-
-
-                            link.addEventListener(
-                                "click",
-                                function () {
-
-
-                                    if (
-                                        window.innerWidth <=
-                                        800
-                                    ) {
-
-
-                                        if (sidebar) {
-
-                                            sidebar.classList.remove(
-                                                "open"
-                                            );
-
-                                        }
-
-                                    }
+                                    sidebar.classList.remove(
+                                        "open"
+                                    );
 
                                 }
-                            );
+
+                            }
 
                         }
                     );
 
-
-
-                /* ==============================
-                   LOGOUT
-                ============================== */
-
-                const logoutBtn =
-                    sidebarContainer.querySelector(
-                        "#logoutBtn"
-                    );
-
-
-                if (logoutBtn) {
-
-
-                    logoutBtn.addEventListener(
-                        "click",
-                        function (event) {
-
-
-                            event.preventDefault();
-
-
-                            localStorage.removeItem(
-                                "loggedInEmpCode"
-                            );
-
-
-                            localStorage.removeItem(
-                                "userRole"
-                            );
-
-
-                            localStorage.removeItem(
-                                "regionUserName"
-                            );
-
-
-                            localStorage.removeItem(
-                                "regionUserAccess"
-                            );
-
-
-                            window.location.href =
-                                "index.html";
-
-                        }
-                    );
-
-                }
+                });
 
 
 
-                /* ==============================
-                   REGION USER NAME
-                ============================== */
+            /* ==================================
+               LOGOUT
+            ================================== */
 
-                const savedUserName =
-                    localStorage.getItem(
-                        "regionUserName"
-                    );
-
-
-                const sidebarUserName =
-                    sidebarContainer.querySelector(
-                        "#sidebarUserName"
-                    );
-
-
-                const regionUserInfoTop =
-                    document.getElementById(
-                        "regionUserInfoTop"
-                    );
-
-
-                if (savedUserName) {
-
-
-                    if (sidebarUserName) {
-
-                        sidebarUserName.textContent =
-                            savedUserName;
-
-                    }
-
-
-                    if (regionUserInfoTop) {
-
-                        regionUserInfoTop.textContent =
-                            savedUserName;
-
-                    }
-
-                }
-
-
-            }
-        )
-
-        .catch(
-            function (error) {
-
-
-                console.error(
-                    "Region Sidebar Error:",
-                    error
+            const logoutBtn =
+                sidebarContainer.querySelector(
+                    "#regionSidebarLogout"
                 );
 
 
-                const sidebarContainer =
-                    document.getElementById(
-                        "regionSidebar"
-                    );
+            if (logoutBtn) {
+
+                logoutBtn.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.preventDefault();
 
 
-                if (sidebarContainer) {
+                        localStorage.removeItem(
+                            "loggedInEmpCode"
+                        );
 
-                    sidebarContainer.innerHTML = `
+                        localStorage.removeItem(
+                            "userRole"
+                        );
 
-                        <div
-                            style="
-                                padding:20px;
-                                color:#dc2626;
-                                background:#fee2e2;
-                            "
-                        >
+                        localStorage.removeItem(
+                            "regionUserName"
+                        );
 
-                            Region Sidebar load nahi hua.
+                        localStorage.removeItem(
+                            "regionUserAccess"
+                        );
 
-                            <br><br>
 
-                            ${error.message}
+                        window.location.href =
+                            "index.html";
 
-                        </div>
+                    }
+                );
 
-                    `;
+            }
+
+
+
+            /* ==================================
+               REGION USER NAME
+            ================================== */
+
+            const savedUserName =
+                localStorage.getItem(
+                    "regionUserName"
+                );
+
+
+            const sidebarUserName =
+                sidebarContainer.querySelector(
+                    "#regionSidebarUserName"
+                );
+
+
+            const regionUserInfoTop =
+                document.getElementById(
+                    "regionUserInfoTop"
+                );
+
+
+            if (savedUserName) {
+
+
+                if (sidebarUserName) {
+
+                    sidebarUserName.textContent =
+                        savedUserName;
+
+                }
+
+
+                if (regionUserInfoTop) {
+
+                    regionUserInfoTop.textContent =
+                        savedUserName;
 
                 }
 
             }
-        );
+
+
+        })
+
+
+        .catch(function (error) {
+
+
+            console.error(
+                "Region Sidebar Error:",
+                error
+            );
+
+
+            sidebarContainer.innerHTML = `
+
+                <div
+                    style="
+                        padding:20px;
+                        color:#dc2626;
+                        background:#fee2e2;
+                        margin:10px;
+                        border-radius:8px;
+                    "
+                >
+
+                    Region Sidebar load nahi hua.
+
+                    <br><br>
+
+                    ${error.message}
+
+                </div>
+
+            `;
+
+        });
 
     }
+
 );
 
 </script>
@@ -1597,6 +1496,7 @@ document.addEventListener(
 
 <!-- ======================================
      EXISTING REGION USER JS
+     DO NOT CHANGE
 ====================================== -->
 
 <script
