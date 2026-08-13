@@ -36,7 +36,7 @@
     display: flex;
     flex-direction: column;
 
-    z-index: 9999;
+    z-index: 99999;
 
     overflow-x: hidden;
     overflow-y: auto;
@@ -44,9 +44,6 @@
     box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
 
     font-family: Arial, sans-serif;
-
-    margin: 0;
-    padding: 0;
 }
 
 
@@ -59,18 +56,16 @@
     height: 72px;
     min-height: 72px;
 
-    padding: 12px 15px;
+    padding: 10px 15px;
 
     display: flex;
     align-items: center;
 
-    gap: 11px;
+    gap: 10px;
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 
     flex-shrink: 0;
-
-    overflow: hidden;
 }
 
 
@@ -88,18 +83,14 @@
     max-width: 42px !important;
     max-height: 42px !important;
 
-    object-fit: contain !important;
+    object-fit: contain;
 
-    display: block !important;
+    display: block;
 
     margin: 0 !important;
     padding: 0 !important;
 
-    border: 0 !important;
-
     flex-shrink: 0;
-
-    vertical-align: middle;
 }
 
 
@@ -109,13 +100,7 @@
 
 .region-sidebar-brand-text {
     min-width: 0;
-
-    flex: 1;
-
     overflow: hidden;
-
-    margin: 0;
-    padding: 0;
 }
 
 
@@ -126,13 +111,11 @@
     font-size: 18px !important;
     font-weight: 700 !important;
 
-    line-height: 21px !important;
+    line-height: 21px;
 
     color: #38bdf8 !important;
 
     white-space: nowrap;
-
-    overflow: hidden;
 }
 
 
@@ -143,13 +126,11 @@
     font-size: 10px !important;
     font-weight: 400 !important;
 
-    line-height: 14px !important;
+    line-height: 14px;
 
     color: #cbd5e1 !important;
 
     white-space: nowrap;
-
-    overflow: hidden;
 }
 
 
@@ -162,11 +143,9 @@
 
     padding: 14px 16px;
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 
     flex-shrink: 0;
-
-    overflow: hidden;
 }
 
 
@@ -177,7 +156,7 @@
     font-size: 13px !important;
     font-weight: 700 !important;
 
-    line-height: 18px !important;
+    line-height: 18px;
 
     color: #ffffff !important;
 
@@ -190,26 +169,20 @@
 
 
 .region-sidebar-user-role {
-    margin: 4px 0 0 0 !important;
-    padding: 0 !important;
+    margin-top: 4px;
 
-    font-size: 10px !important;
-    font-weight: 400 !important;
+    font-size: 10px;
 
-    line-height: 14px !important;
+    line-height: 14px;
 
-    color: #94a3b8 !important;
+    color: #94a3b8;
 
     white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
 }
 
 
 /* =====================================================
-   MENU AREA
+   MENU
 ===================================================== */
 
 .region-sidebar-menu {
@@ -220,20 +193,10 @@
     padding: 16px 10px;
 
     margin: 0;
-
-    overflow-y: auto;
-
-    overflow-x: hidden;
 }
 
 
-/* =====================================================
-   MENU TITLE
-===================================================== */
-
 .region-sidebar-menu-title {
-    display: block;
-
     margin: 0 !important;
 
     padding: 0 11px 9px !important;
@@ -242,13 +205,11 @@
 
     font-weight: 700 !important;
 
-    line-height: 14px !important;
+    line-height: 14px;
 
     color: #64748b !important;
 
     letter-spacing: 1px;
-
-    text-transform: uppercase;
 }
 
 
@@ -263,17 +224,15 @@
 
     display: flex !important;
 
-    align-items: center !important;
+    align-items: center;
 
     gap: 11px;
 
-    padding: 10px 12px !important;
+    padding: 10px 12px;
 
-    margin: 0 0 5px 0 !important;
+    margin: 0 0 5px 0;
 
     border-radius: 7px;
-
-    border: 0;
 
     background: transparent;
 
@@ -287,107 +246,64 @@
 
     font-weight: 500 !important;
 
-    line-height: 20px !important;
+    line-height: 20px;
 
     cursor: pointer;
 
-    white-space: nowrap;
-
     transition:
         background 0.2s ease,
-        color 0.2s ease,
-        box-shadow 0.2s ease;
-
-    position: relative;
+        color 0.2s ease;
 }
 
 
 /* =====================================================
-   MENU LINK - REMOVE GLOBAL PAGE STYLES
-===================================================== */
-
-.region-sidebar .region-menu-link:link,
-.region-sidebar .region-menu-link:visited {
-    color: #cbd5e1 !important;
-
-    text-decoration: none !important;
-}
-
-
-.region-sidebar .region-menu-link:hover,
-.region-sidebar .region-menu-link:focus {
-    text-decoration: none !important;
-
-    outline: none;
-}
-
-
-/* =====================================================
-   MENU ICON WRAPPER
+   ICON
 ===================================================== */
 
 .region-menu-icon {
-    width: 20px !important;
-    min-width: 20px !important;
+    width: 20px;
+    min-width: 20px;
 
-    height: 20px !important;
+    height: 20px;
 
-    display: flex !important;
+    display: flex;
 
-    align-items: center !important;
-    justify-content: center !important;
+    align-items: center;
+
+    justify-content: center;
 
     flex-shrink: 0;
-
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
 
-/* =====================================================
-   FONT AWESOME ICON
-===================================================== */
-
 .region-menu-icon i {
-    display: block !important;
+    display: block;
 
-    width: 20px !important;
-    height: 20px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
+    width: 20px;
 
     text-align: center;
 
-    font-size: 15px !important;
+    font-size: 15px;
 
-    line-height: 20px !important;
+    line-height: 20px;
 
     color: #94a3b8;
-
-    font-family: "Font Awesome 6 Free" !important;
-
-    font-weight: 900 !important;
 
     transition: color 0.2s ease;
 }
 
 
 /* =====================================================
-   MENU TEXT
+   TEXT
 ===================================================== */
 
 .region-menu-text {
-    display: block !important;
+    display: block;
 
     margin: 0 !important;
     padding: 0 !important;
 
     color: inherit;
-
-    font-size: 13px !important;
-
-    line-height: 20px !important;
 
     white-space: nowrap;
 
@@ -402,7 +318,7 @@
 ===================================================== */
 
 .region-menu-link:hover {
-    background: #1e293b !important;
+    background: #1e293b;
 
     color: #ffffff !important;
 
@@ -411,7 +327,7 @@
 
 
 .region-menu-link:hover .region-menu-icon i {
-    color: #ffffff !important;
+    color: #ffffff;
 }
 
 
@@ -420,29 +336,24 @@
 ===================================================== */
 
 .region-menu-link.active {
-    background: #2563eb !important;
+    background: #2563eb;
 
     color: #ffffff !important;
 
     text-decoration: none !important;
 
     box-shadow:
-        0 3px 8px rgba(37, 99, 235, 0.25);
+        0 3px 8px rgba(37,99,235,0.25);
 }
 
 
 .region-menu-link.active .region-menu-icon i {
-    color: #ffffff !important;
-}
-
-
-.region-menu-link.active .region-menu-text {
-    color: #ffffff !important;
+    color: #ffffff;
 }
 
 
 /* =====================================================
-   SIDEBAR BOTTOM
+   BOTTOM
 ===================================================== */
 
 .region-sidebar-bottom {
@@ -450,13 +361,9 @@
 
     padding: 10px;
 
-    margin: 0;
-
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255,255,255,0.08);
 
     flex-shrink: 0;
-
-    background: #0f172a;
 }
 
 
@@ -467,91 +374,88 @@
 .region-logout-link {
     color: #fca5a5 !important;
 
-    margin: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 
 .region-logout-link .region-menu-icon i {
-    color: #f87171 !important;
+    color: #f87171;
 }
 
 
 .region-logout-link:hover {
-    background: #450a0a !important;
+    background: #450a0a;
 
     color: #fecaca !important;
 }
 
 
 .region-logout-link:hover .region-menu-icon i {
-    color: #fecaca !important;
+    color: #fecaca;
 }
 
 
 /* =====================================================
-   SIDEBAR SCROLLBAR
-===================================================== */
-
-.region-sidebar::-webkit-scrollbar,
-.region-sidebar-menu::-webkit-scrollbar {
-    width: 5px;
-}
-
-
-.region-sidebar::-webkit-scrollbar-track,
-.region-sidebar-menu::-webkit-scrollbar-track {
-    background: #0f172a;
-}
-
-
-.region-sidebar::-webkit-scrollbar-thumb,
-.region-sidebar-menu::-webkit-scrollbar-thumb {
-    background: #334155;
-
-    border-radius: 10px;
-}
-
-
-.region-sidebar::-webkit-scrollbar-thumb:hover,
-.region-sidebar-menu::-webkit-scrollbar-thumb:hover {
-    background: #475569;
-}
-
-
-/* =====================================================
-   IMPORTANT:
-   DO NOT USE PADDING-LEFT ON BODY
+   MAIN PAGE
+   IMPORTANT
 ===================================================== */
 
 /*
-   Purposely removed:
-
-   body.region-sidebar-page {
-       padding-left: 240px;
-   }
-
-   Sidebar fixed hai, isliye page ka content
-   apne wrapper se control hoga.
+   Main page ko sidebar ke right se start karna hai.
 */
 
+body.region-sidebar-page {
+    margin: 0 !important;
 
-/* =====================================================
-   DESKTOP MAIN CONTENT SUPPORT
-===================================================== */
+    padding: 0 !important;
 
-/*
-   Agar page me .region-page-content hai,
-   to ye sidebar ke right me start hoga.
-*/
-
-.region-page-content {
-    margin-left: 240px;
-
-    width: calc(100% - 240px);
+    padding-left: 240px !important;
 
     min-height: 100vh;
 
-    box-sizing: border-box;
+    width: 100%;
+
+    overflow-x: hidden;
+}
+
+
+/*
+   Common main containers
+*/
+
+body.region-sidebar-page > .main,
+body.region-sidebar-page > .main-area,
+body.region-sidebar-page > .page-content,
+body.region-sidebar-page > .content,
+body.region-sidebar-page > #mainContent,
+body.region-sidebar-page > #pageContent {
+    margin-left: 0 !important;
+
+    width: auto !important;
+
+    min-width: 0;
+
+    max-width: none;
+}
+
+
+/* =====================================================
+   SIDEBAR LOAD CONTAINER
+===================================================== */
+
+#regionSidebarContainer {
+    display: block;
+
+    width: 240px;
+
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    height: 100vh;
+
+    z-index: 99999;
 }
 
 
@@ -567,9 +471,6 @@
         transform: translateX(-100%);
 
         transition: transform 0.25s ease;
-
-        box-shadow:
-            4px 0 15px rgba(0, 0, 0, 0.25);
     }
 
 
@@ -578,10 +479,13 @@
     }
 
 
-    .region-page-content {
-        margin-left: 0;
+    body.region-sidebar-page {
+        padding-left: 0 !important;
+    }
 
-        width: 100%;
+
+    #regionSidebarContainer {
+        width: 220px;
     }
 
 }
@@ -618,20 +522,8 @@
     }
 
 
-    .region-sidebar-title {
-        font-size: 17px !important;
-    }
-
-
-    .region-sidebar-subtitle {
-        font-size: 9px !important;
-    }
-
-
-    .region-menu-link {
-        min-height: 42px;
-
-        padding: 9px 11px !important;
+    #regionSidebarContainer {
+        width: 220px;
     }
 
 }
