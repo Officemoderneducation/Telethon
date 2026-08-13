@@ -1,26 +1,25 @@
-<aside class="region-sidebar" id="regionSidebar">
+<div class="region-sidebar" id="regionSidebar">
 
     <!-- ================================
-         BRAND
+         LOGO / BRAND
     ================================= -->
 
     <div class="region-sidebar-brand">
 
-        <div class="region-logo-box">
+        <img
+            src="assets/images/logo.png"
+            alt="Telethon Logo"
+            class="region-sidebar-logo"
+        >
 
-            <img
-                src="assets/images/logo.png"
-                alt="Telethon Logo"
-            >
+        <div class="region-sidebar-brand-text">
+            <div class="region-sidebar-title">
+                Telethon
+            </div>
 
-        </div>
-
-        <div class="region-brand-text">
-
-            <h2>Telethon</h2>
-
-            <p>Region User Panel</p>
-
+            <div class="region-sidebar-subtitle">
+                Region User Panel
+            </div>
         </div>
 
     </div>
@@ -32,22 +31,15 @@
 
     <div class="region-sidebar-user">
 
-        <div class="region-user-icon">
-
-            <i class="fa-solid fa-user"></i>
-
+        <div
+            id="regionSidebarUserName"
+            class="region-sidebar-user-name"
+        >
+            Region User
         </div>
 
-        <div class="region-user-details">
-
-            <strong id="regionSidebarUserName">
-                Region User
-            </strong>
-
-            <span>
-                Region User Account
-            </span>
-
+        <div class="region-sidebar-user-role">
+            Region User Account
         </div>
 
     </div>
@@ -59,8 +51,8 @@
 
     <nav class="region-sidebar-menu">
 
-        <div class="region-menu-title">
-            MAIN MENU
+        <div class="region-sidebar-menu-title">
+            MENU
         </div>
 
 
@@ -73,9 +65,7 @@
         >
 
             <span class="region-menu-icon">
-
                 <i class="fa-solid fa-chart-pie"></i>
-
             </span>
 
             <span class="region-menu-text">
@@ -94,9 +84,7 @@
         >
 
             <span class="region-menu-icon">
-
                 <i class="fa-solid fa-users"></i>
-
             </span>
 
             <span class="region-menu-text">
@@ -115,9 +103,7 @@
         >
 
             <span class="region-menu-icon">
-
                 <i class="fa-solid fa-calendar-days"></i>
-
             </span>
 
             <span class="region-menu-text">
@@ -130,21 +116,19 @@
 
 
     <!-- ================================
-         LOGOUT
+         BOTTOM / LOGOUT
     ================================= -->
 
     <div class="region-sidebar-bottom">
 
         <a
-            href="#"
-            id="regionLogoutBtn"
-            class="region-menu-link region-logout"
+            href="index.html"
+            id="regionSidebarLogout"
+            class="region-menu-link region-logout-link"
         >
 
             <span class="region-menu-icon">
-
                 <i class="fa-solid fa-right-from-bracket"></i>
-
             </span>
 
             <span class="region-menu-text">
@@ -155,4 +139,4 @@
 
     </div>
 
-</aside>
+</div>
