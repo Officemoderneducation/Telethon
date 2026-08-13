@@ -57,8 +57,6 @@
 
             background: #f4f6f9;
 
-            display: flex;
-
             color: #1e293b;
         }
 
@@ -69,9 +67,9 @@
 
         .main {
 
-            margin-left: 235px;
+            margin-left: 260px;
 
-            width: calc(100% - 235px);
+            width: calc(100% - 260px);
 
             min-height: 100vh;
 
@@ -85,16 +83,16 @@
 
         .topbar {
 
-            background: white;
+            background: #ffffff;
 
-            border-radius: 10px;
+            border-radius: 12px;
 
             padding: 20px 24px;
 
             margin-bottom: 20px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
+                0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
 
@@ -122,14 +120,14 @@
 
         .table-container {
 
-            background: white;
+            background: #ffffff;
 
-            border-radius: 10px;
+            border-radius: 12px;
 
             padding: 20px;
 
             box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
+                0 2px 8px rgba(0, 0, 0, 0.06);
 
             width: 100%;
 
@@ -185,7 +183,7 @@
 
             font-size: 14px;
 
-            background: white;
+            background: #ffffff;
         }
 
 
@@ -194,7 +192,7 @@
             border-color: #2563eb;
 
             box-shadow:
-                0 0 0 3px rgba(37,99,235,0.10);
+                0 0 0 3px rgba(37, 99, 235, 0.10);
         }
 
 
@@ -226,7 +224,7 @@
 
             border-collapse: collapse;
 
-            background: white;
+            background: #ffffff;
         }
 
 
@@ -234,7 +232,7 @@
 
             background: #2563eb;
 
-            color: white;
+            color: #ffffff;
 
             padding: 13px 14px;
 
@@ -342,13 +340,11 @@
         }
 
 
-        /* Approve */
-
         .approve-btn {
 
             background: #198754;
 
-            color: white;
+            color: #ffffff;
         }
 
 
@@ -358,13 +354,11 @@
         }
 
 
-        /* Pending */
-
         .pending-btn {
 
             background: #ffc107;
 
-            color: #000;
+            color: #000000;
         }
 
 
@@ -450,9 +444,9 @@
 
             .main {
 
-                margin-left: 190px;
+                margin-left: 70px;
 
-                width: calc(100% - 190px);
+                width: calc(100% - 70px);
 
                 padding: 15px;
             }
@@ -518,7 +512,7 @@
          MAIN
     ======================================= -->
 
-    <div class="main">
+    <main class="main">
 
 
         <!-- ==================================
@@ -565,9 +559,7 @@
 
             <div class="table-wrapper">
 
-
                 <table>
-
 
                     <thead>
 
@@ -625,7 +617,6 @@
 
                     </tbody>
 
-
                 </table>
 
             </div>
@@ -633,7 +624,7 @@
         </div>
 
 
-    </div>
+    </main>
 
 
     <!-- ======================================
@@ -642,90 +633,161 @@
 
     <script>
 
-        fetch("components/admin-sidebar.html")
-
-            .then(function(response) {
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "Admin Sidebar not found"
-                    );
-
-                }
-
-                return response.text();
-
-            })
-
-            .then(function(data) {
-
-                const sidebar =
-                    document.getElementById(
-                        "adminSidebar"
-                    );
-
-                sidebar.innerHTML = data;
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
 
 
-                /* =================================
-                   ACTIVE PAGE HIGHLIGHT
-                ================================= */
+                fetch("components/admin-sidebar.html")
 
-                const currentPage =
-                    window.location.pathname
-                        .split("/")
-                        .pop();
+                    .then(function (response) {
 
+                        if (!response.ok) {
 
-                const menuLinks =
-                    sidebar.querySelectorAll(
-                        ".menu a"
-                    );
-
-
-                menuLinks.forEach(
-                    function(link) {
-
-                        const href =
-                            link.getAttribute(
-                                "href"
+                            throw new Error(
+                                "Admin Sidebar not found: " +
+                                response.status
                             );
+
+                        }
+
+                        return response.text();
+
+                    })
+
+
+                    .then(function (data) {
+
+                        const sidebar =
+                            document.getElementById(
+                                "adminSidebar"
+                            );
+
+
+                        if (!sidebar) {
+                            return;
+                        }
+
+
+                        sidebar.innerHTML = data;
+
+
+                        /* =================================
+                           ACTIVE PAGE
+                        ================================= */
+
+                        let currentPage =
+                            window.location.pathname
+                                .split("/")
+                                .pop()
+                                .toLowerCase();
 
 
                         if (
-                            href &&
-                            href !== "#" &&
-                            href === currentPage
+                            !currentPage ||
+                            currentPage === ""
                         ) {
 
-                            link.classList.add(
-                                "active"
+                            currentPage =
+                                "dashboard.html";
+
+                        }
+
+
+                        const menuLinks =
+                            sidebar.querySelectorAll(
+                                "a[data-page]"
+                            );
+
+
+                        menuLinks.forEach(
+                            function (link) {
+
+                                const page =
+                                    link
+                                        .getAttribute(
+                                            "data-page"
+                                        )
+                                        .toLowerCase();
+
+
+                                if (
+                                    page ===
+                                    currentPage
+                                ) {
+
+                                    link.classList.add(
+                                        "active"
+                                    );
+
+                                }
+
+                                else {
+
+                                    link.classList.remove(
+                                        "active"
+                                    );
+
+                                }
+
+                            }
+                        );
+
+
+                        /* =================================
+                           LOGOUT
+                        ================================= */
+
+                        const logoutBtn =
+                            sidebar.querySelector(
+                                "#adminLogoutBtn"
+                            );
+
+
+                        if (logoutBtn) {
+
+                            logoutBtn.addEventListener(
+                                "click",
+                                function (e) {
+
+                                    e.preventDefault();
+
+                                    e.stopPropagation();
+
+
+                                    localStorage.removeItem(
+                                        "loggedInEmpCode"
+                                    );
+
+                                    localStorage.removeItem(
+                                        "userRole"
+                                    );
+
+
+                                    window.location.replace(
+                                        "index.html"
+                                    );
+
+                                }
                             );
 
                         }
 
-                        else {
+                    })
 
-                            link.classList.remove(
-                                "active"
-                            );
 
-                        }
+                    .catch(function (error) {
 
-                    }
-                );
+                        console.error(
+                            "Admin Sidebar Error:",
+                            error
+                        );
 
-            })
+                    });
 
-            .catch(function(error) {
+            }
 
-                console.error(
-                    "Admin Sidebar Error:",
-                    error
-                );
-
-            });
+        );
 
     </script>
 
@@ -761,46 +823,13 @@
 
 
     <!-- ======================================
-         LOGOUT
+         PAGE PROTECTION
     ======================================= -->
 
-    <script>
-
-        document.addEventListener(
-            "click",
-            function(e) {
-
-                const logoutBtn =
-                    e.target.closest(
-                        "#logoutBtn"
-                    );
-
-
-                if (!logoutBtn) {
-                    return;
-                }
-
-
-                e.preventDefault();
-
-
-                localStorage.removeItem(
-                    "loggedInEmpCode"
-                );
-
-
-                localStorage.removeItem(
-                    "userRole"
-                );
-
-
-                window.location.href =
-                    "index.html";
-
-            }
-        );
-
-    </script>
+    <script
+        type="module"
+        src="assets/js/page-protection.js"
+    ></script>
 
 
 </body>
