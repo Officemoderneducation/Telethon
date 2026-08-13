@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Region Summary | Telethon</title>
+
+
+    <!-- ======================================
+         FONT AWESOME
+    ======================================= -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- ======================================
+         REGION SIDEBAR CSS
+    ======================================= -->
+
+    <link
+        rel="stylesheet"
+        href="components/region-sidebar.css"
+    >
+
+
+    <style>
+
+        /* ======================================
+           RESET
+        ====================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* ======================================
+           BODY
+        ====================================== */
+
+        body {
+
+            min-height: 100vh;
+
+            background: #f4f6f9;
+
+            color: #1e293b;
+
+        }
+
+
+        /* ======================================
+           MAIN
+        ====================================== */
+
+        .main {
+
+            margin-left: 260px;
+
+            width: calc(100% - 260px);
+
+            min-height: 100vh;
+
+            padding: 24px;
+
+        }
+
+
+        /* ======================================
+           TOPBAR
+        ====================================== */
+
+        .topbar {
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 20px 24px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+
+        }
+
+
+        .topbar h2 {
+
+            font-size: 24px;
+
+            color: #0f172a;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .topbar p {
+
+            color: #64748b;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ======================================
+           USER INFO
+        ======================================= */
+
+        .user-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: 12px;
+
+            color: #475569;
+
+            font-size: 14px;
+
+        }
+
+
+        .user-info i {
+
+            color: #2563eb;
+
+        }
+
+
+        /* ======================================
+           SUMMARY GRID
+        ======================================= */
+
+        .summary-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        /* ======================================
+           CARD
+        ======================================= */
+
+        .summary-card {
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+        .summary-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+
+            top: 0;
+
+            width: 5px;
+
+            height: 100%;
+
+            background: #2563eb;
+
+        }
+
+
+        .summary-card.collection::before {
+
+            background: #16a34a;
+
+        }
+
+
+        .summary-card.remaining::before {
+
+            background: #f59e0b;
+
+        }
+
+
+        .summary-card.percentage::before {
+
+            background: #7c3aed;
+
+        }
+
+
+        .card-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .card-title {
+
+            font-size: 13px;
+
+            color: #64748b;
+
+            font-weight: 600;
+
+        }
+
+
+        .card-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius: 9px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+        }
+
+
+        .collection .card-icon {
+
+            background: #ecfdf5;
+
+            color: #16a34a;
+
+        }
+
+
+        .remaining .card-icon {
+
+            background: #fffbeb;
+
+            color: #f59e0b;
+
+        }
+
+
+        .percentage .card-icon {
+
+            background: #f5f3ff;
+
+            color: #7c3aed;
+
+        }
+
+
+        .card-value {
+
+            font-size: 25px;
+
+            font-weight: 700;
+
+            color: #0f172a;
+
+        }
+
+
+        .card-unit {
+
+            margin-top: 5px;
+
+            font-size: 13px;
+
+            color: #64748b;
+
+        }
+
+
+        /* ======================================
+           PROGRESS CARD
+        ======================================= */
+
+        .progress-card {
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 22px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+
+        }
+
+
+        .progress-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .progress-header h3 {
+
+            font-size: 17px;
+
+            color: #0f172a;
+
+        }
+
+
+        .progress-percentage {
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            color: #2563eb;
+
+        }
+
+
+        .progress-container {
+
+            width: 100%;
+
+            height: 18px;
+
+            background: #e2e8f0;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+        }
+
+
+        .progress-bar {
+
+            height: 100%;
+
+            width: 0%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #7c3aed
+                );
+
+            border-radius: 20px;
+
+            transition:
+                width 0.6s ease;
+
+        }
+
+
+        .progress-info {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-top: 10px;
+
+            font-size: 13px;
+
+            color: #64748b;
+
+        }
+
+
+        /* ======================================
+           TEACHER INFO CARD
+        ======================================= */
+
+        .teacher-card {
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+
+        }
+
+
+        .teacher-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+        .teacher-header h3 {
+
+            font-size: 17px;
+
+            color: #0f172a;
+
+        }
+
+
+        .teacher-count {
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+        }
+
+
+        /* ======================================
+           LOADING
+        ======================================= */
+
+        .loading {
+
+            text-align: center;
+
+            padding: 60px 20px;
+
+            color: #64748b;
+
+        }
+
+
+        .loading i {
+
+            font-size: 25px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        /* ======================================
+           ERROR
+        ======================================= */
+
+        .error-box {
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 30px;
+
+            text-align: center;
+
+            color: #dc2626;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+
+        }
+
+
+        .error-box i {
+
+            font-size: 30px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        /* ======================================
+           MOBILE
+        ======================================= */
+
+        @media (max-width: 1100px) {
+
+            .summary-grid {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+            }
+
+        }
+
+
+        @media (max-width: 768px) {
+
+            .main {
+
+                margin-left: 70px;
+
+                width: calc(100% - 70px);
+
+                padding: 15px;
+
+            }
+
+
+            .summary-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .topbar h2 {
+
+                font-size: 20px;
+
+            }
+
+
+            .progress-header {
+
+                gap: 10px;
+
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            .main {
+
+                margin-left: 70px;
+
+                width: calc(100% - 70px);
+
+                padding: 10px;
+
+            }
+
+
+            .topbar,
+            .summary-card,
+            .progress-card,
+            .teacher-card {
+
+                padding: 15px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ======================================
+         REGION SIDEBAR
+    ======================================= -->
+
+    <div id="regionSidebar"></div>
+
+
+    <!-- ======================================
+         MAIN
+    ======================================= -->
+
+    <main class="main">
+
+
+        <!-- ==================================
+             TOPBAR
+        ================================== -->
+
+        <div class="topbar">
+
+            <h2>
+                Region Summary
+            </h2>
+
+            <p>
+                Your assigned target and collection summary
+            </p>
+
+
+            <div class="user-info">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    User:
+                </span>
+
+                <strong id="regionUserName">
+                    Loading...
+                </strong>
+
+            </div>
+
+
+            <div class="user-info">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                <span>
+                    Region:
+                </span>
+
+                <strong id="regionName">
+                    Loading...
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================
+             LOADING
+        ================================== -->
+
+        <div
+            id="loadingBox"
+            class="loading"
+        >
+
+            <i
+                class="fa-solid fa-spinner fa-spin"
+            ></i>
+
+            <div>
+                Loading Summary...
+            </div>
+
+        </div>
+
+
+        <!-- ==================================
+             SUMMARY CONTENT
+        ================================== -->
+
+        <div
+            id="summaryContent"
+            style="display:none;"
+        >
+
+
+            <!-- ==================================
+                 SUMMARY CARDS
+            ================================== -->
+
+            <div class="summary-grid">
+
+
+                <!-- TARGET -->
+
+                <div class="summary-card">
+
+                    <div class="card-top">
+
+                        <div class="card-title">
+                            MY TARGET
+                        </div>
+
+                        <div class="card-icon">
+
+                            <i
+                                class="fa-solid fa-bullseye"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="targetAmount"
+                        class="card-value"
+                    >
+                        ₹ 0
+                    </div>
+
+
+                    <div
+                        id="targetUnits"
+                        class="card-unit"
+                    >
+                        0 Unit
+                    </div>
+
+                </div>
+
+
+                <!-- COLLECTION -->
+
+                <div class="summary-card collection">
+
+                    <div class="card-top">
+
+                        <div class="card-title">
+                            TOTAL COLLECTION
+                        </div>
+
+                        <div class="card-icon">
+
+                            <i
+                                class="fa-solid fa-indian-rupee-sign"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="collectionAmount"
+                        class="card-value"
+                    >
+                        ₹ 0
+                    </div>
+
+
+                    <div
+                        id="collectionUnits"
+                        class="card-unit"
+                    >
+                        0 Unit
+                    </div>
+
+                </div>
+
+
+                <!-- REMAINING -->
+
+                <div class="summary-card remaining">
+
+                    <div class="card-top">
+
+                        <div class="card-title">
+                            REMAINING TARGET
+                        </div>
+
+                        <div class="card-icon">
+
+                            <i
+                                class="fa-solid fa-hourglass-half"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="remainingAmount"
+                        class="card-value"
+                    >
+                        ₹ 0
+                    </div>
+
+
+                    <div
+                        id="remainingUnits"
+                        class="card-unit"
+                    >
+                        0 Unit
+                    </div>
+
+                </div>
+
+
+                <!-- PERCENTAGE -->
+
+                <div class="summary-card percentage">
+
+                    <div class="card-top">
+
+                        <div class="card-title">
+                            COLLECTION PERCENTAGE
+                        </div>
+
+                        <div class="card-icon">
+
+                            <i
+                                class="fa-solid fa-chart-line"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="percentage"
+                        class="card-value"
+                    >
+                        0.00%
+                    </div>
+
+
+                    <div class="card-unit">
+                        Target Achievement
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================
+                 PROGRESS
+            ================================== -->
+
+            <div class="progress-card">
+
+
+                <div class="progress-header">
+
+                    <h3>
+                        Target Progress
+                    </h3>
+
+
+                    <span
+                        id="progressPercentage"
+                        class="progress-percentage"
+                    >
+                        0.00%
+                    </span>
+
+                </div>
+
+
+                <div class="progress-container">
+
+                    <div
+                        id="progressBar"
+                        class="progress-bar"
+                    ></div>
+
+                </div>
+
+
+                <div class="progress-info">
+
+                    <span>
+                        Collection:
+                        <strong id="progressCollection">
+                            ₹ 0
+                        </strong>
+                    </span>
+
+
+                    <span>
+                        Target:
+                        <strong id="progressTarget">
+                            ₹ 0
+                        </strong>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================
+                 ASSIGNED TEACHERS
+            ================================== -->
+
+            <div class="teacher-card">
+
+                <div class="teacher-header">
+
+                    <h3>
+                        Assigned Teachers
+                    </h3>
+
+
+                    <span
+                        id="teacherCount"
+                        class="teacher-count"
+                    >
+                        0 Teachers
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ==================================
+             ERROR
+        ================================== -->
+
+        <div
+            id="errorBox"
+            class="error-box"
+            style="display:none;"
+        >
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+            <div id="errorMessage">
+                Summary load nahi ho saki.
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- ======================================
+         LOAD REGION SIDEBAR
+    ======================================= -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                fetch(
+                    "components/region-sidebar.html"
+                )
+
+                    .then(
+                        function (response) {
+
+                            if (!response.ok) {
+
+                                throw new Error(
+                                    "Region Sidebar not found"
+                                );
+
+                            }
+
+                            return response.text();
+
+                        }
+                    )
+
+                    .then(
+                        function (data) {
+
+                            const sidebar =
+                                document.getElementById(
+                                    "regionSidebar"
+                                );
+
+                            if (!sidebar) {
+                                return;
+                            }
+
+                            sidebar.innerHTML =
+                                data;
+
+
+                            /* ==============================
+                               ACTIVE PAGE
+                            ============================== */
+
+                            const currentPage =
+                                window.location.pathname
+                                    .split("/")
+                                    .pop()
+                                    .toLowerCase();
+
+
+                            const menuLinks =
+                                sidebar.querySelectorAll(
+                                    "a[data-page]"
+                                );
+
+
+                            menuLinks.forEach(
+                                function (link) {
+
+                                    const page =
+                                        String(
+                                            link.getAttribute(
+                                                "data-page"
+                                            ) || ""
+                                        )
+                                            .toLowerCase();
+
+
+                                    if (
+                                        page ===
+                                        currentPage
+                                    ) {
+
+                                        link.classList.add(
+                                            "active"
+                                        );
+
+                                    }
+
+                                }
+                            );
+
+
+                            /* ==============================
+                               LOGOUT
+                            ============================== */
+
+                            const logoutBtn =
+                                sidebar.querySelector(
+                                    "#regionLogoutBtn"
+                                );
+
+
+                            if (logoutBtn) {
+
+                                logoutBtn.addEventListener(
+                                    "click",
+                                    function (e) {
+
+                                        e.preventDefault();
+
+                                        localStorage.removeItem(
+                                            "loggedInEmpCode"
+                                        );
+
+                                        localStorage.removeItem(
+                                            "userRole"
+                                        );
+
+                                        window.location.replace(
+                                            "index.html"
+                                        );
+
+                                    }
+                                );
+
+                            }
+
+                        }
+                    )
+
+                    .catch(
+                        function (error) {
+
+                            console.error(
+                                "Region Sidebar Error:",
+                                error
+                            );
+
+                        }
+                    );
+
+            }
+        );
+
+    </script>
+
+
+    <!-- ======================================
+         FIREBASE CONFIG
+    ======================================= -->
+
+    <script
+        type="module"
+        src="assets/js/firebase-config.js"
+    ></script>
+
+
+    <!-- ======================================
+         REGION SUMMARY JS
+    ======================================= -->
+
+    <script
+        type="module"
+        src="assets/js/region-summary.js"
+    ></script>
+
+
+</body>
+
+</html>
