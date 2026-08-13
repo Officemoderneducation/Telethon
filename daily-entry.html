@@ -13,7 +13,10 @@
     <title>Daily Collection | Telethon</title>
 
 
-    <!-- Font Awesome -->
+    <!-- =====================================
+         FONT AWESOME
+    ====================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -21,6 +24,10 @@
 
 
     <style>
+
+        /* =====================================
+           RESET
+        ====================================== */
 
         * {
             box-sizing: border-box;
@@ -30,11 +37,20 @@
         }
 
 
+        /* =====================================
+           BODY
+        ====================================== */
+
         body {
+
             display: flex;
+
             min-height: 100vh;
+
             background: #f4f6f9;
-            overflow: hidden;
+
+            color: #1e293b;
+
         }
 
 
@@ -43,66 +59,127 @@
         ====================================== */
 
         .sidebar {
-            width: 225px;
-            height: 100vh;
 
-            background: #1e293b;
+            width: 225px;
+
+            min-height: 100vh;
+
+            background: #0f172a;
+
             color: #ffffff;
 
             flex-shrink: 0;
 
-            position: sticky;
+            position: fixed;
+
+            left: 0;
+
             top: 0;
 
+            bottom: 0;
+
             overflow-y: auto;
+
+            z-index: 1000;
+
         }
 
 
-        /* Logo */
+        /* =====================================
+           SIDEBAR LOGO
+        ====================================== */
 
-        .sidebar .logo-section {
+        .logo-section {
+
+            height: 145px;
+
+            padding: 14px 10px;
+
             text-align: center;
-            padding: 18px 10px 20px;
-            border-bottom: 1px solid #334155;
+
+            border-bottom:
+                1px solid #263247;
+
         }
 
 
-        .sidebar .logo-section img {
-            width: 75px;
-            height: 75px;
+        .logo-section img {
+
+            width: 55px;
+
+            height: 55px;
+
             object-fit: contain;
+
             display: block;
-            margin: 0 auto 8px;
+
+            margin: 0 auto 7px;
+
         }
 
 
-        .sidebar .logo-section h2 {
-            margin: 0;
-            font-size: 20px;
+        .logo-section h2 {
+
+            font-size: 19px;
+
             color: #38bdf8;
+
+            margin: 0;
+
         }
 
 
-        .sidebar .logo-section p {
-            margin-top: 7px;
-            font-size: 12px;
+        .logo-section p {
+
+            margin-top: 5px;
+
+            font-size: 11px;
+
             color: #cbd5e1;
+
         }
 
 
-        /* Menu */
+        /* =====================================
+           SIDEBAR MENU
+        ====================================== */
 
-        .sidebar .menu {
-            margin-top: 15px;
+        .menu {
+
+            padding-top: 15px;
+
             display: flex;
+
             flex-direction: column;
+
         }
 
 
-        .sidebar .menu a {
+        .menu-title {
+
+            padding:
+                0 20px 8px;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .menu a {
+
             display: flex;
+
             align-items: center;
+
             gap: 12px;
+
+            width: 100%;
 
             padding: 12px 20px;
 
@@ -113,39 +190,60 @@
             font-size: 14px;
 
             transition: 0.2s;
+
         }
 
 
-        .sidebar .menu a i {
+        .menu a i {
+
             width: 18px;
+
+            min-width: 18px;
+
             text-align: center;
+
+            font-size: 15px;
+
         }
 
 
-        .sidebar .menu a:hover {
-            background: #0f172a;
+        .menu a:hover {
+
+            background: #1e293b;
+
             color: #ffffff;
+
         }
 
 
-        /* Active Daily Collection */
+        .menu a.active {
 
-        .sidebar .menu a.active {
             background: #2563eb;
+
             color: #ffffff;
+
         }
 
 
-        /* Logout */
+        /* =====================================
+           LOGOUT
+        ====================================== */
 
-        .sidebar .menu a:last-child {
-            margin-top: 15px;
-            color: #ef4444;
+        .logout-link {
+
+            margin-top: 18px;
+
+            color: #fca5a5 !important;
+
         }
 
 
-        .sidebar .menu a:last-child:hover {
-            background: #0f172a;
+        .logout-link:hover {
+
+            background: #450a0a !important;
+
+            color: #fecaca !important;
+
         }
 
 
@@ -154,14 +252,19 @@
         ====================================== */
 
         .main-area {
+
+            margin-left: 225px;
+
             flex: 1;
+
             min-width: 0;
 
-            height: 100vh;
+            min-height: 100vh;
 
             padding: 20px 30px;
 
             overflow-y: auto;
+
         }
 
 
@@ -170,32 +273,59 @@
         ====================================== */
 
         .header-nav {
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
 
-            max-width: 650px;
+            width: 100%;
 
-            margin: 0 auto 20px auto;
+            max-width: 900px;
+
+            margin: 0 auto 20px;
 
             background: #ffffff;
 
-            padding: 12px 20px;
+            padding: 14px 20px;
 
             border-radius: 8px;
 
             box-shadow:
                 0 2px 5px rgba(0,0,0,0.05);
+
         }
 
 
         .user-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
             font-weight: bold;
-            color: #333;
+
+            color: #334155;
+
+            font-size: 14px;
+
+        }
+
+
+        .user-info i {
+
+            color: #2563eb;
+
+            font-size: 18px;
+
         }
 
 
         .logout-btn {
+
             color: #dc3545;
 
             cursor: pointer;
@@ -207,18 +337,28 @@
             background: none;
 
             font-size: 14px;
+
+        }
+
+
+        .logout-btn:hover {
+
+            color: #b91c1c;
+
         }
 
 
         /* =====================================
-           FORM
+           FORM CONTAINER
         ====================================== */
 
         .form-container {
-            width: 100%;
-            max-width: 650px;
 
-            margin: 0 auto 30px auto;
+            width: 100%;
+
+            max-width: 900px;
+
+            margin: 0 auto 30px;
 
             background: #ffffff;
 
@@ -228,10 +368,12 @@
 
             box-shadow:
                 0 4px 10px rgba(0,0,0,0.08);
+
         }
 
 
         .form-container h3 {
+
             margin-bottom: 20px;
 
             color: #2c3e50;
@@ -239,118 +381,73 @@
             text-align: center;
 
             font-size: 22px;
+
         }
+
+
         /* =====================================
-   PERFORMANCE SUMMARY
-====================================== */
+           PERFORMANCE SUMMARY
+        ====================================== */
 
-.performance-grid {
+        .performance-grid {
 
-    display: grid;
+            display: grid;
 
-    grid-template-columns:
-        repeat(4, 1fr);
+            grid-template-columns:
+                repeat(4, 1fr);
 
-    gap: 12px;
+            gap: 12px;
 
-    margin-bottom: 20px;
-}
+            margin-bottom: 20px;
 
-
-.performance-card {
-
-    padding: 15px 10px;
-
-    border-radius: 8px;
-
-    text-align: center;
-
-    background: #f8fafc;
-
-    border: 1px solid #e2e8f0;
-}
-
-
-.performance-title {
-
-    font-size: 12px;
-
-    font-weight: bold;
-
-    color: #64748b;
-
-    margin-bottom: 7px;
-}
-
-
-.performance-value {
-
-    font-size: 19px;
-
-    font-weight: bold;
-
-    color: #1e293b;
-}
-
-
-/* Mobile */
-
-@media (max-width: 700px) {
-
-    .performance-grid {
-
-        grid-template-columns:
-            repeat(2, 1fr);
-
-    }
-
-}
-
-
-        .form-group {
-            margin-bottom: 18px;
         }
 
 
-        .form-group label {
-            display: block;
+        .performance-card {
 
-            margin-bottom: 6px;
+            padding: 15px 10px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+        }
+
+
+        .performance-title {
+
+            font-size: 12px;
 
             font-weight: bold;
 
-            color: #555;
+            color: #64748b;
 
-            font-size: 14px;
+            margin-bottom: 7px;
+
         }
 
 
-        .form-group input {
-            width: 100%;
+        .performance-value {
 
-            padding: 12px;
+            font-size: 19px;
 
-            border: 1px solid #ccc;
+            font-weight: bold;
 
-            border-radius: 6px;
+            color: #1e293b;
 
-            font-size: 15px;
         }
 
 
-        .form-group input:focus {
-            outline: none;
-
-            border-color: #007bff;
-
-            box-shadow:
-                0 0 0 3px rgba(0,123,255,0.08);
-        }
-
-
-        /* Employee Details */
+        /* =====================================
+           EMPLOYEE DETAILS
+        ====================================== */
 
         .employee-badge {
+
             background-color: #e9ecef;
 
             padding: 12px;
@@ -364,12 +461,70 @@
             color: #495057;
 
             line-height: 1.7;
+
         }
 
 
-        /* Submit */
+        /* =====================================
+           FORM GROUP
+        ====================================== */
+
+        .form-group {
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            font-weight: bold;
+
+            color: #555;
+
+            font-size: 14px;
+
+        }
+
+
+        .form-group input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+
+        }
+
+
+        .form-group input:focus {
+
+            outline: none;
+
+            border-color: #007bff;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(0,123,255,0.08);
+
+        }
+
+
+        /* =====================================
+           SUBMIT BUTTON
+        ====================================== */
 
         .submit-btn {
+
             width: 100%;
 
             padding: 12px;
@@ -387,15 +542,32 @@
             cursor: pointer;
 
             font-weight: bold;
+
         }
 
 
         .submit-btn:hover {
+
             background-color: #218838;
+
         }
 
 
+        .submit-btn:disabled {
+
+            opacity: 0.7;
+
+            cursor: not-allowed;
+
+        }
+
+
+        /* =====================================
+           MESSAGE
+        ====================================== */
+
         #message {
+
             margin-top: 15px;
 
             text-align: center;
@@ -405,6 +577,62 @@
             font-size: 14px;
 
             min-height: 20px;
+
+        }
+
+
+        /* =====================================
+           MOBILE MENU BUTTON
+        ====================================== */
+
+        .mobile-menu-btn {
+
+            display: none;
+
+            position: fixed;
+
+            top: 12px;
+
+            left: 12px;
+
+            width: 42px;
+
+            height: 42px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 18px;
+
+            cursor: pointer;
+
+            z-index: 1200;
+
+        }
+
+
+        /* =====================================
+           MOBILE OVERLAY
+        ====================================== */
+
+        .sidebar-overlay {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,0.35);
+
+            z-index: 900;
+
         }
 
 
@@ -412,58 +640,131 @@
            MOBILE
         ====================================== */
 
-        @media (max-width: 700px) {
+        @media (max-width: 800px) {
 
-            body {
-                flex-direction: column;
-                overflow: auto;
+            .mobile-menu-btn {
+
+                display: block;
+
             }
 
 
             .sidebar {
-                width: 100%;
-                height: auto;
-                min-height: auto;
-                position: relative;
+
+                width: 225px;
+
+                transform:
+                    translateX(-100%);
+
+                transition:
+                    transform 0.25s ease;
+
             }
 
 
-            .sidebar .logo-section {
-                padding: 12px;
+            .sidebar.open {
+
+                transform:
+                    translateX(0);
+
             }
 
 
-            .sidebar .logo-section img {
-                width: 55px;
-                height: 55px;
-            }
+            .sidebar-overlay.show {
 
+                display: block;
 
-            .sidebar .menu {
-                margin-top: 0;
-            }
-
-
-            .sidebar .menu a {
-                padding: 10px 15px;
             }
 
 
             .main-area {
-                height: auto;
-                padding: 15px;
-                overflow: visible;
+
+                margin-left: 0;
+
+                padding:
+                    65px 15px 20px;
+
             }
 
 
             .header-nav {
+
                 max-width: 100%;
+
             }
 
 
             .form-container {
+
                 max-width: 100%;
+
                 padding: 25px 20px;
+
+            }
+
+
+            .performance-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+        }
+
+
+        /* =====================================
+           SMALL MOBILE
+        ====================================== */
+
+        @media (max-width: 500px) {
+
+            .performance-grid {
+
+                grid-template-columns: 1fr 1fr;
+
+            }
+
+
+            .performance-value {
+
+                font-size: 16px;
+
+            }
+
+
+            .performance-title {
+
+                font-size: 11px;
+
+            }
+
+
+            .header-nav {
+
+                padding: 12px 14px;
+
+            }
+
+
+            .logout-btn {
+
+                font-size: 12px;
+
+            }
+
+
+            .form-container {
+
+                padding: 20px 15px;
+
+            }
+
+
+            .form-container h3 {
+
+                font-size: 20px;
+
             }
 
         }
@@ -476,207 +777,505 @@
 <body>
 
 
+<!-- =====================================
+     MOBILE MENU BUTTON
+====================================== -->
+
+<button
+    type="button"
+    id="mobileMenuBtn"
+    class="mobile-menu-btn"
+    aria-label="Open Menu"
+>
+
+    <i class="fa-solid fa-bars"></i>
+
+</button>
 
 
+<!-- =====================================
+     SIDEBAR OVERLAY
+====================================== -->
 
-    <!-- =====================================
-         MAIN AREA
-    ====================================== -->
+<div
+    id="sidebarOverlay"
+    class="sidebar-overlay"
+></div>
 
-    <div class="main-area">
+
+<!-- =====================================
+     SIDEBAR
+====================================== -->
+
+<aside
+    id="sidebar"
+    class="sidebar"
+>
 
 
-        <!-- Header -->
+    <!-- LOGO -->
 
-        <div class="header-nav">
+    <div class="logo-section">
 
-            <span
-                id="userInfo"
-                class="user-info"
-            >
+        <img
+            src="assets/images/logo.png"
+            alt="Telethon Logo"
+        >
+
+        <h2>
+            Telethon
+        </h2>
+
+        <p>
+            Teacher Panel
+        </p>
+
+    </div>
+
+
+    <!-- MENU -->
+
+    <nav class="menu">
+
+
+        <div class="menu-title">
+            Menu
+        </div>
+
+
+        <!-- DAILY COLLECTION -->
+
+        <a
+            href="daily-entry.html"
+            class="active"
+        >
+
+            <i class="fa-solid fa-calendar-plus"></i>
+
+            <span>
+                Daily Collection
+            </span>
+
+        </a>
+
+
+        <!-- LOGOUT -->
+
+        <a
+            href="index.html"
+            id="logoutLink"
+            class="logout-link"
+        >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            <span>
+                Logout
+            </span>
+
+        </a>
+
+
+    </nav>
+
+</aside>
+
+
+<!-- =====================================
+     MAIN AREA
+====================================== -->
+
+<div class="main-area">
+
+
+    <!-- =================================
+         HEADER
+    ================================== -->
+
+    <div class="header-nav">
+
+
+        <span
+            id="userInfo"
+            class="user-info"
+        >
+
+            <i class="fa-solid fa-circle-user"></i>
+
+            <span>
                 Loading user...
             </span>
 
-
-            <button
-                id="logoutBtnTop"
-                class="logout-btn"
-                type="button"
-            >
-                Logout
-            </button>
-
-        </div>
+        </span>
 
 
-        <!-- =====================================
-             DAILY ENTRY FORM
-        ====================================== -->
-
-        <div class="form-container">
-
-
-            <h3>
-                Daily Collection Entry
-            </h3>
-            <!-- =====================================
-     PERFORMANCE SUMMARY
-====================================== -->
-
-<div class="performance-grid">
-
-    <div class="performance-card collection-card">
-        <div class="performance-title">
-            Total Collection
-        </div>
-
-        <div
-            class="performance-value"
-            id="totalCollection"
+        <button
+            id="logoutBtnTop"
+            class="logout-btn"
+            type="button"
         >
-            ₹ 0
-        </div>
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+
     </div>
 
 
-    <div class="performance-card target-card">
-        <div class="performance-title">
-            Target
-        </div>
+    <!-- =================================
+         DAILY ENTRY FORM
+    ================================== -->
 
-        <div
-            class="performance-value"
-            id="targetAmount"
-        >
-            ₹ 0
-        </div>
-    </div>
+    <div class="form-container">
 
 
-    <div class="performance-card remaining-card">
-        <div class="performance-title">
-            Remaining Target
-        </div>
-
-        <div
-            class="performance-value"
-            id="remainingTarget"
-        >
-            ₹ 0
-        </div>
-    </div>
+        <h3>
+            Daily Collection Entry
+        </h3>
 
 
-    <div class="performance-card percentage-card">
-        <div class="performance-title">
-            Percentage
-        </div>
+        <!-- =================================
+             PERFORMANCE SUMMARY
+        ================================== -->
 
-        <div
-            class="performance-value"
-            id="collectionPercentage"
-        >
-            0%
-        </div>
-    </div>
-
-</div>
+        <div class="performance-grid">
 
 
-            <!-- Employee Details -->
+            <!-- TOTAL COLLECTION -->
 
-            <div
-                id="employeeBadge"
-                class="employee-badge"
-                style="display: none;"
-            >
+            <div class="performance-card collection-card">
 
-                <div id="badgeTeacher">
-                    Teacher: -
+                <div class="performance-title">
+                    Total Collection
                 </div>
 
-                <div id="badgeMadina">
-                    Jamiatul Madina: -
-                </div>
-
-                <div id="badgeLocation">
-                    Location: -
+                <div
+                    class="performance-value"
+                    id="totalCollection"
+                >
+                    ₹ 0
                 </div>
 
             </div>
 
 
-            <form id="dailyEntryForm">
+            <!-- TARGET -->
 
+            <div class="performance-card target-card">
 
-                <!-- Date -->
-
-                <div class="form-group">
-
-                    <label for="entryDate">
-                        Date
-                    </label>
-
-                    <input
-                        type="date"
-                        id="entryDate"
-                        required
-                    >
-
+                <div class="performance-title">
+                    Target
                 </div>
 
-
-                <!-- Amount -->
-
-                <div class="form-group">
-
-                    <label for="amount">
-                        Collection Amount (₹)
-                    </label>
-
-                    <input
-                        type="number"
-                        id="amount"
-                        placeholder="Enter Amount"
-                        min="1"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- Submit -->
-
-                <button
-                    type="submit"
-                    id="submitBtn"
-                    class="submit-btn"
+                <div
+                    class="performance-value"
+                    id="targetAmount"
                 >
-                    Submit Collection
-                </button>
+                    ₹ 0
+                </div>
+
+            </div>
 
 
-            </form>
+            <!-- REMAINING TARGET -->
+
+            <div class="performance-card remaining-card">
+
+                <div class="performance-title">
+                    Remaining Target
+                </div>
+
+                <div
+                    class="performance-value"
+                    id="remainingTarget"
+                >
+                    ₹ 0
+                </div>
+
+            </div>
 
 
-            <div id="message"></div>
+            <!-- PERCENTAGE -->
+
+            <div class="performance-card percentage-card">
+
+                <div class="performance-title">
+                    Percentage
+                </div>
+
+                <div
+                    class="performance-value"
+                    id="collectionPercentage"
+                >
+                    0%
+                </div>
+
+            </div>
 
 
         </div>
 
 
+        <!-- =================================
+             EMPLOYEE DETAILS
+        ================================== -->
+
+        <div
+            id="employeeBadge"
+            class="employee-badge"
+            style="display:none;"
+        >
+
+
+            <div id="badgeTeacher">
+                Teacher: -
+            </div>
+
+
+            <div id="badgeMadina">
+                Jamiatul Madina: -
+            </div>
+
+
+            <div id="badgeLocation">
+                Location: -
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================
+             FORM
+        ================================== -->
+
+        <form id="dailyEntryForm">
+
+
+            <!-- DATE -->
+
+            <div class="form-group">
+
+                <label for="entryDate">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="entryDate"
+                    required
+                >
+
+            </div>
+
+
+            <!-- AMOUNT -->
+
+            <div class="form-group">
+
+                <label for="amount">
+                    Collection Amount (₹)
+                </label>
+
+                <input
+                    type="number"
+                    id="amount"
+                    placeholder="Enter Amount"
+                    min="1"
+                    step="1"
+                    required
+                >
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                id="submitBtn"
+                class="submit-btn"
+            >
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+                Submit Collection
+
+            </button>
+
+
+        </form>
+
+
+        <!-- MESSAGE -->
+
+        <div id="message"></div>
+
+
     </div>
 
 
-    <!-- =====================================
-         EXISTING DAILY ENTRY JS
-         DO NOT CHANGE
-    ====================================== -->
+</div>
 
-    <script
-        type="module"
-        src="assets/js/daily-entry.js?v=3"
-    ></script>
+
+<!-- =====================================
+     SIDEBAR MOBILE JS
+     Does NOT change daily-entry.js
+====================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* ==============================
+           ELEMENTS
+        ============================== */
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const mobileMenuBtn =
+            document.getElementById("mobileMenuBtn");
+
+        const sidebarOverlay =
+            document.getElementById("sidebarOverlay");
+
+        const logoutBtnTop =
+            document.getElementById("logoutBtnTop");
+
+        const logoutLink =
+            document.getElementById("logoutLink");
+
+
+        /* ==============================
+           OPEN SIDEBAR
+        ============================== */
+
+        if (mobileMenuBtn) {
+
+            mobileMenuBtn.addEventListener(
+                "click",
+                function () {
+
+                    sidebar.classList.toggle("open");
+
+                    sidebarOverlay.classList.toggle("show");
+
+                }
+            );
+
+        }
+
+
+        /* ==============================
+           CLOSE SIDEBAR
+        ============================== */
+
+        if (sidebarOverlay) {
+
+            sidebarOverlay.addEventListener(
+                "click",
+                function () {
+
+                    sidebar.classList.remove("open");
+
+                    sidebarOverlay.classList.remove("show");
+
+                }
+            );
+
+        }
+
+
+        /* ==============================
+           LOGOUT FUNCTION
+        ============================== */
+
+        function logoutUser() {
+
+            localStorage.removeItem(
+                "loggedInEmpCode"
+            );
+
+            localStorage.removeItem(
+                "userRole"
+            );
+
+            localStorage.removeItem(
+                "regionUserName"
+            );
+
+            localStorage.removeItem(
+                "regionUserAccess"
+            );
+
+            window.location.href =
+                "index.html";
+
+        }
+
+
+        /* ==============================
+           TOP LOGOUT
+        ============================== */
+
+        if (logoutBtnTop) {
+
+            logoutBtnTop.addEventListener(
+                "click",
+                function () {
+
+                    logoutUser();
+
+                }
+            );
+
+        }
+
+
+        /* ==============================
+           SIDEBAR LOGOUT
+        ============================== */
+
+        if (logoutLink) {
+
+            logoutLink.addEventListener(
+                "click",
+                function (e) {
+
+                    e.preventDefault();
+
+                    logoutUser();
+
+                }
+            );
+
+        }
+
+
+    }
+);
+
+</script>
+
+
+<!-- =====================================
+     EXISTING DAILY ENTRY JS
+     
+     IMPORTANT:
+     DO NOT CHANGE
+====================================== -->
+
+<script
+    type="module"
+    src="assets/js/daily-entry.js?v=3"
+></script>
 
 
 </body>
