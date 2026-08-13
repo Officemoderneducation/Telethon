@@ -20,21 +20,15 @@
 
         <!-- 1. DASHBOARD -->
         <a href="dashboard.html" data-page="dashboard.html">
-
             <i class="fa-solid fa-house"></i>
-
             <span>Dashboard</span>
-
         </a>
 
 
         <!-- 2. TEACHERS LIST -->
         <a href="users.html" data-page="users.html">
-
             <i class="fa-solid fa-users"></i>
-
             <span>Teachers List</span>
-
         </a>
 
 
@@ -43,11 +37,8 @@
             href="collection-summary.html"
             data-page="collection-summary.html"
         >
-
             <i class="fa-solid fa-chart-pie"></i>
-
             <span>Collection Summary</span>
-
         </a>
 
 
@@ -56,11 +47,8 @@
             href="target-management.html"
             data-page="target-management.html"
         >
-
             <i class="fa-solid fa-bullseye"></i>
-
             <span>Target Management</span>
-
         </a>
 
 
@@ -69,11 +57,8 @@
             href="region-user-management.html"
             data-page="region-user-management.html"
         >
-
             <i class="fa-solid fa-user-shield"></i>
-
             <span>Region User Management</span>
-
         </a>
 
 
@@ -82,11 +67,8 @@
             href="all-entry.html"
             data-page="all-entry.html"
         >
-
             <i class="fa-solid fa-list"></i>
-
             <span>All Entry</span>
-
         </a>
 
 
@@ -95,11 +77,8 @@
             href="#"
             id="adminLogoutBtn"
         >
-
             <i class="fa-solid fa-right-from-bracket"></i>
-
             <span>Logout</span>
-
         </a>
 
     </div>
@@ -108,23 +87,25 @@
 
 
 <!-- =========================================
-     ACTIVE PAGE + LOGOUT
+     ACTIVE PAGE + FIREBASE LOGOUT
 ========================================= -->
 
-<script>
+<script type="module">
 
-(function () {
+    /* =====================================
+       FIREBASE
+    ===================================== */
 
-    const sidebar =
-        document.querySelector(".admin-sidebar");
+    import { auth } from "./assets/js/firebase-config.js";
+
+    import {
+        signOut
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
-    if (!sidebar) return;
-
-
-    /* ==============================
+    /* =====================================
        ACTIVE PAGE
-    ============================== */
+    ===================================== */
 
     const currentPage =
         window.location.pathname
@@ -133,69 +114,96 @@
             .toLowerCase();
 
 
-    const menuLinks =
-        sidebar.querySelectorAll(
-            ".admin-sidebar-menu a[data-page]"
-        );
+    const sidebar =
+        document.querySelector(".admin-sidebar");
 
 
-    menuLinks.forEach(function (link) {
+    if (sidebar) {
 
-        const page =
-            link
-                .getAttribute("data-page")
-                .toLowerCase();
-
-
-        if (page === currentPage) {
-
-            link.classList.add("active");
-
-        } else {
-
-            link.classList.remove("active");
-
-        }
-
-    });
+        const menuLinks =
+            sidebar.querySelectorAll(
+                ".admin-sidebar-menu a[data-page]"
+            );
 
 
-    /* ==============================
+        menuLinks.forEach(function (link) {
+
+            const page =
+                link
+                    .getAttribute("data-page")
+                    .toLowerCase();
+
+
+            if (page === currentPage) {
+
+                link.classList.add("active");
+
+            } else {
+
+                link.classList.remove("active");
+
+            }
+
+        });
+
+    }
+
+
+    /* =====================================
        LOGOUT
-    ============================== */
+    ===================================== */
 
     const logoutBtn =
-        document.getElementById(
-            "adminLogoutBtn"
-        );
+        document.getElementById("adminLogoutBtn");
 
 
     if (logoutBtn) {
 
         logoutBtn.addEventListener(
             "click",
-            function (e) {
+            async function (e) {
 
                 e.preventDefault();
 
 
-                localStorage.removeItem(
-                    "loggedInEmpCode"
-                );
+                try {
 
-                localStorage.removeItem(
-                    "userRole"
-                );
+                    /* Firebase Sign Out */
+                    await signOut(auth);
 
 
-                window.location.href =
-                    "index.html";
+                    /* Clear Local Storage */
+                    localStorage.removeItem(
+                        "loggedInEmpCode"
+                    );
+
+                    localStorage.removeItem(
+                        "userRole"
+                    );
+
+
+                    /* Go To Login Page */
+                    window.location.href =
+                        "index.html";
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Logout Error:",
+                        error
+                    );
+
+
+                    alert(
+                        "Logout nahi ho saka. Please try again."
+                    );
+
+                }
 
             }
         );
 
     }
-
-})();
 
 </script>
