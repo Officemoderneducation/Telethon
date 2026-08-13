@@ -1,14 +1,30 @@
-/* ======================================
-   REGION USER SIDEBAR
-======================================= */
+/* =========================================================
+   TELETHON REGION USER SIDEBAR
+   File: assets/css/region-sidebar.css
+========================================================= */
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+.region-sidebar,
+.region-sidebar * {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
 
 .region-sidebar {
 
     position: fixed;
 
     top: 0;
-
     left: 0;
+    bottom: 0;
 
     width: 250px;
 
@@ -25,20 +41,28 @@
     z-index: 9999;
 
     box-shadow:
-        3px 0 12px rgba(0, 0, 0, 0.12);
+        2px 0 12px rgba(0, 0, 0, 0.15);
 
+    overflow: hidden;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 }
 
 
-/* ======================================
-   LOGO AREA
-======================================= */
+/* =========================================================
+   BRAND
+========================================================= */
 
-.region-sidebar-logo {
+.region-sidebar-brand {
 
-    height: 85px;
+    width: 100%;
 
-    padding: 14px 18px;
+    height: 82px;
+
+    min-height: 82px;
 
     display: flex;
 
@@ -46,156 +70,285 @@
 
     gap: 12px;
 
+    padding: 10px 17px;
+
     border-bottom:
         1px solid rgba(255,255,255,0.08);
 
 }
 
 
-/* ======================================
-   LOGO IMAGE
-======================================= */
+/* =========================================================
+   LOGO
+========================================================= */
 
-.region-sidebar-logo img {
+.region-sidebar-logo {
 
-    width: 46px;
+    width: 52px !important;
 
-    height: 46px;
+    height: 52px !important;
+
+    min-width: 52px;
+
+    min-height: 52px;
+
+    max-width: 52px !important;
+
+    max-height: 52px;
 
     object-fit: contain;
 
     display: block;
 
+    flex-shrink: 0;
 }
 
 
-/* ======================================
-   LOGO TEXT
-======================================= */
+/* =========================================================
+   BRAND TEXT
+========================================================= */
 
-.region-logo-text {
+.region-sidebar-brand-text {
 
     min-width: 0;
 
+    overflow: hidden;
 }
 
-
-.region-logo-text h2 {
+.region-sidebar-brand-text h2 {
 
     margin: 0;
 
+    padding: 0;
+
     font-size: 19px;
 
-    line-height: 1.2;
+    line-height: 22px;
+
+    font-weight: 700;
+
+    color: #38bdf8;
+
+    white-space: nowrap;
+}
+
+.region-sidebar-brand-text p {
+
+    margin: 3px 0 0;
+
+    padding: 0;
+
+    font-size: 11px;
+
+    line-height: 15px;
+
+    color: #cbd5e1;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   USER AREA
+========================================================= */
+
+.region-sidebar-user {
+
+    padding: 16px 18px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
+}
+
+.region-sidebar-user-name {
+
+    font-size: 14px;
+
+    line-height: 20px;
 
     font-weight: 700;
 
     color: #ffffff;
 
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
-
-.region-logo-text span {
-
-    display: block;
+.region-sidebar-user-role {
 
     margin-top: 3px;
 
     font-size: 11px;
 
-    color: #94a3b8;
+    line-height: 16px;
 
+    color: #94a3b8;
 }
 
 
-/* ======================================
+/* =========================================================
    MENU
-======================================= */
+========================================================= */
 
 .region-sidebar-menu {
 
     flex: 1;
 
+    width: 100%;
+
     padding: 18px 12px;
 
     overflow-y: auto;
 
+    overflow-x: hidden;
 }
 
 
-/* ======================================
+/* =========================================================
+   MENU TITLE
+========================================================= */
+
+.region-menu-title {
+
+    padding: 0 12px 10px;
+
+    font-size: 10px;
+
+    line-height: 14px;
+
+    font-weight: 700;
+
+    color: #64748b;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
    MENU LINK
-======================================= */
+========================================================= */
 
 .region-menu-link {
 
-    display: flex;
+    display: flex !important;
 
-    align-items: center;
-
-    gap: 13px;
+    align-items: center !important;
 
     width: 100%;
 
-    min-height: 46px;
+    min-height: 44px;
 
-    padding: 11px 14px;
+    padding: 11px 13px;
 
-    margin-bottom: 6px;
+    margin: 0 0 6px;
+
+    gap: 12px;
 
     border-radius: 8px;
 
-    text-decoration: none;
-
     color: #cbd5e1;
+
+    background: transparent;
+
+    text-decoration: none !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     font-size: 14px;
 
     font-weight: 500;
 
+    line-height: 20px;
+
+    cursor: pointer;
+
     transition:
         background 0.2s ease,
         color 0.2s ease,
         transform 0.2s ease;
-
 }
 
 
-/* ======================================
-   ICON
-======================================= */
+/* =========================================================
+   MENU ICON
+========================================================= */
 
 .region-menu-link i {
 
-    width: 20px;
+    display: inline-flex !important;
 
-    min-width: 20px;
+    align-items: center;
 
-    text-align: center;
+    justify-content: center;
+
+    width: 21px;
+
+    min-width: 21px;
+
+    height: 21px;
 
     font-size: 16px;
 
+    line-height: 21px;
+
+    text-align: center;
+
+    color: #94a3b8;
+
+    flex-shrink: 0;
+
+    transition: color 0.2s ease;
 }
 
 
-/* ======================================
+/* =========================================================
+   MENU TEXT
+========================================================= */
+
+.region-menu-link span {
+
+    display: inline-block;
+
+    color: inherit;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
    HOVER
-======================================= */
+========================================================= */
 
 .region-menu-link:hover {
 
-    background: rgba(255,255,255,0.08);
+    background: #1e293b;
 
     color: #ffffff;
 
     transform: translateX(2px);
+}
 
+.region-menu-link:hover i {
+
+    color: #ffffff;
 }
 
 
-/* ======================================
+/* =========================================================
    ACTIVE
-======================================= */
+========================================================= */
 
 .region-menu-link.active {
 
@@ -203,222 +356,174 @@
 
     color: #ffffff;
 
+    font-weight: 600;
+
     box-shadow:
         0 4px 10px rgba(37,99,235,0.25);
-
 }
-
 
 .region-menu-link.active i {
 
     color: #ffffff;
-
 }
 
 
-/* ======================================
-   BOTTOM
-======================================= */
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
 
 .region-sidebar-bottom {
+
+    width: 100%;
 
     padding: 12px;
 
     border-top:
         1px solid rgba(255,255,255,0.08);
-
 }
 
 
-/* ======================================
+/* =========================================================
    LOGOUT
-======================================= */
+========================================================= */
 
 .region-logout-link {
 
-    display: flex;
-
-    align-items: center;
-
-    gap: 13px;
-
-    width: 100%;
-
-    min-height: 45px;
-
-    padding: 11px 14px;
-
-    border-radius: 8px;
-
     color: #fca5a5;
-
-    text-decoration: none;
-
-    font-size: 14px;
-
-    font-weight: 500;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease;
-
 }
-
 
 .region-logout-link i {
 
-    width: 20px;
-
-    min-width: 20px;
-
-    text-align: center;
-
-    font-size: 16px;
-
+    color: #f87171;
 }
-
 
 .region-logout-link:hover {
 
-    background: rgba(239,68,68,0.12);
+    background: #450a0a;
 
     color: #fecaca;
 
+    transform: none;
+}
+
+.region-logout-link:hover i {
+
+    color: #fecaca;
 }
 
 
-/* ======================================
+/* =========================================================
    SCROLLBAR
-======================================= */
+========================================================= */
 
 .region-sidebar-menu::-webkit-scrollbar {
 
     width: 5px;
-
 }
-
 
 .region-sidebar-menu::-webkit-scrollbar-track {
 
     background: transparent;
-
 }
-
 
 .region-sidebar-menu::-webkit-scrollbar-thumb {
 
-    background: rgba(255,255,255,0.15);
+    background: #334155;
 
     border-radius: 10px;
-
 }
 
 
-/* ======================================
-   TABLET
-======================================= */
+/* =========================================================
+   MOBILE BUTTON
+========================================================= */
 
-@media (max-width: 768px) {
+.mobile-menu-btn {
+
+    display: none;
+
+    width: 42px;
+
+    height: 42px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* =========================================================
+   MAIN AREA SUPPORT
+========================================================= */
+
+.region-main-area {
+
+    margin-left: 250px;
+
+    min-height: 100vh;
+
+    width: calc(100% - 250px);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 800px) {
 
     .region-sidebar {
 
-        width: 210px;
+        transform: translateX(-100%);
 
+        transition:
+            transform 0.25s ease;
+    }
+
+
+    .region-sidebar.open {
+
+        transform: translateX(0);
+    }
+
+
+    .region-main-area {
+
+        margin-left: 0;
+
+        width: 100%;
+    }
+
+
+    .mobile-menu-btn {
+
+        display: inline-flex;
     }
 
 }
 
 
-/* ======================================
+/* =========================================================
    SMALL MOBILE
-======================================= */
+========================================================= */
 
-@media (max-width: 550px) {
+@media (max-width: 480px) {
 
     .region-sidebar {
 
-        width: 68px;
-
-    }
-
-
-    .region-sidebar-logo {
-
-        height: 75px;
-
-        padding: 12px;
-
-        justify-content: center;
-
-    }
-
-
-    .region-sidebar-logo img {
-
-        width: 40px;
-
-        height: 40px;
-
-    }
-
-
-    .region-logo-text {
-
-        display: none;
-
-    }
-
-
-    .region-sidebar-menu {
-
-        padding: 15px 8px;
-
-    }
-
-
-    .region-menu-link {
-
-        justify-content: center;
-
-        padding: 12px 8px;
-
-    }
-
-
-    .region-menu-link span {
-
-        display: none;
-
-    }
-
-
-    .region-menu-link i {
-
-        font-size: 17px;
-
-    }
-
-
-    .region-sidebar-bottom {
-
-        padding: 8px;
-
-    }
-
-
-    .region-logout-link {
-
-        justify-content: center;
-
-        padding: 12px 8px;
-
-    }
-
-
-    .region-logout-link span {
-
-        display: none;
-
+        width: 245px;
     }
 
 }
