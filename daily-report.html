@@ -13,9 +13,9 @@
     <title>Daily Report | Telethon</title>
 
 
-    <!-- ==========================================
+    <!-- =====================================================
          FONT AWESOME
-    =========================================== -->
+    ====================================================== -->
 
     <link
         rel="stylesheet"
@@ -23,21 +23,23 @@
     >
 
 
-    <!-- ==========================================
+    <!-- =====================================================
          REGION SIDEBAR CSS
-    =========================================== -->
+         IMPORTANT:
+         Sidebar components folder ke andar hai
+    ====================================================== -->
 
     <link
         rel="stylesheet"
-        href="assets/css/region-sidebar.css"
+        href="components/region-sidebar.css"
     >
 
 
-    <!-- ==========================================
-         PAGE CSS
-    =========================================== -->
-
     <style>
+
+        /* =====================================================
+           RESET
+        ====================================================== */
 
         * {
             margin: 0;
@@ -47,80 +49,103 @@
         }
 
 
+        /* =====================================================
+           BODY
+        ====================================================== */
+
         body {
+
             background: #f4f6f9;
+
             color: #1e293b;
+
             min-height: 100vh;
+
         }
 
 
-        /* ======================================
-           SIDEBAR CONTAINER
-        ====================================== */
+        /* =====================================================
+           SIDEBAR LOADER
+        ====================================================== */
 
         #regionSidebar {
-            display: block;
+
+            position: relative;
+
+            z-index: 1000;
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            MAIN AREA
-        ====================================== */
+        ====================================================== */
 
-        .main-area {
+        .daily-report-main {
+
             margin-left: 250px;
+
             min-height: 100vh;
+
+            padding: 22px;
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            TOPBAR
-        ====================================== */
+        ====================================================== */
 
-        .topbar-main {
-            height: 76px;
+        .topbar {
 
-            background: white;
+            background: #ffffff;
 
-            display: flex;
+            border-radius: 10px;
 
-            align-items: center;
+            padding: 20px 24px;
 
-            justify-content: space-between;
-
-            padding: 0 26px;
+            margin-bottom: 20px;
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
-        }
 
-
-        .topbar-left {
             display: flex;
+
+            justify-content: space-between;
 
             align-items: center;
 
             gap: 15px;
+
         }
 
 
-        .topbar-title h2 {
-            font-size: 20px;
+        .topbar-left h2 {
+
+            font-size: 24px;
 
             color: #0f172a;
 
-            margin-bottom: 3px;
+            margin-bottom: 5px;
+
         }
 
 
-        .topbar-title p {
-            font-size: 12px;
+        .topbar-left p {
 
             color: #64748b;
+
+            font-size: 14px;
+
         }
 
 
-        .topbar-user {
+        /* =====================================================
+           TOP USER
+        ====================================================== */
+
+        .top-user {
+
             display: flex;
 
             align-items: center;
@@ -130,57 +155,87 @@
             color: #334155;
 
             font-size: 13px;
+
+            white-space: nowrap;
+
         }
 
 
-        .topbar-user i {
+        .top-user-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius: 50%;
+
+            background: #eff6ff;
+
             color: #2563eb;
 
-            font-size: 20px;
-        }
+            display: flex;
 
+            align-items: center;
 
-        /* ======================================
-           MOBILE MENU BUTTON
-        ====================================== */
-
-        .mobile-menu-btn {
-            display: none;
-
-            border: none;
-
-            background: #2563eb;
-
-            color: white;
-
-            width: 42px;
-
-            height: 42px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
+            justify-content: center;
 
             font-size: 18px;
+
         }
 
 
-        /* ======================================
-           MAIN CONTENT
-        ====================================== */
+        /* =====================================================
+           SIDEBAR ERROR
+        ====================================================== */
 
-        .main {
-            width: 100%;
+        .sidebar-error {
 
-            padding: 22px;
+            position: fixed;
+
+            left: 0;
+
+            top: 0;
+
+            width: 250px;
+
+            height: 100vh;
+
+            background: #0f172a;
+
+            color: #fca5a5;
+
+            padding: 25px 18px;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            z-index: 9999;
+
         }
 
 
-        /* ======================================
+        .sidebar-error strong {
+
+            color: #ffffff;
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 16px;
+
+        }
+
+
+        /* =====================================================
            REGION USER INFO
-        ====================================== */
+        ====================================================== */
 
         .region-user-info {
+
             background: #ecfdf5;
 
             border: 1px solid #bbf7d0;
@@ -194,20 +249,24 @@
             color: #166534;
 
             font-size: 14px;
+
         }
 
 
         .region-user-info strong {
+
             font-size: 16px;
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            FILTER PANEL
-        ====================================== */
+        ====================================================== */
 
         .filter-panel {
-            background: white;
+
+            background: #ffffff;
 
             border-radius: 12px;
 
@@ -217,10 +276,12 @@
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
+
         }
 
 
         .filter-title {
+
             font-size: 17px;
 
             font-weight: bold;
@@ -228,20 +289,24 @@
             margin-bottom: 16px;
 
             color: #0f172a;
+
         }
 
 
         .filters {
+
             display: grid;
 
             grid-template-columns:
                 repeat(4, 1fr);
 
             gap: 13px;
+
         }
 
 
         .filter-group label {
+
             display: block;
 
             margin-bottom: 6px;
@@ -251,6 +316,7 @@
             font-weight: bold;
 
             color: #475569;
+
         }
 
 
@@ -267,9 +333,10 @@
 
             outline: none;
 
-            background: white;
+            background: #ffffff;
 
             font-size: 14px;
+
         }
 
 
@@ -281,12 +348,13 @@
             box-shadow:
                 0 0 0 3px
                 rgba(37,99,235,0.10);
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            QUICK DATE
-        ====================================== */
+        ====================================================== */
 
         .quick-date-title {
 
@@ -299,6 +367,7 @@
             font-weight: bold;
 
             color: #475569;
+
         }
 
 
@@ -309,6 +378,7 @@
             flex-wrap: wrap;
 
             gap: 8px;
+
         }
 
 
@@ -331,6 +401,7 @@
             font-weight: bold;
 
             transition: 0.2s;
+
         }
 
 
@@ -341,6 +412,7 @@
             border-color: #2563eb;
 
             color: #2563eb;
+
         }
 
 
@@ -348,15 +420,16 @@
 
             background: #2563eb;
 
-            color: white;
+            color: #ffffff;
 
             border-color: #2563eb;
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            BUTTONS
-        ====================================== */
+        ====================================================== */
 
         .filter-buttons {
 
@@ -365,6 +438,7 @@
             gap: 10px;
 
             margin-top: 18px;
+
         }
 
 
@@ -381,6 +455,7 @@
             font-weight: bold;
 
             font-size: 13px;
+
         }
 
 
@@ -388,13 +463,15 @@
 
             background: #2563eb;
 
-            color: white;
+            color: #ffffff;
+
         }
 
 
         .apply-btn:hover {
 
             background: #1d4ed8;
+
         }
 
 
@@ -403,18 +480,20 @@
             background: #e2e8f0;
 
             color: #334155;
+
         }
 
 
         .reset-btn:hover {
 
             background: #cbd5e1;
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            REPORT INFO
-        ====================================== */
+        ====================================================== */
 
         .report-info {
 
@@ -426,12 +505,13 @@
             gap: 15px;
 
             margin-bottom: 18px;
+
         }
 
 
         .info-card {
 
-            background: white;
+            background: #ffffff;
 
             border-radius: 10px;
 
@@ -441,6 +521,7 @@
                 0 2px 8px rgba(0,0,0,0.06);
 
             border-left: 4px solid #2563eb;
+
         }
 
 
@@ -453,6 +534,7 @@
             font-size: 12px;
 
             margin-bottom: 5px;
+
         }
 
 
@@ -463,16 +545,17 @@
             color: #0f172a;
 
             font-size: 20px;
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            TABLE
-        ====================================== */
+        ====================================================== */
 
         .table-container {
 
-            background: white;
+            background: #ffffff;
 
             border-radius: 12px;
 
@@ -480,6 +563,7 @@
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
+
         }
 
 
@@ -494,6 +578,7 @@
             margin-bottom: 18px;
 
             gap: 15px;
+
         }
 
 
@@ -502,6 +587,7 @@
             font-size: 18px;
 
             color: #0f172a;
+
         }
 
 
@@ -510,6 +596,7 @@
             font-size: 13px;
 
             color: #64748b;
+
         }
 
 
@@ -522,6 +609,7 @@
             border: 1px solid #e2e8f0;
 
             border-radius: 8px;
+
         }
 
 
@@ -531,9 +619,10 @@
 
             border-collapse: collapse;
 
-            background: white;
+            background: #ffffff;
 
             min-width: 900px;
+
         }
 
 
@@ -541,7 +630,7 @@
 
             background: #2563eb;
 
-            color: white;
+            color: #ffffff;
 
             padding: 13px 14px;
 
@@ -554,6 +643,7 @@
             border-right:
                 1px solid
                 rgba(255,255,255,0.15);
+
         }
 
 
@@ -561,6 +651,7 @@
         th:nth-child(2) {
 
             text-align: left;
+
         }
 
 
@@ -581,6 +672,7 @@
             white-space: nowrap;
 
             text-align: center;
+
         }
 
 
@@ -588,12 +680,14 @@
         td:nth-child(2) {
 
             text-align: left;
+
         }
 
 
         tbody tr:hover {
 
             background: #f8fafc;
+
         }
 
 
@@ -602,6 +696,7 @@
             font-weight: bold;
 
             color: #0f172a;
+
         }
 
 
@@ -610,6 +705,7 @@
             font-weight: bold;
 
             color: #1d4ed8;
+
         }
 
 
@@ -618,6 +714,7 @@
             color: #059669;
 
             font-weight: bold;
+
         }
 
 
@@ -626,6 +723,7 @@
             color: #94a3b8;
 
             font-weight: normal;
+
         }
 
 
@@ -636,12 +734,13 @@
             font-weight: bold;
 
             background: #fff7ed;
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            TOTAL ROW
-        ====================================== */
+        ====================================================== */
 
         .total-row td {
 
@@ -650,12 +749,14 @@
             font-weight: bold;
 
             color: #0f172a;
+
         }
 
 
         .total-row .date-total {
 
             color: #059669;
+
         }
 
 
@@ -664,12 +765,13 @@
             color: #dc2626;
 
             background: #ffedd5;
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            LOADING / EMPTY / ERROR
-        ====================================== */
+        ====================================================== */
 
         .loading-cell,
         .empty-cell,
@@ -678,44 +780,42 @@
             text-align: center !important;
 
             padding: 40px !important;
+
         }
 
 
         .loading-cell {
 
             color: #64748b;
+
         }
 
 
         .empty-cell {
 
             color: #64748b;
+
         }
 
 
         .error-cell {
 
             color: #dc2626;
+
         }
 
 
-        /* ======================================
+        /* =====================================================
            RESPONSIVE
-        ====================================== */
+        ====================================================== */
 
-        @media (max-width: 1000px) {
+        @media (max-width: 1100px) {
 
             .filters {
 
                 grid-template-columns:
                     repeat(2, 1fr);
-            }
 
-
-            .report-info {
-
-                grid-template-columns:
-                    repeat(2, 1fr);
             }
 
         }
@@ -723,78 +823,83 @@
 
         @media (max-width: 800px) {
 
-            .main-area {
+            .daily-report-main {
 
                 margin-left: 0;
+
+                padding: 15px;
+
             }
 
 
-            .mobile-menu-btn {
+            .topbar {
 
-                display: block;
+                flex-direction: column;
+
+                align-items: flex-start;
+
             }
 
 
-            .topbar-main {
+            .top-user {
 
-                padding: 0 15px;
+                width: 100%;
+
+            }
+
+
+            .report-info {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
             }
 
         }
 
 
-        @media (max-width: 700px) {
-
-            .topbar-main {
-
-                height: auto;
-
-                min-height: 76px;
-
-                padding: 12px 15px;
-            }
-
-
-            .topbar-left {
-
-                width: 100%;
-            }
-
-
-            .topbar-title h2 {
-
-                font-size: 17px;
-            }
-
-
-            .topbar-user {
-
-                display: none;
-            }
-
+        @media (max-width: 600px) {
 
             .filters {
 
                 grid-template-columns: 1fr;
+
             }
 
 
             .report-info {
 
                 grid-template-columns: 1fr;
+
             }
 
 
-            .main {
+            .daily-report-main {
 
                 padding: 12px;
+
             }
 
 
-            .table-container,
-            .filter-panel {
+            .filter-panel,
+            .table-container {
 
                 padding: 12px;
+
+            }
+
+
+            .topbar {
+
+                padding: 16px;
+
+            }
+
+
+            .topbar-left h2 {
+
+                font-size: 20px;
+
             }
 
         }
@@ -808,16 +913,20 @@
 
 
 <!-- =====================================================
-     NEW REGION SIDEBAR
-===================================================== -->
+     REGION SIDEBAR
+     
+     IMPORTANT:
+     File actual location:
+     components/region-sidebar.html
+====================================================== -->
 
 <div id="regionSidebar">
 
     <div
         style="
             padding:20px;
-            margin-left:250px;
             color:#64748b;
+            font-family:Arial,sans-serif;
         "
     >
         Loading Region Sidebar...
@@ -828,70 +937,47 @@
 
 <!-- =====================================================
      MAIN AREA
-===================================================== -->
+====================================================== -->
 
-<div class="main-area">
+<div class="daily-report-main">
 
 
     <!-- =================================================
          TOPBAR
     ================================================== -->
 
-    <header class="topbar-main">
+    <div class="topbar">
 
 
         <div class="topbar-left">
 
+            <h2>
 
-            <!-- MOBILE MENU -->
+                <i
+                    class="fa-solid fa-calendar-days"
+                    style="color:#2563eb;margin-right:8px;"
+                ></i>
 
-            <button
-                type="button"
-                id="mobileMenuBtn"
-                class="mobile-menu-btn"
-            >
+                Daily Collection Report
 
-                <i class="fa-solid fa-bars"></i>
-
-            </button>
+            </h2>
 
 
-            <!-- TITLE -->
-
-            <div class="topbar-title">
-
-                <h2>
-
-                    <i
-                        class="fa-solid fa-calendar-days"
-                        style="
-                            color:#2563eb;
-                            margin-right:8px;
-                        "
-                    ></i>
-
-                    Daily Collection Report
-
-                </h2>
-
-
-                <p>
-                    Teacher-wise daily collection report
-                </p>
-
-            </div>
-
+            <p>
+                Teacher-wise daily collection report
+            </p>
 
         </div>
 
 
-        <!-- USER -->
+        <div class="top-user">
 
-        <div class="topbar-user">
 
-            <i
-                class="fa-solid fa-circle-user"
-            ></i>
+            <div class="top-user-icon">
+
+                <i class="fa-solid fa-user"></i>
+
+            </div>
 
 
             <span id="regionUserInfoTop">
@@ -900,642 +986,551 @@
 
             </span>
 
+
         </div>
 
 
-    </header>
+    </div>
 
 
     <!-- =================================================
-         MAIN CONTENT
+         REGION USER INFO
     ================================================== -->
 
-    <main class="main">
+    <div
+        id="regionUserInfo"
+        class="region-user-info"
+    >
+
+        Loading Region User...
+
+    </div>
 
 
-        <!-- REGION USER INFO -->
+    <!-- =================================================
+         FILTER PANEL
+    ================================================== -->
 
-        <div
-            id="regionUserInfo"
-            class="region-user-info"
-        >
+    <div class="filter-panel">
 
-            Loading Region User...
+
+        <div class="filter-title">
+
+            <i class="fa-solid fa-filter"></i>
+
+            Report Filters
+
+        </div>
+
+
+        <div class="filters">
+
+
+            <!-- REGION -->
+
+            <div class="filter-group">
+
+                <label for="regionFilter">
+                    Region
+                </label>
+
+
+                <select id="regionFilter">
+
+                    <option value="">
+                        All Assigned Regions
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- STATE -->
+
+            <div class="filter-group">
+
+                <label for="stateFilter">
+                    State
+                </label>
+
+
+                <select id="stateFilter">
+
+                    <option value="">
+                        All Assigned States
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CITY -->
+
+            <div class="filter-group">
+
+                <label for="cityFilter">
+                    City
+                </label>
+
+
+                <select id="cityFilter">
+
+                    <option value="">
+                        All Cities
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- JAMIATUL MADINA -->
+
+            <div class="filter-group">
+
+                <label for="jamiatulFilter">
+                    Jamiatul Madina
+                </label>
+
+
+                <select id="jamiatulFilter">
+
+                    <option value="">
+                        All Jamiatul Madina
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- FROM DATE -->
+
+            <div class="filter-group">
+
+                <label for="fromDate">
+                    From Date
+                </label>
+
+
+                <input
+                    type="date"
+                    id="fromDate"
+                >
+
+            </div>
+
+
+            <!-- TO DATE -->
+
+            <div class="filter-group">
+
+                <label for="toDate">
+                    To Date
+                </label>
+
+
+                <input
+                    type="date"
+                    id="toDate"
+                >
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div class="filter-group">
+
+                <label for="searchFilter">
+                    Search Teacher
+                </label>
+
+
+                <input
+                    type="text"
+                    id="searchFilter"
+                    placeholder="Teacher / Emp Code"
+                    autocomplete="off"
+                >
+
+            </div>
+
 
         </div>
 
 
         <!-- =================================================
-             FILTER PANEL
-        ================================================= -->
+             QUICK DATE
+        ================================================== -->
 
-        <div class="filter-panel">
+        <div class="quick-date-title">
+
+            Quick Date Range
+
+        </div>
 
 
-            <div class="filter-title">
+        <div class="quick-dates">
+
+
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="1"
+            >
+                1 Day
+            </button>
+
+
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="5"
+            >
+                5 Days
+            </button>
+
+
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="10"
+            >
+                10 Days
+            </button>
+
+
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="15"
+            >
+                15 Days
+            </button>
+
+
+            <button
+                type="button"
+                class="quick-date-btn"
+                data-days="30"
+            >
+                30 Days
+            </button>
+
+
+        </div>
+
+
+        <!-- =================================================
+             BUTTONS
+        ================================================== -->
+
+        <div class="filter-buttons">
+
+
+            <button
+                type="button"
+                id="applyFilter"
+                class="filter-btn apply-btn"
+            >
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                Show Report
+
+            </button>
+
+
+            <button
+                type="button"
+                id="resetFilter"
+                class="filter-btn reset-btn"
+            >
+
+                <i class="fa-solid fa-rotate-left"></i>
+
+                Reset
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =================================================
+         REPORT INFO
+    ================================================== -->
+
+    <div class="report-info">
+
+
+        <div class="info-card">
+
+            <span>
+                Selected Date Range
+            </span>
+
+
+            <strong id="selectedDateRange">
+                —
+            </strong>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <span>
+                Assigned Teachers
+            </span>
+
+
+            <strong id="totalTeachers">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <span>
+                Total Collection
+            </span>
+
+
+            <strong id="grandTotal">
+                ₹ 0
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =================================================
+         REPORT TABLE
+    ================================================== -->
+
+    <div class="table-container">
+
+
+        <div class="table-header">
+
+
+            <h3>
 
                 <i
-                    class="fa-solid fa-filter"
+                    class="fa-solid fa-table"
+                    style="
+                        color:#2563eb;
+                        margin-right:7px;
+                    "
                 ></i>
 
-                Report Filters
+                Teachers Daily Collection
 
-            </div>
+            </h3>
 
 
-            <div class="filters">
+            <span
+                id="resultCount"
+                class="result-count"
+            >
 
+                Select Date Range
 
-                <!-- REGION -->
-
-                <div class="filter-group">
-
-                    <label for="regionFilter">
-                        Region
-                    </label>
-
-
-                    <select id="regionFilter">
-
-                        <option value="">
-                            All Assigned Regions
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- STATE -->
-
-                <div class="filter-group">
-
-                    <label for="stateFilter">
-                        State
-                    </label>
-
-
-                    <select id="stateFilter">
-
-                        <option value="">
-                            All Assigned States
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- CITY -->
-
-                <div class="filter-group">
-
-                    <label for="cityFilter">
-                        City
-                    </label>
-
-
-                    <select id="cityFilter">
-
-                        <option value="">
-                            All Cities
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- JAMIATUL -->
-
-                <div class="filter-group">
-
-                    <label for="jamiatulFilter">
-                        Jamiatul Madina
-                    </label>
-
-
-                    <select id="jamiatulFilter">
-
-                        <option value="">
-                            All Jamiatul Madina
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- FROM DATE -->
-
-                <div class="filter-group">
-
-                    <label for="fromDate">
-                        From Date
-                    </label>
-
-
-                    <input
-                        type="date"
-                        id="fromDate"
-                    >
-
-                </div>
-
-
-                <!-- TO DATE -->
-
-                <div class="filter-group">
-
-                    <label for="toDate">
-                        To Date
-                    </label>
-
-
-                    <input
-                        type="date"
-                        id="toDate"
-                    >
-
-                </div>
-
-
-                <!-- SEARCH -->
-
-                <div class="filter-group">
-
-                    <label for="searchFilter">
-                        Search Teacher
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="searchFilter"
-                        placeholder="Teacher / Emp Code"
-                        autocomplete="off"
-                    >
-
-                </div>
-
-
-            </div>
-
-
-            <!-- QUICK DATE -->
-
-            <div class="quick-date-title">
-
-                Quick Date Range
-
-            </div>
-
-
-            <div class="quick-dates">
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="1"
-                >
-                    1 Day
-                </button>
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="5"
-                >
-                    5 Days
-                </button>
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="10"
-                >
-                    10 Days
-                </button>
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="15"
-                >
-                    15 Days
-                </button>
-
-
-                <button
-                    type="button"
-                    class="quick-date-btn"
-                    data-days="30"
-                >
-                    30 Days
-                </button>
-
-
-            </div>
-
-
-            <!-- BUTTONS -->
-
-            <div class="filter-buttons">
-
-
-                <button
-                    type="button"
-                    id="applyFilter"
-                    class="filter-btn apply-btn"
-                >
-
-                    <i
-                        class="fa-solid fa-magnifying-glass"
-                    ></i>
-
-                    Show Report
-
-                </button>
-
-
-                <button
-                    type="button"
-                    id="resetFilter"
-                    class="filter-btn reset-btn"
-                >
-
-                    <i
-                        class="fa-solid fa-rotate-left"
-                    ></i>
-
-                    Reset
-
-                </button>
-
-
-            </div>
+            </span>
 
 
         </div>
 
 
-        <!-- =================================================
-             REPORT INFO
-        ================================================== -->
-
-        <div class="report-info">
+        <div class="table-wrapper">
 
 
-            <div class="info-card">
-
-                <span>
-                    Selected Date Range
-                </span>
+            <table>
 
 
-                <strong id="selectedDateRange">
-                    —
-                </strong>
+                <thead id="reportTableHead">
 
-            </div>
+                    <tr>
 
+                        <th>
+                            Jamiatul Madina
+                        </th>
 
-            <div class="info-card">
+                        <th>
+                            Teacher Name
+                        </th>
 
-                <span>
-                    Assigned Teachers
-                </span>
+                    </tr>
 
-
-                <strong id="totalTeachers">
-                    0
-                </strong>
-
-            </div>
+                </thead>
 
 
-            <div class="info-card">
+                <tbody id="reportTableBody">
 
-                <span>
-                    Total Collection
-                </span>
+                    <tr>
 
+                        <td
+                            colspan="2"
+                            class="empty-cell"
+                        >
 
-                <strong id="grandTotal">
-                    ₹ 0
-                </strong>
+                            Date range select karke
+                            <b>Show Report</b>
+                            click karein.
 
-            </div>
+                        </td>
 
+                    </tr>
 
-        </div>
-
-
-        <!-- =================================================
-             REPORT TABLE
-        ================================================== -->
-
-        <div class="table-container">
+                </tbody>
 
 
-            <div class="table-header">
+                <tfoot id="reportTableFoot">
+
+                </tfoot>
 
 
-                <h3>
-
-                    <i
-                        class="fa-solid fa-table"
-                        style="
-                            color:#2563eb;
-                            margin-right:7px;
-                        "
-                    ></i>
-
-                    Teachers Daily Collection
-
-                </h3>
-
-
-                <span
-                    id="resultCount"
-                    class="result-count"
-                >
-
-                    Select Date Range
-
-                </span>
-
-
-            </div>
-
-
-            <div class="table-wrapper">
-
-
-                <table>
-
-
-                    <thead id="reportTableHead">
-
-                        <tr>
-
-                            <th>
-                                Jamiatul Madina
-                            </th>
-
-                            <th>
-                                Teacher Name
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="reportTableBody">
-
-                        <tr>
-
-                            <td
-                                colspan="2"
-                                class="empty-cell"
-                            >
-
-                                Date range select karke
-                                <b>Show Report</b>
-                                click karein.
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-
-                    <tfoot
-                        id="reportTableFoot"
-                    >
-                    </tfoot>
-
-
-                </table>
-
-
-            </div>
+            </table>
 
 
         </div>
 
 
-    </main>
+    </div>
 
 
 </div>
 
 
 <!-- =====================================================
-     LOAD REGION SIDEBAR
-===================================================== -->
+     REGION SIDEBAR LOADER
+     
+     IMPORTANT:
+     components/region-sidebar.html
+====================================================== -->
 
-<script>
+<script type="module">
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        loadRegionSidebar();
-
-    }
-);
+    document.addEventListener(
+        "DOMContentLoaded",
+        async function () {
 
 
-async function loadRegionSidebar() {
-
-    const container =
-        document.getElementById(
-            "regionSidebar"
-        );
+            const sidebarContainer =
+                document.getElementById(
+                    "regionSidebar"
+                );
 
 
-    if (!container) {
+            if (!sidebarContainer) {
 
-        console.error(
-            "regionSidebar container not found"
-        );
+                console.error(
+                    "regionSidebar container not found."
+                );
 
-        return;
+                return;
 
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                "region-sidebar.html"
-            );
+            }
 
 
-        if (!response.ok) {
-
-            throw new Error(
-                "region-sidebar.html not found"
-            );
-
-        }
+            try {
 
 
-        const html =
-            await response.text();
+                /*
+                 * IMPORTANT:
+                 * Sidebar components folder ke andar hai.
+                 */
 
-
-        container.innerHTML =
-            html;
-
-
-        console.log(
-            "New Region Sidebar Loaded"
-        );
-
-
-        // ======================================
-        // ACTIVE MENU
-        // ======================================
-
-        const currentPage =
-            window.location.pathname
-                .split("/")
-                .pop();
-
-
-        const menuLinks =
-            container.querySelectorAll(
-                ".menu-link"
-            );
-
-
-        menuLinks.forEach(
-            function (link) {
-
-                const href =
-                    link.getAttribute(
-                        "href"
+                const response =
+                    await fetch(
+                        "components/region-sidebar.html"
                     );
 
 
-                if (
-                    href === currentPage
-                ) {
+                if (!response.ok) {
 
-                    link.classList.add(
-                        "active"
+                    throw new Error(
+                        "HTTP " +
+                        response.status +
+                        " - components/region-sidebar.html not found"
                     );
 
                 }
 
-            }
-        );
+
+                const sidebarHTML =
+                    await response.text();
 
 
-        // ======================================
-        // USER NAME
-        // ======================================
-
-        const savedUserName =
-            localStorage.getItem(
-                "regionUserName"
-            );
+                sidebarContainer.innerHTML =
+                    sidebarHTML;
 
 
-        const sidebarUserName =
-            document.getElementById(
-                "sidebarUserName"
-            );
+                console.log(
+                    "Region Sidebar loaded successfully."
+                );
 
 
-        const topUser =
-            document.getElementById(
-                "regionUserInfoTop"
-            );
+                /* ==========================================
+                   ACTIVE PAGE
+                ========================================== */
+
+                const currentPage =
+                    window.location.pathname
+                        .split("/")
+                        .pop()
+                        .toLowerCase();
 
 
-        if (savedUserName) {
-
-            if (sidebarUserName) {
-
-                sidebarUserName.textContent =
-                    savedUserName;
-
-            }
-
-
-            if (topUser) {
-
-                topUser.textContent =
-                    savedUserName;
-
-            }
-
-        }
-
-
-        // ======================================
-        // MOBILE MENU
-        // ======================================
-
-        const sidebar =
-            document.getElementById(
-                "sidebar"
-            );
-
-
-        const mobileMenuBtn =
-            document.getElementById(
-                "mobileMenuBtn"
-            );
-
-
-        if (
-            sidebar &&
-            mobileMenuBtn
-        ) {
-
-            mobileMenuBtn.addEventListener(
-                "click",
-                function () {
-
-                    sidebar.classList.toggle(
-                        "open"
+                const sidebarLinks =
+                    sidebarContainer.querySelectorAll(
+                        "a"
                     );
 
-                }
-            );
 
-        }
+                sidebarLinks.forEach(
+                    function (link) {
+
+                        const href =
+                            link.getAttribute("href");
 
 
-        // ======================================
-        // CLOSE SIDEBAR AFTER MENU CLICK
-        // ======================================
+                        if (!href) return;
 
-        menuLinks.forEach(
-            function (link) {
 
-                link.addEventListener(
-                    "click",
-                    function () {
+                        const linkPage =
+                            href
+                                .split("/")
+                                .pop()
+                                .split("?")[0]
+                                .split("#")[0]
+                                .toLowerCase();
+
 
                         if (
-                            window.innerWidth <= 800 &&
-                            sidebar
+                            linkPage ===
+                            currentPage
                         ) {
 
-                            sidebar.classList.remove(
-                                "open"
+                            link.classList.add(
+                                "active"
+                            );
+
+                        } else {
+
+                            link.classList.remove(
+                                "active"
                             );
 
                         }
@@ -1543,99 +1538,219 @@ async function loadRegionSidebar() {
                     }
                 );
 
-            }
-        );
 
+                /* ==========================================
+                   REGION USER NAME
+                ========================================== */
 
-        // ======================================
-        // LOGOUT
-        // ======================================
-
-        const logoutBtn =
-            document.getElementById(
-                "logoutBtn"
-            );
-
-
-        if (logoutBtn) {
-
-            logoutBtn.addEventListener(
-                "click",
-                function (e) {
-
-                    e.preventDefault();
-
-
-                    localStorage.removeItem(
-                        "loggedInEmpCode"
-                    );
-
-
-                    localStorage.removeItem(
-                        "userRole"
-                    );
-
-
-                    localStorage.removeItem(
+                const savedUserName =
+                    localStorage.getItem(
                         "regionUserName"
                     );
 
 
-                    localStorage.removeItem(
-                        "regionUserAccess"
+                const sidebarUserName =
+                    sidebarContainer.querySelector(
+                        "#sidebarUserName"
                     );
 
 
-                    window.location.href =
-                        "index.html";
+                const topUser =
+                    document.getElementById(
+                        "regionUserInfoTop"
+                    );
+
+
+                if (savedUserName) {
+
+
+                    if (sidebarUserName) {
+
+                        sidebarUserName.textContent =
+                            savedUserName;
+
+                    }
+
+
+                    if (topUser) {
+
+                        topUser.textContent =
+                            savedUserName;
+
+                    }
 
                 }
-            );
+
+
+                /* ==========================================
+                   MOBILE MENU
+                ========================================== */
+
+                const mobileMenuBtn =
+                    sidebarContainer.querySelector(
+                        "#mobileMenuBtn"
+                    );
+
+
+                const sidebar =
+                    sidebarContainer.querySelector(
+                        ".sidebar"
+                    );
+
+
+                if (
+                    mobileMenuBtn &&
+                    sidebar
+                ) {
+
+
+                    mobileMenuBtn.addEventListener(
+                        "click",
+                        function () {
+
+                            sidebar.classList.toggle(
+                                "open"
+                            );
+
+                        }
+                    );
+
+
+                }
+
+
+                /* ==========================================
+                   SIDEBAR LINK CLICK
+                ========================================== */
+
+                sidebarLinks.forEach(
+                    function (link) {
+
+                        link.addEventListener(
+                            "click",
+                            function () {
+
+                                if (
+                                    window.innerWidth <=
+                                    800
+                                ) {
+
+                                    if (sidebar) {
+
+                                        sidebar.classList.remove(
+                                            "open"
+                                        );
+
+                                    }
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+
+                /* ==========================================
+                   LOGOUT
+                ========================================== */
+
+                const logoutBtn =
+                    sidebarContainer.querySelector(
+                        "#logoutBtn"
+                    );
+
+
+                if (logoutBtn) {
+
+
+                    logoutBtn.addEventListener(
+                        "click",
+                        async function (e) {
+
+                            e.preventDefault();
+
+
+                            localStorage.removeItem(
+                                "loggedInEmpCode"
+                            );
+
+                            localStorage.removeItem(
+                                "userRole"
+                            );
+
+                            localStorage.removeItem(
+                                "regionUserName"
+                            );
+
+                            localStorage.removeItem(
+                                "regionUserAccess"
+                            );
+
+
+                            window.location.href =
+                                "index.html";
+
+                        }
+                    );
+
+
+                }
+
+
+            } catch (error) {
+
+
+                console.error(
+                    "Region Sidebar Load Error:",
+                    error
+                );
+
+
+                sidebarContainer.innerHTML = `
+
+                    <div class="sidebar-error">
+
+                        <strong>
+                            Region Sidebar load nahi ho rahi.
+                        </strong>
+
+                        Check:
+
+                        <br>
+
+                        <b>
+                            components/region-sidebar.html
+                        </b>
+
+                        <br><br>
+
+                        Error:
+
+                        <br>
+
+                        ${error.message}
+
+                    </div>
+
+                `;
+
+
+            }
 
         }
-
-    }
-    catch (error) {
-
-        console.error(
-            "Region Sidebar Error:",
-            error
-        );
-
-
-        container.innerHTML = `
-
-            <div
-                style="
-                    padding:20px;
-                    color:#dc2626;
-                    margin-left:250px;
-                "
-            >
-
-                Region Sidebar load nahi ho rahi.
-
-                <br>
-
-                <small>
-                    Check:
-                    region-sidebar.html
-                </small>
-
-            </div>
-
-        `;
-
-    }
-
-}
+    );
 
 </script>
 
 
 <!-- =====================================================
-     DAILY REPORT JAVASCRIPT
-===================================================== -->
+     EXISTING DAILY REPORT JAVASCRIPT
+     
+     IMPORTANT:
+     Is file ko change nahi karna hai.
+====================================================== -->
 
 <script
     type="module"
