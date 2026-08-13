@@ -1,20 +1,21 @@
-<!-- ============================================
-     TELETHON REGION USER SIDEBAR
-     File: region-sidebar.html
-============================================= -->
+<aside class="region-sidebar" id="regionSidebar">
 
-<aside class="region-sidebar" id="sidebar">
+    <!-- ================================
+         BRAND
+    ================================= -->
 
-    <!-- BRAND -->
     <div class="region-sidebar-brand">
 
-        <img
-            src="assets/images/logo.png"
-            alt="Telethon Logo"
-            class="region-sidebar-logo"
-        >
+        <div class="region-logo-box">
 
-        <div class="region-sidebar-brand-text">
+            <img
+                src="assets/images/logo.png"
+                alt="Telethon Logo"
+            >
+
+        </div>
+
+        <div class="region-brand-text">
 
             <h2>Telethon</h2>
 
@@ -25,24 +26,37 @@
     </div>
 
 
-    <!-- USER -->
+    <!-- ================================
+         USER INFO
+    ================================= -->
+
     <div class="region-sidebar-user">
 
-        <div
-            class="region-sidebar-user-name"
-            id="sidebarUserName"
-        >
-            Region User
+        <div class="region-user-icon">
+
+            <i class="fa-solid fa-user"></i>
+
         </div>
 
-        <div class="region-sidebar-user-role">
-            Region User Account
+        <div class="region-user-details">
+
+            <strong id="regionSidebarUserName">
+                Region User
+            </strong>
+
+            <span>
+                Region User Account
+            </span>
+
         </div>
 
     </div>
 
 
-    <!-- MENU -->
+    <!-- ================================
+         MENU
+    ================================= -->
+
     <nav class="region-sidebar-menu">
 
         <div class="region-menu-title">
@@ -51,14 +65,20 @@
 
 
         <!-- REGION SUMMARY -->
+
         <a
             href="region-summary.html"
             class="region-menu-link"
+            data-page="region-summary.html"
         >
 
-            <i class="fa-solid fa-chart-pie"></i>
+            <span class="region-menu-icon">
 
-            <span>
+                <i class="fa-solid fa-chart-pie"></i>
+
+            </span>
+
+            <span class="region-menu-text">
                 Region Summary
             </span>
 
@@ -66,14 +86,20 @@
 
 
         <!-- REGION USER -->
+
         <a
             href="region-user.html"
             class="region-menu-link"
+            data-page="region-user.html"
         >
 
-            <i class="fa-solid fa-users"></i>
+            <span class="region-menu-icon">
 
-            <span>
+                <i class="fa-solid fa-users"></i>
+
+            </span>
+
+            <span class="region-menu-text">
                 Region User
             </span>
 
@@ -81,14 +107,20 @@
 
 
         <!-- DAILY REPORT -->
+
         <a
             href="daily-report.html"
             class="region-menu-link"
+            data-page="daily-report.html"
         >
 
-            <i class="fa-solid fa-calendar-days"></i>
+            <span class="region-menu-icon">
 
-            <span>
+                <i class="fa-solid fa-calendar-days"></i>
+
+            </span>
+
+            <span class="region-menu-text">
                 Daily Report
             </span>
 
@@ -97,18 +129,25 @@
     </nav>
 
 
-    <!-- BOTTOM -->
+    <!-- ================================
+         LOGOUT
+    ================================= -->
+
     <div class="region-sidebar-bottom">
 
         <a
             href="#"
-            id="logoutBtn"
-            class="region-menu-link region-logout-link"
+            id="regionLogoutBtn"
+            class="region-menu-link region-logout"
         >
 
-            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="region-menu-icon">
 
-            <span>
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+            </span>
+
+            <span class="region-menu-text">
                 Logout
             </span>
 
