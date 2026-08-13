@@ -1,22 +1,20 @@
 <!-- ============================================
-     REGION USER SIDEBAR
+     TELETHON REGION USER SIDEBAR
      File: region-sidebar.html
-============================================ -->
+============================================= -->
 
-<aside class="sidebar" id="sidebar">
+<aside class="region-sidebar" id="sidebar">
 
-    <!-- ========================================
-         BRAND
-    ========================================= -->
-
-    <div class="sidebar-brand">
+    <!-- BRAND -->
+    <div class="region-sidebar-brand">
 
         <img
             src="assets/images/logo.png"
             alt="Telethon Logo"
+            class="region-sidebar-logo"
         >
 
-        <div class="sidebar-brand-text">
+        <div class="region-sidebar-brand-text">
 
             <h2>Telethon</h2>
 
@@ -27,44 +25,35 @@
     </div>
 
 
-    <!-- ========================================
-         USER INFORMATION
-    ========================================= -->
-
-    <div class="sidebar-user">
+    <!-- USER -->
+    <div class="region-sidebar-user">
 
         <div
-            class="sidebar-user-name"
+            class="region-sidebar-user-name"
             id="sidebarUserName"
         >
             Region User
         </div>
 
-        <div class="sidebar-user-role">
+        <div class="region-sidebar-user-role">
             Region User Account
         </div>
 
     </div>
 
 
-    <!-- ========================================
-         MENU
-    ======================================== -->
+    <!-- MENU -->
+    <nav class="region-sidebar-menu">
 
-    <div class="sidebar-menu">
-
-        <div class="menu-title">
-            Main Menu
+        <div class="region-menu-title">
+            MAIN MENU
         </div>
 
 
-        <!-- ====================================
-             REGION SUMMARY
-        ==================================== -->
-
+        <!-- REGION SUMMARY -->
         <a
             href="region-summary.html"
-            class="menu-link"
+            class="region-menu-link"
         >
 
             <i class="fa-solid fa-chart-pie"></i>
@@ -76,13 +65,10 @@
         </a>
 
 
-        <!-- ====================================
-             REGION USER
-        ==================================== -->
-
+        <!-- REGION USER -->
         <a
             href="region-user.html"
-            class="menu-link"
+            class="region-menu-link"
         >
 
             <i class="fa-solid fa-users"></i>
@@ -94,13 +80,10 @@
         </a>
 
 
-        <!-- ====================================
-             DAILY REPORT
-        ==================================== -->
-
+        <!-- DAILY REPORT -->
         <a
             href="daily-report.html"
-            class="menu-link"
+            class="region-menu-link"
         >
 
             <i class="fa-solid fa-calendar-days"></i>
@@ -111,19 +94,16 @@
 
         </a>
 
-    </div>
+    </nav>
 
 
-    <!-- ========================================
-         SIDEBAR BOTTOM
-    ======================================== -->
-
-    <div class="sidebar-bottom">
+    <!-- BOTTOM -->
+    <div class="region-sidebar-bottom">
 
         <a
             href="#"
             id="logoutBtn"
-            class="menu-link logout-link"
+            class="region-menu-link region-logout-link"
         >
 
             <i class="fa-solid fa-right-from-bracket"></i>
