@@ -1,290 +1,178 @@
-/* =========================================
-   ADMIN SIDEBAR - FINAL
-========================================= */
+// =========================================
+// ADMIN SIDEBAR - ACTIVE PAGE + LOGOUT
+// =========================================
 
-* {
-    box-sizing: border-box;
-}
+import { auth } from "./firebase-config.js";
 
-/* =========================================
-   SIDEBAR
-========================================= */
+import {
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-.admin-sidebar {
-    width: 235px;
-    min-width: 235px;
-    height: 100vh;
 
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
+// =========================================
+// PAGE LOAD
+// =========================================
 
-    background: #0f172a;
-    color: #ffffff;
+document.addEventListener("DOMContentLoaded", function () {
 
-    display: flex;
-    flex-direction: column;
 
-    z-index: 9999;
+    // =====================================
+    // SIDEBAR
+    // =====================================
 
-    overflow-y: auto;
-    overflow-x: hidden;
-}
+    const sidebar =
+        document.querySelector(".admin-sidebar");
 
-/* =========================================
-   LOGO
-========================================= */
 
-.admin-sidebar-logo {
-    width: 100%;
-    height: 150px;
+    if (!sidebar) {
 
-    padding: 12px 15px;
+        console.warn(
+            "Admin Sidebar not found."
+        );
 
-    text-align: center;
+        return;
 
-    border-bottom: 1px solid #263247;
-
-    flex-shrink: 0;
-}
-
-.admin-sidebar-logo img {
-    width: 55px;
-    height: 55px;
-
-    object-fit: contain;
-
-    display: block;
-
-    margin: 0 auto 4px;
-}
-
-.admin-sidebar-logo h2 {
-    margin: 0 0 3px;
-
-    font-size: 18px;
-    font-weight: 700;
-
-    color: #38bdf8;
-}
-
-.admin-sidebar-logo p {
-    margin: 0;
-
-    font-size: 12px;
-
-    color: #cbd5e1;
-}
-
-/* =========================================
-   MENU
-========================================= */
-
-.admin-sidebar-menu {
-    width: 100%;
-
-    padding: 12px 0;
-}
-
-/* =========================================
-   ALL MENU ITEMS
-   SAME HEIGHT + SAME SPACING
-========================================= */
-
-.admin-sidebar-menu a {
-    width: 100%;
-    height: 46px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 12px;
-
-    padding: 0 22px;
-
-    margin: 0;
-
-    color: #cbd5e1;
-
-    text-decoration: none;
-
-    font-size: 14px;
-    font-weight: 500;
-
-    transition: all 0.2s ease;
-}
-
-/* =========================================
-   ICON
-========================================= */
-
-.admin-sidebar-menu a i {
-    width: 20px;
-    min-width: 20px;
-
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    font-size: 16px;
-
-    color: #cbd5e1;
-}
-
-/* =========================================
-   TEXT
-========================================= */
-
-.admin-sidebar-menu a span {
-    display: inline-block;
-
-    white-space: nowrap;
-
-    color: inherit;
-}
-
-/* =========================================
-   HOVER
-========================================= */
-
-.admin-sidebar-menu a:hover {
-    background: #1e293b;
-
-    color: #ffffff;
-}
-
-.admin-sidebar-menu a:hover i {
-    color: #ffffff;
-}
-
-/* =========================================
-   ACTIVE PAGE
-========================================= */
-
-.admin-sidebar-menu a.active {
-    background: #2563eb;
-
-    color: #ffffff;
-}
-
-.admin-sidebar-menu a.active i {
-    color: #ffffff;
-}
-
-/* =========================================
-   LOGOUT
-========================================= */
-
-.admin-sidebar-menu a#adminLogoutBtn {
-    cursor: pointer;
-}
-
-/* =========================================
-   SCROLLBAR
-========================================= */
-
-.admin-sidebar::-webkit-scrollbar {
-    width: 5px;
-}
-
-.admin-sidebar::-webkit-scrollbar-track {
-    background: #0f172a;
-}
-
-.admin-sidebar::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 10px;
-}
-
-/* =========================================
-   TABLET
-========================================= */
-
-@media (max-width: 768px) {
-
-    .admin-sidebar {
-        width: 190px;
-        min-width: 190px;
     }
 
-    .admin-sidebar-logo {
-        height: 140px;
+
+    // =====================================
+    // ACTIVE PAGE
+    // =====================================
+
+    const currentPage =
+        window.location.pathname
+            .split("/")
+            .pop()
+            .toLowerCase();
+
+
+    const menuLinks =
+        sidebar.querySelectorAll(
+            ".admin-sidebar-menu a[data-page]"
+        );
+
+
+    menuLinks.forEach(function (link) {
+
+        const page =
+            link
+                .getAttribute("data-page")
+                .toLowerCase();
+
+
+        if (page === currentPage) {
+
+            link.classList.add("active");
+
+        } else {
+
+            link.classList.remove("active");
+
+        }
+
+    });
+
+
+    // =====================================
+    // LOGOUT BUTTON
+    // =====================================
+
+    const logoutBtn =
+        document.getElementById(
+            "adminLogoutBtn"
+        );
+
+
+    if (!logoutBtn) {
+
+        console.warn(
+            "Admin Logout button not found."
+        );
+
+        return;
+
     }
 
-    .admin-sidebar-logo img {
-        width: 50px;
-        height: 50px;
-    }
 
-    .admin-sidebar-logo h2 {
-        font-size: 17px;
-    }
+    // =====================================
+    // LOGOUT CLICK
+    // =====================================
 
-    .admin-sidebar-logo p {
-        font-size: 11px;
-    }
+    logoutBtn.addEventListener(
+        "click",
+        async function (e) {
 
-    .admin-sidebar-menu a {
-        height: 44px;
+            e.preventDefault();
 
-        padding: 0 15px;
 
-        font-size: 13px;
+            try {
 
-        gap: 10px;
-    }
+                // Disable button while logging out
+                logoutBtn.style.pointerEvents =
+                    "none";
 
-    .admin-sidebar-menu a i {
-        width: 18px;
-        min-width: 18px;
+                logoutBtn.style.opacity =
+                    "0.6";
 
-        font-size: 15px;
-    }
-}
 
-/* =========================================
-   SMALL MOBILE
-========================================= */
+                // =================================
+                // FIREBASE SIGN OUT
+                // =================================
 
-@media (max-width: 550px) {
+                await signOut(auth);
 
-    .admin-sidebar {
-        width: 70px;
-        min-width: 70px;
-    }
 
-    .admin-sidebar-logo {
-        height: 90px;
+                // =================================
+                // CLEAR LOCAL STORAGE
+                // =================================
 
-        padding: 8px 5px;
-    }
+                localStorage.removeItem(
+                    "loggedInEmpCode"
+                );
 
-    .admin-sidebar-logo img {
-        width: 42px;
-        height: 42px;
-    }
+                localStorage.removeItem(
+                    "userRole"
+                );
 
-    .admin-sidebar-logo h2,
-    .admin-sidebar-logo p,
-    .admin-sidebar-menu a span {
-        display: none;
-    }
 
-    .admin-sidebar-menu a {
-        width: 100%;
-        height: 46px;
+                // =================================
+                // CLEAR SESSION STORAGE
+                // =================================
 
-        justify-content: center;
+                sessionStorage.clear();
 
-        padding: 0;
-    }
 
-    .admin-sidebar-menu a i {
-        width: auto;
-        min-width: auto;
+                // =================================
+                // GO TO LOGIN PAGE
+                // =================================
 
-        font-size: 17px;
-    }
-}
+                window.location.href =
+                    "index.html";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Logout Error:",
+                    error
+                );
+
+
+                // Enable button again
+                logoutBtn.style.pointerEvents =
+                    "auto";
+
+                logoutBtn.style.opacity =
+                    "1";
+
+
+                alert(
+                    "Logout nahi ho saka. Please try again."
+                );
+
+            }
+
+        }
+    );
+
+});
