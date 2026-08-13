@@ -25,8 +25,6 @@
 
     <!-- =====================================================
          REGION SIDEBAR CSS
-         IMPORTANT:
-         Sidebar components folder ke andar hai
     ====================================================== -->
 
     <link
@@ -54,26 +52,19 @@
         ====================================================== */
 
         body {
-
             background: #f4f6f9;
-
             color: #1e293b;
-
             min-height: 100vh;
-
         }
 
 
         /* =====================================================
-           SIDEBAR LOADER
+           SIDEBAR
         ====================================================== */
 
         #regionSidebar {
-
             position: relative;
-
             z-index: 1000;
-
         }
 
 
@@ -82,13 +73,9 @@
         ====================================================== */
 
         .daily-report-main {
-
             margin-left: 250px;
-
             min-height: 100vh;
-
             padding: 22px;
-
         }
 
 
@@ -97,46 +84,31 @@
         ====================================================== */
 
         .topbar {
-
             background: #ffffff;
-
             border-radius: 10px;
-
             padding: 20px 24px;
-
             margin-bottom: 20px;
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
 
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             gap: 15px;
-
         }
 
 
         .topbar-left h2 {
-
             font-size: 24px;
-
             color: #0f172a;
-
             margin-bottom: 5px;
-
         }
 
 
         .topbar-left p {
-
             color: #64748b;
-
             font-size: 14px;
-
         }
 
 
@@ -145,42 +117,28 @@
         ====================================================== */
 
         .top-user {
-
             display: flex;
-
             align-items: center;
-
             gap: 10px;
-
             color: #334155;
-
             font-size: 13px;
-
             white-space: nowrap;
-
         }
 
 
         .top-user-icon {
-
             width: 38px;
-
             height: 38px;
-
             border-radius: 50%;
 
             background: #eff6ff;
-
             color: #2563eb;
 
             display: flex;
-
             align-items: center;
-
             justify-content: center;
 
             font-size: 18px;
-
         }
 
 
@@ -189,44 +147,31 @@
         ====================================================== */
 
         .sidebar-error {
-
             position: fixed;
-
             left: 0;
-
             top: 0;
 
             width: 250px;
-
             height: 100vh;
 
             background: #0f172a;
-
             color: #fca5a5;
 
             padding: 25px 18px;
 
             font-family: Arial, sans-serif;
-
             font-size: 14px;
-
             line-height: 1.6;
 
             z-index: 9999;
-
         }
 
 
         .sidebar-error strong {
-
             color: #ffffff;
-
             display: block;
-
             margin-bottom: 8px;
-
             font-size: 16px;
-
         }
 
 
@@ -235,9 +180,7 @@
         ====================================================== */
 
         .region-user-info {
-
             background: #ecfdf5;
-
             border: 1px solid #bbf7d0;
 
             padding: 14px 18px;
@@ -249,14 +192,11 @@
             color: #166534;
 
             font-size: 14px;
-
         }
 
 
         .region-user-info strong {
-
             font-size: 16px;
-
         }
 
 
@@ -265,7 +205,6 @@
         ====================================================== */
 
         .filter-panel {
-
             background: #ffffff;
 
             border-radius: 12px;
@@ -276,53 +215,43 @@
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
-
         }
 
 
         .filter-title {
-
             font-size: 17px;
-
             font-weight: bold;
 
             margin-bottom: 16px;
 
             color: #0f172a;
-
         }
 
 
         .filters {
-
             display: grid;
 
             grid-template-columns:
                 repeat(4, 1fr);
 
             gap: 13px;
-
         }
 
 
         .filter-group label {
-
             display: block;
 
             margin-bottom: 6px;
 
             font-size: 13px;
-
             font-weight: bold;
 
             color: #475569;
-
         }
 
 
         .filter-group select,
         .filter-group input {
-
             width: 100%;
 
             padding: 10px 12px;
@@ -336,19 +265,16 @@
             background: #ffffff;
 
             font-size: 14px;
-
         }
 
 
         .filter-group select:focus,
         .filter-group input:focus {
-
             border-color: #2563eb;
 
             box-shadow:
                 0 0 0 3px
                 rgba(37,99,235,0.10);
-
         }
 
 
@@ -357,33 +283,24 @@
         ====================================================== */
 
         .quick-date-title {
-
             margin-top: 18px;
-
             margin-bottom: 9px;
 
             font-size: 13px;
-
             font-weight: bold;
 
             color: #475569;
-
         }
 
 
         .quick-dates {
-
             display: flex;
-
             flex-wrap: wrap;
-
             gap: 8px;
-
         }
 
 
         .quick-date-btn {
-
             border: 1px solid #cbd5e1;
 
             background: #f8fafc;
@@ -397,33 +314,23 @@
             cursor: pointer;
 
             font-size: 12px;
-
             font-weight: bold;
 
             transition: 0.2s;
-
         }
 
 
         .quick-date-btn:hover {
-
             background: #eff6ff;
-
             border-color: #2563eb;
-
             color: #2563eb;
-
         }
 
 
         .quick-date-btn.active {
-
             background: #2563eb;
-
             color: #ffffff;
-
             border-color: #2563eb;
-
         }
 
 
@@ -432,18 +339,15 @@
         ====================================================== */
 
         .filter-buttons {
-
             display: flex;
 
             gap: 10px;
 
             margin-top: 18px;
-
         }
 
 
         .filter-btn {
-
             border: none;
 
             padding: 10px 18px;
@@ -455,39 +359,28 @@
             font-weight: bold;
 
             font-size: 13px;
-
         }
 
 
         .apply-btn {
-
             background: #2563eb;
-
             color: #ffffff;
-
         }
 
 
         .apply-btn:hover {
-
             background: #1d4ed8;
-
         }
 
 
         .reset-btn {
-
             background: #e2e8f0;
-
             color: #334155;
-
         }
 
 
         .reset-btn:hover {
-
             background: #cbd5e1;
-
         }
 
 
@@ -496,7 +389,6 @@
         ====================================================== */
 
         .report-info {
-
             display: grid;
 
             grid-template-columns:
@@ -505,12 +397,10 @@
             gap: 15px;
 
             margin-bottom: 18px;
-
         }
 
 
         .info-card {
-
             background: #ffffff;
 
             border-radius: 10px;
@@ -521,12 +411,10 @@
                 0 2px 8px rgba(0,0,0,0.06);
 
             border-left: 4px solid #2563eb;
-
         }
 
 
         .info-card span {
-
             display: block;
 
             color: #64748b;
@@ -534,18 +422,15 @@
             font-size: 12px;
 
             margin-bottom: 5px;
-
         }
 
 
         .info-card strong {
-
             display: block;
 
             color: #0f172a;
 
             font-size: 20px;
-
         }
 
 
@@ -554,7 +439,6 @@
         ====================================================== */
 
         .table-container {
-
             background: #ffffff;
 
             border-radius: 12px;
@@ -563,12 +447,10 @@
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
-
         }
 
 
         .table-header {
-
             display: flex;
 
             justify-content: space-between;
@@ -578,30 +460,22 @@
             margin-bottom: 18px;
 
             gap: 15px;
-
         }
 
 
         .table-header h3 {
-
             font-size: 18px;
-
             color: #0f172a;
-
         }
 
 
         .result-count {
-
             font-size: 13px;
-
             color: #64748b;
-
         }
 
 
         .table-wrapper {
-
             width: 100%;
 
             overflow-x: auto;
@@ -609,12 +483,10 @@
             border: 1px solid #e2e8f0;
 
             border-radius: 8px;
-
         }
 
 
         table {
-
             width: 100%;
 
             border-collapse: collapse;
@@ -622,12 +494,10 @@
             background: #ffffff;
 
             min-width: 900px;
-
         }
 
 
         th {
-
             background: #2563eb;
 
             color: #ffffff;
@@ -643,20 +513,16 @@
             border-right:
                 1px solid
                 rgba(255,255,255,0.15);
-
         }
 
 
         th:first-child,
         th:nth-child(2) {
-
             text-align: left;
-
         }
 
 
         td {
-
             padding: 12px 14px;
 
             border-bottom:
@@ -672,69 +538,50 @@
             white-space: nowrap;
 
             text-align: center;
-
         }
 
 
         td:first-child,
         td:nth-child(2) {
-
             text-align: left;
-
         }
 
 
         tbody tr:hover {
-
             background: #f8fafc;
-
         }
 
 
         .jamiatul {
-
             font-weight: bold;
-
             color: #0f172a;
-
         }
 
 
         .teacher-name {
-
             font-weight: bold;
-
             color: #1d4ed8;
-
         }
 
 
         .date-amount {
-
             color: #059669;
-
             font-weight: bold;
-
         }
 
 
         .no-entry {
-
             color: #94a3b8;
-
             font-weight: normal;
-
         }
 
 
         .total-collection {
-
             color: #dc2626;
 
             font-weight: bold;
 
             background: #fff7ed;
-
         }
 
 
@@ -743,29 +590,23 @@
         ====================================================== */
 
         .total-row td {
-
             background: #f1f5f9;
 
             font-weight: bold;
 
             color: #0f172a;
-
         }
 
 
         .total-row .date-total {
-
             color: #059669;
-
         }
 
 
         .total-row .grand-total {
-
             color: #dc2626;
 
             background: #ffedd5;
-
         }
 
 
@@ -776,32 +617,24 @@
         .loading-cell,
         .empty-cell,
         .error-cell {
-
             text-align: center !important;
 
             padding: 40px !important;
-
         }
 
 
         .loading-cell {
-
             color: #64748b;
-
         }
 
 
         .empty-cell {
-
             color: #64748b;
-
         }
 
 
         .error-cell {
-
             color: #dc2626;
-
         }
 
 
@@ -812,10 +645,8 @@
         @media (max-width: 1100px) {
 
             .filters {
-
                 grid-template-columns:
                     repeat(2, 1fr);
-
             }
 
         }
@@ -824,35 +655,25 @@
         @media (max-width: 800px) {
 
             .daily-report-main {
-
                 margin-left: 0;
-
                 padding: 15px;
-
             }
 
 
             .topbar {
-
                 flex-direction: column;
-
                 align-items: flex-start;
-
             }
 
 
             .top-user {
-
                 width: 100%;
-
             }
 
 
             .report-info {
-
                 grid-template-columns:
                     repeat(2, 1fr);
-
             }
 
         }
@@ -861,45 +682,33 @@
         @media (max-width: 600px) {
 
             .filters {
-
                 grid-template-columns: 1fr;
-
             }
 
 
             .report-info {
-
                 grid-template-columns: 1fr;
-
             }
 
 
             .daily-report-main {
-
                 padding: 12px;
-
             }
 
 
             .filter-panel,
             .table-container {
-
                 padding: 12px;
-
             }
 
 
             .topbar {
-
                 padding: 16px;
-
             }
 
 
             .topbar-left h2 {
-
                 font-size: 20px;
-
             }
 
         }
@@ -914,10 +723,6 @@
 
 <!-- =====================================================
      REGION SIDEBAR
-     
-     IMPORTANT:
-     File actual location:
-     components/region-sidebar.html
 ====================================================== -->
 
 <div id="regionSidebar">
@@ -948,7 +753,6 @@
 
     <div class="topbar">
 
-
         <div class="topbar-left">
 
             <h2>
@@ -972,7 +776,6 @@
 
         <div class="top-user">
 
-
             <div class="top-user-icon">
 
                 <i class="fa-solid fa-user"></i>
@@ -981,14 +784,10 @@
 
 
             <span id="regionUserInfoTop">
-
                 Loading User...
-
             </span>
 
-
         </div>
-
 
     </div>
 
@@ -1167,14 +966,11 @@
         ================================================== -->
 
         <div class="quick-date-title">
-
             Quick Date Range
-
         </div>
 
 
         <div class="quick-dates">
-
 
             <button
                 type="button"
@@ -1220,7 +1016,6 @@
                 30 Days
             </button>
 
-
         </div>
 
 
@@ -1229,7 +1024,6 @@
         ================================================== -->
 
         <div class="filter-buttons">
-
 
             <button
                 type="button"
@@ -1256,9 +1050,7 @@
 
             </button>
 
-
         </div>
-
 
     </div>
 
@@ -1311,7 +1103,6 @@
 
         </div>
 
-
     </div>
 
 
@@ -1323,7 +1114,6 @@
 
 
         <div class="table-header">
-
 
             <h3>
 
@@ -1349,15 +1139,12 @@
 
             </span>
 
-
         </div>
 
 
         <div class="table-wrapper">
 
-
             <table>
-
 
                 <thead id="reportTableHead">
 
@@ -1396,16 +1183,11 @@
                 </tbody>
 
 
-                <tfoot id="reportTableFoot">
-
-                </tfoot>
-
+                <tfoot id="reportTableFoot"></tfoot>
 
             </table>
 
-
         </div>
-
 
     </div>
 
@@ -1416,47 +1198,51 @@
 <!-- =====================================================
      REGION SIDEBAR LOADER
      
-     IMPORTANT:
-     components/region-sidebar.html
+     CORRECT IDs:
+     #regionSidebarUserName
+     #regionSidebarLogout
+     .region-menu-link
+     .region-sidebar
 ====================================================== -->
 
-<script type="module">
+<script>
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        async function () {
-
-
-            const sidebarContainer =
-                document.getElementById(
-                    "regionSidebar"
-                );
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
 
-            if (!sidebarContainer) {
+        /* ==========================================
+           SIDEBAR CONTAINER
+        ========================================== */
 
-                console.error(
-                    "regionSidebar container not found."
-                );
-
-                return;
-
-            }
-
-
-            try {
+        const sidebarContainer =
+            document.getElementById(
+                "regionSidebar"
+            );
 
 
-                /*
-                 * IMPORTANT:
-                 * Sidebar components folder ke andar hai.
-                 */
+        if (!sidebarContainer) {
 
-                const response =
-                    await fetch(
-                        "components/region-sidebar.html"
-                    );
+            console.error(
+                "regionSidebar container not found."
+            );
 
+            return;
+
+        }
+
+
+        /* ==========================================
+           LOAD SIDEBAR
+        ========================================== */
+
+        fetch(
+            "components/region-sidebar.html"
+        )
+
+        .then(
+            function (response) {
 
                 if (!response.ok) {
 
@@ -1468,9 +1254,13 @@
 
                 }
 
+                return response.text();
 
-                const sidebarHTML =
-                    await response.text();
+            }
+        )
+
+        .then(
+            function (sidebarHTML) {
 
 
                 sidebarContainer.innerHTML =
@@ -1482,44 +1272,69 @@
                 );
 
 
-                /* ==========================================
-                   ACTIVE PAGE
-                ========================================== */
+                /* ==================================
+                   CURRENT PAGE
+                ================================== */
 
-                const currentPage =
+                let currentPage =
                     window.location.pathname
                         .split("/")
                         .pop()
                         .toLowerCase();
 
 
-                const sidebarLinks =
+                if (!currentPage) {
+
+                    currentPage =
+                        "daily-report.html";
+
+                }
+
+
+                /* ==================================
+                   ACTIVE MENU
+                ================================== */
+
+                const menuLinks =
                     sidebarContainer.querySelectorAll(
-                        "a"
+                        ".region-menu-link"
                     );
 
 
-                sidebarLinks.forEach(
+                menuLinks.forEach(
                     function (link) {
 
+
+                        const dataPage =
+                            (
+                                link.getAttribute(
+                                    "data-page"
+                                ) || ""
+                            )
+                            .trim()
+                            .toLowerCase();
+
+
                         const href =
-                            link.getAttribute("href");
+                            (
+                                link.getAttribute(
+                                    "href"
+                                ) || ""
+                            )
+                            .split("/")
+                            .pop()
+                            .split("?")[0]
+                            .split("#")[0]
+                            .trim()
+                            .toLowerCase();
 
 
-                        if (!href) return;
-
-
-                        const linkPage =
-                            href
-                                .split("/")
-                                .pop()
-                                .split("?")[0]
-                                .split("#")[0]
-                                .toLowerCase();
+                        const pageToCheck =
+                            dataPage || href;
 
 
                         if (
-                            linkPage ===
+                            pageToCheck ===
                             currentPage
                         ) {
 
@@ -1539,9 +1354,9 @@
                 );
 
 
-                /* ==========================================
+                /* ==================================
                    REGION USER NAME
-                ========================================== */
+                ================================== */
 
                 const savedUserName =
                     localStorage.getItem(
@@ -1551,7 +1366,7 @@
 
                 const sidebarUserName =
                     sidebarContainer.querySelector(
-                        "#sidebarUserName"
+                        "#regionSidebarUserName"
                     );
 
 
@@ -1582,83 +1397,13 @@
                 }
 
 
-                /* ==========================================
-                   MOBILE MENU
-                ========================================== */
-
-                const mobileMenuBtn =
-                    sidebarContainer.querySelector(
-                        "#mobileMenuBtn"
-                    );
-
-
-                const sidebar =
-                    sidebarContainer.querySelector(
-                        ".sidebar"
-                    );
-
-
-                if (
-                    mobileMenuBtn &&
-                    sidebar
-                ) {
-
-
-                    mobileMenuBtn.addEventListener(
-                        "click",
-                        function () {
-
-                            sidebar.classList.toggle(
-                                "open"
-                            );
-
-                        }
-                    );
-
-
-                }
-
-
-                /* ==========================================
-                   SIDEBAR LINK CLICK
-                ========================================== */
-
-                sidebarLinks.forEach(
-                    function (link) {
-
-                        link.addEventListener(
-                            "click",
-                            function () {
-
-                                if (
-                                    window.innerWidth <=
-                                    800
-                                ) {
-
-                                    if (sidebar) {
-
-                                        sidebar.classList.remove(
-                                            "open"
-                                        );
-
-                                    }
-
-                                }
-
-                            }
-                        );
-
-                    }
-                );
-
-
-                /* ==========================================
+                /* ==================================
                    LOGOUT
-                ========================================== */
+                ================================== */
 
                 const logoutBtn =
                     sidebarContainer.querySelector(
-                        "#logoutBtn"
+                        "#regionSidebarLogout"
                     );
 
 
@@ -1667,22 +1412,25 @@
 
                     logoutBtn.addEventListener(
                         "click",
-                        async function (e) {
+                        function (event) {
 
-                            e.preventDefault();
+                            event.preventDefault();
 
 
                             localStorage.removeItem(
                                 "loggedInEmpCode"
                             );
 
+
                             localStorage.removeItem(
                                 "userRole"
                             );
 
+
                             localStorage.removeItem(
                                 "regionUserName"
                             );
+
 
                             localStorage.removeItem(
                                 "regionUserAccess"
@@ -1695,11 +1443,14 @@
                         }
                     );
 
-
                 }
 
 
-            } catch (error) {
+            }
+        )
+
+        .catch(
+            function (error) {
 
 
                 console.error(
@@ -1736,20 +1487,20 @@
 
                 `;
 
-
             }
+        );
 
-        }
-    );
+    }
+);
 
 </script>
 
 
 <!-- =====================================================
-     EXISTING DAILY REPORT JAVASCRIPT
+     DAILY REPORT JAVASCRIPT
      
      IMPORTANT:
-     Is file ko change nahi karna hai.
+     Is JS ko change nahi kiya gaya.
 ====================================================== -->
 
 <script
