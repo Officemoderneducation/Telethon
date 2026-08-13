@@ -1,529 +1,319 @@
-/* =========================================================
-   TELETHON REGION USER SIDEBAR
-   File: assets/css/region-sidebar.css
-========================================================= */
+/* =====================================================
+   REGION SIDEBAR LOADER
+===================================================== */
 
+document.addEventListener("DOMContentLoaded", async function () {
 
-/* =========================================================
-   RESET
-========================================================= */
+    const sidebarContainer =
+        document.getElementById("regionSidebarContainer");
 
-.region-sidebar,
-.region-sidebar * {
-    box-sizing: border-box;
-}
 
+    if (!sidebarContainer) {
 
-/* =========================================================
-   SIDEBAR
-========================================================= */
+        console.error(
+            "regionSidebarContainer not found."
+        );
 
-.region-sidebar {
-
-    position: fixed;
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-
-    width: 250px;
-
-    height: 100vh;
-
-    background: #0f172a;
-
-    color: #ffffff;
-
-    display: flex;
-
-    flex-direction: column;
-
-    z-index: 9999;
-
-    box-shadow:
-        2px 0 12px rgba(0, 0, 0, 0.15);
-
-    overflow: hidden;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-}
-
-
-/* =========================================================
-   BRAND
-========================================================= */
-
-.region-sidebar-brand {
-
-    width: 100%;
-
-    height: 82px;
-
-    min-height: 82px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-    padding: 10px 17px;
-
-    border-bottom:
-        1px solid rgba(255,255,255,0.08);
-
-}
-
-
-/* =========================================================
-   LOGO
-========================================================= */
-
-.region-sidebar-logo {
-
-    width: 52px !important;
-
-    height: 52px !important;
-
-    min-width: 52px;
-
-    min-height: 52px;
-
-    max-width: 52px !important;
-
-    max-height: 52px;
-
-    object-fit: contain;
-
-    display: block;
-
-    flex-shrink: 0;
-}
-
-
-/* =========================================================
-   BRAND TEXT
-========================================================= */
-
-.region-sidebar-brand-text {
-
-    min-width: 0;
-
-    overflow: hidden;
-}
-
-.region-sidebar-brand-text h2 {
-
-    margin: 0;
-
-    padding: 0;
-
-    font-size: 19px;
-
-    line-height: 22px;
-
-    font-weight: 700;
-
-    color: #38bdf8;
-
-    white-space: nowrap;
-}
-
-.region-sidebar-brand-text p {
-
-    margin: 3px 0 0;
-
-    padding: 0;
-
-    font-size: 11px;
-
-    line-height: 15px;
-
-    color: #cbd5e1;
-
-    white-space: nowrap;
-}
-
-
-/* =========================================================
-   USER AREA
-========================================================= */
-
-.region-sidebar-user {
-
-    padding: 16px 18px;
-
-    border-bottom:
-        1px solid rgba(255,255,255,0.08);
-}
-
-.region-sidebar-user-name {
-
-    font-size: 14px;
-
-    line-height: 20px;
-
-    font-weight: 700;
-
-    color: #ffffff;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-}
-
-.region-sidebar-user-role {
-
-    margin-top: 3px;
-
-    font-size: 11px;
-
-    line-height: 16px;
-
-    color: #94a3b8;
-}
-
-
-/* =========================================================
-   MENU
-========================================================= */
-
-.region-sidebar-menu {
-
-    flex: 1;
-
-    width: 100%;
-
-    padding: 18px 12px;
-
-    overflow-y: auto;
-
-    overflow-x: hidden;
-}
-
-
-/* =========================================================
-   MENU TITLE
-========================================================= */
-
-.region-menu-title {
-
-    padding: 0 12px 10px;
-
-    font-size: 10px;
-
-    line-height: 14px;
-
-    font-weight: 700;
-
-    color: #64748b;
-
-    letter-spacing: 1.2px;
-
-    text-transform: uppercase;
-}
-
-
-/* =========================================================
-   MENU LINK
-========================================================= */
-
-.region-menu-link {
-
-    display: flex !important;
-
-    align-items: center !important;
-
-    width: 100%;
-
-    min-height: 44px;
-
-    padding: 11px 13px;
-
-    margin: 0 0 6px;
-
-    gap: 12px;
-
-    border-radius: 8px;
-
-    color: #cbd5e1;
-
-    background: transparent;
-
-    text-decoration: none !important;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 14px;
-
-    font-weight: 500;
-
-    line-height: 20px;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
-}
-
-
-/* =========================================================
-   MENU ICON
-========================================================= */
-
-.region-menu-link i {
-
-    display: inline-flex !important;
-
-    align-items: center;
-
-    justify-content: center;
-
-    width: 21px;
-
-    min-width: 21px;
-
-    height: 21px;
-
-    font-size: 16px;
-
-    line-height: 21px;
-
-    text-align: center;
-
-    color: #94a3b8;
-
-    flex-shrink: 0;
-
-    transition: color 0.2s ease;
-}
-
-
-/* =========================================================
-   MENU TEXT
-========================================================= */
-
-.region-menu-link span {
-
-    display: inline-block;
-
-    color: inherit;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-}
-
-
-/* =========================================================
-   HOVER
-========================================================= */
-
-.region-menu-link:hover {
-
-    background: #1e293b;
-
-    color: #ffffff;
-
-    transform: translateX(2px);
-}
-
-.region-menu-link:hover i {
-
-    color: #ffffff;
-}
-
-
-/* =========================================================
-   ACTIVE
-========================================================= */
-
-.region-menu-link.active {
-
-    background: #2563eb;
-
-    color: #ffffff;
-
-    font-weight: 600;
-
-    box-shadow:
-        0 4px 10px rgba(37,99,235,0.25);
-}
-
-.region-menu-link.active i {
-
-    color: #ffffff;
-}
-
-
-/* =========================================================
-   SIDEBAR BOTTOM
-========================================================= */
-
-.region-sidebar-bottom {
-
-    width: 100%;
-
-    padding: 12px;
-
-    border-top:
-        1px solid rgba(255,255,255,0.08);
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-.region-logout-link {
-
-    color: #fca5a5;
-}
-
-.region-logout-link i {
-
-    color: #f87171;
-}
-
-.region-logout-link:hover {
-
-    background: #450a0a;
-
-    color: #fecaca;
-
-    transform: none;
-}
-
-.region-logout-link:hover i {
-
-    color: #fecaca;
-}
-
-
-/* =========================================================
-   SCROLLBAR
-========================================================= */
-
-.region-sidebar-menu::-webkit-scrollbar {
-
-    width: 5px;
-}
-
-.region-sidebar-menu::-webkit-scrollbar-track {
-
-    background: transparent;
-}
-
-.region-sidebar-menu::-webkit-scrollbar-thumb {
-
-    background: #334155;
-
-    border-radius: 10px;
-}
-
-
-/* =========================================================
-   MOBILE BUTTON
-========================================================= */
-
-.mobile-menu-btn {
-
-    display: none;
-
-    width: 42px;
-
-    height: 42px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background: #2563eb;
-
-    color: #ffffff;
-
-    cursor: pointer;
-
-    font-size: 18px;
-
-    align-items: center;
-
-    justify-content: center;
-}
-
-
-/* =========================================================
-   MAIN AREA SUPPORT
-========================================================= */
-
-.region-main-area {
-
-    margin-left: 250px;
-
-    min-height: 100vh;
-
-    width: calc(100% - 250px);
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 800px) {
-
-    .region-sidebar {
-
-        transform: translateX(-100%);
-
-        transition:
-            transform 0.25s ease;
+        return;
     }
 
 
-    .region-sidebar.open {
+    try {
 
-        transform: translateX(0);
+        /*
+         * IMPORTANT:
+         * region-sidebar.html project root me hai.
+         */
+
+        const response = await fetch(
+            "./region-sidebar.html",
+            {
+                cache: "no-store"
+            }
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " +
+                response.status +
+                " - region-sidebar.html not found"
+            );
+
+        }
+
+
+        const html =
+            await response.text();
+
+
+        sidebarContainer.innerHTML =
+            html;
+
+
+        /* =========================================
+           ACTIVE PAGE
+        ========================================= */
+
+        const currentPage =
+            window.location.pathname
+                .split("/")
+                .pop()
+                .toLowerCase();
+
+
+        document
+            .querySelectorAll(
+                ".region-menu-link[data-page]"
+            )
+            .forEach(function (link) {
+
+                const page =
+                    link
+                        .getAttribute("data-page")
+                        .toLowerCase();
+
+
+                if (page === currentPage) {
+
+                    link.classList.add("active");
+
+                }
+
+            });
+
+
+        /* =========================================
+           USER NAME
+        ========================================= */
+
+        const savedUserName =
+            localStorage.getItem(
+                "regionUserName"
+            );
+
+
+        const userNameElement =
+            document.getElementById(
+                "regionSidebarUserName"
+            );
+
+
+        if (
+            savedUserName &&
+            userNameElement
+        ) {
+
+            userNameElement.textContent =
+                savedUserName;
+
+        }
+
+
+        /* =========================================
+           LOGOUT
+        ========================================= */
+
+        const logoutBtn =
+            document.getElementById(
+                "regionLogoutBtn"
+            );
+
+
+        if (logoutBtn) {
+
+            logoutBtn.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+
+                    localStorage.removeItem(
+                        "loggedInEmpCode"
+                    );
+
+                    localStorage.removeItem(
+                        "userRole"
+                    );
+
+                    localStorage.removeItem(
+                        "regionUserName"
+                    );
+
+                    localStorage.removeItem(
+                        "regionUserAccess"
+                    );
+
+
+                    window.location.href =
+                        "index.html";
+
+                }
+            );
+
+        }
+
+
+        /* =========================================
+           MOBILE SIDEBAR
+        ========================================= */
+
+        const mobileButton =
+            document.getElementById(
+                "regionMobileMenuBtn"
+            );
+
+
+        const sidebar =
+            document.getElementById(
+                "regionSidebar"
+            );
+
+
+        const overlay =
+            document.getElementById(
+                "regionSidebarOverlay"
+            );
+
+
+        if (
+            mobileButton &&
+            sidebar
+        ) {
+
+            mobileButton.addEventListener(
+                "click",
+                function () {
+
+                    sidebar.classList.toggle(
+                        "open"
+                    );
+
+
+                    if (overlay) {
+
+                        overlay.classList.toggle(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                function () {
+
+                    if (sidebar) {
+
+                        sidebar.classList.remove(
+                            "open"
+                        );
+
+                    }
+
+                    overlay.classList.remove(
+                        "show"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /*
+         * Close sidebar after clicking a menu item
+         */
+
+        document
+            .querySelectorAll(
+                ".region-menu-link[data-page]"
+            )
+            .forEach(function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        if (
+                            window.innerWidth <= 800 &&
+                            sidebar
+                        ) {
+
+                            sidebar.classList.remove(
+                                "open"
+                            );
+
+
+                            if (overlay) {
+
+                                overlay.classList.remove(
+                                    "show"
+                                );
+
+                            }
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+        console.log(
+            "Region Sidebar Loaded Successfully"
+        );
+
     }
 
+    catch (error) {
 
-    .region-main-area {
+        console.error(
+            "Region Sidebar Error:",
+            error
+        );
 
-        margin-left: 0;
 
-        width: 100%;
+        sidebarContainer.innerHTML = `
+
+            <div style="
+                padding:20px;
+                color:#dc2626;
+                background:#fee2e2;
+                border:1px solid #fecaca;
+                font-family:Arial,sans-serif;
+                font-size:14px;
+            ">
+
+                <strong>
+                    Region Sidebar load nahi ho rahi.
+                </strong>
+
+                <br>
+
+                Check:
+                <b>region-sidebar.html</b>
+
+                <br>
+
+                <small>
+                    ${error.message}
+                </small>
+
+            </div>
+
+        `;
+
     }
 
-
-    .mobile-menu-btn {
-
-        display: inline-flex;
-    }
-
-}
-
-
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
-
-@media (max-width: 480px) {
-
-    .region-sidebar {
-
-        width: 245px;
-    }
-
-}
+});
