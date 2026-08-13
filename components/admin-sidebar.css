@@ -1,178 +1,370 @@
-// =========================================
-// ADMIN SIDEBAR - ACTIVE PAGE + LOGOUT
-// =========================================
+/* =========================================
+   ADMIN SIDEBAR
+========================================= */
 
-import { auth } from "./firebase-config.js";
+.admin-sidebar {
 
-import {
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    width: 260px;
+    height: 100vh;
+
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    z-index: 9999;
+
+    overflow-y: auto;
+
+    box-shadow:
+        4px 0 15px rgba(0, 0, 0, 0.08);
+}
 
 
-// =========================================
-// PAGE LOAD
-// =========================================
+/* =========================================
+   LOGO AREA
+========================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+.admin-sidebar-logo {
+
+    height: 170px;
+
+    padding: 18px 15px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    border-bottom: 1px solid #263247;
+}
 
 
-    // =====================================
-    // SIDEBAR
-    // =====================================
+/* LOGO IMAGE */
 
-    const sidebar =
-        document.querySelector(".admin-sidebar");
+.admin-sidebar-logo img {
+
+    width: 58px !important;
+
+    height: 58px !important;
+
+    max-width: 58px !important;
+
+    max-height: 58px !important;
+
+    object-fit: contain;
+
+    display: block;
+
+    margin-bottom: 8px;
+}
 
 
-    if (!sidebar) {
+/* TELETHON */
 
-        console.warn(
-            "Admin Sidebar not found."
+.admin-sidebar-logo h2 {
+
+    margin: 0 0 3px;
+
+    padding: 0;
+
+    font-size: 20px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    color: #38bdf8;
+}
+
+
+/* ADMIN PANEL */
+
+.admin-sidebar-logo p {
+
+    margin: 0;
+
+    padding: 0;
+
+    font-size: 12px;
+
+    line-height: 1.2;
+
+    color: #cbd5e1;
+}
+
+
+/* =========================================
+   MENU
+========================================= */
+
+.admin-sidebar-menu {
+
+    width: 100%;
+
+    padding: 14px 10px;
+}
+
+
+/* MENU LINK */
+
+.admin-sidebar-menu a {
+
+    width: 100%;
+
+    min-height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 11px 14px;
+
+    margin-bottom: 4px;
+
+    border-radius: 8px;
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    line-height: 1.2;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* ICON */
+
+.admin-sidebar-menu a i {
+
+    width: 20px;
+
+    min-width: 20px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 16px;
+
+    color: #94a3b8;
+}
+
+
+/* TEXT */
+
+.admin-sidebar-menu a span {
+
+    display: inline-block;
+
+    color: inherit;
+
+    white-space: nowrap;
+
+    line-height: 1.2;
+}
+
+
+/* HOVER */
+
+.admin-sidebar-menu a:hover {
+
+    background: #1e293b;
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+}
+
+
+/* HOVER ICON */
+
+.admin-sidebar-menu a:hover i {
+
+    color: #38bdf8;
+}
+
+
+/* ACTIVE */
+
+.admin-sidebar-menu a.active {
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 4px 12px rgba(
+            37,
+            99,
+            235,
+            0.25
         );
+}
 
-        return;
 
+/* ACTIVE ICON */
+
+.admin-sidebar-menu a.active i {
+
+    color: #ffffff;
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+.admin-sidebar-menu a#adminLogoutBtn,
+.admin-sidebar-menu a#logoutBtn {
+
+    margin-top: 10px;
+
+    color: #fca5a5;
+}
+
+
+/* LOGOUT ICON */
+
+.admin-sidebar-menu a#adminLogoutBtn i,
+.admin-sidebar-menu a#logoutBtn i {
+
+    color: #f87171;
+}
+
+
+/* LOGOUT HOVER */
+
+.admin-sidebar-menu a#adminLogoutBtn:hover,
+.admin-sidebar-menu a#logoutBtn:hover {
+
+    background: #7f1d1d;
+
+    color: #ffffff;
+
+    transform: none;
+}
+
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+.admin-sidebar::-webkit-scrollbar {
+
+    width: 5px;
+}
+
+
+.admin-sidebar::-webkit-scrollbar-track {
+
+    background: #0f172a;
+}
+
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+
+    background: #334155;
+
+    border-radius: 10px;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .admin-sidebar {
+
+        width: 70px;
     }
 
 
-    // =====================================
-    // ACTIVE PAGE
-    // =====================================
+    .admin-sidebar-logo {
 
-    const currentPage =
-        window.location.pathname
-            .split("/")
-            .pop()
-            .toLowerCase();
+        height: 100px;
 
-
-    const menuLinks =
-        sidebar.querySelectorAll(
-            ".admin-sidebar-menu a[data-page]"
-        );
-
-
-    menuLinks.forEach(function (link) {
-
-        const page =
-            link
-                .getAttribute("data-page")
-                .toLowerCase();
-
-
-        if (page === currentPage) {
-
-            link.classList.add("active");
-
-        } else {
-
-            link.classList.remove("active");
-
-        }
-
-    });
-
-
-    // =====================================
-    // LOGOUT BUTTON
-    // =====================================
-
-    const logoutBtn =
-        document.getElementById(
-            "adminLogoutBtn"
-        );
-
-
-    if (!logoutBtn) {
-
-        console.warn(
-            "Admin Logout button not found."
-        );
-
-        return;
-
+        padding: 10px 5px;
     }
 
 
-    // =====================================
-    // LOGOUT CLICK
-    // =====================================
+    .admin-sidebar-logo img {
 
-    logoutBtn.addEventListener(
-        "click",
-        async function (e) {
+        width: 45px !important;
 
-            e.preventDefault();
+        height: 45px !important;
 
+        max-width: 45px !important;
 
-            try {
+        max-height: 45px !important;
 
-                // Disable button while logging out
-                logoutBtn.style.pointerEvents =
-                    "none";
-
-                logoutBtn.style.opacity =
-                    "0.6";
+        margin-bottom: 0;
+    }
 
 
-                // =================================
-                // FIREBASE SIGN OUT
-                // =================================
+    .admin-sidebar-logo h2,
+    .admin-sidebar-logo p {
 
-                await signOut(auth);
-
-
-                // =================================
-                // CLEAR LOCAL STORAGE
-                // =================================
-
-                localStorage.removeItem(
-                    "loggedInEmpCode"
-                );
-
-                localStorage.removeItem(
-                    "userRole"
-                );
+        display: none;
+    }
 
 
-                // =================================
-                // CLEAR SESSION STORAGE
-                // =================================
+    .admin-sidebar-menu {
 
-                sessionStorage.clear();
-
-
-                // =================================
-                // GO TO LOGIN PAGE
-                // =================================
-
-                window.location.href =
-                    "index.html";
+        padding: 12px 8px;
+    }
 
 
-            } catch (error) {
+    .admin-sidebar-menu a {
 
-                console.error(
-                    "Logout Error:",
-                    error
-                );
+        justify-content: center;
 
+        gap: 0;
 
-                // Enable button again
-                logoutBtn.style.pointerEvents =
-                    "auto";
-
-                logoutBtn.style.opacity =
-                    "1";
+        padding: 13px 5px;
+    }
 
 
-                alert(
-                    "Logout nahi ho saka. Please try again."
-                );
+    .admin-sidebar-menu a span {
 
-            }
+        display: none;
+    }
 
-        }
-    );
 
-});
+    .admin-sidebar-menu a i {
+
+        width: auto;
+
+        min-width: auto;
+
+        font-size: 18px;
+    }
+
+}
