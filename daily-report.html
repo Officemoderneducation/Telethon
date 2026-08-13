@@ -16,6 +16,12 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
+    <!-- Region Sidebar CSS -->
+    <link
+        rel="stylesheet"
+        href="assets/css/region-sidebar.css"
+    >
+
     <style>
 
         * {
@@ -31,182 +37,97 @@
             min-height: 100vh;
         }
 
-        /* =========================
-           SIDEBAR
-        ========================= */
+        /* ======================================
+           MAIN AREA
+        ====================================== */
 
-        .sidebar {
-            width: 235px;
+        .main-area {
+            margin-left: 250px;
             min-height: 100vh;
-
-            background: #0f172a;
-            color: white;
-
-            position: fixed;
-
-            left: 0;
-            top: 0;
-            bottom: 0;
-
-            z-index: 1000;
         }
 
-        .logo {
-            height: 178px;
-
-            padding: 20px 15px;
-
-            text-align: center;
-
-            border-bottom: 1px solid #263247;
-        }
-
-        .logo img {
-            width: 80px;
-            height: 80px;
-
-            object-fit: contain;
-
-            margin-bottom: 5px;
-        }
-
-        .logo h2 {
-            font-size: 20px;
-            color: #38bdf8;
-
-            margin-bottom: 5px;
-        }
-
-        .logo p {
-            font-size: 13px;
-            color: #cbd5e1;
-        }
-
-        .menu {
-            padding-top: 15px;
-        }
-
-        .menu a {
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            width: 100%;
-
-            padding: 13px 22px;
-
-            color: #cbd5e1;
-
-            text-decoration: none;
-
-            font-size: 14px;
-
-            transition: 0.2s;
-        }
-
-        .menu a:hover {
-            background: #1e293b;
-            color: white;
-        }
-
-        .menu a.active {
-            background: #2563eb;
-            color: white;
-        }
-
-        .menu a i {
-            width: 18px;
-            text-align: center;
-        }
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .main {
-            margin-left: 235px;
-
-            width: calc(100% - 235px);
-
-            min-height: 100vh;
-
-            padding: 24px;
-        }
-
-        /* =========================
+        /* ======================================
            TOPBAR
-        ========================= */
+        ====================================== */
 
-        .topbar {
+        .topbar-main {
+            height: 76px;
             background: white;
 
-            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-            padding: 20px 24px;
-
-            margin-bottom: 20px;
+            padding: 0 26px;
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.06);
+        }
 
+        .topbar-left {
             display: flex;
-
-            justify-content: space-between;
-
             align-items: center;
-
             gap: 15px;
         }
 
-        .topbar h2 {
-            font-size: 24px;
-
+        .topbar-title h2 {
+            font-size: 20px;
             color: #0f172a;
-
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
-        .topbar p {
+        .topbar-title p {
+            font-size: 12px;
             color: #64748b;
-
-            font-size: 14px;
         }
 
-        .user-info {
+        .topbar-user {
             display: flex;
-
             align-items: center;
-
             gap: 10px;
 
             color: #334155;
-
             font-size: 13px;
-
-            white-space: nowrap;
         }
 
-        .user-icon {
-            width: 38px;
-            height: 38px;
-
-            border-radius: 50%;
-
-            background: #eff6ff;
-
+        .topbar-user i {
             color: #2563eb;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
+            font-size: 20px;
         }
 
-        /* =========================
+        /* ======================================
+           MOBILE MENU BUTTON
+        ====================================== */
+
+        .mobile-menu-btn {
+            display: none;
+
+            border: none;
+            background: #2563eb;
+            color: white;
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 18px;
+        }
+
+        /* ======================================
+           MAIN CONTENT
+        ====================================== */
+
+        .main {
+            width: 100%;
+            padding: 22px;
+        }
+
+        /* ======================================
            REGION USER INFO
-        ========================= */
+        ====================================== */
 
         .region-user-info {
             background: #ecfdf5;
@@ -228,9 +149,9 @@
             font-size: 16px;
         }
 
-        /* =========================
+        /* ======================================
            FILTER PANEL
-        ========================= */
+        ====================================== */
 
         .filter-panel {
             background: white;
@@ -302,9 +223,9 @@
                 rgba(37,99,235,0.10);
         }
 
-        /* =========================
+        /* ======================================
            QUICK DATE
-        ========================= */
+        ====================================== */
 
         .quick-date-title {
             margin-top: 18px;
@@ -362,9 +283,9 @@
             border-color: #2563eb;
         }
 
-        /* =========================
+        /* ======================================
            BUTTONS
-        ========================= */
+        ====================================== */
 
         .filter-buttons {
             display: flex;
@@ -408,9 +329,9 @@
             background: #cbd5e1;
         }
 
-        /* =========================
+        /* ======================================
            REPORT INFO
-        ========================= */
+        ====================================== */
 
         .report-info {
             display: grid;
@@ -454,9 +375,9 @@
             font-size: 20px;
         }
 
-        /* =========================
+        /* ======================================
            TABLE
-        ========================= */
+        ====================================== */
 
         .table-container {
             background: white;
@@ -595,9 +516,9 @@
             background: #fff7ed;
         }
 
-        /* =========================
+        /* ======================================
            TOTAL ROW
-        ========================= */
+        ====================================== */
 
         .total-row td {
             background: #f1f5f9;
@@ -617,9 +538,9 @@
             background: #ffedd5;
         }
 
-        /* =========================
+        /* ======================================
            LOADING / EMPTY / ERROR
-        ========================= */
+        ====================================== */
 
         .loading-cell,
         .empty-cell,
@@ -641,35 +562,9 @@
             color: #dc2626;
         }
 
-        /* =========================
-           LOGOUT
-        ========================= */
-
-        .logout-btn {
-            border: none;
-
-            background: #ef3340;
-
-            color: white;
-
-            padding: 9px 14px;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-            font-weight: bold;
-
-            font-size: 12px;
-        }
-
-        .logout-btn:hover {
-            background: #dc2626;
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
+        /* ======================================
+           RESPONSIVE
+        ====================================== */
 
         @media (max-width: 1000px) {
 
@@ -685,54 +580,42 @@
 
         }
 
+        @media (max-width: 800px) {
+
+            .main-area {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .topbar-main {
+                padding: 0 15px;
+            }
+
+        }
+
         @media (max-width: 700px) {
 
-            .sidebar {
-                width: 70px;
+            .topbar-main {
+                height: auto;
+
+                min-height: 76px;
+
+                padding: 12px 15px;
             }
 
-            .logo {
-                height: 100px;
-
-                padding: 10px 5px;
-            }
-
-            .logo img {
-                width: 45px;
-
-                height: 45px;
-            }
-
-            .logo h2,
-            .logo p,
-            .menu span {
-                display: none;
-            }
-
-            .menu a {
-                justify-content: center;
-
-                padding: 15px 5px;
-            }
-
-            .main {
-                margin-left: 70px;
-
-                width: calc(100% - 70px);
-
-                padding: 12px;
-            }
-
-            .topbar {
-                flex-direction: column;
-
-                align-items: flex-start;
-            }
-
-            .user-info {
+            .topbar-left {
                 width: 100%;
+            }
 
-                justify-content: space-between;
+            .topbar-title h2 {
+                font-size: 17px;
+            }
+
+            .topbar-user {
+                display: none;
             }
 
             .filters {
@@ -743,8 +626,8 @@
                 grid-template-columns: 1fr;
             }
 
-            .page-title h2 {
-                font-size: 20px;
+            .main {
+                padding: 12px;
             }
 
             .table-container,
@@ -763,114 +646,72 @@
 
 
 <!-- =====================================================
-     SIDEBAR
+     REGION SIDEBAR
 ===================================================== -->
 
-<div class="sidebar">
-
-    <div class="logo">
-
-        <img
-            src="assets/images/logo.png"
-            alt="Telethon Logo"
-        >
-
-        <h2>Telethon</h2>
-
-        <p>Region User Panel</p>
-
-    </div>
-
-
-    <div class="menu">
-
-        <!-- DAILY REPORT -->
-
-        <a
-            href="daily-report.html"
-            class="active"
-        >
-
-            <i class="fa-solid fa-calendar-days"></i>
-
-            <span>
-                Daily Report
-            </span>
-
-        </a>
-
-
-        <!-- REGION USER -->
-
-        <a href="region-user.html">
-
-            <i class="fa-solid fa-user-shield"></i>
-
-            <span>
-                Region User
-            </span>
-
-        </a>
-
-
-        <!-- LOGOUT -->
-
-        <a
-            href="index.html"
-            id="logoutLink"
-        >
-
-            <i class="fa-solid fa-right-from-bracket"></i>
-
-            <span>
-                Logout
-            </span>
-
-        </a>
-
-    </div>
-
-</div>
+<div id="regionSidebar"></div>
 
 
 <!-- =====================================================
-     MAIN
+     MAIN AREA
 ===================================================== -->
 
-<div class="main">
+<div class="main-area">
 
 
     <!-- =================================================
          TOPBAR
     ================================================== -->
 
-    <div class="topbar">
+    <header class="topbar-main">
 
-        <div>
 
-            <h2>
-                <i
-                    class="fa-solid fa-calendar-days"
-                    style="color:#2563eb;margin-right:8px;"
-                ></i>
+        <div class="topbar-left">
 
-                Daily Collection Report
-            </h2>
 
-            <p>
-                Teacher-wise daily collection report
-            </p>
+            <!-- MOBILE MENU -->
+
+            <button
+                type="button"
+                id="mobileMenuBtn"
+                class="mobile-menu-btn"
+            >
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+
+            <!-- TITLE -->
+
+            <div class="topbar-title">
+
+                <h2>
+
+                    <i
+                        class="fa-solid fa-calendar-days"
+                        style="color:#2563eb;margin-right:8px;"
+                    ></i>
+
+                    Daily Collection Report
+
+                </h2>
+
+                <p>
+                    Teacher-wise daily collection report
+                </p>
+
+            </div>
+
 
         </div>
 
 
-        <div class="user-info">
+        <!-- USER -->
 
-            <div class="user-icon">
+        <div class="topbar-user">
 
-                <i class="fa-solid fa-user"></i>
-
-            </div>
+            <i class="fa-solid fa-circle-user"></i>
 
             <span id="regionUserInfoTop">
                 Loading User...
@@ -878,459 +719,529 @@
 
         </div>
 
-    </div>
+
+    </header>
 
 
     <!-- =================================================
-         REGION USER INFO
+         MAIN CONTENT
     ================================================== -->
 
-    <div
-        id="regionUserInfo"
-        class="region-user-info"
-    >
-
-        Loading Region User...
-
-    </div>
+    <main class="main">
 
 
-    <!-- =================================================
-         FILTER PANEL
-    ================================================== -->
+        <!-- =================================================
+             REGION USER INFO
+        ================================================== -->
 
-    <div class="filter-panel">
+        <div
+            id="regionUserInfo"
+            class="region-user-info"
+        >
 
-
-        <div class="filter-title">
-
-            <i class="fa-solid fa-filter"></i>
-
-            Report Filters
+            Loading Region User...
 
         </div>
 
 
-        <div class="filters">
+        <!-- =================================================
+             FILTER PANEL
+        ================================================== -->
+
+        <div class="filter-panel">
 
 
-            <!-- REGION -->
+            <div class="filter-title">
 
-            <div class="filter-group">
+                <i class="fa-solid fa-filter"></i>
 
-                <label for="regionFilter">
-                    Region
-                </label>
-
-                <select id="regionFilter">
-
-                    <option value="">
-                        All Assigned Regions
-                    </option>
-
-                </select>
+                Report Filters
 
             </div>
 
 
-            <!-- STATE -->
+            <div class="filters">
 
-            <div class="filter-group">
 
-                <label for="stateFilter">
-                    State
-                </label>
+                <!-- REGION -->
 
-                <select id="stateFilter">
+                <div class="filter-group">
 
-                    <option value="">
-                        All Assigned States
-                    </option>
+                    <label for="regionFilter">
+                        Region
+                    </label>
 
-                </select>
+                    <select id="regionFilter">
+
+                        <option value="">
+                            All Assigned Regions
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- STATE -->
+
+                <div class="filter-group">
+
+                    <label for="stateFilter">
+                        State
+                    </label>
+
+                    <select id="stateFilter">
+
+                        <option value="">
+                            All Assigned States
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CITY -->
+
+                <div class="filter-group">
+
+                    <label for="cityFilter">
+                        City
+                    </label>
+
+                    <select id="cityFilter">
+
+                        <option value="">
+                            All Cities
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- JAMIATUL MADINA -->
+
+                <div class="filter-group">
+
+                    <label for="jamiatulFilter">
+                        Jamiatul Madina
+                    </label>
+
+                    <select id="jamiatulFilter">
+
+                        <option value="">
+                            All Jamiatul Madina
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- FROM DATE -->
+
+                <div class="filter-group">
+
+                    <label for="fromDate">
+                        From Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fromDate"
+                    >
+
+                </div>
+
+
+                <!-- TO DATE -->
+
+                <div class="filter-group">
+
+                    <label for="toDate">
+                        To Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="toDate"
+                    >
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="filter-group">
+
+                    <label for="searchFilter">
+                        Search Teacher
+                    </label>
+
+                    <input
+                        type="text"
+                        id="searchFilter"
+                        placeholder="Teacher / Emp Code"
+                        autocomplete="off"
+                    >
+
+                </div>
+
 
             </div>
 
 
-            <!-- CITY -->
+            <!-- QUICK DATE -->
 
-            <div class="filter-group">
+            <div class="quick-date-title">
+                Quick Date Range
+            </div>
 
-                <label for="cityFilter">
-                    City
-                </label>
 
-                <select id="cityFilter">
+            <div class="quick-dates">
 
-                    <option value="">
-                        All Cities
-                    </option>
 
-                </select>
+                <button
+                    type="button"
+                    class="quick-date-btn"
+                    data-days="1"
+                >
+                    1 Day
+                </button>
+
+
+                <button
+                    type="button"
+                    class="quick-date-btn"
+                    data-days="5"
+                >
+                    5 Days
+                </button>
+
+
+                <button
+                    type="button"
+                    class="quick-date-btn"
+                    data-days="10"
+                >
+                    10 Days
+                </button>
+
+
+                <button
+                    type="button"
+                    class="quick-date-btn"
+                    data-days="15"
+                >
+                    15 Days
+                </button>
+
+
+                <button
+                    type="button"
+                    class="quick-date-btn"
+                    data-days="30"
+                >
+                    30 Days
+                </button>
+
 
             </div>
 
 
-            <!-- JAMIATUL MADINA -->
+            <!-- BUTTONS -->
 
-            <div class="filter-group">
-
-                <label for="jamiatulFilter">
-                    Jamiatul Madina
-                </label>
-
-                <select id="jamiatulFilter">
-
-                    <option value="">
-                        All Jamiatul Madina
-                    </option>
-
-                </select>
-
-            </div>
+            <div class="filter-buttons">
 
 
-            <!-- FROM DATE -->
-
-            <div class="filter-group">
-
-                <label for="fromDate">
-                    From Date
-                </label>
-
-                <input
-                    type="date"
-                    id="fromDate"
+                <button
+                    type="button"
+                    id="applyFilter"
+                    class="filter-btn apply-btn"
                 >
 
-            </div>
+                    <i
+                        class="fa-solid fa-magnifying-glass"
+                    ></i>
+
+                    Show Report
+
+                </button>
 
 
-            <!-- TO DATE -->
-
-            <div class="filter-group">
-
-                <label for="toDate">
-                    To Date
-                </label>
-
-                <input
-                    type="date"
-                    id="toDate"
+                <button
+                    type="button"
+                    id="resetFilter"
+                    class="filter-btn reset-btn"
                 >
 
+                    <i
+                        class="fa-solid fa-rotate-left"
+                    ></i>
+
+                    Reset
+
+                </button>
+
+
             </div>
 
 
-            <!-- SEARCH TEACHER -->
+        </div>
 
-            <div class="filter-group">
 
-                <label for="searchFilter">
-                    Search Teacher
-                </label>
+        <!-- =================================================
+             REPORT INFO
+        ================================================== -->
 
-                <input
-                    type="text"
-                    id="searchFilter"
-                    placeholder="Teacher / Emp Code"
-                    autocomplete="off"
+        <div class="report-info">
+
+
+            <!-- DATE RANGE -->
+
+            <div class="info-card">
+
+                <span>
+                    Selected Date Range
+                </span>
+
+                <strong id="selectedDateRange">
+                    —
+                </strong>
+
+            </div>
+
+
+            <!-- TEACHERS -->
+
+            <div class="info-card">
+
+                <span>
+                    Assigned Teachers
+                </span>
+
+                <strong id="totalTeachers">
+                    0
+                </strong>
+
+            </div>
+
+
+            <!-- COLLECTION -->
+
+            <div class="info-card">
+
+                <span>
+                    Total Collection
+                </span>
+
+                <strong id="grandTotal">
+                    ₹ 0
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             REPORT TABLE
+        ================================================== -->
+
+        <div class="table-container">
+
+
+            <div class="table-header">
+
+
+                <h3>
+
+                    <i
+                        class="fa-solid fa-table"
+                        style="color:#2563eb;margin-right:7px;"
+                    ></i>
+
+                    Teachers Daily Collection
+
+                </h3>
+
+
+                <span
+                    id="resultCount"
+                    class="result-count"
                 >
 
+                    Select Date Range
+
+                </span>
+
+
             </div>
 
-        </div>
+
+            <div class="table-wrapper">
 
 
-        <!-- QUICK DATE -->
-
-        <div class="quick-date-title">
-            Quick Date Range
-        </div>
+                <table>
 
 
-        <div class="quick-dates">
+                    <thead id="reportTableHead">
+
+                        <tr>
+
+                            <th>
+                                Jamiatul Madina
+                            </th>
+
+                            <th>
+                                Teacher Name
+                            </th>
+
+                        </tr>
+
+                    </thead>
 
 
-            <button
-                type="button"
-                class="quick-date-btn"
-                data-days="1"
-            >
-                1 Day
-            </button>
+                    <tbody id="reportTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="2"
+                                class="empty-cell"
+                            >
+
+                                Date range select karke
+                                <b>Show Report</b>
+                                click karein.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
 
 
-            <button
-                type="button"
-                class="quick-date-btn"
-                data-days="5"
-            >
-                5 Days
-            </button>
+                    <tfoot id="reportTableFoot">
+                    </tfoot>
 
 
-            <button
-                type="button"
-                class="quick-date-btn"
-                data-days="10"
-            >
-                10 Days
-            </button>
+                </table>
 
 
-            <button
-                type="button"
-                class="quick-date-btn"
-                data-days="15"
-            >
-                15 Days
-            </button>
+            </div>
 
-
-            <button
-                type="button"
-                class="quick-date-btn"
-                data-days="30"
-            >
-                30 Days
-            </button>
-
-        </div>
-
-
-        <!-- BUTTONS -->
-
-        <div class="filter-buttons">
-
-
-            <button
-                type="button"
-                id="applyFilter"
-                class="filter-btn apply-btn"
-            >
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                Show Report
-
-            </button>
-
-
-            <button
-                type="button"
-                id="resetFilter"
-                class="filter-btn reset-btn"
-            >
-
-                <i class="fa-solid fa-rotate-left"></i>
-
-                Reset
-
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- =================================================
-         REPORT INFO
-    ================================================== -->
-
-    <div class="report-info">
-
-
-        <div class="info-card">
-
-            <span>
-                Selected Date Range
-            </span>
-
-            <strong id="selectedDateRange">
-                —
-            </strong>
 
         </div>
 
 
-        <div class="info-card">
+    </main>
 
-            <span>
-                Assigned Teachers
-            </span>
-
-            <strong id="totalTeachers">
-                0
-            </strong>
-
-        </div>
-
-
-        <div class="info-card">
-
-            <span>
-                Total Collection
-            </span>
-
-            <strong id="grandTotal">
-                ₹ 0
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <!-- =================================================
-         REPORT TABLE
-    ================================================== -->
-
-    <div class="table-container">
-
-
-        <div class="table-header">
-
-            <h3>
-
-                <i
-                    class="fa-solid fa-table"
-                    style="color:#2563eb;margin-right:7px;"
-                ></i>
-
-                Teachers Daily Collection
-
-            </h3>
-
-
-            <span
-                id="resultCount"
-                class="result-count"
-            >
-                Select Date Range
-            </span>
-
-        </div>
-
-
-        <div class="table-wrapper">
-
-
-            <table>
-
-
-                <thead id="reportTableHead">
-
-                    <tr>
-
-                        <th>
-                            Jamiatul Madina
-                        </th>
-
-                        <th>
-                            Teacher Name
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="reportTableBody">
-
-                    <tr>
-
-                        <td
-                            colspan="2"
-                            class="empty-cell"
-                        >
-
-                            Date range select karke
-                            <b>Show Report</b>
-                            click karein.
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-
-                <tfoot id="reportTableFoot">
-                </tfoot>
-
-
-            </table>
-
-        </div>
-
-    </div>
 
 </div>
 
 
 <!-- =====================================================
-     JAVASCRIPT
+     REGION SIDEBAR LOADER
+===================================================== -->
+
+<script type="module">
+
+    /*
+     * IMPORTANT:
+     * Yahan old sidebar ka koi HTML nahi hai.
+     *
+     * Sirf region-sidebar.html load hoga.
+     */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        async function () {
+
+            const sidebarContainer =
+                document.getElementById(
+                    "regionSidebar"
+                );
+
+
+            if (!sidebarContainer) {
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "region-sidebar.html"
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Region Sidebar load nahi ho saka."
+                    );
+
+                }
+
+
+                const sidebarHTML =
+                    await response.text();
+
+
+                sidebarContainer.innerHTML =
+                    sidebarHTML;
+
+
+                /*
+                 * Region Sidebar JS
+                 */
+
+                const sidebarScript =
+                    document.createElement(
+                        "script"
+                    );
+
+
+                sidebarScript.type =
+                    "module";
+
+
+                sidebarScript.src =
+                    "assets/js/region-sidebar.js";
+
+
+                document.body.appendChild(
+                    sidebarScript
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Region Sidebar Error:",
+                    error
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
+
+<!-- =====================================================
+     DAILY REPORT JAVASCRIPT
 ===================================================== -->
 
 <script
     type="module"
     src="assets/js/daily-report.js"
 ></script>
-
-
-<!-- =====================================================
-     LOGOUT
-===================================================== -->
-
-<script>
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-
-            const logoutLink =
-                document.getElementById(
-                    "logoutLink"
-                );
-
-            if (!logoutLink) return;
-
-
-            logoutLink.addEventListener(
-                "click",
-                function (e) {
-
-                    e.preventDefault();
-
-
-                    localStorage.removeItem(
-                        "loggedInEmpCode"
-                    );
-
-                    localStorage.removeItem(
-                        "userRole"
-                    );
-
-                    localStorage.removeItem(
-                        "regionUserName"
-                    );
-
-                    localStorage.removeItem(
-                        "regionUserAccess"
-                    );
-
-
-                    window.location.href =
-                        "index.html";
-
-                }
-            );
-
-        }
-    );
-
-</script>
 
 
 </body>
