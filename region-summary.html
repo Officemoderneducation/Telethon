@@ -37,7 +37,7 @@
 
         /* ======================================
            RESET
-        ====================================== */
+        ======================================= */
 
         * {
             margin: 0;
@@ -47,285 +47,111 @@
         }
 
 
-        /* ======================================
-           BODY
-        ====================================== */
+        html {
+            width: 100%;
+            min-height: 100%;
+        }
+
 
         body {
-
+            width: 100%;
             min-height: 100vh;
 
-            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
 
+            background: #f4f6f9;
             color: #1e293b;
 
+            overflow-x: hidden;
         }
 
 
         /* ======================================
-           MAIN
-        ====================================== */
+           SIDEBAR CONTAINER
+        ======================================= */
+
+        #regionSidebar {
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+
+            width: 240px;
+            height: 100vh;
+
+            z-index: 99999;
+        }
+
+
+        /* ======================================
+           MAIN AREA
+        ======================================= */
 
         .main {
 
-            margin-left: 260px;
+            margin-left: 240px;
 
-            width: calc(100% - 260px);
+            width: calc(100% - 240px);
 
             min-height: 100vh;
 
-            padding: 24px;
+            padding: 22px;
 
+            background: #f4f6f9;
         }
 
 
         /* ======================================
-           TOPBAR
-        ====================================== */
-
-        .topbar {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 20px 24px;
-
-            margin-bottom: 20px;
-
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
-
-        }
-
-
-        .topbar h2 {
-
-            font-size: 24px;
-
-            color: #0f172a;
-
-            margin-bottom: 5px;
-
-        }
-
-
-        .topbar p {
-
-            color: #64748b;
-
-            font-size: 14px;
-
-        }
-
-
-        /* ======================================
-           USER INFO
+           MOBILE MENU BUTTON
         ======================================= */
 
-        .user-info {
+        .mobile-menu-btn {
 
-            display: flex;
+            display: none;
 
-            align-items: center;
+            position: fixed;
 
-            gap: 10px;
+            top: 12px;
+            left: 12px;
 
-            margin-top: 12px;
+            width: 42px;
+            height: 42px;
 
-            color: #475569;
+            border: none;
 
-            font-size: 14px;
-
-        }
-
-
-        .user-info i {
-
-            color: #2563eb;
-
-        }
-
-
-        /* ======================================
-           SUMMARY GRID
-        ======================================= */
-
-        .summary-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(4, minmax(0, 1fr));
-
-            gap: 18px;
-
-            margin-bottom: 20px;
-
-        }
-
-
-        /* ======================================
-           CARD
-        ======================================= */
-
-        .summary-card {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 20px;
-
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
-
-            position: relative;
-
-            overflow: hidden;
-
-        }
-
-
-        .summary-card::before {
-
-            content: "";
-
-            position: absolute;
-
-            left: 0;
-
-            top: 0;
-
-            width: 5px;
-
-            height: 100%;
+            border-radius: 8px;
 
             background: #2563eb;
 
-        }
+            color: #ffffff;
 
+            cursor: pointer;
 
-        .summary-card.collection::before {
+            z-index: 100001;
 
-            background: #16a34a;
-
-        }
-
-
-        .summary-card.remaining::before {
-
-            background: #f59e0b;
-
-        }
-
-
-        .summary-card.percentage::before {
-
-            background: #7c3aed;
-
-        }
-
-
-        .card-top {
-
-            display: flex;
-
-            justify-content: space-between;
+            font-size: 18px;
 
             align-items: center;
-
-            margin-bottom: 12px;
-
-        }
-
-
-        .card-title {
-
-            font-size: 13px;
-
-            color: #64748b;
-
-            font-weight: 600;
-
-        }
-
-
-        .card-icon {
-
-            width: 38px;
-
-            height: 38px;
-
-            border-radius: 9px;
-
-            display: flex;
-
-            align-items: center;
-
             justify-content: center;
 
-            background: #eff6ff;
-
-            color: #2563eb;
-
+            box-shadow:
+                0 3px 10px rgba(0,0,0,0.18);
         }
 
 
-        .collection .card-icon {
+        .mobile-menu-btn:hover {
 
-            background: #ecfdf5;
-
-            color: #16a34a;
-
-        }
-
-
-        .remaining .card-icon {
-
-            background: #fffbeb;
-
-            color: #f59e0b;
-
-        }
-
-
-        .percentage .card-icon {
-
-            background: #f5f3ff;
-
-            color: #7c3aed;
-
-        }
-
-
-        .card-value {
-
-            font-size: 25px;
-
-            font-weight: 700;
-
-            color: #0f172a;
-
-        }
-
-
-        .card-unit {
-
-            margin-top: 5px;
-
-            font-size: 13px;
-
-            color: #64748b;
-
+            background: #1d4ed8;
         }
 
 
         /* ======================================
-           PROGRESS CARD
+           PAGE HEADER
         ======================================= */
 
-        .progress-card {
+        .page-header {
 
             background: #ffffff;
 
@@ -333,103 +159,338 @@
 
             padding: 22px;
 
-            margin-bottom: 20px;
+            margin-bottom: 18px;
 
             box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
-
+                0 2px 8px rgba(0,0,0,0.06);
         }
 
 
-        .progress-header {
+        .page-header h1 {
 
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin-bottom: 14px;
-
-        }
-
-
-        .progress-header h3 {
-
-            font-size: 17px;
+            font-size: 24px;
 
             color: #0f172a;
 
+            margin-bottom: 6px;
         }
 
 
-        .progress-percentage {
-
-            font-size: 18px;
-
-            font-weight: 700;
+        .page-header h1 i {
 
             color: #2563eb;
 
+            margin-right: 8px;
         }
 
 
-        .progress-container {
+        .page-header p {
 
-            width: 100%;
-
-            height: 18px;
-
-            background: #e2e8f0;
-
-            border-radius: 20px;
-
-            overflow: hidden;
-
-        }
-
-
-        .progress-bar {
-
-            height: 100%;
-
-            width: 0%;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #2563eb,
-                    #7c3aed
-                );
-
-            border-radius: 20px;
-
-            transition:
-                width 0.6s ease;
-
-        }
-
-
-        .progress-info {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            margin-top: 10px;
-
-            font-size: 13px;
+            font-size: 14px;
 
             color: #64748b;
-
         }
 
 
         /* ======================================
-           TEACHER INFO CARD
+           REGION USER INFO
         ======================================= */
 
-        .teacher-card {
+        .region-user-info {
+
+            background: #ecfdf5;
+
+            border: 1px solid #bbf7d0;
+
+            color: #166534;
+
+            border-radius: 9px;
+
+            padding: 14px 18px;
+
+            margin-bottom: 18px;
+
+            font-size: 14px;
+        }
+
+
+        .region-user-info strong {
+
+            font-size: 16px;
+        }
+
+
+        /* ======================================
+           SUMMARY CARDS
+        ======================================= */
+
+        .summary-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .summary-card {
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            min-width: 0;
+        }
+
+
+        .summary-icon {
+
+            width: 48px;
+            height: 48px;
+
+            min-width: 48px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+
+            color: #ffffff;
+        }
+
+
+        .summary-icon.blue {
+            background: #2563eb;
+        }
+
+
+        .summary-icon.green {
+            background: #059669;
+        }
+
+
+        .summary-icon.orange {
+            background: #ea580c;
+        }
+
+
+        .summary-icon.purple {
+            background: #7c3aed;
+        }
+
+
+        .summary-content {
+
+            min-width: 0;
+        }
+
+
+        .summary-content span {
+
+            display: block;
+
+            font-size: 12px;
+
+            color: #64748b;
+
+            margin-bottom: 5px;
+        }
+
+
+        .summary-content strong {
+
+            display: block;
+
+            font-size: 21px;
+
+            color: #0f172a;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        /* ======================================
+           FILTER PANEL
+        ======================================= */
+
+        .filter-panel {
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            margin-bottom: 18px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+        }
+
+
+        .filter-title {
+
+            font-size: 17px;
+
+            font-weight: 700;
+
+            color: #0f172a;
+
+            margin-bottom: 16px;
+        }
+
+
+        .filter-title i {
+
+            color: #2563eb;
+
+            margin-right: 7px;
+        }
+
+
+        .filters {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 12px;
+        }
+
+
+        .filter-group label {
+
+            display: block;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #475569;
+
+            margin-bottom: 6px;
+        }
+
+
+        .filter-group select,
+        .filter-group input {
+
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 7px;
+
+            outline: none;
+
+            background: #ffffff;
+
+            font-size: 14px;
+
+            color: #334155;
+        }
+
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,0.10);
+        }
+
+
+        /* ======================================
+           FILTER BUTTONS
+        ======================================= */
+
+        .filter-buttons {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 16px;
+        }
+
+
+        .filter-btn {
+
+            border: none;
+
+            padding: 10px 18px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        .apply-btn {
+
+            background: #2563eb;
+
+            color: #ffffff;
+        }
+
+
+        .apply-btn:hover {
+
+            background: #1d4ed8;
+        }
+
+
+        .reset-btn {
+
+            background: #e2e8f0;
+
+            color: #334155;
+        }
+
+
+        .reset-btn:hover {
+
+            background: #cbd5e1;
+        }
+
+
+        /* ======================================
+           TABLE CONTAINER
+        ======================================= */
+
+        .table-container {
 
             background: #ffffff;
 
@@ -438,99 +499,291 @@
             padding: 20px;
 
             box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
-
+                0 2px 8px rgba(0,0,0,0.06);
         }
 
 
-        .teacher-header {
+        .table-header {
 
             display: flex;
 
-            justify-content: space-between;
-
             align-items: center;
 
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 18px;
         }
 
 
-        .teacher-header h3 {
+        .table-header h3 {
 
-            font-size: 17px;
+            font-size: 18px;
 
             color: #0f172a;
-
         }
 
 
-        .teacher-count {
-
-            background: #eff6ff;
+        .table-header h3 i {
 
             color: #2563eb;
 
-            padding: 7px 12px;
+            margin-right: 7px;
+        }
+
+
+        .result-count {
+
+            font-size: 13px;
+
+            color: #64748b;
+        }
+
+
+        /* ======================================
+           TABLE
+        ======================================= */
+
+        .table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 8px;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            min-width: 1100px;
+
+            border-collapse: collapse;
+
+            background: #ffffff;
+        }
+
+
+        th {
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+            padding: 13px 14px;
+
+            text-align: left;
+
+            font-size: 12px;
+
+            white-space: nowrap;
+        }
+
+
+        td {
+
+            padding: 12px 14px;
+
+            border-bottom:
+                1px solid #e2e8f0;
+
+            font-size: 13px;
+
+            color: #334155;
+
+            white-space: nowrap;
+        }
+
+
+        tbody tr:hover {
+
+            background: #f8fafc;
+        }
+
+
+        /* ======================================
+           TABLE DATA
+        ======================================= */
+
+        .employee-code {
+
+            font-weight: 700;
+
+            color: #1d4ed8;
+        }
+
+
+        .teacher-name {
+
+            font-weight: 600;
+
+            color: #0f172a;
+        }
+
+
+        .target {
+
+            color: #0f172a;
+
+            font-weight: 700;
+        }
+
+
+        .collection {
+
+            color: #059669;
+
+            font-weight: 700;
+        }
+
+
+        .remaining {
+
+            color: #ea580c;
+
+            font-weight: 700;
+        }
+
+
+        /* ======================================
+           STATUS
+        ======================================= */
+
+        .status-badge {
+
+            display: inline-block;
+
+            padding: 5px 11px;
 
             border-radius: 20px;
 
             font-size: 12px;
 
-            font-weight: bold;
+            font-weight: 700;
+        }
 
+
+        .approved {
+
+            background: #d1e7dd;
+
+            color: #0f5132;
+        }
+
+
+        .pending {
+
+            background: #fff3cd;
+
+            color: #664d03;
         }
 
 
         /* ======================================
-           LOADING
+           PERCENTAGE
         ======================================= */
 
-        .loading {
+        .percentage-badge {
+
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .percentage-low {
+
+            background: #fee2e2;
+
+            color: #b91c1c;
+        }
+
+
+        .percentage-medium {
+
+            background: #fef3c7;
+
+            color: #92400e;
+        }
+
+
+        .percentage-good {
+
+            background: #dbeafe;
+
+            color: #1d4ed8;
+        }
+
+
+        .percentage-complete {
+
+            background: #dcfce7;
+
+            color: #15803d;
+        }
+
+
+        /* ======================================
+           LOADING / EMPTY / ERROR
+        ======================================= */
+
+        .loading-cell,
+        .empty-cell,
+        .error-cell {
 
             text-align: center;
 
-            padding: 60px 20px;
+            padding: 35px !important;
+        }
+
+
+        .loading-cell {
 
             color: #64748b;
-
         }
 
 
-        .loading i {
+        .empty-cell {
 
-            font-size: 25px;
+            color: #64748b;
+        }
 
-            margin-bottom: 12px;
 
+        .error-cell {
+
+            color: #dc2626;
         }
 
 
         /* ======================================
-           ERROR
+           TABLET
         ======================================= */
 
-        .error-box {
+        @media (max-width: 1100px) {
 
-            background: #ffffff;
+            .summary-grid {
 
-            border-radius: 12px;
-
-            padding: 30px;
-
-            text-align: center;
-
-            color: #dc2626;
-
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
-
-        }
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
 
 
-        .error-box i {
+            .filters {
 
-            font-size: 30px;
-
-            margin-bottom: 10px;
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
 
         }
 
@@ -539,74 +792,182 @@
            MOBILE
         ======================================= */
 
-        @media (max-width: 1100px) {
+        @media (max-width: 800px) {
+
+            /* Sidebar is controlled by
+               region-sidebar.css */
+
+            #regionSidebar {
+
+                width: 220px;
+            }
+
+
+            /* Hamburger */
+
+            .mobile-menu-btn {
+
+                display: flex;
+            }
+
+
+            /* Main */
+
+            .main {
+
+                margin-left: 0;
+
+                width: 100%;
+
+                padding: 62px 15px 15px;
+            }
+
+
+            /* Header */
+
+            .page-header {
+
+                padding: 18px;
+
+                margin-bottom: 15px;
+            }
+
+
+            .page-header h1 {
+
+                font-size: 21px;
+            }
+
+
+            /* Summary */
 
             .summary-grid {
 
                 grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
+                    repeat(2, 1fr);
 
+                gap: 12px;
+            }
+
+
+            .summary-card {
+
+                padding: 14px;
+
+                gap: 10px;
+            }
+
+
+            .summary-icon {
+
+                width: 42px;
+                height: 42px;
+
+                min-width: 42px;
+
+                font-size: 17px;
+            }
+
+
+            .summary-content strong {
+
+                font-size: 18px;
+            }
+
+
+            /* Filters */
+
+            .filter-panel {
+
+                padding: 15px;
+            }
+
+
+            .filters {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            /* Table */
+
+            .table-container {
+
+                padding: 15px;
+            }
+
+
+            .table-header {
+
+                align-items: flex-start;
+
+                flex-direction: column;
             }
 
         }
 
 
-        @media (max-width: 768px) {
+        /* ======================================
+           SMALL MOBILE
+        ======================================= */
+
+        @media (max-width: 500px) {
 
             .main {
 
-                margin-left: 70px;
-
-                width: calc(100% - 70px);
-
-                padding: 15px;
-
+                padding: 62px 10px 10px;
             }
 
 
             .summary-grid {
 
                 grid-template-columns: 1fr;
-
             }
 
 
-            .topbar h2 {
+            .summary-card {
 
-                font-size: 20px;
-
+                width: 100%;
             }
 
 
-            .progress-header {
+            .page-header h1 {
 
-                gap: 10px;
-
+                font-size: 19px;
             }
 
-        }
+
+            .page-header p {
+
+                font-size: 13px;
+
+                line-height: 20px;
+            }
 
 
-        @media (max-width: 550px) {
+            .region-user-info {
 
-            .main {
+                font-size: 13px;
 
-                margin-left: 70px;
+                padding: 12px 14px;
+            }
 
-                width: calc(100% - 70px);
+
+            .filter-buttons {
+
+                flex-direction: column;
+            }
+
+
+            .filter-btn {
+
+                width: 100%;
+            }
+
+
+            .table-container {
 
                 padding: 10px;
-
-            }
-
-
-            .topbar,
-            .summary-card,
-            .progress-card,
-            .teacher-card {
-
-                padding: 15px;
-
             }
 
         }
@@ -619,60 +980,136 @@
 <body>
 
 
-    <!-- ======================================
-         REGION SIDEBAR
-    ======================================= -->
+<!-- ======================================
+     SIDEBAR
+======================================= -->
 
-    <div id="regionSidebar"></div>
-
-
-    <!-- ======================================
-         MAIN
-    ======================================= -->
-
-    <main class="main">
+<div id="regionSidebar"></div>
 
 
-        <!-- ==================================
-             TOPBAR
-        ================================== -->
 
-        <div class="topbar">
+<!-- ======================================
+     MOBILE MENU BUTTON
+======================================= -->
 
-            <h2>
-                Region Summary
-            </h2>
+<button
+    type="button"
+    id="mobileMenuBtn"
+    class="mobile-menu-btn"
+    aria-label="Open Menu"
+    title="Open Menu"
+>
 
-            <p>
-                Your assigned target and collection summary
-            </p>
+    <i class="fa-solid fa-bars"></i>
+
+</button>
 
 
-            <div class="user-info">
 
-                <i class="fa-solid fa-user"></i>
+<!-- ======================================
+     MAIN CONTENT
+======================================= -->
+
+<main class="main">
+
+
+    <!-- ==================================
+         PAGE HEADER
+    =================================== -->
+
+    <div class="page-header">
+
+        <h1>
+
+            <i class="fa-solid fa-chart-pie"></i>
+
+            Region Summary
+
+        </h1>
+
+
+        <p>
+
+            Assigned Region / State ke
+            Teachers ka complete summary.
+
+        </p>
+
+    </div>
+
+
+
+    <!-- ==================================
+         REGION USER INFO
+    =================================== -->
+
+    <div
+        id="regionUserInfo"
+        class="region-user-info"
+    >
+
+        Region User:
+        <strong>
+            Loading...
+        </strong>
+
+    </div>
+
+
+
+    <!-- ==================================
+         SUMMARY CARDS
+    =================================== -->
+
+    <div class="summary-grid">
+
+
+        <!-- TOTAL TEACHERS -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon blue">
+
+                <i class="fa-solid fa-users"></i>
+
+            </div>
+
+
+            <div class="summary-content">
 
                 <span>
-                    User:
+                    Total Teachers
                 </span>
 
-                <strong id="regionUserName">
-                    Loading...
+                <strong id="totalTeachers">
+                    0
                 </strong>
 
             </div>
 
+        </div>
 
-            <div class="user-info">
 
-                <i class="fa-solid fa-location-dot"></i>
+
+        <!-- TOTAL TARGET -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon purple">
+
+                <i class="fa-solid fa-bullseye"></i>
+
+            </div>
+
+
+            <div class="summary-content">
 
                 <span>
-                    Region:
+                    Total Target
                 </span>
 
-                <strong id="regionName">
-                    Loading...
+                <strong id="totalTarget">
+                    ₹ 0
                 </strong>
 
             </div>
@@ -680,467 +1117,663 @@
         </div>
 
 
-        <!-- ==================================
-             LOADING
-        ================================== -->
 
-        <div
-            id="loadingBox"
-            class="loading"
-        >
+        <!-- TOTAL COLLECTION -->
 
-            <i
-                class="fa-solid fa-spinner fa-spin"
-            ></i>
+        <div class="summary-card">
 
-            <div>
-                Loading Summary...
+            <div class="summary-icon green">
+
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+
+            </div>
+
+
+            <div class="summary-content">
+
+                <span>
+                    Total Collection
+                </span>
+
+                <strong id="totalCollection">
+                    ₹ 0
+                </strong>
+
             </div>
 
         </div>
 
 
-        <!-- ==================================
-             SUMMARY CONTENT
-        ================================== -->
 
-        <div
-            id="summaryContent"
-            style="display:none;"
-        >
+        <!-- REMAINING -->
 
+        <div class="summary-card">
 
-            <!-- ==================================
-                 SUMMARY CARDS
-            ================================== -->
+            <div class="summary-icon orange">
 
-            <div class="summary-grid">
-
-
-                <!-- TARGET -->
-
-                <div class="summary-card">
-
-                    <div class="card-top">
-
-                        <div class="card-title">
-                            MY TARGET
-                        </div>
-
-                        <div class="card-icon">
-
-                            <i
-                                class="fa-solid fa-bullseye"
-                            ></i>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="targetAmount"
-                        class="card-value"
-                    >
-                        ₹ 0
-                    </div>
-
-
-                    <div
-                        id="targetUnits"
-                        class="card-unit"
-                    >
-                        0 Unit
-                    </div>
-
-                </div>
-
-
-                <!-- COLLECTION -->
-
-                <div class="summary-card collection">
-
-                    <div class="card-top">
-
-                        <div class="card-title">
-                            TOTAL COLLECTION
-                        </div>
-
-                        <div class="card-icon">
-
-                            <i
-                                class="fa-solid fa-indian-rupee-sign"
-                            ></i>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="collectionAmount"
-                        class="card-value"
-                    >
-                        ₹ 0
-                    </div>
-
-
-                    <div
-                        id="collectionUnits"
-                        class="card-unit"
-                    >
-                        0 Unit
-                    </div>
-
-                </div>
-
-
-                <!-- REMAINING -->
-
-                <div class="summary-card remaining">
-
-                    <div class="card-top">
-
-                        <div class="card-title">
-                            REMAINING TARGET
-                        </div>
-
-                        <div class="card-icon">
-
-                            <i
-                                class="fa-solid fa-hourglass-half"
-                            ></i>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="remainingAmount"
-                        class="card-value"
-                    >
-                        ₹ 0
-                    </div>
-
-
-                    <div
-                        id="remainingUnits"
-                        class="card-unit"
-                    >
-                        0 Unit
-                    </div>
-
-                </div>
-
-
-                <!-- PERCENTAGE -->
-
-                <div class="summary-card percentage">
-
-                    <div class="card-top">
-
-                        <div class="card-title">
-                            COLLECTION PERCENTAGE
-                        </div>
-
-                        <div class="card-icon">
-
-                            <i
-                                class="fa-solid fa-chart-line"
-                            ></i>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="percentage"
-                        class="card-value"
-                    >
-                        0.00%
-                    </div>
-
-
-                    <div class="card-unit">
-                        Target Achievement
-                    </div>
-
-                </div>
+                <i class="fa-solid fa-chart-line"></i>
 
             </div>
 
 
-            <!-- ==================================
-                 PROGRESS
-            ================================== -->
+            <div class="summary-content">
 
-            <div class="progress-card">
+                <span>
+                    Remaining Target
+                </span>
 
-
-                <div class="progress-header">
-
-                    <h3>
-                        Target Progress
-                    </h3>
-
-
-                    <span
-                        id="progressPercentage"
-                        class="progress-percentage"
-                    >
-                        0.00%
-                    </span>
-
-                </div>
-
-
-                <div class="progress-container">
-
-                    <div
-                        id="progressBar"
-                        class="progress-bar"
-                    ></div>
-
-                </div>
-
-
-                <div class="progress-info">
-
-                    <span>
-                        Collection:
-                        <strong id="progressCollection">
-                            ₹ 0
-                        </strong>
-                    </span>
-
-
-                    <span>
-                        Target:
-                        <strong id="progressTarget">
-                            ₹ 0
-                        </strong>
-                    </span>
-
-                </div>
+                <strong id="remainingTarget">
+                    ₹ 0
+                </strong>
 
             </div>
 
+        </div>
 
-            <!-- ==================================
-                 ASSIGNED TEACHERS
-            ================================== -->
-
-            <div class="teacher-card">
-
-                <div class="teacher-header">
-
-                    <h3>
-                        Assigned Teachers
-                    </h3>
+    </div>
 
 
-                    <span
-                        id="teacherCount"
-                        class="teacher-count"
-                    >
-                        0 Teachers
-                    </span>
 
-                </div>
+    <!-- ==================================
+         FILTER PANEL
+    =================================== -->
 
-            </div>
+    <div class="filter-panel">
 
+
+        <div class="filter-title">
+
+            <i class="fa-solid fa-filter"></i>
+
+            Filter Teachers
 
         </div>
 
 
-        <!-- ==================================
-             ERROR
-        ================================== -->
 
-        <div
-            id="errorBox"
-            class="error-box"
-            style="display:none;"
-        >
+        <div class="filters">
 
-            <i class="fa-solid fa-triangle-exclamation"></i>
 
-            <div id="errorMessage">
-                Summary load nahi ho saki.
+            <!-- REGION -->
+
+            <div class="filter-group">
+
+                <label for="regionFilter">
+                    Region
+                </label>
+
+                <select id="regionFilter">
+
+                    <option value="">
+                        All Regions
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- STATE -->
+
+            <div class="filter-group">
+
+                <label for="stateFilter">
+                    State
+                </label>
+
+                <select id="stateFilter">
+
+                    <option value="">
+                        All States
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- CITY -->
+
+            <div class="filter-group">
+
+                <label for="cityFilter">
+                    City
+                </label>
+
+                <select id="cityFilter">
+
+                    <option value="">
+                        All Cities
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- STATUS -->
+
+            <div class="filter-group">
+
+                <label for="statusFilter">
+                    Status
+                </label>
+
+                <select id="statusFilter">
+
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option value="Approved">
+                        Approved
+                    </option>
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- SEARCH -->
+
+            <div class="filter-group">
+
+                <label for="searchFilter">
+                    Search
+                </label>
+
+                <input
+                    type="text"
+                    id="searchFilter"
+                    placeholder="Teacher / Employee Code / Mobile"
+                    autocomplete="off"
+                >
+
             </div>
 
         </div>
 
 
-    </main>
+
+        <!-- FILTER BUTTONS -->
+
+        <div class="filter-buttons">
 
 
-    <!-- ======================================
-         LOAD REGION SIDEBAR
-    ======================================= -->
+            <button
+                type="button"
+                id="applyFilter"
+                class="filter-btn apply-btn"
+            >
 
-    <script>
+                <i class="fa-solid fa-filter"></i>
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
+                Apply Filter
 
-                fetch(
-                    "components/region-sidebar.html"
-                )
-
-                    .then(
-                        function (response) {
-
-                            if (!response.ok) {
-
-                                throw new Error(
-                                    "Region Sidebar not found"
-                                );
-
-                            }
-
-                            return response.text();
-
-                        }
-                    )
-
-                    .then(
-                        function (data) {
-
-                            const sidebar =
-                                document.getElementById(
-                                    "regionSidebar"
-                                );
-
-                            if (!sidebar) {
-                                return;
-                            }
-
-                            sidebar.innerHTML =
-                                data;
+            </button>
 
 
-                            /* ==============================
-                               ACTIVE PAGE
-                            ============================== */
 
-                            const currentPage =
-                                window.location.pathname
-                                    .split("/")
-                                    .pop()
-                                    .toLowerCase();
+            <button
+                type="button"
+                id="resetFilter"
+                class="filter-btn reset-btn"
+            >
 
+                <i class="fa-solid fa-rotate-left"></i>
 
-                            const menuLinks =
-                                sidebar.querySelectorAll(
-                                    "a[data-page]"
-                                );
+                Reset
 
+            </button>
 
-                            menuLinks.forEach(
-                                function (link) {
+        </div>
 
-                                    const page =
-                                        String(
-                                            link.getAttribute(
-                                                "data-page"
-                                            ) || ""
-                                        )
-                                            .toLowerCase();
+    </div>
 
 
-                                    if (
-                                        page ===
-                                        currentPage
-                                    ) {
 
-                                        link.classList.add(
-                                            "active"
-                                        );
+    <!-- ==================================
+         TEACHERS TABLE
+    =================================== -->
 
-                                    }
-
-                                }
-                            );
+    <div class="table-container">
 
 
-                            /* ==============================
-                               LOGOUT
-                            ============================== */
+        <div class="table-header">
 
-                            const logoutBtn =
-                                sidebar.querySelector(
-                                    "#regionLogoutBtn"
-                                );
+            <h3>
+
+                <i class="fa-solid fa-table"></i>
+
+                Region Teachers Summary
+
+            </h3>
 
 
-                            if (logoutBtn) {
+            <span
+                id="resultCount"
+                class="result-count"
+            >
 
-                                logoutBtn.addEventListener(
-                                    "click",
-                                    function (e) {
+                Loading...
 
-                                        e.preventDefault();
+            </span>
 
-                                        localStorage.removeItem(
-                                            "loggedInEmpCode"
-                                        );
+        </div>
 
-                                        localStorage.removeItem(
-                                            "userRole"
-                                        );
 
-                                        window.location.replace(
-                                            "index.html"
-                                        );
 
-                                    }
-                                );
+        <div class="table-wrapper">
 
-                            }
+            <table>
 
-                        }
-                    )
+                <thead>
 
-                    .catch(
-                        function (error) {
+                    <tr>
 
-                            console.error(
-                                "Region Sidebar Error:",
-                                error
-                            );
+                        <th>
+                            Employee Code
+                        </th>
 
-                        }
-                    );
+                        <th>
+                            Teacher Name
+                        </th>
+
+                        <th>
+                            Mobile
+                        </th>
+
+                        <th>
+                            Region
+                        </th>
+
+                        <th>
+                            State
+                        </th>
+
+                        <th>
+                            City
+                        </th>
+
+                        <th>
+                            Target
+                        </th>
+
+                        <th>
+                            Total Collection
+                        </th>
+
+                        <th>
+                            Remaining Target
+                        </th>
+
+                        <th>
+                            Percentage
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="regionSummaryTable">
+
+                    <tr>
+
+                        <td
+                            colspan="11"
+                            class="loading-cell"
+                        >
+
+                            <i
+                                class="fa-solid fa-spinner fa-spin"
+                            ></i>
+
+                            Loading Region Summary...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</main>
+
+
+
+<!-- ======================================
+     SIDEBAR LOADER
+======================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const sidebarContainer =
+            document.getElementById(
+                "regionSidebar"
+            );
+
+
+        if (!sidebarContainer) {
+            return;
+        }
+
+
+        /* ==================================
+           LOAD SIDEBAR
+        ================================== */
+
+        fetch(
+            "components/region-sidebar.html"
+        )
+
+        .then(function (response) {
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Region Sidebar not found. Status: " +
+                    response.status
+                );
 
             }
-        );
 
-    </script>
+            return response.text();
 
-
-    <!-- ======================================
-         FIREBASE CONFIG
-    ======================================= -->
-
-    <script
-        type="module"
-        src="assets/js/firebase-config.js"
-    ></script>
+        })
 
 
-    <!-- ======================================
-         REGION SUMMARY JS
-    ======================================= -->
+        .then(function (data) {
 
-    <script
-        type="module"
-        src="assets/js/region-summary.js"
-    ></script>
+            sidebarContainer.innerHTML =
+                data;
+
+
+            /* ==================================
+               CURRENT PAGE
+            ================================== */
+
+            let currentPage =
+                window.location.pathname
+                    .split("/")
+                    .pop()
+                    .toLowerCase();
+
+
+            if (!currentPage) {
+
+                currentPage =
+                    "region-summary.html";
+
+            }
+
+
+            /* ==================================
+               ACTIVE MENU
+            ================================== */
+
+            const menuLinks =
+                sidebarContainer.querySelectorAll(
+                    ".region-menu-link[data-page]"
+                );
+
+
+            menuLinks.forEach(function (link) {
+
+                const page =
+                    (
+                        link.getAttribute(
+                            "data-page"
+                        ) || ""
+                    )
+                    .trim()
+                    .toLowerCase();
+
+
+                if (page === currentPage) {
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                }
+                else {
+
+                    link.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            });
+
+
+            /* ==================================
+               MOBILE MENU
+            ================================== */
+
+            const mobileMenuBtn =
+                document.getElementById(
+                    "mobileMenuBtn"
+                );
+
+
+            const sidebar =
+                sidebarContainer.querySelector(
+                    ".region-sidebar"
+                );
+
+
+            if (
+                mobileMenuBtn &&
+                sidebar
+            ) {
+
+                mobileMenuBtn.addEventListener(
+                    "click",
+                    function () {
+
+                        sidebar.classList.toggle(
+                            "open"
+                        );
+
+                    }
+                );
+
+
+                /* ==============================
+                   CLOSE SIDEBAR AFTER MENU CLICK
+                ============================== */
+
+                sidebar
+                    .querySelectorAll(
+                        ".region-menu-link"
+                    )
+                    .forEach(function (link) {
+
+                        link.addEventListener(
+                            "click",
+                            function () {
+
+                                if (
+                                    window.innerWidth <=
+                                    800
+                                ) {
+
+                                    sidebar.classList.remove(
+                                        "open"
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    });
+
+            }
+
+
+            /* ==================================
+               LOGOUT
+            ================================== */
+
+            const logoutBtn =
+                sidebarContainer.querySelector(
+                    "#regionSidebarLogout"
+                );
+
+
+            if (logoutBtn) {
+
+                logoutBtn.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.preventDefault();
+
+
+                        localStorage.removeItem(
+                            "loggedInEmpCode"
+                        );
+
+                        localStorage.removeItem(
+                            "userRole"
+                        );
+
+                        localStorage.removeItem(
+                            "regionUserName"
+                        );
+
+                        localStorage.removeItem(
+                            "regionUserAccess"
+                        );
+
+
+                        window.location.href =
+                            "index.html";
+
+                    }
+                );
+
+            }
+
+
+            /* ==================================
+               REGION USER NAME
+            ================================== */
+
+            const savedUserName =
+                localStorage.getItem(
+                    "regionUserName"
+                );
+
+
+            const sidebarUserName =
+                sidebarContainer.querySelector(
+                    "#regionSidebarUserName"
+                );
+
+
+            const regionUserInfoTop =
+                document.getElementById(
+                    "regionUserInfoTop"
+                );
+
+
+            if (savedUserName) {
+
+                if (sidebarUserName) {
+
+                    sidebarUserName.textContent =
+                        savedUserName;
+
+                }
+
+
+                if (regionUserInfoTop) {
+
+                    regionUserInfoTop.textContent =
+                        savedUserName;
+
+                }
+
+            }
+
+        })
+
+
+        .catch(function (error) {
+
+            console.error(
+                "Region Sidebar Error:",
+                error
+            );
+
+
+            sidebarContainer.innerHTML = `
+
+                <div
+                    style="
+                        padding:20px;
+                        color:#dc2626;
+                        background:#fee2e2;
+                        margin:10px;
+                        border-radius:8px;
+                    "
+                >
+
+                    Region Sidebar load nahi hua.
+
+                    <br><br>
+
+                    ${error.message}
+
+                </div>
+
+            `;
+
+        });
+
+    }
+
+);
+
+</script>
+
+
+
+<!-- ======================================
+     EXISTING REGION SUMMARY JS
+     DO NOT CHANGE
+======================================= -->
+
+<script
+    type="module"
+    src="assets/js/region-summary.js"
+></script>
 
 
 </body>
