@@ -62,14 +62,16 @@
             min-height: 100vh;
             background: #f4f6f9;
             color: #1e293b;
+            overflow-x: hidden;
         }
 
 
         /* ======================================
-           SIDEBAR
+           SIDEBAR CONTAINER
         ======================================= */
 
         #regionSidebar {
+
             position: fixed;
 
             left: 0;
@@ -87,6 +89,7 @@
         ======================================= */
 
         .main-area {
+
             margin-left: 240px;
 
             width: calc(100% - 240px);
@@ -102,6 +105,7 @@
         ======================================= */
 
         .topbar-main {
+
             height: 76px;
 
             background: #ffffff;
@@ -120,6 +124,7 @@
 
 
         .topbar-title h2 {
+
             font-size: 20px;
 
             color: #0f172a;
@@ -129,6 +134,7 @@
 
 
         .topbar-title p {
+
             font-size: 12px;
 
             color: #64748b;
@@ -136,6 +142,7 @@
 
 
         .topbar-user {
+
             display: flex;
 
             align-items: center;
@@ -151,6 +158,7 @@
 
 
         .topbar-user i {
+
             color: #2563eb;
 
             font-size: 20px;
@@ -158,11 +166,21 @@
 
 
         /* ======================================
-           MOBILE MENU
+           MOBILE MENU BUTTON
         ======================================= */
 
         .mobile-menu-btn {
+
             display: none;
+
+            position: fixed;
+
+            top: 12px;
+
+            left: 12px;
+
+            width: 42px;
+            height: 42px;
 
             border: none;
 
@@ -170,24 +188,26 @@
 
             color: #ffffff;
 
-            width: 42px;
-            height: 42px;
-
-            border-radius: 7px;
+            border-radius: 8px;
 
             cursor: pointer;
 
             font-size: 18px;
 
             align-items: center;
+
             justify-content: center;
 
-            flex-shrink: 0;
+            z-index: 100001;
+
+            box-shadow:
+                0 3px 10px rgba(0,0,0,0.18);
         }
 
 
-        .mobile-menu-btn:active {
-            transform: scale(0.97);
+        .mobile-menu-btn:hover {
+
+            background: #1d4ed8;
         }
 
 
@@ -196,6 +216,7 @@
         ======================================= */
 
         .main {
+
             width: 100%;
 
             padding: 22px;
@@ -207,6 +228,7 @@
         ======================================= */
 
         .page-title {
+
             background: #ffffff;
 
             border-radius: 12px;
@@ -221,6 +243,7 @@
 
 
         .page-title h2 {
+
             font-size: 24px;
 
             color: #0f172a;
@@ -230,6 +253,7 @@
 
 
         .page-title p {
+
             color: #64748b;
 
             font-size: 14px;
@@ -243,6 +267,7 @@
         ======================================= */
 
         .region-user-info {
+
             background: #ecfdf5;
 
             border: 1px solid #bbf7d0;
@@ -260,6 +285,7 @@
 
 
         .region-user-info strong {
+
             font-size: 16px;
         }
 
@@ -269,6 +295,7 @@
         ======================================= */
 
         .filter-panel {
+
             background: #ffffff;
 
             border-radius: 12px;
@@ -283,6 +310,7 @@
 
 
         .filter-title {
+
             font-size: 17px;
 
             font-weight: bold;
@@ -294,6 +322,7 @@
 
 
         .filter-title i {
+
             color: #2563eb;
 
             margin-right: 6px;
@@ -305,6 +334,7 @@
         ======================================= */
 
         .filters {
+
             display: grid;
 
             grid-template-columns:
@@ -315,6 +345,7 @@
 
 
         .filter-group label {
+
             display: block;
 
             margin-bottom: 6px;
@@ -329,6 +360,7 @@
 
         .filter-group select,
         .filter-group input {
+
             width: 100%;
 
             padding: 10px 12px;
@@ -349,6 +381,7 @@
 
         .filter-group select:focus,
         .filter-group input:focus {
+
             border-color: #2563eb;
 
             box-shadow:
@@ -362,6 +395,7 @@
         ======================================= */
 
         .quick-date-buttons {
+
             display: flex;
 
             flex-wrap: wrap;
@@ -378,6 +412,7 @@
 
 
         .quick-date-btn {
+
             border: 1px solid #cbd5e1;
 
             background: #ffffff;
@@ -400,6 +435,7 @@
 
 
         .quick-date-btn:hover {
+
             border-color: #2563eb;
 
             color: #2563eb;
@@ -409,6 +445,7 @@
 
 
         .quick-date-btn.active {
+
             background: #2563eb;
 
             color: #ffffff;
@@ -422,6 +459,7 @@
         ======================================= */
 
         .filter-buttons {
+
             display: flex;
 
             gap: 10px;
@@ -431,6 +469,7 @@
 
 
         .filter-btn {
+
             border: none;
 
             padding: 10px 18px;
@@ -449,6 +488,7 @@
 
 
         .apply-btn {
+
             background: #2563eb;
 
             color: #ffffff;
@@ -456,11 +496,13 @@
 
 
         .apply-btn:hover {
+
             background: #1d4ed8;
         }
 
 
         .reset-btn {
+
             background: #e2e8f0;
 
             color: #334155;
@@ -468,6 +510,7 @@
 
 
         .reset-btn:hover {
+
             background: #cbd5e1;
         }
 
@@ -477,6 +520,7 @@
         ======================================= */
 
         .table-container {
+
             background: #ffffff;
 
             border-radius: 12px;
@@ -493,6 +537,7 @@
         ======================================= */
 
         .table-header {
+
             display: flex;
 
             justify-content: space-between;
@@ -506,6 +551,7 @@
 
 
         .table-header h3 {
+
             font-size: 18px;
 
             color: #0f172a;
@@ -515,6 +561,7 @@
 
 
         .table-header h3 i {
+
             color: #2563eb;
 
             margin-right: 7px;
@@ -522,6 +569,7 @@
 
 
         #selectedDateRange {
+
             font-size: 12px;
 
             color: #64748b;
@@ -529,6 +577,7 @@
 
 
         .result-count {
+
             font-size: 13px;
 
             color: #64748b;
@@ -542,6 +591,7 @@
         ======================================= */
 
         .report-summary {
+
             display: grid;
 
             grid-template-columns:
@@ -554,6 +604,7 @@
 
 
         .summary-card {
+
             border: 1px solid #e2e8f0;
 
             background: #f8fafc;
@@ -571,6 +622,7 @@
 
 
         .summary-card span {
+
             font-size: 12px;
 
             color: #64748b;
@@ -580,6 +632,7 @@
 
 
         .summary-card strong {
+
             font-size: 21px;
 
             color: #0f172a;
@@ -587,6 +640,7 @@
 
 
         .summary-card:nth-child(2) strong {
+
             color: #059669;
         }
 
@@ -596,6 +650,7 @@
         ======================================= */
 
         .table-wrapper {
+
             width: 100%;
 
             overflow-x: auto;
@@ -612,6 +667,7 @@
         ======================================= */
 
         table {
+
             width: 100%;
 
             min-width: 900px;
@@ -627,6 +683,7 @@
         ======================================= */
 
         thead th {
+
             background: #2563eb;
 
             color: #ffffff;
@@ -648,11 +705,13 @@
 
 
         thead th:first-child {
+
             text-align: left;
         }
 
 
         thead th:last-child {
+
             border-right: none;
         }
 
@@ -662,6 +721,7 @@
         ======================================= */
 
         tbody td {
+
             padding: 12px 14px;
 
             border-bottom:
@@ -679,11 +739,13 @@
 
         tbody td:first-child,
         tbody td:nth-child(2) {
+
             text-align: left;
         }
 
 
         tbody tr:hover {
+
             background: #f8fafc;
         }
 
@@ -693,6 +755,7 @@
         ======================================= */
 
         .jamiatul {
+
             font-weight: 600;
 
             color: #334155;
@@ -704,6 +767,7 @@
         ======================================= */
 
         .teacher-name {
+
             font-weight: 600;
 
             color: #0f172a;
@@ -715,6 +779,7 @@
         ======================================= */
 
         .date-amount {
+
             color: #059669;
 
             font-weight: 700;
@@ -728,6 +793,7 @@
         ======================================= */
 
         .no-entry {
+
             color: #94a3b8;
 
             background: #f8fafc;
@@ -739,6 +805,7 @@
         ======================================= */
 
         .total-collection {
+
             color: #1d4ed8;
 
             font-weight: 700;
@@ -752,6 +819,7 @@
         ======================================= */
 
         tfoot td {
+
             padding: 13px 14px;
 
             background: #f1f5f9;
@@ -772,16 +840,19 @@
 
 
         tfoot td:first-child {
+
             text-align: left;
         }
 
 
         .date-total {
+
             color: #334155;
         }
 
 
         .grand-total {
+
             color: #059669;
 
             background: #dcfce7;
@@ -797,6 +868,7 @@
         .loading-cell,
         .empty-cell,
         .error-cell {
+
             text-align: center !important;
 
             padding: 35px !important;
@@ -804,16 +876,19 @@
 
 
         .loading-cell {
+
             color: #64748b;
         }
 
 
         .empty-cell {
+
             color: #64748b;
         }
 
 
         .error-cell {
+
             color: #dc2626;
         }
 
@@ -823,16 +898,19 @@
         ======================================= */
 
         .table-wrapper::-webkit-scrollbar {
+
             height: 8px;
         }
 
 
         .table-wrapper::-webkit-scrollbar-track {
+
             background: #f1f5f9;
         }
 
 
         .table-wrapper::-webkit-scrollbar-thumb {
+
             background: #cbd5e1;
 
             border-radius: 10px;
@@ -840,6 +918,7 @@
 
 
         .table-wrapper::-webkit-scrollbar-thumb:hover {
+
             background: #94a3b8;
         }
 
@@ -851,6 +930,7 @@
         @media (max-width: 1100px) {
 
             .filters {
+
                 grid-template-columns:
                     repeat(3, 1fr);
             }
@@ -865,6 +945,7 @@
         @media (max-width: 900px) {
 
             .filters {
+
                 grid-template-columns:
                     repeat(2, 1fr);
             }
@@ -878,53 +959,67 @@
 
         @media (max-width: 800px) {
 
+            /*
+               IMPORTANT:
+               Sidebar ka actual open/close
+               components/region-sidebar.css
+               se control hoga.
+            */
+
             #regionSidebar {
+
                 width: 220px;
 
-                transform:
-                    translateX(-100%);
-
-                transition:
-                    transform 0.25s ease;
-
-                visibility: visible;
+                z-index: 99999;
             }
 
 
-            #regionSidebar .region-sidebar {
-                width: 220px;
+            /*
+               Hamburger ko fixed rakha gaya hai
+               taaki mobile par hamesha visible rahe.
+            */
+
+            .mobile-menu-btn {
+
+                display: flex;
+
+                position: fixed;
+
+                top: 12px;
+
+                left: 12px;
+
+                z-index: 100001;
             }
 
 
-            #regionSidebar .region-sidebar.open {
-                transform:
-                    translateX(0) !important;
-            }
-
+            /*
+               Main ko sidebar ke neeche se
+               start karna hai.
+            */
 
             .main-area {
+
                 margin-left: 0;
 
                 width: 100%;
             }
 
 
-            .mobile-menu-btn {
-                display: flex;
-            }
-
-
             .topbar-main {
-                padding: 0 15px;
+
+                padding: 0 15px 0 68px;
             }
 
 
             .topbar-title {
-                margin-left: 10px;
+
+                margin-left: 0;
             }
 
 
             .main {
+
                 padding: 15px;
             }
 
@@ -938,37 +1033,44 @@
         @media (max-width: 650px) {
 
             .filters {
+
                 grid-template-columns: 1fr;
             }
 
 
             .report-summary {
+
                 grid-template-columns: 1fr;
             }
 
 
             .main {
+
                 padding: 12px;
             }
 
 
             .page-title {
+
                 padding: 17px;
             }
 
 
             .page-title h2 {
+
                 font-size: 20px;
             }
 
 
             .filter-panel,
             .table-container {
+
                 padding: 13px;
             }
 
 
             .table-header {
+
                 flex-direction: column;
 
                 align-items: flex-start;
@@ -976,26 +1078,31 @@
 
 
             .topbar-user {
+
                 display: none;
             }
 
 
             .filter-buttons {
+
                 flex-direction: column;
             }
 
 
             .filter-btn {
+
                 width: 100%;
             }
 
 
             .quick-date-buttons {
+
                 gap: 6px;
             }
 
 
             .quick-date-btn {
+
                 flex: 1;
             }
 
@@ -1018,6 +1125,24 @@
 
 
 <!-- ======================================
+     MOBILE MENU BUTTON
+====================================== -->
+
+<button
+    type="button"
+    id="mobileMenuBtn"
+    class="mobile-menu-btn"
+    aria-label="Open Menu"
+    title="Open Menu"
+>
+
+    <i class="fa-solid fa-bars"></i>
+
+</button>
+
+
+
+<!-- ======================================
      MAIN AREA
 ====================================== -->
 
@@ -1029,19 +1154,6 @@
     ================================== -->
 
     <header class="topbar-main">
-
-
-        <button
-            type="button"
-            id="mobileMenuBtn"
-            class="mobile-menu-btn"
-            aria-label="Open Menu"
-            aria-expanded="false"
-        >
-
-            <i class="fa-solid fa-bars"></i>
-
-        </button>
 
 
         <div class="topbar-title">
@@ -1461,9 +1573,7 @@
                 <table>
 
 
-                    <!-- ==================================
-                         DYNAMIC HEADER
-                    ================================== -->
+                    <!-- DYNAMIC HEADER -->
 
                     <thead id="reportTableHead">
 
@@ -1483,9 +1593,7 @@
 
 
 
-                    <!-- ==================================
-                         DYNAMIC BODY
-                    ================================== -->
+                    <!-- DYNAMIC BODY -->
 
                     <tbody id="reportTableBody">
 
@@ -1510,9 +1618,7 @@
 
 
 
-                    <!-- ==================================
-                         DYNAMIC FOOTER
-                    ================================== -->
+                    <!-- DYNAMIC FOOTER -->
 
                     <tfoot id="reportTableFoot">
                     </tfoot>
@@ -1541,16 +1647,9 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-
         const sidebarContainer =
             document.getElementById(
                 "regionSidebar"
-            );
-
-
-        const mobileMenuBtn =
-            document.getElementById(
-                "mobileMenuBtn"
             );
 
 
@@ -1585,28 +1684,8 @@ document.addEventListener(
 
         .then(function (data) {
 
-
             sidebarContainer.innerHTML =
                 data;
-
-
-            /* ==================================
-               SIDEBAR ELEMENT
-            ================================== */
-
-            const sidebar =
-                sidebarContainer.querySelector(
-                    ".region-sidebar"
-                );
-
-
-            if (!sidebar) {
-
-                throw new Error(
-                    "'.region-sidebar' element not found in region-sidebar.html"
-                );
-
-            }
 
 
             /* ==================================
@@ -1640,7 +1719,6 @@ document.addEventListener(
 
             menuLinks.forEach(function (link) {
 
-
                 const page =
                     (
                         link.getAttribute(
@@ -1657,7 +1735,8 @@ document.addEventListener(
                         "active"
                     );
 
-                } else {
+                }
+                else {
 
                     link.classList.remove(
                         "active"
@@ -1668,139 +1747,76 @@ document.addEventListener(
             });
 
 
+
             /* ==================================
                MOBILE MENU
-               IMPORTANT FIX
             ================================== */
 
-            if (mobileMenuBtn) {
+            const mobileMenuBtn =
+                document.getElementById(
+                    "mobileMenuBtn"
+                );
 
 
-                mobileMenuBtn.onclick =
+            const sidebar =
+                sidebarContainer.querySelector(
+                    ".region-sidebar"
+                );
+
+
+            if (
+                mobileMenuBtn &&
+                sidebar
+            ) {
+
+                mobileMenuBtn.addEventListener(
+                    "click",
                     function (event) {
 
                         event.preventDefault();
 
                         event.stopPropagation();
 
-
                         sidebar.classList.toggle(
                             "open"
                         );
 
-
-                        const isOpen =
-                            sidebar.classList.contains(
-                                "open"
-                            );
+                    }
+                );
 
 
-                        mobileMenuBtn.setAttribute(
-                            "aria-expanded",
-                            isOpen ? "true" : "false"
-                        );
+                /* ==============================
+                   CLOSE SIDEBAR AFTER MENU CLICK
+                ============================== */
 
+                sidebar
+                    .querySelectorAll(
+                        ".region-menu-link"
+                    )
+                    .forEach(function (link) {
 
-                        const icon =
-                            mobileMenuBtn.querySelector(
-                                "i"
-                            );
+                        link.addEventListener(
+                            "click",
+                            function () {
 
+                                if (
+                                    window.innerWidth <=
+                                    800
+                                ) {
 
-                        if (icon) {
+                                    sidebar.classList.remove(
+                                        "open"
+                                    );
 
-                            if (isOpen) {
-
-                                icon.classList.remove(
-                                    "fa-bars"
-                                );
-
-                                icon.classList.add(
-                                    "fa-xmark"
-                                );
-
-                            } else {
-
-                                icon.classList.remove(
-                                    "fa-xmark"
-                                );
-
-                                icon.classList.add(
-                                    "fa-bars"
-                                );
+                                }
 
                             }
+                        );
 
-                        }
-
-                    };
+                    });
 
             }
 
-
-            /* ==================================
-               CLOSE MOBILE SIDEBAR
-            ================================== */
-
-            sidebarContainer
-                .querySelectorAll(
-                    ".region-menu-link"
-                )
-                .forEach(function (link) {
-
-
-                    link.addEventListener(
-                        "click",
-                        function () {
-
-
-                            if (
-                                window.innerWidth <=
-                                800
-                            ) {
-
-
-                                sidebar.classList.remove(
-                                    "open"
-                                );
-
-
-                                if (mobileMenuBtn) {
-
-                                    mobileMenuBtn.setAttribute(
-                                        "aria-expanded",
-                                        "false"
-                                    );
-
-                                }
-
-
-                                const icon =
-                                    mobileMenuBtn
-                                        ? mobileMenuBtn.querySelector(
-                                            "i"
-                                        )
-                                        : null;
-
-
-                                if (icon) {
-
-                                    icon.classList.remove(
-                                        "fa-xmark"
-                                    );
-
-                                    icon.classList.add(
-                                        "fa-bars"
-                                    );
-
-                                }
-
-                            }
-
-                        }
-                    );
-
-                });
 
 
             /* ==================================
@@ -1848,6 +1864,7 @@ document.addEventListener(
             }
 
 
+
             /* ==================================
                REGION USER NAME
             ================================== */
@@ -1872,7 +1889,6 @@ document.addEventListener(
 
             if (savedUserName) {
 
-
                 if (sidebarUserName) {
 
                     sidebarUserName.textContent =
@@ -1890,12 +1906,10 @@ document.addEventListener(
 
             }
 
-
         })
 
 
         .catch(function (error) {
-
 
             console.error(
                 "Region Sidebar Error:",
@@ -1937,6 +1951,7 @@ document.addEventListener(
 
 <!-- ======================================
      DAILY REPORT JS
+     EXISTING FILE - NO CHANGE
 ====================================== -->
 
 <script
