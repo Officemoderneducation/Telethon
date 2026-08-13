@@ -197,10 +197,10 @@
 
 
         /* ======================================
-           FILTER CARD
+           FILTER SECTION
         ======================================= */
 
-        .filter-card {
+        .filter-section {
 
             background: #f8fafc;
 
@@ -251,22 +251,21 @@
 
         .filter-group {
 
-            display: flex;
-
-            flex-direction: column;
-
+            width: 100%;
         }
 
 
         .filter-group label {
 
+            display: block;
+
             margin-bottom: 6px;
+
+            color: #475569;
 
             font-size: 12px;
 
             font-weight: bold;
-
-            color: #475569;
         }
 
 
@@ -303,45 +302,31 @@
         }
 
 
-        .filter-select:disabled {
-
-            background: #f1f5f9;
-
-            color: #94a3b8;
-
-            cursor: not-allowed;
-        }
-
-
-        .filter-actions {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-            margin-top: 14px;
-        }
-
+        /* ======================================
+           RESET FILTER BUTTON
+        ======================================= */
 
         .reset-filter-btn {
 
+            height: 40px;
+
+            padding: 0 15px;
+
             border: none;
+
+            border-radius: 7px;
 
             background: #64748b;
 
             color: #ffffff;
 
-            padding: 9px 15px;
-
-            border-radius: 7px;
-
-            font-size: 12px;
+            font-size: 13px;
 
             font-weight: bold;
 
             cursor: pointer;
+
+            transition: 0.2s;
         }
 
 
@@ -351,17 +336,13 @@
         }
 
 
-        /* ======================================
-           FILTER RESULT
-        ======================================= */
+        .filter-actions {
 
-        .filter-result {
+            display: flex;
 
-            font-size: 12px;
+            justify-content: flex-end;
 
-            color: #64748b;
-
-            font-weight: 600;
+            margin-top: 12px;
         }
 
 
@@ -732,6 +713,8 @@
                 </h3>
 
 
+                <!-- LIVE SEARCH -->
+
                 <input
                     type="text"
                     id="searchUser"
@@ -747,13 +730,16 @@
                  FILTERS
             =================================== -->
 
-            <div class="filter-card">
+            <div class="filter-section">
+
 
                 <div class="filter-title">
 
                     <i class="fa-solid fa-filter"></i>
 
-                    <span>Filter Teachers</span>
+                    <span>
+                        Filter Teachers
+                    </span>
 
                 </div>
 
@@ -765,12 +751,12 @@
 
                     <div class="filter-group">
 
-                        <label for="filterRegion">
+                        <label for="regionFilter">
                             Region
                         </label>
 
                         <select
-                            id="filterRegion"
+                            id="regionFilter"
                             class="filter-select"
                         >
 
@@ -787,14 +773,13 @@
 
                     <div class="filter-group">
 
-                        <label for="filterState">
+                        <label for="stateFilter">
                             State
                         </label>
 
                         <select
-                            id="filterState"
+                            id="stateFilter"
                             class="filter-select"
-                            disabled
                         >
 
                             <option value="">
@@ -810,14 +795,13 @@
 
                     <div class="filter-group">
 
-                        <label for="filterCity">
+                        <label for="cityFilter">
                             City
                         </label>
 
                         <select
-                            id="filterCity"
+                            id="cityFilter"
                             class="filter-select"
-                            disabled
                         >
 
                             <option value="">
@@ -833,12 +817,12 @@
 
                     <div class="filter-group">
 
-                        <label for="filterStatus">
+                        <label for="statusFilter">
                             Status
                         </label>
 
                         <select
-                            id="filterStatus"
+                            id="statusFilter"
                             class="filter-select"
                         >
 
@@ -846,11 +830,11 @@
                                 All Status
                             </option>
 
-                            <option value="approved">
+                            <option value="Approved">
                                 Approved
                             </option>
 
-                            <option value="pending">
+                            <option value="Pending">
                                 Pending
                             </option>
 
@@ -860,6 +844,8 @@
 
                 </div>
 
+
+                <!-- RESET -->
 
                 <div class="filter-actions">
 
@@ -875,18 +861,15 @@
 
                     </button>
 
-
-                    <span
-                        id="filterResult"
-                        class="filter-result"
-                    >
-                        Showing all teachers
-                    </span>
-
                 </div>
+
 
             </div>
 
+
+            <!-- ==================================
+                 TABLE
+            =================================== -->
 
             <div class="table-wrapper">
 
