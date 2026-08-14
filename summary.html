@@ -23,20 +23,6 @@
     >
 
 
-    <!-- ======================================
-         TEACHER SIDEBAR CSS
-    ======================================= -->
-
-    <link
-        rel="stylesheet"
-        href="components/teacher-sidebar.css"
-    >
-
-
-    <!-- ======================================
-         PAGE CSS
-    ======================================= -->
-
     <style>
 
         /* ======================================
@@ -44,25 +30,36 @@
         ======================================= */
 
         * {
+
             margin: 0;
             padding: 0;
+
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+
+            font-family:
+                Arial, sans-serif;
+
         }
 
 
-        html {
+        html,
+        body {
+
             width: 100%;
+
             min-height: 100%;
+
         }
 
 
         body {
-            width: 100%;
-            min-height: 100vh;
+
             background: #f4f6f9;
+
             color: #1e293b;
+
             overflow-x: hidden;
+
         }
 
 
@@ -81,6 +78,7 @@
             height: 100vh;
 
             z-index: 99999;
+
         }
 
 
@@ -92,11 +90,47 @@
 
             margin-left: 240px;
 
-            width: calc(100% - 240px);
+            width:
+                calc(100% - 240px);
 
             min-height: 100vh;
 
-            background: #f4f6f9;
+        }
+
+
+        /* ======================================
+           MOBILE MENU
+        ======================================= */
+
+        .mobile-menu-btn {
+
+            display: none;
+
+            position: fixed;
+
+            left: 12px;
+            top: 12px;
+
+            width: 42px;
+            height: 42px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+            font-size: 18px;
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            z-index: 100001;
+
         }
 
 
@@ -119,25 +153,29 @@
             padding: 0 26px;
 
             box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
+                0 2px 8px
+                rgba(0,0,0,0.06);
+
         }
 
 
-        .topbar-left h2 {
+        .topbar-title h2 {
 
-            font-size: 20px;
+            font-size: 21px;
 
             color: #0f172a;
 
-            margin-bottom: 3px;
+            margin-bottom: 4px;
+
         }
 
 
-        .topbar-left p {
+        .topbar-title p {
 
             font-size: 12px;
 
             color: #64748b;
+
         }
 
 
@@ -147,13 +185,14 @@
 
             align-items: center;
 
-            gap: 10px;
-
-            color: #334155;
+            gap: 9px;
 
             font-size: 13px;
 
             font-weight: 600;
+
+            color: #334155;
+
         }
 
 
@@ -162,53 +201,7 @@
             color: #2563eb;
 
             font-size: 20px;
-        }
 
-
-        /* ======================================
-           MOBILE MENU
-        ======================================= */
-
-        .mobile-menu-btn {
-
-            display: none;
-
-            position: fixed;
-
-            top: 12px;
-
-            left: 12px;
-
-            width: 42px;
-
-            height: 42px;
-
-            border: none;
-
-            background: #2563eb;
-
-            color: #ffffff;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-
-            font-size: 18px;
-
-            align-items: center;
-
-            justify-content: center;
-
-            z-index: 100001;
-
-            box-shadow:
-                0 3px 10px rgba(0, 0, 0, 0.18);
-        }
-
-
-        .mobile-menu-btn:hover {
-
-            background: #1d4ed8;
         }
 
 
@@ -218,17 +211,16 @@
 
         .main {
 
-            width: 100%;
-
             padding: 22px;
+
         }
 
 
         /* ======================================
-           PAGE HEADER
+           PAGE INTRO
         ======================================= */
 
-        .page-header {
+        .page-title {
 
             background: #ffffff;
 
@@ -239,35 +231,40 @@
             margin-bottom: 18px;
 
             box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
+                0 2px 8px
+                rgba(0,0,0,0.06);
+
         }
 
 
-        .page-header h2 {
+        .page-title h2 {
 
             font-size: 24px;
 
             color: #0f172a;
 
-            margin-bottom: 7px;
+            margin-bottom: 6px;
+
         }
 
 
-        .page-header h2 i {
+        .page-title h2 i {
 
             color: #2563eb;
 
             margin-right: 8px;
+
         }
 
 
-        .page-header p {
-
-            font-size: 14px;
+        .page-title p {
 
             color: #64748b;
 
+            font-size: 14px;
+
             line-height: 1.6;
+
         }
 
 
@@ -277,9 +274,9 @@
 
         .teacher-info {
 
-            background: #eff6ff;
+            background: #ecfdf5;
 
-            border: 1px solid #bfdbfe;
+            border: 1px solid #bbf7d0;
 
             border-radius: 10px;
 
@@ -287,36 +284,22 @@
 
             margin-bottom: 18px;
 
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            color: #1e40af;
+            color: #166534;
 
             font-size: 14px;
-        }
 
-
-        .teacher-info i {
-
-            font-size: 20px;
-
-            color: #2563eb;
         }
 
 
         .teacher-info strong {
 
-            color: #0f172a;
+            font-size: 16px;
 
-            font-size: 15px;
         }
 
 
         /* ======================================
-           SUMMARY CARDS
+           SUMMARY GRID
         ======================================= */
 
         .summary-grid {
@@ -329,8 +312,13 @@
             gap: 16px;
 
             margin-bottom: 18px;
+
         }
 
+
+        /* ======================================
+           SUMMARY CARD
+        ======================================= */
 
         .summary-card {
 
@@ -340,12 +328,16 @@
 
             padding: 20px;
 
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
+            min-height: 145px;
 
             position: relative;
 
             overflow: hidden;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0,0,0,0.06);
+
         }
 
 
@@ -356,32 +348,34 @@
             position: absolute;
 
             left: 0;
-
             top: 0;
 
             width: 5px;
-
             height: 100%;
 
             background: #2563eb;
+
         }
 
 
-        .summary-card.today::before {
+        .summary-card.collection::before {
 
             background: #16a34a;
+
         }
 
 
-        .summary-card.month::before {
+        .summary-card.remaining::before {
 
             background: #f59e0b;
+
         }
 
 
-        .summary-card.entries::before {
+        .summary-card.percentage::before {
 
             background: #7c3aed;
+
         }
 
 
@@ -389,11 +383,12 @@
 
             display: flex;
 
-            align-items: center;
-
             justify-content: space-between;
 
-            margin-bottom: 12px;
+            align-items: center;
+
+            margin-bottom: 13px;
+
         }
 
 
@@ -404,13 +399,13 @@
             font-weight: 700;
 
             color: #64748b;
+
         }
 
 
         .card-icon {
 
             width: 38px;
-
             height: 38px;
 
             border-radius: 9px;
@@ -418,220 +413,174 @@
             display: flex;
 
             align-items: center;
-
             justify-content: center;
 
             background: #eff6ff;
 
             color: #2563eb;
 
-            font-size: 16px;
         }
 
 
-        .today .card-icon {
+        .collection .card-icon {
 
             background: #ecfdf5;
 
             color: #16a34a;
+
         }
 
 
-        .month .card-icon {
+        .remaining .card-icon {
 
             background: #fffbeb;
 
             color: #f59e0b;
+
         }
 
 
-        .entries .card-icon {
+        .percentage .card-icon {
 
             background: #f5f3ff;
 
             color: #7c3aed;
+
         }
 
 
         .card-value {
 
-            font-size: 25px;
+            font-size: 26px;
 
             font-weight: 700;
 
             color: #0f172a;
 
-            word-break: break-word;
         }
 
 
         .card-unit {
 
-            margin-top: 5px;
+            margin-top: 6px;
 
             font-size: 12px;
 
             color: #64748b;
+
         }
 
 
         /* ======================================
-           FILTER PANEL
+           PROGRESS
         ======================================= */
 
-        .filter-panel {
+        .progress-card {
 
             background: #ffffff;
 
             border-radius: 12px;
 
-            padding: 20px;
+            padding: 22px;
 
             margin-bottom: 18px;
 
             box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
+                0 2px 8px
+                rgba(0,0,0,0.06);
+
         }
 
 
-        .filter-title {
+        .progress-header {
 
             display: flex;
+
+            justify-content: space-between;
 
             align-items: center;
 
-            gap: 7px;
+            margin-bottom: 14px;
+
+        }
+
+
+        .progress-header h3 {
 
             font-size: 17px;
 
-            font-weight: 700;
-
             color: #0f172a;
 
-            margin-bottom: 15px;
         }
 
 
-        .filter-title i {
+        .progress-percent {
+
+            font-size: 18px;
+
+            font-weight: 700;
 
             color: #2563eb;
+
         }
 
 
-        .filter-row {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, minmax(0, 1fr));
-
-            gap: 13px;
-        }
-
-
-        .filter-group label {
-
-            display: block;
-
-            margin-bottom: 6px;
-
-            font-size: 13px;
-
-            font-weight: 600;
-
-            color: #475569;
-        }
-
-
-        .filter-group input {
+        .progress-container {
 
             width: 100%;
 
-            padding: 10px 12px;
+            height: 18px;
 
-            border: 1px solid #cbd5e1;
-
-            border-radius: 7px;
-
-            outline: none;
-
-            background: #ffffff;
-
-            color: #334155;
-
-            font-size: 14px;
-        }
-
-
-        .filter-group input:focus {
-
-            border-color: #2563eb;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(37, 99, 235, 0.10);
-        }
-
-
-        .filter-buttons {
-
-            display: flex;
-
-            gap: 10px;
-
-            margin-top: 15px;
-        }
-
-
-        .filter-btn {
-
-            border: none;
-
-            padding: 10px 18px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-
-            font-size: 13px;
-
-            font-weight: 700;
-        }
-
-
-        .apply-btn {
-
-            background: #2563eb;
-
-            color: #ffffff;
-        }
-
-
-        .apply-btn:hover {
-
-            background: #1d4ed8;
-        }
-
-
-        .reset-btn {
+            border-radius: 20px;
 
             background: #e2e8f0;
 
-            color: #334155;
+            overflow: hidden;
+
         }
 
 
-        .reset-btn:hover {
+        .progress-bar {
 
-            background: #cbd5e1;
+            width: 0%;
+
+            height: 100%;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #7c3aed
+                );
+
+            transition:
+                width 0.6s ease;
+
+        }
+
+
+        .progress-info {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-top: 10px;
+
+            font-size: 13px;
+
+            color: #64748b;
+
         }
 
 
         /* ======================================
-           REPORT CONTAINER
+           DAILY HISTORY
         ======================================= */
 
-        .report-container {
+        .history-card {
 
             background: #ffffff;
 
@@ -640,15 +589,13 @@
             padding: 20px;
 
             box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.06);
+                0 2px 8px
+                rgba(0,0,0,0.06);
+
         }
 
 
-        /* ======================================
-           REPORT HEADER
-        ======================================= */
-
-        .report-header {
+        .history-header {
 
             display: flex;
 
@@ -656,45 +603,43 @@
 
             justify-content: space-between;
 
-            gap: 15px;
+            margin-bottom: 16px;
 
-            margin-bottom: 18px;
         }
 
 
-        .report-header h3 {
+        .history-header h3 {
 
             font-size: 18px;
 
             color: #0f172a;
 
-            margin-bottom: 4px;
         }
 
 
-        .report-header h3 i {
+        .history-header h3 i {
 
             color: #2563eb;
 
             margin-right: 7px;
+
         }
 
 
-        .report-header p {
+        .entry-count {
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
 
             font-size: 12px;
 
-            color: #64748b;
-        }
+            font-weight: 700;
 
-
-        .result-count {
-
-            font-size: 13px;
-
-            color: #64748b;
-
-            white-space: nowrap;
         }
 
 
@@ -712,6 +657,7 @@
                 1px solid #e2e8f0;
 
             border-radius: 8px;
+
         }
 
 
@@ -723,7 +669,6 @@
 
             border-collapse: collapse;
 
-            background: #ffffff;
         }
 
 
@@ -733,50 +678,39 @@
 
             color: #ffffff;
 
-            padding: 13px 14px;
-
-            font-size: 12px;
-
-            font-weight: 700;
+            padding: 13px;
 
             text-align: center;
 
+            font-size: 12px;
+
             white-space: nowrap;
-        }
 
-
-        thead th:first-child {
-
-            text-align: left;
         }
 
 
         tbody td {
 
-            padding: 12px 14px;
+            padding: 12px 13px;
 
             border-bottom:
                 1px solid #e2e8f0;
+
+            text-align: center;
 
             font-size: 13px;
 
             color: #334155;
 
-            text-align: center;
-
             white-space: nowrap;
-        }
 
-
-        tbody td:first-child {
-
-            text-align: left;
         }
 
 
         tbody tr:hover {
 
             background: #f8fafc;
+
         }
 
 
@@ -785,91 +719,69 @@
             color: #059669;
 
             font-weight: 700;
+
         }
 
 
-        .remarks-cell {
+        .latest-badge {
 
-            color: #64748b;
+            display: inline-block;
 
-            text-align: left !important;
+            padding: 4px 8px;
 
-            white-space: normal;
+            border-radius: 12px;
 
-            max-width: 300px;
-        }
-
-
-        tfoot td {
-
-            padding: 13px 14px;
-
-            background: #f1f5f9;
-
-            color: #0f172a;
-
-            border-top:
-                2px solid #cbd5e1;
-
-            font-size: 13px;
-
-            font-weight: 700;
-
-            text-align: center;
-
-            white-space: nowrap;
-        }
-
-
-        tfoot td:first-child {
-
-            text-align: left;
-        }
-
-
-        .grand-total-cell {
+            background: #ecfdf5;
 
             color: #059669;
 
-            background: #dcfce7;
+            font-size: 10px;
 
-            font-size: 14px;
+            font-weight: 700;
+
         }
 
 
         /* ======================================
-           LOADING / EMPTY / ERROR
+           LOADING
         ======================================= */
 
-        .loading-cell,
-        .empty-cell,
-        .error-cell {
+        .loading {
 
-            text-align: center !important;
+            text-align: center;
 
-            padding: 45px 20px !important;
-        }
-
-
-        .loading-cell {
+            padding: 45px 20px;
 
             color: #64748b;
+
         }
 
 
-        .loading-cell i {
+        .loading i {
 
-            margin-right: 7px;
+            font-size: 25px;
+
+            margin-bottom: 10px;
+
         }
 
 
-        .empty-cell {
+        /* ======================================
+           EMPTY
+        ======================================= */
+
+        .empty {
+
+            text-align: center;
+
+            padding: 45px 20px;
 
             color: #64748b;
+
         }
 
 
-        .empty-cell i {
+        .empty i {
 
             display: block;
 
@@ -877,58 +789,35 @@
 
             margin-bottom: 10px;
 
-            color: #94a3b8;
-        }
-
-
-        .error-cell {
-
-            color: #dc2626;
-        }
-
-
-        .error-cell i {
-
-            display: block;
-
-            font-size: 30px;
-
-            margin-bottom: 10px;
         }
 
 
         /* ======================================
-           TABLE SCROLLBAR
+           ERROR
         ======================================= */
 
-        .table-wrapper::-webkit-scrollbar {
+        .error {
 
-            height: 8px;
-        }
+            background: #fef2f2;
 
+            border:
+                1px solid #fecaca;
 
-        .table-wrapper::-webkit-scrollbar-track {
+            color: #b91c1c;
 
-            background: #f1f5f9;
-        }
+            padding: 15px;
 
+            border-radius: 8px;
 
-        .table-wrapper::-webkit-scrollbar-thumb {
+            margin-bottom: 18px;
 
-            background: #cbd5e1;
+            display: none;
 
-            border-radius: 10px;
-        }
-
-
-        .table-wrapper::-webkit-scrollbar-thumb:hover {
-
-            background: #94a3b8;
         }
 
 
         /* ======================================
-           RESPONSIVE 1100
+           RESPONSIVE
         ======================================= */
 
         @media (max-width: 1100px) {
@@ -936,30 +825,12 @@
             .summary-grid {
 
                 grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
+                    repeat(2, 1fr);
+
             }
 
         }
 
-
-        /* ======================================
-           RESPONSIVE 850
-        ======================================= */
-
-        @media (max-width: 850px) {
-
-            .filter-row {
-
-                grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
-            }
-
-        }
-
-
-        /* ======================================
-           MOBILE
-        ======================================= */
 
         @media (max-width: 800px) {
 
@@ -967,13 +838,6 @@
 
                 width: 220px;
 
-                z-index: 99999;
-            }
-
-
-            .mobile-menu-btn {
-
-                display: flex;
             }
 
 
@@ -982,98 +846,92 @@
                 margin-left: 0;
 
                 width: 100%;
+
+            }
+
+
+            .mobile-menu-btn {
+
+                display: flex;
+
             }
 
 
             .topbar {
 
-                padding:
-                    0 15px 0 68px;
+                padding-left: 68px;
+
             }
 
 
             .topbar-user {
 
                 display: none;
-            }
 
-
-            .main {
-
-                padding: 15px;
             }
 
         }
 
 
-        /* ======================================
-           SMALL MOBILE
-        ======================================= */
-
         @media (max-width: 600px) {
-
-            .summary-grid {
-
-                grid-template-columns: 1fr;
-            }
-
-
-            .filter-row {
-
-                grid-template-columns: 1fr;
-            }
-
 
             .main {
 
                 padding: 12px;
+
             }
 
 
-            .page-header {
+            .summary-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .page-title {
 
                 padding: 17px;
+
             }
 
 
-            .page-header h2 {
+            .page-title h2 {
 
                 font-size: 20px;
-            }
 
-
-            .filter-panel,
-            .report-container {
-
-                padding: 14px;
             }
 
 
             .teacher-info {
 
-                align-items: flex-start;
+                font-size: 13px;
 
-                line-height: 1.5;
             }
 
 
-            .report-header {
+            .progress-info {
 
                 flex-direction: column;
 
+                gap: 5px;
+
+            }
+
+
+            .history-card {
+
+                padding: 13px;
+
+            }
+
+
+            .history-header {
+
                 align-items: flex-start;
-            }
 
+                gap: 10px;
 
-            .filter-buttons {
-
-                flex-direction: column;
-            }
-
-
-            .filter-btn {
-
-                width: 100%;
             }
 
         }
@@ -1086,875 +944,722 @@
 <body>
 
 
-    <!-- ======================================
-         TEACHER SIDEBAR
-    ======================================= -->
+<!-- ======================================
+     TEACHER SIDEBAR
+====================================== -->
 
-    <div id="teacherSidebar"></div>
-
-
-
-    <!-- ======================================
-         MOBILE MENU BUTTON
-    ======================================= -->
-
-    <button
-        type="button"
-        id="mobileMenuBtn"
-        class="mobile-menu-btn"
-        aria-label="Open Menu"
-        title="Open Menu"
-    >
-
-        <i class="fa-solid fa-bars"></i>
-
-    </button>
+<div id="teacherSidebar"></div>
 
 
+<!-- ======================================
+     MOBILE MENU
+====================================== -->
 
-    <!-- ======================================
-         MAIN AREA
-    ======================================= -->
+<button
+    type="button"
+    id="mobileMenuBtn"
+    class="mobile-menu-btn"
+    title="Open Menu"
+>
 
-    <div class="main-area">
+    <i class="fa-solid fa-bars"></i>
+
+</button>
+
+
+<!-- ======================================
+     MAIN AREA
+====================================== -->
+
+<div class="main-area">
+
+
+    <!-- ==================================
+         TOPBAR
+    ================================== -->
+
+    <header class="topbar">
+
+        <div class="topbar-title">
+
+            <h2>
+                Teacher Summary
+            </h2>
+
+            <p>
+                Your Daily Collection Summary
+            </p>
+
+        </div>
+
+
+        <div class="topbar-user">
+
+            <i class="fa-solid fa-circle-user"></i>
+
+            <span id="topUserName">
+                Loading...
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==================================
+         MAIN
+    ================================== -->
+
+    <main class="main">
+
+
+        <!-- PAGE TITLE -->
+
+        <section class="page-title">
+
+            <h2>
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                My Collection Summary
+
+            </h2>
+
+            <p>
+
+                Yahan aapki daily collection,
+                target, remaining target aur
+                collection percentage show hogi.
+
+            </p>
+
+        </section>
+
+
+        <!-- ERROR -->
+
+        <div
+            id="errorBox"
+            class="error"
+        ></div>
+
+
+        <!-- TEACHER INFO -->
+
+        <div
+            id="teacherInfo"
+            class="teacher-info"
+        >
+
+            Loading Teacher Information...
+
+        </div>
 
 
         <!-- ==================================
-             TOPBAR
+             SUMMARY CARDS
         ================================== -->
 
-        <header class="topbar">
+        <section class="summary-grid">
 
 
-            <div class="topbar-left">
+            <!-- TARGET -->
 
-                <h2>
-                    My Summary
-                </h2>
+            <div class="summary-card">
 
-                <p>
-                    Your Daily Collection Summary
-                </p>
+                <div class="card-top">
 
-            </div>
-
-
-            <div class="topbar-user">
-
-                <i
-                    class="fa-solid fa-circle-user"
-                ></i>
-
-                <span id="topUserName">
-                    Loading User...
-                </span>
-
-            </div>
-
-        </header>
-
-
-
-        <!-- ==================================
-             MAIN CONTENT
-        ================================== -->
-
-        <main class="main">
-
-
-            <!-- ==================================
-                 PAGE HEADER
-            ================================== -->
-
-            <div class="page-header">
-
-                <h2>
-
-                    <i
-                        class="fa-solid fa-chart-line"
-                    ></i>
-
-                    My Collection Summary
-
-                </h2>
-
-
-                <p>
-
-                    Yahan aap apni daily collection
-                    ka complete summary dekh sakte hain.
-                    Sirf aapki apni entries yahan show
-                    hongi.
-
-                </p>
-
-            </div>
-
-
-
-            <!-- ==================================
-                 TEACHER INFO
-            ================================== -->
-
-            <div
-                id="teacherInfo"
-                class="teacher-info"
-            >
-
-                <i
-                    class="fa-solid fa-user"
-                ></i>
-
-                <span>
-                    Loading Teacher Information...
-                </span>
-
-            </div>
-
-
-
-            <!-- ==================================
-                 SUMMARY CARDS
-            ================================== -->
-
-            <div class="summary-grid">
-
-
-                <!-- TOTAL COLLECTION -->
-
-                <div class="summary-card">
-
-                    <div class="card-top">
-
-                        <span class="card-title">
-                            TOTAL COLLECTION
-                        </span>
-
-                        <div class="card-icon">
-
-                            <i
-                                class="fa-solid fa-indian-rupee-sign"
-                            ></i>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="totalCollection"
-                        class="card-value"
-                    >
-                        ₹ 0
-                    </div>
-
-
-                    <div class="card-unit">
-                        All Time Collection
-                    </div>
-
-                </div>
-
-
-
-                <!-- TODAY -->
-
-                <div class="summary-card today">
-
-                    <div class="card-top">
-
-                        <span class="card-title">
-                            TODAY'S COLLECTION
-                        </span>
-
-                        <div class="card-icon">
-
-                            <i
-                                class="fa-solid fa-calendar-day"
-                            ></i>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="todayCollection"
-                        class="card-value"
-                    >
-                        ₹ 0
-                    </div>
-
-
-                    <div class="card-unit">
-                        Today's Total
-                    </div>
-
-                </div>
-
-
-
-                <!-- MONTH -->
-
-                <div class="summary-card month">
-
-                    <div class="card-top">
-
-                        <span class="card-title">
-                            THIS MONTH
-                        </span>
-
-                        <div class="card-icon">
-
-                            <i
-                                class="fa-solid fa-calendar-days"
-                            ></i>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="monthCollection"
-                        class="card-value"
-                    >
-                        ₹ 0
-                    </div>
-
-
-                    <div class="card-unit">
-                        Current Month Collection
-                    </div>
-
-                </div>
-
-
-
-                <!-- ENTRIES -->
-
-                <div class="summary-card entries">
-
-                    <div class="card-top">
-
-                        <span class="card-title">
-                            TOTAL ENTRIES
-                        </span>
-
-                        <div class="card-icon">
-
-                            <i
-                                class="fa-solid fa-list-check"
-                            ></i>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="totalEntries"
-                        class="card-value"
-                    >
-                        0
-                    </div>
-
-
-                    <div class="card-unit">
-                        Daily Entries
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- ==================================
-                 FILTER PANEL
-            ================================== -->
-
-            <div class="filter-panel">
-
-
-                <div class="filter-title">
-
-                    <i
-                        class="fa-solid fa-filter"
-                    ></i>
-
-                    Filter My Collection
-
-                </div>
-
-
-                <div class="filter-row">
-
-
-                    <!-- FROM DATE -->
-
-                    <div class="filter-group">
-
-                        <label for="fromDate">
-                            From Date
-                        </label>
-
-                        <input
-                            type="date"
-                            id="fromDate"
-                        >
-
-                    </div>
-
-
-                    <!-- TO DATE -->
-
-                    <div class="filter-group">
-
-                        <label for="toDate">
-                            To Date
-                        </label>
-
-                        <input
-                            type="date"
-                            id="toDate"
-                        >
-
-                    </div>
-
-
-                    <!-- SEARCH -->
-
-                    <div class="filter-group">
-
-                        <label for="searchFilter">
-                            Search
-                        </label>
-
-                        <input
-                            type="text"
-                            id="searchFilter"
-                            placeholder="Search remarks..."
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="filter-buttons">
-
-
-                    <button
-                        type="button"
-                        id="applyFilter"
-                        class="filter-btn apply-btn"
-                    >
-
-                        <i
-                            class="fa-solid fa-filter"
-                        ></i>
-
-                        Apply Filter
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        id="resetFilter"
-                        class="filter-btn reset-btn"
-                    >
-
-                        <i
-                            class="fa-solid fa-rotate-left"
-                        ></i>
-
-                        Reset
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- ==================================
-                 REPORT
-            ================================== -->
-
-            <div class="report-container">
-
-
-                <div class="report-header">
-
-
-                    <div>
-
-                        <h3>
-
-                            <i
-                                class="fa-solid fa-table"
-                            ></i>
-
-                            My Daily Collection
-
-                        </h3>
-
-
-                        <p id="selectedDateRange">
-                            All entries
-                        </p>
-
-                    </div>
-
-
-                    <span
-                        id="resultCount"
-                        class="result-count"
-                    >
-                        0 Entries
+                    <span class="card-title">
+                        MY TARGET
                     </span>
 
+                    <div class="card-icon">
+
+                        <i
+                            class="fa-solid fa-bullseye"
+                        ></i>
+
+                    </div>
+
                 </div>
 
 
-
-                <!-- ==================================
-                     TABLE
-                ================================== -->
-
-                <div class="table-wrapper">
-
-
-                    <table>
+                <div
+                    id="targetAmount"
+                    class="card-value"
+                >
+                    ₹ 0
+                </div>
 
 
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Date
-                                </th>
-
-                                <th>
-                                    Amount
-                                </th>
-
-                                <th>
-                                    Remarks
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody
-                            id="summaryTableBody"
-                        >
-
-                            <tr>
-
-                                <td
-                                    colspan="3"
-                                    class="loading-cell"
-                                >
-
-                                    <i
-                                        class="fa-solid fa-spinner fa-spin"
-                                    ></i>
-
-                                    Loading Collection...
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-
-                        <tfoot>
-
-                            <tr>
-
-                                <td>
-                                    Grand Total
-                                </td>
-
-                                <td
-                                    id="tableGrandTotal"
-                                    class="grand-total-cell"
-                                >
-                                    ₹ 0
-                                </td>
-
-                                <td>
-                                    -
-                                </td>
-
-                            </tr>
-
-                        </tfoot>
-
-
-                    </table>
-
+                <div class="card-unit">
+                    Target Amount
                 </div>
 
             </div>
 
 
-        </main>
+            <!-- COLLECTION -->
 
-    </div>
+            <div class="summary-card collection">
+
+                <div class="card-top">
+
+                    <span class="card-title">
+                        TOTAL COLLECTION
+                    </span>
+
+                    <div class="card-icon">
+
+                        <i
+                            class="fa-solid fa-indian-rupee-sign"
+                        ></i>
+
+                    </div>
+
+                </div>
 
 
+                <div
+                    id="totalCollection"
+                    class="card-value"
+                >
+                    ₹ 0
+                </div>
 
-    <!-- ======================================
-         TEACHER SIDEBAR LOADER
-    ======================================= -->
 
-    <script>
+                <div
+                    id="collectionUnits"
+                    class="card-unit"
+                >
+                    0 Daily Entries
+                </div>
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
+            </div>
 
-                const sidebarContainer =
-                    document.getElementById(
-                        "teacherSidebar"
+
+            <!-- REMAINING -->
+
+            <div class="summary-card remaining">
+
+                <div class="card-top">
+
+                    <span class="card-title">
+                        REMAINING TARGET
+                    </span>
+
+                    <div class="card-icon">
+
+                        <i
+                            class="fa-solid fa-hourglass-half"
+                        ></i>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="remainingTarget"
+                    class="card-value"
+                >
+                    ₹ 0
+                </div>
+
+
+                <div class="card-unit">
+                    Target Balance
+                </div>
+
+            </div>
+
+
+            <!-- PERCENTAGE -->
+
+            <div class="summary-card percentage">
+
+                <div class="card-top">
+
+                    <span class="card-title">
+                        COLLECTION %
+                    </span>
+
+                    <div class="card-icon">
+
+                        <i
+                            class="fa-solid fa-chart-line"
+                        ></i>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="collectionPercentage"
+                    class="card-value"
+                >
+                    0.00%
+                </div>
+
+
+                <div class="card-unit">
+                    Target Achievement
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             PROGRESS
+        ================================== -->
+
+        <section class="progress-card">
+
+            <div class="progress-header">
+
+                <h3>
+                    Target Progress
+                </h3>
+
+
+                <span
+                    id="progressPercentage"
+                    class="progress-percent"
+                >
+                    0.00%
+                </span>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div
+                    id="progressBar"
+                    class="progress-bar"
+                ></div>
+
+            </div>
+
+
+            <div class="progress-info">
+
+                <span>
+
+                    Collection:
+
+                    <strong id="progressCollection">
+                        ₹ 0
+                    </strong>
+
+                </span>
+
+
+                <span>
+
+                    Target:
+
+                    <strong id="progressTarget">
+                        ₹ 0
+                    </strong>
+
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             DAILY HISTORY
+        ================================== -->
+
+        <section class="history-card">
+
+
+            <div class="history-header">
+
+                <h3>
+
+                    <i class="fa-solid fa-calendar-days"></i>
+
+                    Daily Collection History
+
+                </h3>
+
+
+                <span
+                    id="entryCount"
+                    class="entry-count"
+                >
+                    0 Entries
+                </span>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Collection
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="summaryTableBody"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="4"
+                                class="loading"
+                            >
+
+                                <i
+                                    class="fa-solid fa-spinner fa-spin"
+                                ></i>
+
+                                <br>
+
+                                Loading Collection...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<!-- ======================================
+     SIDEBAR LOADER
+====================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const sidebarContainer =
+            document.getElementById(
+                "teacherSidebar"
+            );
+
+
+        if (!sidebarContainer) {
+            return;
+        }
+
+
+        fetch(
+            "components/teacher-sidebar.html"
+        )
+
+        .then(
+            function (response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Teacher Sidebar not found"
                     );
 
+                }
 
-                if (!sidebarContainer) {
-                    return;
+                return response.text();
+
+            }
+        )
+
+        .then(
+            function (data) {
+
+                sidebarContainer.innerHTML =
+                    data;
+
+
+                /* ==============================
+                   ACTIVE PAGE
+                ============================== */
+
+                let currentPage =
+                    window.location.pathname
+                        .split("/")
+                        .pop()
+                        .toLowerCase();
+
+
+                if (!currentPage) {
+
+                    currentPage =
+                        "summary.html";
+
                 }
 
 
-                fetch(
-                    "components/teacher-sidebar.html"
-                )
-
-                .then(
-                    function (response) {
-
-                        if (!response.ok) {
-
-                            throw new Error(
-                                "Teacher Sidebar not found. Status: " +
-                                response.status
-                            );
-
-                        }
-
-                        return response.text();
-
-                    }
-                )
-
-                .then(
-                    function (data) {
-
-                        sidebarContainer.innerHTML =
-                            data;
+                const menuLinks =
+                    sidebarContainer.querySelectorAll(
+                        ".teacher-menu-link[data-page]"
+                    );
 
 
-                        /* ==============================
-                           CURRENT PAGE
-                        ============================== */
+                menuLinks.forEach(
+                    function (link) {
 
-                        let currentPage =
-                            window.location.pathname
-                                .split("/")
-                                .pop()
-                                .toLowerCase();
-
-
-                        if (!currentPage) {
-
-                            currentPage =
-                                "summary.html";
-
-                        }
-
-
-                        /* ==============================
-                           ACTIVE MENU
-                        ============================== */
-
-                        const menuLinks =
-                            sidebarContainer.querySelectorAll(
-                                ".teacher-menu-link[data-page]"
-                            );
-
-
-                        menuLinks.forEach(
-                            function (link) {
-
-                                const page =
-                                    (
-                                        link.getAttribute(
-                                            "data-page"
-                                        ) || ""
-                                    )
-                                    .trim()
-                                    .toLowerCase();
-
-
-                                if (
-                                    page ===
-                                    currentPage
-                                ) {
-
-                                    link.classList.add(
-                                        "active"
-                                    );
-
-                                }
-                                else {
-
-                                    link.classList.remove(
-                                        "active"
-                                    );
-
-                                }
-
-                            }
-                        );
-
-
-                        /* ==============================
-                           MOBILE MENU
-                        ============================== */
-
-                        const mobileMenuBtn =
-                            document.getElementById(
-                                "mobileMenuBtn"
-                            );
-
-
-                        const sidebar =
-                            sidebarContainer.querySelector(
-                                ".teacher-sidebar"
-                            );
+                        const page =
+                            (
+                                link.getAttribute(
+                                    "data-page"
+                                ) || ""
+                            )
+                            .trim()
+                            .toLowerCase();
 
 
                         if (
-                            mobileMenuBtn &&
-                            sidebar
+                            page ===
+                            currentPage
                         ) {
 
-                            mobileMenuBtn.addEventListener(
-                                "click",
-                                function (event) {
-
-                                    event.preventDefault();
-
-                                    event.stopPropagation();
-
-                                    sidebar.classList.toggle(
-                                        "open"
-                                    );
-
-                                }
+                            link.classList.add(
+                                "active"
                             );
 
+                        } else {
 
-                            /* ==========================
-                               CLOSE AFTER MENU CLICK
-                            ========================== */
-
-                            sidebar
-                                .querySelectorAll(
-                                    ".teacher-menu-link"
-                                )
-                                .forEach(
-                                    function (link) {
-
-                                        link.addEventListener(
-                                            "click",
-                                            function () {
-
-                                                if (
-                                                    window.innerWidth <=
-                                                    800
-                                                ) {
-
-                                                    sidebar.classList.remove(
-                                                        "open"
-                                                    );
-
-                                                }
-
-                                            }
-                                        );
-
-                                    }
-                                );
-
-                        }
-
-
-                        /* ==============================
-                           LOGOUT
-                        ============================== */
-
-                        const logoutBtn =
-                            sidebarContainer.querySelector(
-                                "#teacherSidebarLogout"
-                            );
-
-
-                        if (logoutBtn) {
-
-                            logoutBtn.addEventListener(
-                                "click",
-                                function (event) {
-
-                                    event.preventDefault();
-
-
-                                    localStorage.removeItem(
-                                        "loggedInEmpCode"
-                                    );
-
-                                    localStorage.removeItem(
-                                        "userRole"
-                                    );
-
-
-                                    window.location.href =
-                                        "index.html";
-
-                                }
+                            link.classList.remove(
+                                "active"
                             );
 
                         }
-
-
-                        /* ==============================
-                           USER NAME
-                        ============================== */
-
-                        const savedUserName =
-                            localStorage.getItem(
-                                "teacherUserName"
-                            );
-
-
-                        const fallbackUserName =
-                            localStorage.getItem(
-                                "regionUserName"
-                            );
-
-
-                        const userName =
-                            savedUserName ||
-                            fallbackUserName ||
-                            localStorage.getItem(
-                                "loggedInEmpCode"
-                            );
-
-
-                        const sidebarUserName =
-                            sidebarContainer.querySelector(
-                                "#teacherSidebarUserName"
-                            );
-
-
-                        const topUserName =
-                            document.getElementById(
-                                "topUserName"
-                            );
-
-
-                        if (userName) {
-
-                            if (sidebarUserName) {
-
-                                sidebarUserName.textContent =
-                                    userName;
-
-                            }
-
-
-                            if (topUserName) {
-
-                                topUserName.textContent =
-                                    userName;
-
-                            }
-
-                        }
-
-                    }
-                )
-
-
-                .catch(
-                    function (error) {
-
-                        console.error(
-                            "Teacher Sidebar Error:",
-                            error
-                        );
-
-
-                        sidebarContainer.innerHTML = `
-
-                            <div
-                                style="
-                                    padding:20px;
-                                    color:#dc2626;
-                                    background:#fee2e2;
-                                    margin:10px;
-                                    border-radius:8px;
-                                "
-                            >
-
-                                Teacher Sidebar load nahi hua.
-
-                                <br><br>
-
-                                ${error.message}
-
-                            </div>
-
-                        `;
 
                     }
                 );
 
+
+                /* ==============================
+                   USER NAME
+                ============================== */
+
+                const savedUserName =
+                    localStorage.getItem(
+                        "teacherUserName"
+                    ) ||
+                    localStorage.getItem(
+                        "regionUserName"
+                    );
+
+
+                const sidebarUserName =
+                    sidebarContainer.querySelector(
+                        "#teacherSidebarUserName"
+                    );
+
+
+                if (
+                    savedUserName &&
+                    sidebarUserName
+                ) {
+
+                    sidebarUserName.textContent =
+                        savedUserName;
+
+                }
+
+
+                /* ==============================
+                   MOBILE MENU
+                ============================== */
+
+                const mobileMenuBtn =
+                    document.getElementById(
+                        "mobileMenuBtn"
+                    );
+
+
+                const sidebar =
+                    sidebarContainer.querySelector(
+                        ".teacher-sidebar"
+                    );
+
+
+                if (
+                    mobileMenuBtn &&
+                    sidebar
+                ) {
+
+                    mobileMenuBtn.addEventListener(
+                        "click",
+                        function (event) {
+
+                            event.preventDefault();
+
+                            sidebar.classList.toggle(
+                                "open"
+                            );
+
+                        }
+                    );
+
+
+                    sidebar
+                        .querySelectorAll(
+                            ".teacher-menu-link"
+                        )
+                        .forEach(
+                            function (link) {
+
+                                link.addEventListener(
+                                    "click",
+                                    function () {
+
+                                        if (
+                                            window.innerWidth <=
+                                            800
+                                        ) {
+
+                                            sidebar.classList.remove(
+                                                "open"
+                                            );
+
+                                        }
+
+                                    }
+                                );
+
+                            }
+                        );
+
+                }
+
+
+                /* ==============================
+                   LOGOUT
+                ============================== */
+
+                const logoutBtn =
+                    sidebarContainer.querySelector(
+                        "#teacherSidebarLogout"
+                    );
+
+
+                if (logoutBtn) {
+
+                    logoutBtn.addEventListener(
+                        "click",
+                        function (event) {
+
+                            event.preventDefault();
+
+
+                            localStorage.removeItem(
+                                "loggedInEmpCode"
+                            );
+
+                            localStorage.removeItem(
+                                "userRole"
+                            );
+
+                            localStorage.removeItem(
+                                "teacherUserName"
+                            );
+
+
+                            window.location.href =
+                                "index.html";
+
+                        }
+                    );
+
+                }
+
+            }
+        )
+
+        .catch(
+            function (error) {
+
+                console.error(
+                    "Teacher Sidebar Error:",
+                    error
+                );
+
+
+                sidebarContainer.innerHTML = `
+
+                    <div
+                        style="
+                            padding:20px;
+                            color:#dc2626;
+                            background:#fee2e2;
+                            border-radius:8px;
+                        "
+                    >
+
+                        Teacher Sidebar load nahi hua.
+
+                        <br><br>
+
+                        ${error.message}
+
+                    </div>
+
+                `;
+
             }
         );
 
-    </script>
+    }
+);
+
+</script>
 
 
+<!-- ======================================
+     FIREBASE / SUMMARY JS
+====================================== -->
 
-    <!-- ======================================
-         FIREBASE CONFIG
-    ======================================= -->
-
-    <script
-        type="module"
-        src="assets/js/firebase-config.js"
-    ></script>
-
-
-
-    <!-- ======================================
-         SUMMARY JS
-    ======================================= -->
-
-    <script
-        type="module"
-        src="assets/js/summary.js"
-    ></script>
+<script
+    type="module"
+    src="assets/js/summary.js"
+></script>
 
 
 </body>
