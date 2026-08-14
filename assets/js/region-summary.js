@@ -1,19 +1,26 @@
 // ======================================================
-// TELETHON - REGION USER SUMMARY
+// TELETHON
+// REGION SUMMARY
 // ======================================================
-// Shows ONLY the logged-in Region User's:
-// Target
-// Total Collection
-// Remaining Target
-// Percentage
-// Assigned Teachers
+// Purpose:
+// Region User dashboard summary
+//
+// Collections:
+// 1. regionUsers
+// 2. employees
+// 3. daily_entry
 //
 // 1 UNIT = ₹7,000
+//
+// IMPORTANT:
+// Teacher Registration
+// Teacher Login
+// Daily Collection Entry
+// are NOT modified by this file.
 // ======================================================
 
 
 import { db } from "./firebase-config.js";
-
 
 import {
     collection,
@@ -24,187 +31,75 @@ import {
 
 
 // ======================================================
-// COLLECTIONS
+// CONFIGURATION
 // ======================================================
 
-const EMPLOYEES_COLLECTION =
-    "employees";
+const REGION_USERS_COLLECTION = "regionUsers";
 
-const DAILY_ENTRY_COLLECTION =
-    "daily_entry";
+const EMPLOYEES_COLLECTION = "employees";
 
-const REGION_USERS_COLLECTION =
-    "regionUsers";
+const DAILY_ENTRY_COLLECTION = "daily_entry";
 
-
-// ======================================================
-// UNIT AMOUNT
-// ======================================================
-
-const UNIT_AMOUNT =
-    7000;
-
-
-// ======================================================
-// LOGIN INFORMATION
-// ======================================================
-
-const loggedInEmpCode =
-    String(
-        localStorage.getItem(
-            "loggedInEmpCode"
-        ) || ""
-    ).trim();
-
-
-const userRole =
-    String(
-        localStorage.getItem(
-            "userRole"
-        ) || ""
-    )
-        .trim()
-        .toLowerCase();
-
-
-// ======================================================
-// PAGE PROTECTION
-// ======================================================
-//
-// Region Summary sirf Region User ke liye.
-// Admin ya Teacher ko ye page access nahi milega.
-// ======================================================
-
-if (
-    !loggedInEmpCode ||
-    userRole !== "regionuser"
-) {
-
-    localStorage.removeItem(
-        "loggedInEmpCode"
-    );
-
-    localStorage.removeItem(
-        "userRole"
-    );
-
-    window.location.replace(
-        "index.html"
-    );
-
-}
+const UNIT_AMOUNT = 7000;
 
 
 // ======================================================
 // HTML ELEMENTS
 // ======================================================
 
-const loadingBox =
-    document.getElementById(
-        "loadingBox"
-    );
+const regionUserNameEl =
+    document.getElementById("regionUserName");
 
+const regionNameEl =
+    document.getElementById("regionName");
 
-const summaryContent =
-    document.getElementById(
-        "summaryContent"
-    );
+const targetAmountEl =
+    document.getElementById("targetAmount");
 
+const targetUnitsEl =
+    document.getElementById("targetUnits");
 
-const errorBox =
-    document.getElementById(
-        "errorBox"
-    );
+const collectionAmountEl =
+    document.getElementById("collectionAmount");
 
+const collectionUnitsEl =
+    document.getElementById("collectionUnits");
 
-const errorMessage =
-    document.getElementById(
-        "errorMessage"
-    );
+const remainingAmountEl =
+    document.getElementById("remainingAmount");
 
+const remainingUnitsEl =
+    document.getElementById("remainingUnits");
 
-const regionUserName =
-    document.getElementById(
-        "regionUserName"
-    );
+const percentageEl =
+    document.getElementById("percentage");
 
+const progressPercentageEl =
+    document.getElementById("progressPercentage");
 
-const regionName =
-    document.getElementById(
-        "regionName"
-    );
+const progressBarEl =
+    document.getElementById("progressBar");
 
+const progressCollectionEl =
+    document.getElementById("progressCollection");
 
-const targetAmount =
-    document.getElementById(
-        "targetAmount"
-    );
+const progressTargetEl =
+    document.getElementById("progressTarget");
 
+const teacherCountEl =
+    document.getElementById("teacherCount");
 
-const targetUnits =
-    document.getElementById(
-        "targetUnits"
-    );
+const loadingBoxEl =
+    document.getElementById("loadingBox");
 
+const summaryContentEl =
+    document.getElementById("summaryContent");
 
-const collectionAmount =
-    document.getElementById(
-        "collectionAmount"
-    );
+const errorBoxEl =
+    document.getElementById("errorBox");
 
-
-const collectionUnits =
-    document.getElementById(
-        "collectionUnits"
-    );
-
-
-const remainingAmount =
-    document.getElementById(
-        "remainingAmount"
-    );
-
-
-const remainingUnits =
-    document.getElementById(
-        "remainingUnits"
-    );
-
-
-const percentage =
-    document.getElementById(
-        "percentage"
-    );
-
-
-const progressPercentage =
-    document.getElementById(
-        "progressPercentage"
-    );
-
-
-const progressBar =
-    document.getElementById(
-        "progressBar"
-    );
-
-
-const progressCollection =
-    document.getElementById(
-        "progressCollection"
-    );
-
-
-const progressTarget =
-    document.getElementById(
-        "progressTarget"
-    );
-
-
-const teacherCount =
-    document.getElementById(
-        "teacherCount"
-    );
+const errorMessageEl =
+    document.getElementById("errorMessage");
 
 
 // ======================================================
@@ -226,9 +121,7 @@ let assignedEmployees = [];
 
 function normalize(value) {
 
-    return String(
-        value ?? ""
-    )
+    return String(value ?? "")
         .trim()
         .toLowerCase();
 
@@ -236,16 +129,25 @@ function normalize(value) {
 
 
 // ======================================================
-// NUMBER
+// NUMBER VALUE
 // ======================================================
 
 function numberValue(value) {
 
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return 0;
+
+    }
+
+
     const number =
         Number(
-            String(
-                value ?? ""
-            )
+            String(value)
                 .replace(/,/g, "")
                 .replace(/₹/g, "")
                 .replace(/\s/g, "")
@@ -261,24 +163,23 @@ function numberValue(value) {
 
 
 // ======================================================
-// CURRENCY
+// CURRENCY FORMAT
 // ======================================================
 
 function formatCurrency(value) {
 
     return (
         "₹ " +
-        numberValue(value)
-            .toLocaleString(
-                "en-IN"
-            )
+        numberValue(value).toLocaleString(
+            "en-IN"
+        )
     );
 
 }
 
 
 // ======================================================
-// UNIT
+// UNIT FORMAT
 // ======================================================
 
 function formatUnit(value) {
@@ -288,8 +189,7 @@ function formatUnit(value) {
 
 
     const units =
-        amount /
-        UNIT_AMOUNT;
+        amount / UNIT_AMOUNT;
 
 
     return (
@@ -307,7 +207,155 @@ function formatUnit(value) {
 
 
 // ======================================================
-// EMPLOYEE CODE
+// GET CURRENT REGION USER IDENTIFIER
+// ======================================================
+
+function getCurrentUserIdentifiers() {
+
+    const identifiers = [];
+
+
+    const keys = [
+
+        "loggedInEmpCode",
+
+        "regionUserId",
+
+        "regionUserCode",
+
+        "userCode",
+
+        "employeeCode",
+
+        "empCode",
+
+        "username",
+
+        "userName"
+
+    ];
+
+
+    keys.forEach(
+        function (key) {
+
+            const value =
+                localStorage.getItem(key);
+
+
+            if (
+                value !== null &&
+                String(value).trim() !== ""
+            ) {
+
+                identifiers.push(
+                    String(value).trim()
+                );
+
+            }
+
+        }
+    );
+
+
+    return identifiers;
+
+}
+
+
+// ======================================================
+// GET USER CODE
+// ======================================================
+
+function getUserCode(user) {
+
+    return String(
+
+        user.userCode ||
+
+        user.user_code ||
+
+        user.regionUserCode ||
+
+        user.region_user_code ||
+
+        user.employeeCode ||
+
+        user.employee_code ||
+
+        user.empCode ||
+
+        user.emp_code ||
+
+        user.username ||
+
+        user.userName ||
+
+        user.id ||
+
+        ""
+
+    ).trim();
+
+}
+
+
+// ======================================================
+// GET USER NAME
+// ======================================================
+
+function getUserName(user) {
+
+    return String(
+
+        user.userName ||
+
+        user.username ||
+
+        user.name ||
+
+        user.fullName ||
+
+        user.full_name ||
+
+        user.regionUserName ||
+
+        user.region_user_name ||
+
+        getUserCode(user) ||
+
+        "Region User"
+
+    ).trim();
+
+}
+
+
+// ======================================================
+// GET USER TARGET
+// ======================================================
+
+function getUserTarget(user) {
+
+    return numberValue(
+
+        user.targetAmount ||
+
+        user.target ||
+
+        user.manualTarget ||
+
+        user.manual_target ||
+
+        0
+
+    );
+
+}
+
+
+// ======================================================
+// GET EMPLOYEE CODE
 // ======================================================
 
 function getEmployeeCode(employee) {
@@ -340,7 +388,74 @@ function getEmployeeCode(employee) {
 
 
 // ======================================================
-// ENTRY EMPLOYEE CODE
+// GET EMPLOYEE REGION
+// ======================================================
+
+function getEmployeeRegion(employee) {
+
+    return String(
+
+        employee.region ||
+
+        employee.regionName ||
+
+        employee.region_name ||
+
+        ""
+
+    ).trim();
+
+}
+
+
+// ======================================================
+// GET EMPLOYEE STATE
+// ======================================================
+
+function getEmployeeState(employee) {
+
+    return String(
+
+        employee.state ||
+
+        employee.stateName ||
+
+        employee.state_name ||
+
+        ""
+
+    ).trim();
+
+}
+
+
+// ======================================================
+// GET EMPLOYEE NAME
+// ======================================================
+
+function getEmployeeName(employee) {
+
+    return String(
+
+        employee.teacherName ||
+
+        employee.teacher_name ||
+
+        employee.name ||
+
+        employee.fullName ||
+
+        employee.full_name ||
+
+        "Unknown Teacher"
+
+    ).trim();
+
+}
+
+
+// ======================================================
+// GET ENTRY EMPLOYEE CODE
 // ======================================================
 
 function getEntryEmployeeCode(entry) {
@@ -371,7 +486,7 @@ function getEntryEmployeeCode(entry) {
 
 
 // ======================================================
-// ENTRY AMOUNT
+// GET ENTRY AMOUNT
 // ======================================================
 
 function getEntryAmount(entry) {
@@ -396,363 +511,12 @@ function getEntryAmount(entry) {
 
 
 // ======================================================
-// EMPLOYEE REGION
-// ======================================================
-
-function getEmployeeRegion(employee) {
-
-    return String(
-
-        employee.region ||
-
-        employee.regionName ||
-
-        employee.region_name ||
-
-        ""
-
-    ).trim();
-
-}
-
-
-// ======================================================
-// EMPLOYEE STATE
-// ======================================================
-
-function getEmployeeState(employee) {
-
-    return String(
-
-        employee.state ||
-
-        employee.stateName ||
-
-        employee.state_name ||
-
-        ""
-
-    ).trim();
-
-}
-
-
-// ======================================================
-// USER CODE
-// ======================================================
-
-function getUserCode(user) {
-
-    return String(
-
-        user.userCode ||
-
-        user.user_code ||
-
-        user.employeeCode ||
-
-        user.employee_code ||
-
-        user.empCode ||
-
-        user.emp_code ||
-
-        user.loginId ||
-
-        user.loginID ||
-
-        user.username ||
-
-        user.id ||
-
-        ""
-
-    ).trim();
-
-}
-
-
-// ======================================================
-// USER NAME
-// ======================================================
-
-function getUserName(user) {
-
-    return String(
-
-        user.userName ||
-
-        user.username ||
-
-        user.name ||
-
-        user.fullName ||
-
-        user.full_name ||
-
-        user.regionUserName ||
-
-        user.region_user_name ||
-
-        getUserCode(user) ||
-
-        "Region User"
-
-    ).trim();
-
-}
-
-
-// ======================================================
-// USER TARGET
-// ======================================================
-//
-// Admin Dashboard me target save karte waqt:
-// target
-// targetAmount
-// manualTarget
-//
-// tino fields save ho rahe hain.
-// ======================================================
-
-function getUserTarget(user) {
-
-    return numberValue(
-
-        user.targetAmount ||
-
-        user.target ||
-
-        user.manualTarget ||
-
-        user.manual_target ||
-
-        0
-
-    );
-
-}
-
-
-// ======================================================
-// LOAD REGION USERS
-// ======================================================
-
-async function loadRegionUsers() {
-
-    const snapshot =
-        await getDocs(
-            collection(
-                db,
-                REGION_USERS_COLLECTION
-            )
-        );
-
-
-    const users = [];
-
-
-    snapshot.forEach(
-        (docSnapshot) => {
-
-            users.push({
-
-                id:
-                    docSnapshot.id,
-
-                ...docSnapshot.data()
-
-            });
-
-        }
-    );
-
-
-    return users;
-
-}
-
-
-// ======================================================
-// FIND CURRENT REGION USER
-// ======================================================
-//
-// Login ID / Employee Code ke through
-// sirf current user ko find karega.
-// ======================================================
-
-function findCurrentRegionUser(
-    users
-) {
-
-    const loginCode =
-        normalize(
-            loggedInEmpCode
-        );
-
-
-    if (!loginCode) {
-        return null;
-    }
-
-
-    return (
-        users.find(
-            (user) => {
-
-                const code =
-                    normalize(
-                        getUserCode(
-                            user
-                        )
-                    );
-
-
-                return (
-                    code ===
-                    loginCode
-                );
-
-            }
-        ) || null
-    );
-
-}
-
-
-// ======================================================
-// LOAD EMPLOYEES
-// ======================================================
-
-async function loadEmployees() {
-
-    const snapshot =
-        await getDocs(
-            collection(
-                db,
-                EMPLOYEES_COLLECTION
-            )
-        );
-
-
-    employees = [];
-
-
-    snapshot.forEach(
-        (docSnapshot) => {
-
-            employees.push({
-
-                id:
-                    docSnapshot.id,
-
-                ...docSnapshot.data()
-
-            });
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// LOAD DAILY ENTRIES
-// ======================================================
-
-async function loadDailyEntries() {
-
-    try {
-
-        const entriesQuery =
-            query(
-
-                collection(
-                    db,
-                    DAILY_ENTRY_COLLECTION
-                ),
-
-                orderBy(
-                    "createdAt",
-                    "desc"
-                )
-
-            );
-
-
-        const snapshot =
-            await getDocs(
-                entriesQuery
-            );
-
-
-        dailyEntries = [];
-
-
-        snapshot.forEach(
-            (docSnapshot) => {
-
-                dailyEntries.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    ...docSnapshot.data()
-
-                });
-
-            }
-        );
-
-    }
-
-    catch (error) {
-
-        console.warn(
-            "createdAt orderBy failed. Loading without orderBy.",
-            error
-        );
-
-
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    DAILY_ENTRY_COLLECTION
-                )
-            );
-
-
-        dailyEntries = [];
-
-
-        snapshot.forEach(
-            (docSnapshot) => {
-
-                dailyEntries.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    ...docSnapshot.data()
-
-                });
-
-            }
-        );
-
-    }
-
-}
-
-
-// ======================================================
-// CREATED TIME
+// GET CREATED TIME
 // ======================================================
 
 function getCreatedTime(entry) {
 
-    if (!entry.createdAt) {
+    if (!entry || !entry.createdAt) {
 
         return 0;
 
@@ -769,7 +533,10 @@ function getCreatedTime(entry) {
     }
 
 
-    if (entry.createdAt.seconds) {
+    if (
+        entry.createdAt.seconds !==
+        undefined
+    ) {
 
         return (
             Number(
@@ -780,14 +547,10 @@ function getCreatedTime(entry) {
     }
 
 
-    const date =
+    const time =
         new Date(
             entry.createdAt
-        );
-
-
-    const time =
-        date.getTime();
+        ).getTime();
 
 
     return Number.isFinite(time)
@@ -798,116 +561,20 @@ function getCreatedTime(entry) {
 
 
 // ======================================================
-// LATEST ENTRY PER EMPLOYEE + DATE
-// ======================================================
-//
-// Agar ek Employee Code ne same date par
-// multiple entries ki hain,
-// sirf LAST entry count hogi.
-// ======================================================
-
-function getLatestEntries() {
-
-    const latestMap =
-        new Map();
-
-
-    dailyEntries.forEach(
-        (entry) => {
-
-            const employeeCode =
-                getEntryEmployeeCode(
-                    entry
-                );
-
-
-            const date =
-                String(
-                    entry.date || ""
-                ).trim();
-
-
-            if (
-                !employeeCode ||
-                !date
-            ) {
-
-                return;
-
-            }
-
-
-            const key =
-                normalize(
-                    employeeCode
-                ) +
-                "_" +
-                date;
-
-
-            const existing =
-                latestMap.get(
-                    key
-                );
-
-
-            if (!existing) {
-
-                latestMap.set(
-                    key,
-                    entry
-                );
-
-                return;
-
-            }
-
-
-            const currentTime =
-                getCreatedTime(
-                    entry
-                );
-
-
-            const existingTime =
-                getCreatedTime(
-                    existing
-                );
-
-
-            if (
-                currentTime >
-                existingTime
-            ) {
-
-                latestMap.set(
-                    key,
-                    entry
-                );
-
-            }
-
-        }
-    );
-
-
-    return Array.from(
-        latestMap.values()
-    );
-
-}
-
-
-// ======================================================
-// ACCESS RULES
+// GET USER ACCESS RULES
 // ======================================================
 
 function getUserAccessRules(user) {
 
+    if (!user) {
+
+        return [];
+
+    }
+
+
     if (
-        Array.isArray(
-            user.access
-        )
+        Array.isArray(user.access)
     ) {
 
         return user.access;
@@ -916,12 +583,19 @@ function getUserAccessRules(user) {
 
 
     if (
-        Array.isArray(
-            user.accessRules
-        )
+        Array.isArray(user.accessRules)
     ) {
 
         return user.accessRules;
+
+    }
+
+
+    if (
+        Array.isArray(user.permissions)
+    ) {
+
+        return user.permissions;
 
     }
 
@@ -970,10 +644,17 @@ function isFullRegionRule(rule) {
 
 
 // ======================================================
-// RULE REGION
+// GET RULE REGION
 // ======================================================
 
 function getRuleRegion(rule) {
+
+    if (!rule) {
+
+        return "";
+
+    }
+
 
     return normalize(
 
@@ -993,15 +674,20 @@ function getRuleRegion(rule) {
 
 
 // ======================================================
-// RULE STATES
+// GET RULE STATES
 // ======================================================
 
 function getRuleStates(rule) {
 
+    if (!rule) {
+
+        return [];
+
+    }
+
+
     if (
-        Array.isArray(
-            rule.states
-        )
+        Array.isArray(rule.states)
     ) {
 
         return rule.states;
@@ -1067,7 +753,7 @@ function getRuleStates(rule) {
 
 
 // ======================================================
-// EMPLOYEE ACCESS CHECK
+// EMPLOYEE MATCHES ACCESS
 // ======================================================
 
 function employeeMatchesAccess(
@@ -1076,22 +762,16 @@ function employeeMatchesAccess(
 ) {
 
     const accessRules =
-        getUserAccessRules(
-            user
-        );
+        getUserAccessRules(user);
 
 
-    /* ==========================================
-       OLD / SIMPLE REGION USER DATA
-       ========================================== */
+    if (
+        accessRules.length === 0
+    ) {
 
-    const directRegion =
-        normalize(
-            user.region ||
-            user.assignedRegion ||
-            user.regionName ||
-            ""
-        );
+        return false;
+
+    }
 
 
     const employeeRegion =
@@ -1110,43 +790,8 @@ function employeeMatchesAccess(
         );
 
 
-    /*
-     * Agar regionUsers document me
-     * direct region saved hai aur access array
-     * nahi hai, to direct region se match karega.
-     */
-
-    if (
-        accessRules.length === 0 &&
-        directRegion
-    ) {
-
-        if (
-            directRegion ===
-            employeeRegion
-        ) {
-
-            return true;
-
-        }
-
-
-        return false;
-
-    }
-
-
-    if (
-        accessRules.length === 0
-    ) {
-
-        return false;
-
-    }
-
-
     return accessRules.some(
-        (rule) => {
+        function (rule) {
 
             if (!rule) {
 
@@ -1161,16 +806,27 @@ function employeeMatchesAccess(
                 );
 
 
+            // ------------------------------------------
+            // REGION CHECK
+            // ------------------------------------------
+
             if (
+
                 assignedRegion &&
+
                 assignedRegion !==
                 employeeRegion
+
             ) {
 
                 return false;
 
             }
 
+
+            // ------------------------------------------
+            // FULL REGION
+            // ------------------------------------------
 
             if (
                 isFullRegionRule(
@@ -1182,6 +838,10 @@ function employeeMatchesAccess(
 
             }
 
+
+            // ------------------------------------------
+            // STATE CHECK
+            // ------------------------------------------
 
             const states =
                 getRuleStates(
@@ -1199,7 +859,7 @@ function employeeMatchesAccess(
 
 
             return states.some(
-                (state) => {
+                function (state) {
 
                     const normalizedState =
                         normalize(
@@ -1208,9 +868,14 @@ function employeeMatchesAccess(
 
 
                     if (
+
                         normalizedState === "*" ||
+
                         normalizedState === "all" ||
-                        normalizedState === "all states"
+
+                        normalizedState ===
+                        "all states"
+
                     ) {
 
                         return true;
@@ -1236,23 +901,14 @@ function employeeMatchesAccess(
 // GET ASSIGNED EMPLOYEES
 // ======================================================
 
-function getAssignedEmployees() {
-
-    if (
-        !currentRegionUser
-    ) {
-
-        return [];
-
-    }
-
+function getAssignedEmployees(user) {
 
     return employees.filter(
-        (employee) => {
+        function (employee) {
 
             return employeeMatchesAccess(
                 employee,
-                currentRegionUser
+                user
             );
 
         }
@@ -1262,23 +918,400 @@ function getAssignedEmployees() {
 
 
 // ======================================================
-// CALCULATE COLLECTION
+// LOAD REGION USERS
 // ======================================================
 
-function calculateCollection(
-    assignedTeacherList
+async function loadRegionUsers() {
+
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                REGION_USERS_COLLECTION
+            )
+        );
+
+
+    const users = [];
+
+
+    snapshot.forEach(
+        function (docSnapshot) {
+
+            users.push({
+
+                id:
+                    docSnapshot.id,
+
+                ...docSnapshot.data()
+
+            });
+
+        }
+    );
+
+
+    return users;
+
+}
+
+
+// ======================================================
+// FIND CURRENT REGION USER
+// ======================================================
+
+function findCurrentRegionUser(
+    users
 ) {
 
-    const latestEntries =
-        getLatestEntries();
+    const identifiers =
+        getCurrentUserIdentifiers()
+            .map(normalize)
+            .filter(Boolean);
 
+
+    console.log(
+        "Region User Identifiers:",
+        identifiers
+    );
+
+
+    // --------------------------------------------------
+    // FIRST: MATCH BY ID / USER CODE
+    // --------------------------------------------------
+
+    let found =
+        users.find(
+            function (user) {
+
+                const possibleValues = [
+
+                    user.id,
+
+                    user.userCode,
+
+                    user.user_code,
+
+                    user.regionUserCode,
+
+                    user.region_user_code,
+
+                    user.employeeCode,
+
+                    user.employee_code,
+
+                    user.empCode,
+
+                    user.emp_code,
+
+                    user.username,
+
+                    user.userName
+
+                ];
+
+
+                return possibleValues.some(
+                    function (value) {
+
+                        return (
+                            value &&
+                            identifiers.includes(
+                                normalize(value)
+                            )
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    if (found) {
+
+        return found;
+
+    }
+
+
+    // --------------------------------------------------
+    // FALLBACK:
+    // SAVED REGION USER NAME
+    // --------------------------------------------------
+
+    const savedName =
+        normalize(
+            localStorage.getItem(
+                "regionUserName"
+            )
+        );
+
+
+    if (savedName) {
+
+        found =
+            users.find(
+                function (user) {
+
+                    return (
+                        normalize(
+                            getUserName(user)
+                        ) === savedName
+                    );
+
+                }
+            );
+
+    }
+
+
+    return found || null;
+
+}
+
+
+// ======================================================
+// LOAD EMPLOYEES
+// ======================================================
+
+async function loadEmployees() {
+
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                EMPLOYEES_COLLECTION
+            )
+        );
+
+
+    employees = [];
+
+
+    snapshot.forEach(
+        function (docSnapshot) {
+
+            employees.push({
+
+                id:
+                    docSnapshot.id,
+
+                ...docSnapshot.data()
+
+            });
+
+        }
+    );
+
+
+    console.log(
+        "Employees Loaded:",
+        employees.length
+    );
+
+}
+
+
+// ======================================================
+// LOAD DAILY ENTRIES
+// ======================================================
+
+async function loadDailyEntries() {
+
+    try {
+
+        const entriesQuery =
+            query(
+                collection(
+                    db,
+                    DAILY_ENTRY_COLLECTION
+                ),
+                orderBy(
+                    "createdAt",
+                    "desc"
+                )
+            );
+
+
+        const snapshot =
+            await getDocs(
+                entriesQuery
+            );
+
+
+        dailyEntries = [];
+
+
+        snapshot.forEach(
+            function (docSnapshot) {
+
+                dailyEntries.push({
+
+                    id:
+                        docSnapshot.id,
+
+                    ...docSnapshot.data()
+
+                });
+
+            }
+        );
+
+
+    }
+    catch (error) {
+
+        console.warn(
+            "createdAt orderBy failed. Loading without order.",
+            error
+        );
+
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    DAILY_ENTRY_COLLECTION
+                )
+            );
+
+
+        dailyEntries = [];
+
+
+        snapshot.forEach(
+            function (docSnapshot) {
+
+                dailyEntries.push({
+
+                    id:
+                        docSnapshot.id,
+
+                    ...docSnapshot.data()
+
+                });
+
+            }
+        );
+
+    }
+
+
+    console.log(
+        "Daily Entries Loaded:",
+        dailyEntries.length
+    );
+
+}
+
+
+// ======================================================
+// LATEST ENTRY PER EMPLOYEE + DATE
+// ======================================================
+
+function getLatestEntries() {
+
+    const latestMap =
+        new Map();
+
+
+    dailyEntries.forEach(
+        function (entry) {
+
+            const employeeCode =
+                getEntryEmployeeCode(
+                    entry
+                );
+
+
+            const date =
+                String(
+                    entry.date || ""
+                ).trim();
+
+
+            if (
+                !employeeCode ||
+                !date
+            ) {
+
+                return;
+
+            }
+
+
+            const key =
+                normalize(
+                    employeeCode
+                ) +
+                "_" +
+                date;
+
+
+            const existing =
+                latestMap.get(key);
+
+
+            if (!existing) {
+
+                latestMap.set(
+                    key,
+                    entry
+                );
+
+                return;
+
+            }
+
+
+            const currentTime =
+                getCreatedTime(
+                    entry
+                );
+
+
+            const existingTime =
+                getCreatedTime(
+                    existing
+                );
+
+
+            if (
+                currentTime >
+                existingTime
+            ) {
+
+                latestMap.set(
+                    key,
+                    entry
+                );
+
+            }
+
+        }
+    );
+
+
+    return Array.from(
+        latestMap.values()
+    );
+
+}
+
+
+// ======================================================
+// GET USER COLLECTION
+// ======================================================
+
+function getUserCollection() {
 
     const employeeCodes =
         new Set();
 
 
-    assignedTeacherList.forEach(
-        (employee) => {
+    assignedEmployees.forEach(
+        function (employee) {
 
             const code =
                 normalize(
@@ -1300,12 +1333,15 @@ function calculateCollection(
     );
 
 
-    let total =
-        0;
+    const latestEntries =
+        getLatestEntries();
+
+
+    let totalCollection = 0;
 
 
     latestEntries.forEach(
-        (entry) => {
+        function (entry) {
 
             const entryCode =
                 normalize(
@@ -1321,7 +1357,7 @@ function calculateCollection(
                 )
             ) {
 
-                total +=
+                totalCollection +=
                     getEntryAmount(
                         entry
                     );
@@ -1332,134 +1368,166 @@ function calculateCollection(
     );
 
 
-    return total;
+    return totalCollection;
 
 }
 
 
 // ======================================================
-// DISPLAY USER INFORMATION
+// GET REGION NAME
 // ======================================================
 
-function displayUserInfo() {
+function getRegionName(user) {
+
+    if (!user) {
+
+        return "";
+
+    }
+
+
+    const accessRules =
+        getUserAccessRules(user);
+
+
+    // ------------------------------------------
+    // DIRECT REGION FIELD
+    // ------------------------------------------
+
+    const directRegion =
+        user.region ||
+        user.regionName ||
+        user.region_name ||
+        user.assignedRegion ||
+        user.assigned_region;
+
 
     if (
-        !currentRegionUser
+        directRegion &&
+        String(directRegion).trim()
     ) {
 
-        return;
+        return String(
+            directRegion
+        ).trim();
 
     }
 
 
-    const userName =
-        getUserName(
-            currentRegionUser
+    // ------------------------------------------
+    // ACCESS RULE REGION
+    // ------------------------------------------
+
+    const regions = [];
+
+
+    accessRules.forEach(
+        function (rule) {
+
+            const region =
+                rule &&
+                (
+                    rule.region ||
+                    rule.assignedRegion ||
+                    rule.regionName ||
+                    rule.region_name
+                );
+
+
+            if (
+                region &&
+                String(region).trim()
+            ) {
+
+                regions.push(
+                    String(region).trim()
+                );
+
+            }
+
+        }
+    );
+
+
+    const uniqueRegions =
+        [
+            ...new Set(
+                regions
+            )
+        ];
+
+
+    if (
+        uniqueRegions.length === 1
+    ) {
+
+        return uniqueRegions[0];
+
+    }
+
+
+    if (
+        uniqueRegions.length > 1
+    ) {
+
+        return uniqueRegions.join(
+            ", "
         );
 
-
-    const region =
-        currentRegionUser.region ||
-
-        currentRegionUser.assignedRegion ||
-
-        currentRegionUser.regionName ||
-
-        "Assigned Region";
-
-
-    if (regionUserName) {
-
-        regionUserName.textContent =
-            userName;
-
     }
 
 
-    if (regionName) {
-
-        regionName.textContent =
-            region;
-
-    }
+    return "Assigned Region";
 
 }
 
 
 // ======================================================
-// DISPLAY SUMMARY
+// SHOW SUMMARY
 // ======================================================
 
-function displaySummary() {
-
-    if (
-        !currentRegionUser
-    ) {
-
-        throw new Error(
-            "Region User account nahi mila."
-        );
-
-    }
-
-
-    assignedEmployees =
-        getAssignedEmployees();
-
-
-    const target =
-        getUserTarget(
-            currentRegionUser
-        );
-
-
-    const collection =
-        calculateCollection(
-            assignedEmployees
-        );
-
+function showSummary(
+    target,
+    collectionAmount,
+    teacherCount
+) {
 
     const remaining =
         Math.max(
             target -
-            collection,
+            collectionAmount,
             0
         );
 
 
-    const percent =
+    const percentage =
         target > 0
+
             ? (
-                collection /
+                collectionAmount /
                 target
             ) * 100
+
             : 0;
 
 
     const progress =
         Math.min(
             Math.max(
-                percent,
+                percentage,
                 0
             ),
             100
         );
 
 
-    // ==========================================
-    // USER INFO
-    // ==========================================
-
-    displayUserInfo();
-
-
-    // ==========================================
+    // ------------------------------------------
     // TARGET
-    // ==========================================
+    // ------------------------------------------
 
-    if (targetAmount) {
+    if (targetAmountEl) {
 
-        targetAmount.textContent =
+        targetAmountEl.textContent =
             formatCurrency(
                 target
             );
@@ -1467,9 +1535,9 @@ function displaySummary() {
     }
 
 
-    if (targetUnits) {
+    if (targetUnitsEl) {
 
-        targetUnits.textContent =
+        targetUnitsEl.textContent =
             formatUnit(
                 target
             );
@@ -1477,37 +1545,37 @@ function displaySummary() {
     }
 
 
-    // ==========================================
+    // ------------------------------------------
     // COLLECTION
-    // ==========================================
+    // ------------------------------------------
 
-    if (collectionAmount) {
+    if (collectionAmountEl) {
 
-        collectionAmount.textContent =
+        collectionAmountEl.textContent =
             formatCurrency(
-                collection
+                collectionAmount
             );
 
     }
 
 
-    if (collectionUnits) {
+    if (collectionUnitsEl) {
 
-        collectionUnits.textContent =
+        collectionUnitsEl.textContent =
             formatUnit(
-                collection
+                collectionAmount
             );
 
     }
 
 
-    // ==========================================
+    // ------------------------------------------
     // REMAINING
-    // ==========================================
+    // ------------------------------------------
 
-    if (remainingAmount) {
+    if (remainingAmountEl) {
 
-        remainingAmount.textContent =
+        remainingAmountEl.textContent =
             formatCurrency(
                 remaining
             );
@@ -1515,9 +1583,9 @@ function displaySummary() {
     }
 
 
-    if (remainingUnits) {
+    if (remainingUnitsEl) {
 
-        remainingUnits.textContent =
+        remainingUnitsEl.textContent =
             formatUnit(
                 remaining
             );
@@ -1525,58 +1593,61 @@ function displaySummary() {
     }
 
 
-    // ==========================================
+    // ------------------------------------------
     // PERCENTAGE
-    // ==========================================
+    // ------------------------------------------
 
-    if (percentage) {
-
-        percentage.textContent =
-            percent.toFixed(2) +
-            "%";
-
-    }
+    const percentageText =
+        percentage.toFixed(2) +
+        "%";
 
 
-    if (progressPercentage) {
+    if (percentageEl) {
 
-        progressPercentage.textContent =
-            percent.toFixed(2) +
-            "%";
+        percentageEl.textContent =
+            percentageText;
 
     }
 
 
-    // ==========================================
+    if (progressPercentageEl) {
+
+        progressPercentageEl.textContent =
+            percentageText;
+
+    }
+
+
+    // ------------------------------------------
     // PROGRESS BAR
-    // ==========================================
+    // ------------------------------------------
 
-    if (progressBar) {
+    if (progressBarEl) {
 
-        progressBar.style.width =
+        progressBarEl.style.width =
             progress +
             "%";
 
     }
 
 
-    // ==========================================
+    // ------------------------------------------
     // PROGRESS INFO
-    // ==========================================
+    // ------------------------------------------
 
-    if (progressCollection) {
+    if (progressCollectionEl) {
 
-        progressCollection.textContent =
+        progressCollectionEl.textContent =
             formatCurrency(
-                collection
+                collectionAmount
             );
 
     }
 
 
-    if (progressTarget) {
+    if (progressTargetEl) {
 
-        progressTarget.textContent =
+        progressTargetEl.textContent =
             formatCurrency(
                 target
             );
@@ -1584,57 +1655,21 @@ function displaySummary() {
     }
 
 
-    // ==========================================
+    // ------------------------------------------
     // TEACHER COUNT
-    // ==========================================
+    // ------------------------------------------
 
-    if (teacherCount) {
+    if (teacherCountEl) {
 
-        teacherCount.textContent =
-            assignedEmployees.length +
+        teacherCountEl.textContent =
+            teacherCount +
             (
-                assignedEmployees.length === 1
+                teacherCount === 1
                     ? " Teacher"
                     : " Teachers"
             );
 
     }
-
-
-    console.log(
-        "Region User:",
-        currentRegionUser
-    );
-
-
-    console.log(
-        "Assigned Teachers:",
-        assignedEmployees
-    );
-
-
-    console.log(
-        "Target:",
-        target
-    );
-
-
-    console.log(
-        "Collection:",
-        collection
-    );
-
-
-    console.log(
-        "Remaining:",
-        remaining
-    );
-
-
-    console.log(
-        "Percentage:",
-        percent
-    );
 
 }
 
@@ -1643,50 +1678,45 @@ function displaySummary() {
 // SHOW ERROR
 // ======================================================
 
-function showError(error) {
+function showError(
+    message
+) {
 
     console.error(
         "Region Summary Error:",
-        error
+        message
     );
 
 
-    if (loadingBox) {
+    if (loadingBoxEl) {
 
-        loadingBox.style.display =
+        loadingBoxEl.style.display =
             "none";
 
     }
 
 
-    if (summaryContent) {
+    if (summaryContentEl) {
 
-        summaryContent.style.display =
+        summaryContentEl.style.display =
             "none";
 
     }
 
 
-    if (errorBox) {
+    if (errorBoxEl) {
 
-        errorBox.style.display =
+        errorBoxEl.style.display =
             "block";
 
     }
 
 
-    if (errorMessage) {
+    if (errorMessageEl) {
 
-        errorMessage.innerHTML =
-
-            "Region Summary load nahi ho saki." +
-
-            "<br><br>" +
-
-            String(
-                error.message ||
-                error
-            );
+        errorMessageEl.textContent =
+            message ||
+            "Summary load nahi ho saki.";
 
     }
 
@@ -1694,69 +1724,198 @@ function showError(error) {
 
 
 // ======================================================
-// LOAD SUMMARY
+// SHOW CONTENT
+// ======================================================
+
+function showContent() {
+
+    if (loadingBoxEl) {
+
+        loadingBoxEl.style.display =
+            "none";
+
+    }
+
+
+    if (errorBoxEl) {
+
+        errorBoxEl.style.display =
+            "none";
+
+    }
+
+
+    if (summaryContentEl) {
+
+        summaryContentEl.style.display =
+            "block";
+
+    }
+
+}
+
+
+// ======================================================
+// SAVE REGION USER INFO
+// ======================================================
+
+function saveRegionUserInfo(
+    user
+) {
+
+    if (!user) {
+
+        return;
+
+    }
+
+
+    const name =
+        getUserName(
+            user
+        );
+
+
+    const code =
+        getUserCode(
+            user
+        );
+
+
+    const region =
+        getRegionName(
+            user
+        );
+
+
+    if (name) {
+
+        localStorage.setItem(
+            "regionUserName",
+            name
+        );
+
+    }
+
+
+    if (code) {
+
+        localStorage.setItem(
+            "regionUserCode",
+            code
+        );
+
+    }
+
+
+    if (region) {
+
+        localStorage.setItem(
+            "regionName",
+            region
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// DISPLAY USER INFORMATION
+// ======================================================
+
+function displayUserInformation(
+    user
+) {
+
+    const name =
+        getUserName(
+            user
+        );
+
+
+    const region =
+        getRegionName(
+            user
+        );
+
+
+    if (regionUserNameEl) {
+
+        regionUserNameEl.textContent =
+            name;
+
+    }
+
+
+    if (regionNameEl) {
+
+        regionNameEl.textContent =
+            region;
+
+    }
+
+
+    saveRegionUserInfo(
+        user
+    );
+
+}
+
+
+// ======================================================
+// MAIN LOAD
 // ======================================================
 
 async function loadRegionSummary() {
 
     try {
 
-        // ==========================================
-        // LOGIN CHECK
-        // ==========================================
+        console.log(
+            "Loading Region Summary..."
+        );
+
+
+        // ------------------------------------------
+        // BASIC ROLE CHECK
+        // ------------------------------------------
+
+        const role =
+            normalize(
+                localStorage.getItem(
+                    "userRole"
+                )
+            );
+
 
         if (
-            !loggedInEmpCode ||
-            userRole !== "regionuser"
+            role &&
+            role !== "regionuser" &&
+            role !== "region_user" &&
+            role !== "region user"
         ) {
 
-            throw new Error(
-                "Region User login required."
+            // Do not redirect if role is empty.
+            // This allows existing region-user login
+            // implementations to work.
+
+            console.warn(
+                "Unexpected userRole:",
+                role
             );
 
         }
 
 
-        // ==========================================
-        // LOAD ALL REQUIRED DATA
-        // ==========================================
+        // ------------------------------------------
+        // LOAD DATA
+        // ------------------------------------------
 
         const [
             regionUsers
-        ] =
-            await Promise.all([
+        ] = await Promise.all([
 
-                loadRegionUsers()
-
-            ]);
-
-
-        // ==========================================
-        // FIND CURRENT USER
-        // ==========================================
-
-        currentRegionUser =
-            findCurrentRegionUser(
-                regionUsers
-            );
-
-
-        if (
-            !currentRegionUser
-        ) {
-
-            throw new Error(
-                "Aapka Region User account Firebase me nahi mila."
-            );
-
-        }
-
-
-        // ==========================================
-        // LOAD TEACHERS + ENTRIES
-        // ==========================================
-
-        await Promise.all([
+            loadRegionUsers(),
 
             loadEmployees(),
 
@@ -1765,86 +1924,118 @@ async function loadRegionSummary() {
         ]);
 
 
-        // ==========================================
+        // ------------------------------------------
+        // FIND CURRENT USER
+        // ------------------------------------------
+
+        currentRegionUser =
+            findCurrentRegionUser(
+                regionUsers
+            );
+
+
+        if (!currentRegionUser) {
+
+            throw new Error(
+                "Current Region User nahi mila. Login dobara karein."
+            );
+
+        }
+
+
+        console.log(
+            "Current Region User:",
+            currentRegionUser
+        );
+
+
+        // ------------------------------------------
+        // USER INFORMATION
+        // ------------------------------------------
+
+        displayUserInformation(
+            currentRegionUser
+        );
+
+
+        // ------------------------------------------
+        // ASSIGNED TEACHERS
+        // ------------------------------------------
+
+        assignedEmployees =
+            getAssignedEmployees(
+                currentRegionUser
+            );
+
+
+        console.log(
+            "Assigned Teachers:",
+            assignedEmployees
+        );
+
+
+        // ------------------------------------------
+        // TARGET
+        // ------------------------------------------
+
+        const target =
+            getUserTarget(
+                currentRegionUser
+            );
+
+
+        // ------------------------------------------
+        // COLLECTION
+        // ------------------------------------------
+
+        const collectionAmount =
+            getUserCollection();
+
+
+        // ------------------------------------------
         // DISPLAY
-        // ==========================================
+        // ------------------------------------------
 
-        displaySummary();
+        showSummary(
 
+            target,
 
-        // ==========================================
-        // HIDE LOADING
-        // ==========================================
+            collectionAmount,
 
-        if (loadingBox) {
+            assignedEmployees.length
 
-            loadingBox.style.display =
-                "none";
-
-        }
+        );
 
 
-        if (summaryContent) {
+        // ------------------------------------------
+        // SHOW PAGE
+        // ------------------------------------------
 
-            summaryContent.style.display =
-                "block";
+        showContent();
 
-        }
+
+        console.log(
+            "Region Summary Loaded Successfully"
+        );
 
 
     }
-
     catch (error) {
 
-        showError(
+        console.error(
+            "Region Summary Load Error:",
             error
+        );
+
+
+        showError(
+            error.message ||
+            "Region Summary load nahi ho saki."
         );
 
     }
 
 }
-
-
-// ======================================================
-// LOGOUT
-// ======================================================
-
-document.addEventListener(
-    "click",
-    function (event) {
-
-        const logoutBtn =
-            event.target.closest(
-                "#regionLogoutBtn, #logoutBtn"
-            );
-
-
-        if (!logoutBtn) {
-
-            return;
-
-        }
-
-
-        event.preventDefault();
-
-
-        localStorage.removeItem(
-            "loggedInEmpCode"
-        );
-
-
-        localStorage.removeItem(
-            "userRole"
-        );
-
-
-        window.location.replace(
-            "index.html"
-        );
-
-    }
-);
 
 
 // ======================================================
