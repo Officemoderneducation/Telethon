@@ -1,1376 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Summary | Telethon</title>
-
-
-    <!-- ======================================
-         FONT AWESOME
-    ======================================= -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    >
-
-
-    <style>
-
-        /* ======================================
-           RESET
-        ======================================= */
-
-        * {
-
-            margin: 0;
-            padding: 0;
-
-            box-sizing: border-box;
-
-            font-family:
-                Arial, sans-serif;
-
-        }
-
-
-        html,
-        body {
-
-            width: 100%;
-
-            min-height: 100%;
-
-        }
-
-
-        body {
-
-            background: #f4f6f9;
-
-            color: #1e293b;
-
-            overflow-x: hidden;
-
-        }
-
-
-        /* ======================================
-           SIDEBAR CONTAINER
-        ======================================= */
-
-        #teacherSidebar {
-
-            position: fixed;
-
-            left: 0;
-            top: 0;
-
-            width: 240px;
-            height: 100vh;
-
-            z-index: 99999;
-
-        }
-
-
-        /* ======================================
-           MAIN AREA
-        ======================================= */
-
-        .main-area {
-
-            margin-left: 240px;
-
-            width:
-                calc(100% - 240px);
-
-            min-height: 100vh;
-
-        }
-
-
-        /* ======================================
-           MOBILE MENU
-        ======================================= */
-
-        .mobile-menu-btn {
-
-            display: none;
-
-            position: fixed;
-
-            left: 12px;
-            top: 12px;
-
-            width: 42px;
-            height: 42px;
-
-            border: none;
-
-            border-radius: 8px;
-
-            background: #2563eb;
-
-            color: #ffffff;
-
-            font-size: 18px;
-
-            align-items: center;
-            justify-content: center;
-
-            cursor: pointer;
-
-            z-index: 100001;
-
-        }
-
-
-        /* ======================================
-           TOPBAR
-        ======================================= */
-
-        .topbar {
-
-            height: 76px;
-
-            background: #ffffff;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            padding: 0 26px;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
-
-        }
-
-
-        .topbar-title h2 {
-
-            font-size: 21px;
-
-            color: #0f172a;
-
-            margin-bottom: 4px;
-
-        }
-
-
-        .topbar-title p {
-
-            font-size: 12px;
-
-            color: #64748b;
-
-        }
-
-
-        .topbar-user {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 9px;
-
-            font-size: 13px;
-
-            font-weight: 600;
-
-            color: #334155;
-
-        }
-
-
-        .topbar-user i {
-
-            color: #2563eb;
-
-            font-size: 20px;
-
-        }
-
-
-        /* ======================================
-           MAIN CONTENT
-        ======================================= */
-
-        .main {
-
-            padding: 22px;
-
-        }
-
-
-        /* ======================================
-           PAGE INTRO
-        ======================================= */
-
-        .page-title {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 22px;
-
-            margin-bottom: 18px;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
-
-        }
-
-
-        .page-title h2 {
-
-            font-size: 24px;
-
-            color: #0f172a;
-
-            margin-bottom: 6px;
-
-        }
-
-
-        .page-title h2 i {
-
-            color: #2563eb;
-
-            margin-right: 8px;
-
-        }
-
-
-        .page-title p {
-
-            color: #64748b;
-
-            font-size: 14px;
-
-            line-height: 1.6;
-
-        }
-
-
-        /* ======================================
-           TEACHER INFO
-        ======================================= */
-
-        .teacher-info {
-
-            background: #ecfdf5;
-
-            border: 1px solid #bbf7d0;
-
-            border-radius: 10px;
-
-            padding: 15px 18px;
-
-            margin-bottom: 18px;
-
-            color: #166534;
-
-            font-size: 14px;
-
-        }
-
-
-        .teacher-info strong {
-
-            font-size: 16px;
-
-        }
-
-
-        /* ======================================
-           SUMMARY GRID
-        ======================================= */
-
-        .summary-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(4, minmax(0, 1fr));
-
-            gap: 16px;
-
-            margin-bottom: 18px;
-
-        }
-
-
-        /* ======================================
-           SUMMARY CARD
-        ======================================= */
-
-        .summary-card {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 20px;
-
-            min-height: 145px;
-
-            position: relative;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
-
-        }
-
-
-        .summary-card::before {
-
-            content: "";
-
-            position: absolute;
-
-            left: 0;
-            top: 0;
-
-            width: 5px;
-            height: 100%;
-
-            background: #2563eb;
-
-        }
-
-
-        .summary-card.collection::before {
-
-            background: #16a34a;
-
-        }
-
-
-        .summary-card.remaining::before {
-
-            background: #f59e0b;
-
-        }
-
-
-        .summary-card.percentage::before {
-
-            background: #7c3aed;
-
-        }
-
-
-        .card-top {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin-bottom: 13px;
-
-        }
-
-
-        .card-title {
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-            color: #64748b;
-
-        }
-
-
-        .card-icon {
-
-            width: 38px;
-            height: 38px;
-
-            border-radius: 9px;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            background: #eff6ff;
-
-            color: #2563eb;
-
-        }
-
-
-        .collection .card-icon {
-
-            background: #ecfdf5;
-
-            color: #16a34a;
-
-        }
-
-
-        .remaining .card-icon {
-
-            background: #fffbeb;
-
-            color: #f59e0b;
-
-        }
-
-
-        .percentage .card-icon {
-
-            background: #f5f3ff;
-
-            color: #7c3aed;
-
-        }
-
-
-        .card-value {
-
-            font-size: 26px;
-
-            font-weight: 700;
-
-            color: #0f172a;
-
-        }
-
-
-        .card-unit {
-
-            margin-top: 6px;
-
-            font-size: 12px;
-
-            color: #64748b;
-
-        }
-
-
-        /* ======================================
-           PROGRESS
-        ======================================= */
-
-        .progress-card {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 22px;
-
-            margin-bottom: 18px;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
-
-        }
-
-
-        .progress-header {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin-bottom: 14px;
-
-        }
-
-
-        .progress-header h3 {
-
-            font-size: 17px;
-
-            color: #0f172a;
-
-        }
-
-
-        .progress-percent {
-
-            font-size: 18px;
-
-            font-weight: 700;
-
-            color: #2563eb;
-
-        }
-
-
-        .progress-container {
-
-            width: 100%;
-
-            height: 18px;
-
-            border-radius: 20px;
-
-            background: #e2e8f0;
-
-            overflow: hidden;
-
-        }
-
-
-        .progress-bar {
-
-            width: 0%;
-
-            height: 100%;
-
-            border-radius: 20px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #2563eb,
-                    #7c3aed
-                );
-
-            transition:
-                width 0.6s ease;
-
-        }
-
-
-        .progress-info {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            margin-top: 10px;
-
-            font-size: 13px;
-
-            color: #64748b;
-
-        }
-
-
-        /* ======================================
-           DAILY HISTORY
-        ======================================= */
-
-        .history-card {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 20px;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
-
-        }
-
-
-        .history-header {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            margin-bottom: 16px;
-
-        }
-
-
-        .history-header h3 {
-
-            font-size: 18px;
-
-            color: #0f172a;
-
-        }
-
-
-        .history-header h3 i {
-
-            color: #2563eb;
-
-            margin-right: 7px;
-
-        }
-
-
-        .entry-count {
-
-            background: #eff6ff;
-
-            color: #2563eb;
-
-            padding: 7px 12px;
-
-            border-radius: 20px;
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-        }
-
-
-        /* ======================================
-           TABLE
-        ======================================= */
-
-        .table-wrapper {
-
-            width: 100%;
-
-            overflow-x: auto;
-
-            border:
-                1px solid #e2e8f0;
-
-            border-radius: 8px;
-
-        }
-
-
-        table {
-
-            width: 100%;
-
-            min-width: 650px;
-
-            border-collapse: collapse;
-
-        }
-
-
-        thead th {
-
-            background: #2563eb;
-
-            color: #ffffff;
-
-            padding: 13px;
-
-            text-align: center;
-
-            font-size: 12px;
-
-            white-space: nowrap;
-
-        }
-
-
-        tbody td {
-
-            padding: 12px 13px;
-
-            border-bottom:
-                1px solid #e2e8f0;
-
-            text-align: center;
-
-            font-size: 13px;
-
-            color: #334155;
-
-            white-space: nowrap;
-
-        }
-
-
-        tbody tr:hover {
-
-            background: #f8fafc;
-
-        }
-
-
-        .amount-cell {
-
-            color: #059669;
-
-            font-weight: 700;
-
-        }
-
-
-        .latest-badge {
-
-            display: inline-block;
-
-            padding: 4px 8px;
-
-            border-radius: 12px;
-
-            background: #ecfdf5;
-
-            color: #059669;
-
-            font-size: 10px;
-
-            font-weight: 700;
-
-        }
-
-
-        /* ======================================
-           LOADING
-        ======================================= */
-
-        .loading {
-
-            text-align: center;
-
-            padding: 45px 20px;
-
-            color: #64748b;
-
-        }
-
-
-        .loading i {
-
-            font-size: 25px;
-
-            margin-bottom: 10px;
-
-        }
-
-
-        /* ======================================
-           EMPTY
-        ======================================= */
-
-        .empty {
-
-            text-align: center;
-
-            padding: 45px 20px;
-
-            color: #64748b;
-
-        }
-
-
-        .empty i {
-
-            display: block;
-
-            font-size: 30px;
-
-            margin-bottom: 10px;
-
-        }
-
-
-        /* ======================================
-           ERROR
-        ======================================= */
-
-        .error {
-
-            background: #fef2f2;
-
-            border:
-                1px solid #fecaca;
-
-            color: #b91c1c;
-
-            padding: 15px;
-
-            border-radius: 8px;
-
-            margin-bottom: 18px;
-
-            display: none;
-
-        }
-
-
-        /* ======================================
-           RESPONSIVE
-        ======================================= */
-
-        @media (max-width: 1100px) {
-
-            .summary-grid {
-
-                grid-template-columns:
-                    repeat(2, 1fr);
-
-            }
-
-        }
-
-
-        @media (max-width: 800px) {
-
-            #teacherSidebar {
-
-                width: 220px;
-
-            }
-
-
-            .main-area {
-
-                margin-left: 0;
-
-                width: 100%;
-
-            }
-
-
-            .mobile-menu-btn {
-
-                display: flex;
-
-            }
-
-
-            .topbar {
-
-                padding-left: 68px;
-
-            }
-
-
-            .topbar-user {
-
-                display: none;
-
-            }
-
-        }
-
-
-        @media (max-width: 600px) {
-
-            .main {
-
-                padding: 12px;
-
-            }
-
-
-            .summary-grid {
-
-                grid-template-columns: 1fr;
-
-            }
-
-
-            .page-title {
-
-                padding: 17px;
-
-            }
-
-
-            .page-title h2 {
-
-                font-size: 20px;
-
-            }
-
-
-            .teacher-info {
-
-                font-size: 13px;
-
-            }
-
-
-            .progress-info {
-
-                flex-direction: column;
-
-                gap: 5px;
-
-            }
-
-
-            .history-card {
-
-                padding: 13px;
-
-            }
-
-
-            .history-header {
-
-                align-items: flex-start;
-
-                gap: 10px;
-
-            }
-
-        }
-
-    </style>
-
-</head>
-
-
-<body>
-
-
-<!-- ======================================
-     TEACHER SIDEBAR
-====================================== -->
-
-<div id="teacherSidebar"></div>
-
-
-<!-- ======================================
-     MOBILE MENU
-====================================== -->
-
-<button
-    type="button"
-    id="mobileMenuBtn"
-    class="mobile-menu-btn"
-    title="Open Menu"
->
-
-    <i class="fa-solid fa-bars"></i>
-
-</button>
-
-
-<!-- ======================================
-     MAIN AREA
-====================================== -->
-
-<div class="main-area">
-
-
-    <!-- ==================================
-         TOPBAR
-    ================================== -->
-
-    <header class="topbar">
-
-        <div class="topbar-title">
-
-            <h2>
-                Teacher Summary
-            </h2>
-
-            <p>
-                Your Daily Collection Summary
-            </p>
-
-        </div>
-
-
-        <div class="topbar-user">
-
-            <i class="fa-solid fa-circle-user"></i>
-
-            <span id="topUserName">
-                Loading...
-            </span>
-
-        </div>
-
-    </header>
-
-
-    <!-- ==================================
-         MAIN
-    ================================== -->
-
-    <main class="main">
-
-
-        <!-- PAGE TITLE -->
-
-        <section class="page-title">
-
-            <h2>
-
-                <i class="fa-solid fa-chart-pie"></i>
-
-                My Collection Summary
-
-            </h2>
-
-            <p>
-
-                Yahan aapki daily collection,
-                target, remaining target aur
-                collection percentage show hogi.
-
-            </p>
-
-        </section>
-
-
-        <!-- ERROR -->
-
-        <div
-            id="errorBox"
-            class="error"
-        ></div>
-
-
-        <!-- TEACHER INFO -->
-
-        <div
-            id="teacherInfo"
-            class="teacher-info"
-        >
-
-            Loading Teacher Information...
-
-        </div>
-
-
-        <!-- ==================================
-             SUMMARY CARDS
-        ================================== -->
-
-        <section class="summary-grid">
-
-
-            <!-- TARGET -->
-
-            <div class="summary-card">
-
-                <div class="card-top">
-
-                    <span class="card-title">
-                        MY TARGET
-                    </span>
-
-                    <div class="card-icon">
-
-                        <i
-                            class="fa-solid fa-bullseye"
-                        ></i>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="targetAmount"
-                    class="card-value"
-                >
-                    ₹ 0
-                </div>
-
-
-                <div class="card-unit">
-                    Target Amount
-                </div>
-
-            </div>
-
-
-            <!-- COLLECTION -->
-
-            <div class="summary-card collection">
-
-                <div class="card-top">
-
-                    <span class="card-title">
-                        TOTAL COLLECTION
-                    </span>
-
-                    <div class="card-icon">
-
-                        <i
-                            class="fa-solid fa-indian-rupee-sign"
-                        ></i>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="totalCollection"
-                    class="card-value"
-                >
-                    ₹ 0
-                </div>
-
-
-                <div
-                    id="collectionUnits"
-                    class="card-unit"
-                >
-                    0 Daily Entries
-                </div>
-
-            </div>
-
-
-            <!-- REMAINING -->
-
-            <div class="summary-card remaining">
-
-                <div class="card-top">
-
-                    <span class="card-title">
-                        REMAINING TARGET
-                    </span>
-
-                    <div class="card-icon">
-
-                        <i
-                            class="fa-solid fa-hourglass-half"
-                        ></i>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="remainingTarget"
-                    class="card-value"
-                >
-                    ₹ 0
-                </div>
-
-
-                <div class="card-unit">
-                    Target Balance
-                </div>
-
-            </div>
-
-
-            <!-- PERCENTAGE -->
-
-            <div class="summary-card percentage">
-
-                <div class="card-top">
-
-                    <span class="card-title">
-                        COLLECTION %
-                    </span>
-
-                    <div class="card-icon">
-
-                        <i
-                            class="fa-solid fa-chart-line"
-                        ></i>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="collectionPercentage"
-                    class="card-value"
-                >
-                    0.00%
-                </div>
-
-
-                <div class="card-unit">
-                    Target Achievement
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================================
-             PROGRESS
-        ================================== -->
-
-        <section class="progress-card">
-
-            <div class="progress-header">
-
-                <h3>
-                    Target Progress
-                </h3>
-
-
-                <span
-                    id="progressPercentage"
-                    class="progress-percent"
-                >
-                    0.00%
-                </span>
-
-            </div>
-
-
-            <div class="progress-container">
-
-                <div
-                    id="progressBar"
-                    class="progress-bar"
-                ></div>
-
-            </div>
-
-
-            <div class="progress-info">
-
-                <span>
-
-                    Collection:
-
-                    <strong id="progressCollection">
-                        ₹ 0
-                    </strong>
-
-                </span>
-
-
-                <span>
-
-                    Target:
-
-                    <strong id="progressTarget">
-                        ₹ 0
-                    </strong>
-
-                </span>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================================
-             DAILY HISTORY
-        ================================== -->
-
-        <section class="history-card">
-
-
-            <div class="history-header">
-
-                <h3>
-
-                    <i class="fa-solid fa-calendar-days"></i>
-
-                    Daily Collection History
-
-                </h3>
-
-
-                <span
-                    id="entryCount"
-                    class="entry-count"
-                >
-                    0 Entries
-                </span>
-
-            </div>
-
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                #
-                            </th>
-
-                            <th>
-                                Date
-                            </th>
-
-                            <th>
-                                Collection
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody
-                        id="summaryTableBody"
-                    >
-
-                        <tr>
-
-                            <td
-                                colspan="4"
-                                class="loading"
-                            >
-
-                                <i
-                                    class="fa-solid fa-spinner fa-spin"
-                                ></i>
-
-                                <br>
-
-                                Loading Collection...
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-    </main>
-
-</div>
-
-
-<!-- ======================================
-     SIDEBAR LOADER
-====================================== -->
-
 <script>
 
 document.addEventListener(
@@ -1382,121 +9,153 @@ document.addEventListener(
                 "teacherSidebar"
             );
 
-
         if (!sidebarContainer) {
             return;
         }
 
 
+        /* ======================================
+           LOAD TEACHER SIDEBAR
+        ====================================== */
+
         fetch(
             "components/teacher-sidebar.html"
         )
 
-        .then(
-            function (response) {
+        .then(function (response) {
 
-                if (!response.ok) {
+            if (!response.ok) {
 
-                    throw new Error(
-                        "Teacher Sidebar not found"
-                    );
-
-                }
-
-                return response.text();
+                throw new Error(
+                    "Teacher Sidebar not found. Status: " +
+                    response.status
+                );
 
             }
-        )
 
-        .then(
-            function (data) {
+            return response.text();
 
-                sidebarContainer.innerHTML =
-                    data;
+        })
 
+        .then(function (data) {
 
-                /* ==============================
-                   ACTIVE PAGE
-                ============================== */
-
-                let currentPage =
-                    window.location.pathname
-                        .split("/")
-                        .pop()
-                        .toLowerCase();
+            sidebarContainer.innerHTML =
+                data;
 
 
-                if (!currentPage) {
+            /* ==================================
+               IMPORTANT:
+               REMOVE ADMIN DASHBOARD
+            ================================== */
 
-                    currentPage =
-                        "summary.html";
-
-                }
-
-
-                const menuLinks =
-                    sidebarContainer.querySelectorAll(
-                        ".teacher-menu-link[data-page]"
-                    );
-
-
-                menuLinks.forEach(
-                    function (link) {
-
-                        const page =
-                            (
-                                link.getAttribute(
-                                    "data-page"
-                                ) || ""
-                            )
-                            .trim()
-                            .toLowerCase();
-
-
-                        if (
-                            page ===
-                            currentPage
-                        ) {
-
-                            link.classList.add(
-                                "active"
-                            );
-
-                        } else {
-
-                            link.classList.remove(
-                                "active"
-                            );
-
-                        }
-
-                    }
+            const dashboardLinks =
+                sidebarContainer.querySelectorAll(
+                    'a[href="dashboard.html"],' +
+                    'a[data-page="dashboard.html"],' +
+                    '.teacher-menu-link[data-page="dashboard.html"]'
                 );
 
 
-                /* ==============================
-                   USER NAME
-                ============================== */
+            dashboardLinks.forEach(
+                function (link) {
 
-                const savedUserName =
-                    localStorage.getItem(
-                        "teacherUserName"
-                    ) ||
-                    localStorage.getItem(
-                        "regionUserName"
-                    );
+                    link.remove();
+
+                }
+            );
 
 
-                const sidebarUserName =
-                    sidebarContainer.querySelector(
-                        "#teacherSidebarUserName"
-                    );
+            /* ==================================
+               CURRENT PAGE
+            ================================== */
+
+            let currentPage =
+                window.location.pathname
+                    .split("/")
+                    .pop()
+                    .toLowerCase();
 
 
-                if (
-                    savedUserName &&
-                    sidebarUserName
-                ) {
+            if (!currentPage) {
+
+                currentPage =
+                    "summary.html";
+
+            }
+
+
+            /* ==================================
+               ACTIVE MENU
+            ================================== */
+
+            const menuLinks =
+                sidebarContainer.querySelectorAll(
+                    ".teacher-menu-link[data-page]"
+                );
+
+
+            menuLinks.forEach(
+                function (link) {
+
+                    const page =
+                        (
+                            link.getAttribute(
+                                "data-page"
+                            ) || ""
+                        )
+                        .trim()
+                        .toLowerCase();
+
+
+                    if (
+                        page === currentPage
+                    ) {
+
+                        link.classList.add(
+                            "active"
+                        );
+
+                    }
+                    else {
+
+                        link.classList.remove(
+                            "active"
+                        );
+
+                    }
+
+                }
+            );
+
+
+            /* ==================================
+               TEACHER USER NAME
+            ================================== */
+
+            const savedUserName =
+                localStorage.getItem(
+                    "teacherUserName"
+                ) ||
+                localStorage.getItem(
+                    "regionUserName"
+                );
+
+
+            const sidebarUserName =
+                sidebarContainer.querySelector(
+                    "#teacherSidebarUserName"
+                );
+
+
+            const topUserName =
+                document.getElementById(
+                    "topUserName"
+                );
+
+
+            if (savedUserName) {
+
+                if (sidebarUserName) {
 
                     sidebarUserName.textContent =
                         savedUserName;
@@ -1504,164 +163,173 @@ document.addEventListener(
                 }
 
 
-                /* ==============================
-                   MOBILE MENU
-                ============================== */
+                if (topUserName) {
 
-                const mobileMenuBtn =
-                    document.getElementById(
-                        "mobileMenuBtn"
-                    );
-
-
-                const sidebar =
-                    sidebarContainer.querySelector(
-                        ".teacher-sidebar"
-                    );
-
-
-                if (
-                    mobileMenuBtn &&
-                    sidebar
-                ) {
-
-                    mobileMenuBtn.addEventListener(
-                        "click",
-                        function (event) {
-
-                            event.preventDefault();
-
-                            sidebar.classList.toggle(
-                                "open"
-                            );
-
-                        }
-                    );
-
-
-                    sidebar
-                        .querySelectorAll(
-                            ".teacher-menu-link"
-                        )
-                        .forEach(
-                            function (link) {
-
-                                link.addEventListener(
-                                    "click",
-                                    function () {
-
-                                        if (
-                                            window.innerWidth <=
-                                            800
-                                        ) {
-
-                                            sidebar.classList.remove(
-                                                "open"
-                                            );
-
-                                        }
-
-                                    }
-                                );
-
-                            }
-                        );
-
-                }
-
-
-                /* ==============================
-                   LOGOUT
-                ============================== */
-
-                const logoutBtn =
-                    sidebarContainer.querySelector(
-                        "#teacherSidebarLogout"
-                    );
-
-
-                if (logoutBtn) {
-
-                    logoutBtn.addEventListener(
-                        "click",
-                        function (event) {
-
-                            event.preventDefault();
-
-
-                            localStorage.removeItem(
-                                "loggedInEmpCode"
-                            );
-
-                            localStorage.removeItem(
-                                "userRole"
-                            );
-
-                            localStorage.removeItem(
-                                "teacherUserName"
-                            );
-
-
-                            window.location.href =
-                                "index.html";
-
-                        }
-                    );
+                    topUserName.textContent =
+                        savedUserName;
 
                 }
 
             }
-        )
 
-        .catch(
-            function (error) {
 
-                console.error(
-                    "Teacher Sidebar Error:",
-                    error
+            /* ==================================
+               MOBILE MENU
+            ================================== */
+
+            const mobileMenuBtn =
+                document.getElementById(
+                    "mobileMenuBtn"
                 );
 
 
-                sidebarContainer.innerHTML = `
+            const sidebar =
+                sidebarContainer.querySelector(
+                    ".teacher-sidebar"
+                );
 
-                    <div
-                        style="
-                            padding:20px;
-                            color:#dc2626;
-                            background:#fee2e2;
-                            border-radius:8px;
-                        "
-                    >
 
-                        Teacher Sidebar load nahi hua.
+            if (
+                mobileMenuBtn &&
+                sidebar
+            ) {
 
-                        <br><br>
+                mobileMenuBtn.addEventListener(
+                    "click",
+                    function (event) {
 
-                        ${error.message}
+                        event.preventDefault();
 
-                    </div>
+                        event.stopPropagation();
 
-                `;
+                        sidebar.classList.toggle(
+                            "open"
+                        );
+
+                    }
+                );
+
+
+                /* ==============================
+                   CLOSE MOBILE SIDEBAR
+                ============================== */
+
+                sidebar
+                    .querySelectorAll(
+                        ".teacher-menu-link"
+                    )
+                    .forEach(
+                        function (link) {
+
+                            link.addEventListener(
+                                "click",
+                                function () {
+
+                                    if (
+                                        window.innerWidth <=
+                                        800
+                                    ) {
+
+                                        sidebar.classList.remove(
+                                            "open"
+                                        );
+
+                                    }
+
+                                }
+                            );
+
+                        }
+                    );
 
             }
-        );
+
+
+            /* ==================================
+               LOGOUT
+            ================================== */
+
+            const logoutBtn =
+                sidebarContainer.querySelector(
+                    "#teacherSidebarLogout"
+                );
+
+
+            if (logoutBtn) {
+
+                logoutBtn.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.preventDefault();
+
+
+                        localStorage.removeItem(
+                            "loggedInEmpCode"
+                        );
+
+                        localStorage.removeItem(
+                            "userRole"
+                        );
+
+                        localStorage.removeItem(
+                            "teacherUserName"
+                        );
+
+
+                        window.location.href =
+                            "index.html";
+
+                    }
+                );
+
+            }
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "Teacher Sidebar Error:",
+                error
+            );
+
+
+            sidebarContainer.innerHTML = `
+
+                <div
+                    style="
+                        padding:20px;
+                        color:#dc2626;
+                        background:#fee2e2;
+                        border-radius:8px;
+                    "
+                >
+
+                    Teacher Sidebar load nahi hua.
+
+                    <br><br>
+
+                    ${error.message}
+
+                </div>
+
+            `;
+
+        });
 
     }
+
 );
 
 </script>
 
 
 <!-- ======================================
-     FIREBASE / SUMMARY JS
+     SUMMARY JS
 ====================================== -->
 
 <script
     type="module"
     src="assets/js/summary.js"
 ></script>
-
-
-</body>
-
-</html>
