@@ -34,6 +34,16 @@
 
 
     <!-- ======================================
+         HTML2CANVAS
+         IMAGE DOWNLOAD
+    ======================================= -->
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    ></script>
+
+
+    <!-- ======================================
          PAGE CSS
     ======================================= -->
 
@@ -587,6 +597,109 @@
 
 
         /* ======================================
+           DOWNLOAD BUTTONS
+        ======================================= */
+
+        .download-buttons {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .download-btn {
+
+            border: none;
+
+            padding: 9px 14px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            transition:
+                all 0.2s ease;
+
+            white-space: nowrap;
+        }
+
+
+        .download-btn:hover {
+
+            transform: translateY(-1px);
+        }
+
+
+        /* ======================================
+           IMAGE DOWNLOAD
+        ======================================= */
+
+        .image-download-btn {
+
+            background: #7c3aed;
+
+            color: #ffffff;
+        }
+
+
+        .image-download-btn:hover {
+
+            background: #6d28d9;
+        }
+
+
+        /* ======================================
+           CSV DOWNLOAD
+        ======================================= */
+
+        .csv-download-btn {
+
+            background: #059669;
+
+            color: #ffffff;
+        }
+
+
+        .csv-download-btn:hover {
+
+            background: #047857;
+        }
+
+
+        /* ======================================
+           DOWNLOAD DISABLED
+        ======================================= */
+
+        .download-btn:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+
+        /* ======================================
            SUMMARY CARDS
         ======================================= */
 
@@ -959,13 +1072,6 @@
 
         @media (max-width: 800px) {
 
-            /*
-               IMPORTANT:
-               Sidebar ka actual open/close
-               components/region-sidebar.css
-               se control hoga.
-            */
-
             #regionSidebar {
 
                 width: 220px;
@@ -973,11 +1079,6 @@
                 z-index: 99999;
             }
 
-
-            /*
-               Hamburger ko fixed rakha gaya hai
-               taaki mobile par hamesha visible rahe.
-            */
 
             .mobile-menu-btn {
 
@@ -992,11 +1093,6 @@
                 z-index: 100001;
             }
 
-
-            /*
-               Main ko sidebar ke neeche se
-               start karna hai.
-            */
 
             .main-area {
 
@@ -1074,6 +1170,22 @@
                 flex-direction: column;
 
                 align-items: flex-start;
+            }
+
+
+            .download-buttons {
+
+                width: 100%;
+
+                justify-content: flex-start;
+            }
+
+
+            .download-btn {
+
+                flex: 1;
+
+                min-width: 140px;
             }
 
 
@@ -1488,7 +1600,9 @@
         <div class="table-container">
 
 
-            <!-- TABLE HEADER -->
+            <!-- ==================================
+                 TABLE HEADER
+            ================================== -->
 
             <div class="table-header">
 
@@ -1515,12 +1629,57 @@
                 </div>
 
 
-                <span
-                    id="resultCount"
-                    class="result-count"
-                >
-                    Loading...
-                </span>
+                <!-- ==================================
+                     RESULT + DOWNLOAD BUTTONS
+                ================================== -->
+
+                <div class="download-buttons">
+
+
+                    <span
+                        id="resultCount"
+                        class="result-count"
+                    >
+                        Loading...
+                    </span>
+
+
+                    <!-- DOWNLOAD IMAGE -->
+
+                    <button
+                        type="button"
+                        id="downloadImageBtn"
+                        class="download-btn image-download-btn"
+                        title="Download Report Image"
+                    >
+
+                        <i
+                            class="fa-solid fa-image"
+                        ></i>
+
+                        Download Image
+
+                    </button>
+
+
+                    <!-- DOWNLOAD CSV -->
+
+                    <button
+                        type="button"
+                        id="downloadCsvBtn"
+                        class="download-btn csv-download-btn"
+                        title="Download CSV File"
+                    >
+
+                        <i
+                            class="fa-solid fa-file-csv"
+                        ></i>
+
+                        Download CSV
+
+                    </button>
+
+                </div>
 
             </div>
 
@@ -1570,7 +1729,7 @@
             <div class="table-wrapper">
 
 
-                <table>
+                <table id="dailyReportTable">
 
 
                     <!-- DYNAMIC HEADER -->
@@ -1958,6 +2117,368 @@ document.addEventListener(
     type="module"
     src="assets/js/daily-report.js"
 ></script>
+
+
+
+<!-- ======================================
+     DOWNLOAD FUNCTIONS
+====================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* ==================================
+           DOWNLOAD IMAGE
+        ================================== */
+
+        const downloadImageBtn =
+            document.getElementById(
+                "downloadImageBtn"
+            );
+
+
+        if (downloadImageBtn) {
+
+            downloadImageBtn.addEventListener(
+                "click",
+                async function () {
+
+
+                    const tableContainer =
+                        document.querySelector(
+                            ".table-container"
+                        );
+
+
+                    if (!tableContainer) {
+
+                        alert(
+                            "Report table nahi mili."
+                        );
+
+                        return;
+
+                    }
+
+
+                    const originalText =
+                        downloadImageBtn.innerHTML;
+
+
+                    try {
+
+                        downloadImageBtn.disabled =
+                            true;
+
+
+                        downloadImageBtn.innerHTML = `
+
+                            <i
+                                class="fa-solid fa-spinner fa-spin"
+                            ></i>
+
+                            Preparing...
+
+                        `;
+
+
+                        /* ==========================
+                           CREATE IMAGE
+                        ========================== */
+
+                        const canvas =
+                            await html2canvas(
+                                tableContainer,
+                                {
+
+                                    backgroundColor:
+                                        "#ffffff",
+
+                                    scale: 2,
+
+                                    useCORS: true,
+
+                                    logging: false,
+
+                                    scrollX: 0,
+
+                                    scrollY: 0
+
+                                }
+                            );
+
+
+                        const image =
+                            canvas.toDataURL(
+                                "image/png"
+                            );
+
+
+                        /* ==========================
+                           DOWNLOAD
+                        ========================== */
+
+                        const link =
+                            document.createElement(
+                                "a"
+                            );
+
+
+                        const date =
+                            new Date()
+                                .toISOString()
+                                .split("T")[0];
+
+
+                        link.download =
+                            "Daily-Collection-Report-" +
+                            date +
+                            ".png";
+
+
+                        link.href =
+                            image;
+
+
+                        document.body.appendChild(
+                            link
+                        );
+
+
+                        link.click();
+
+
+                        document.body.removeChild(
+                            link
+                        );
+
+                    }
+                    catch (error) {
+
+                        console.error(
+                            "Image Download Error:",
+                            error
+                        );
+
+
+                        alert(
+                            "Report image download nahi ho saki."
+                        );
+
+                    }
+                    finally {
+
+                        downloadImageBtn.disabled =
+                            false;
+
+
+                        downloadImageBtn.innerHTML =
+                            originalText;
+
+                    }
+
+                }
+            );
+
+        }
+
+
+
+        /* ==================================
+           DOWNLOAD CSV
+        ================================== */
+
+        const downloadCsvBtn =
+            document.getElementById(
+                "downloadCsvBtn"
+            );
+
+
+        if (downloadCsvBtn) {
+
+            downloadCsvBtn.addEventListener(
+                "click",
+                function () {
+
+
+                    const table =
+                        document.querySelector(
+                            "#dailyReportTable"
+                        );
+
+
+                    if (!table) {
+
+                        alert(
+                            "Report table nahi mili."
+                        );
+
+                        return;
+
+                    }
+
+
+                    const rows =
+                        table.querySelectorAll(
+                            "tr"
+                        );
+
+
+                    if (!rows.length) {
+
+                        alert(
+                            "Report me data available nahi hai."
+                        );
+
+                        return;
+
+                    }
+
+
+                    let csv = [];
+
+
+                    rows.forEach(
+                        function (row) {
+
+                            const columns =
+                                row.querySelectorAll(
+                                    "th, td"
+                                );
+
+
+                            const rowData = [];
+
+
+                            columns.forEach(
+                                function (column) {
+
+                                    let text =
+                                        column.innerText
+                                            .trim();
+
+
+                                    /* ==================
+                                       CLEAN SPACES
+                                    ================== */
+
+                                    text =
+                                        text
+                                            .replace(
+                                                /\s+/g,
+                                                " "
+                                            );
+
+
+                                    /* ==================
+                                       CSV ESCAPE
+                                    ================== */
+
+                                    text =
+                                        text.replace(
+                                            /"/g,
+                                            '""'
+                                        );
+
+
+                                    rowData.push(
+                                        '"' +
+                                        text +
+                                        '"'
+                                    );
+
+                                }
+                            );
+
+
+                            csv.push(
+                                rowData.join(",")
+                            );
+
+                        }
+                    );
+
+
+                    /* ==================================
+                       UTF-8 BOM
+                    ================================== */
+
+                    const csvContent =
+                        "\uFEFF" +
+                        csv.join("\r\n");
+
+
+                    const blob =
+                        new Blob(
+                            [csvContent],
+                            {
+
+                                type:
+                                    "text/csv;charset=utf-8;"
+
+                            }
+                        );
+
+
+                    const url =
+                        URL.createObjectURL(
+                            blob
+                        );
+
+
+                    const link =
+                        document.createElement(
+                            "a"
+                        );
+
+
+                    const date =
+                        new Date()
+                            .toISOString()
+                            .split("T")[0];
+
+
+                    link.href =
+                        url;
+
+
+                    link.download =
+                        "Daily-Collection-Report-" +
+                        date +
+                        ".csv";
+
+
+                    document.body.appendChild(
+                        link
+                    );
+
+
+                    link.click();
+
+
+                    document.body.removeChild(
+                        link
+                    );
+
+
+                    URL.revokeObjectURL(
+                        url
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+);
+
+</script>
 
 
 </body>
