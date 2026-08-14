@@ -1,83 +1,206 @@
-/* ============================================================
-   TELETHON
-   TEACHER SUMMARY
-   assets/js/summary.js
+// ======================================
+// Telethon - Teacher Summary JS
+// ======================================
 
-   PURPOSE:
-   - Show only logged-in Teacher's own Daily Collection
-   - Total Collection
-   - Today's Collection
-   - This Month Collection
-   - Total Entries
-   - Date Filter
-   - Remarks Search
-   ============================================================ */
-
+import { auth, db } from "./firebase-config.js";
 
 import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+import {
+    doc,
+    getDoc,
     collection,
+    query,
+    where,
     getDocs
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-import {
-    db
-} from "./firebase-config.js";
+// ======================================
+// HTML ELEMENTS
+// ======================================
+
+const teacherInfo =
+    document.getElementById("teacherInfo");
+
+const topUserName =
+    document.getElementById("topUserName");
+
+const targetAmountElement =
+    document.getElementById("targetAmount");
+
+const totalCollectionElement =
+    document.getElementById("totalCollection");
+
+const remainingTargetElement =
+    document.getElementById("remainingTarget");
+
+const collectionPercentageElement =
+    document.getElementById("collectionPercentage");
+
+const collectionUnitsElement =
+    document.getElementById("collectionUnits");
+
+const progressPercentageElement =
+    document.getElementById("progressPercentage");
+
+const progressBar =
+    document.getElementById("progressBar");
+
+const progressCollectionElement =
+    document.getElementById("progressCollection");
+
+const progressTargetElement =
+    document.getElementById("progressTarget");
+
+const summaryTableBody =
+    document.getElementById("summaryTableBody");
+
+const entryCountElement =
+    document.getElementById("entryCount");
+
+const errorBox =
+    document.getElementById("errorBox");
 
 
+// ======================================
+// CURRENT EMPLOYEE
+// ======================================
 
-/* ============================================================
-   GLOBAL VARIABLES
-   ============================================================ */
-
-let allEntries = [];
-
-let filteredEntries = [];
-
-let loggedInEmpCode = "";
+let currentEmployee = null;
 
 
-
-/* ============================================================
-   DOM READY
-   ============================================================ */
+// ======================================
+// PAGE START
+// ======================================
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        initializeSummary();
+        checkTeacherLogin();
 
     }
 );
 
 
+// ======================================
+// CHECK TEACHER LOGIN
+// ======================================
 
-/* ============================================================
-   INITIALIZE
-   ============================================================ */
-
-async function initializeSummary() {
+async function checkTeacherLogin() {
 
     try {
 
-        /* ==========================================
-           GET LOGGED-IN EMPLOYEE CODE
-        ========================================== */
-
-        loggedInEmpCode =
+        const empCode =
             localStorage.getItem(
                 "loggedInEmpCode"
             );
 
 
-        if (
-            !loggedInEmpCode ||
-            loggedInEmpCode.trim() === ""
-        ) {
+        if (!empCode) {
 
-            showPageError(
-                "Teacher login session nahi mili. Please login again."
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        /*
+         * Firebase auth state ka wait
+         * karenge, lekin existing
+         * Teacher Login system ko change
+         * nahi karenge.
+         */
+
+        onAuthStateChanged(
+            auth,
+            async function () {
+
+                try {
+
+                    await loadTeacherSummary(
+                        empCode
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Summary Load Error:",
+                        error
+                    );
+
+                    showError(
+                        "Summary load nahi ho saki. " +
+                        error.message
+                    );
+
+                }
+
+            }
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Teacher Login Check Error:",
+            error
+        );
+
+        showError(
+            "Teacher login check failed."
+        );
+
+    }
+
+}
+
+
+// ======================================
+// LOAD TEACHER SUMMARY
+// ======================================
+
+async function loadTeacherSummary(
+    empCode
+) {
+
+    try {
+
+        console.log(
+            "Loading Summary for Employee:",
+            empCode
+        );
+
+
+        // ==================================
+        // LOAD EMPLOYEE
+        // ==================================
+
+        const employeeRef =
+            doc(
+                db,
+                "employees",
+                empCode
+            );
+
+
+        const employeeSnap =
+            await getDoc(
+                employeeRef
+            );
+
+
+        if (!employeeSnap.exists()) {
+
+            showError(
+                "Employee record nahi mila."
             );
 
             return;
@@ -85,189 +208,521 @@ async function initializeSummary() {
         }
 
 
-        loggedInEmpCode =
-            loggedInEmpCode.trim();
+        const employeeData =
+            employeeSnap.data();
 
 
-        /* ==========================================
-           LOAD TEACHER INFO
-        ========================================== */
+        currentEmployee = {
 
-        await loadTeacherInfo();
+            employeeCode:
+                empCode,
 
+            ...employeeData
 
-        /* ==========================================
-           LOAD DAILY COLLECTION
-        ========================================== */
-
-        await loadDailyEntries();
+        };
 
 
-        /* ==========================================
-           SET FILTER EVENTS
-        ========================================== */
-
-        setupFilterEvents();
-
-
-        /* ==========================================
-           INITIAL REPORT
-        ========================================== */
-
-        filteredEntries =
-            [...allEntries];
-
-
-        renderSummary();
-
-
-        renderTable();
-
-
-    }
-    catch (error) {
-
-        console.error(
-            "Summary Initialization Error:",
-            error
-        );
-
-
-        showPageError(
-            "Summary load nahi ho saki. Please page refresh karein."
-        );
-
-    }
-
-}
-
-
-
-/* ============================================================
-   LOAD TEACHER INFO
-   ============================================================ */
-
-async function loadTeacherInfo() {
-
-    try {
-
-        const teacherInfo =
-            document.getElementById(
-                "teacherInfo"
-            );
-
-
-        const topUserName =
-            document.getElementById(
-                "topUserName"
-            );
-
-
-        /*
-         * Teacher name localStorage se available
-         * ho to use karenge.
-         */
-
-        const savedTeacherName =
-            localStorage.getItem(
-                "teacherUserName"
-            );
-
-
-        const savedRegionUserName =
-            localStorage.getItem(
-                "regionUserName"
-            );
-
+        // ==================================
+        // TEACHER NAME
+        // ==================================
 
         const teacherName =
-            savedTeacherName ||
-            savedRegionUserName ||
-            "";
+            employeeData.teacherName ||
+            employeeData.teacher_name ||
+            employeeData.name ||
+            empCode;
 
 
-        if (teacherName) {
+        if (topUserName) {
 
-            if (topUserName) {
-
-                topUserName.textContent =
-                    teacherName;
-
-            }
+            topUserName.textContent =
+                teacherName;
 
         }
-        else {
 
-            if (topUserName) {
 
-                topUserName.textContent =
-                    loggedInEmpCode;
+        // ==================================
+        // TEACHER INFO
+        // ==================================
 
-            }
+        const madinaName =
+            employeeData.jamiatuMadina ||
+            employeeData.jamiatulMadina ||
+            employeeData.jamiatul_madina ||
+            employeeData.jamiatulMadinah ||
+            "-";
 
-        }
+
+        const city =
+            employeeData.city ||
+            "-";
+
+
+        const state =
+            employeeData.state ||
+            "-";
+
+
+        const region =
+            employeeData.region ||
+            "-";
 
 
         if (teacherInfo) {
 
-            if (teacherName) {
+            teacherInfo.innerHTML = `
 
-                teacherInfo.innerHTML = `
+                <strong>
+                    ${escapeHtml(teacherName)}
+                </strong>
 
-                    <i class="fa-solid fa-user"></i>
+                &nbsp; | &nbsp;
 
-                    <span>
+                Employee Code:
+                <strong>
+                    ${escapeHtml(empCode)}
+                </strong>
 
-                        Teacher:
-                        <strong>
-                            ${escapeHtml(
-                                teacherName
-                            )}
-                        </strong>
+                &nbsp; | &nbsp;
 
-                        &nbsp;&nbsp;|&nbsp;&nbsp;
+                Jamiatul Madina:
+                <strong>
+                    ${escapeHtml(madinaName)}
+                </strong>
 
-                        Employee Code:
-                        <strong>
-                            ${escapeHtml(
-                                loggedInEmpCode
-                            )}
-                        </strong>
+                &nbsp; | &nbsp;
 
-                    </span>
+                Location:
+                <strong>
+                    ${escapeHtml(city)}
+                </strong>,
+                ${escapeHtml(state)},
+                ${escapeHtml(region)}
 
-                `;
-
-            }
-            else {
-
-                teacherInfo.innerHTML = `
-
-                    <i class="fa-solid fa-user"></i>
-
-                    <span>
-
-                        Employee Code:
-                        <strong>
-                            ${escapeHtml(
-                                loggedInEmpCode
-                            )}
-                        </strong>
-
-                    </span>
-
-                `;
-
-            }
+            `;
 
         }
+
+
+        // ==================================
+        // TARGET
+        // ==================================
+
+        const target =
+            Number(
+                employeeData.targetAmount ??
+                employeeData.target ??
+                employeeData.target_amount ??
+                employeeData.Target ??
+                0
+            );
+
+
+        console.log(
+            "Teacher Target:",
+            target
+        );
+
+
+        // ==================================
+        // LOAD DAILY ENTRIES
+        // ==================================
+
+        const dailyEntryQuery =
+            query(
+                collection(
+                    db,
+                    "daily_entry"
+                ),
+                where(
+                    "employeeCode",
+                    "==",
+                    empCode
+                )
+            );
+
+
+        const dailyEntrySnapshot =
+            await getDocs(
+                dailyEntryQuery
+            );
+
+
+        // ==================================
+        // SAME DATE = LATEST ENTRY
+        // ==================================
+
+        const latestEntriesByDate = {};
+
+
+        dailyEntrySnapshot.forEach(
+            function (entryDoc) {
+
+                const data =
+                    entryDoc.data();
+
+
+                const date =
+                    data.date;
+
+
+                if (!date) {
+
+                    return;
+
+                }
+
+
+                // ==================================
+                // CREATED AT
+                // ==================================
+
+                let createdTime = 0;
+
+
+                if (
+                    data.createdAt &&
+                    typeof data.createdAt.toMillis ===
+                        "function"
+                ) {
+
+                    createdTime =
+                        data.createdAt.toMillis();
+
+                }
+
+
+                // ==================================
+                // AMOUNT
+                // ==================================
+
+                const entryAmount =
+                    Number(
+                        data.amount || 0
+                    );
+
+
+                // ==================================
+                // FIRST ENTRY FOR DATE
+                // ==================================
+
+                if (
+                    !latestEntriesByDate[date]
+                ) {
+
+                    latestEntriesByDate[date] = {
+
+                        amount:
+                            entryAmount,
+
+                        createdTime:
+                            createdTime
+
+                    };
+
+                }
+
+
+                // ==================================
+                // LATEST ENTRY
+                // ==================================
+
+                else {
+
+                    const existing =
+                        latestEntriesByDate[
+                            date
+                        ];
+
+
+                    if (
+                        createdTime >=
+                        existing.createdTime
+                    ) {
+
+                        latestEntriesByDate[
+                            date
+                        ] = {
+
+                            amount:
+                                entryAmount,
+
+                            createdTime:
+                                createdTime
+
+                        };
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        // ==================================
+        // CONVERT TO ARRAY
+        // ==================================
+
+        const entries =
+            Object.keys(
+                latestEntriesByDate
+            )
+            .map(
+                function (date) {
+
+                    return {
+
+                        date:
+                            date,
+
+                        amount:
+                            Number(
+                                latestEntriesByDate[
+                                    date
+                                ].amount || 0
+                            ),
+
+                        createdTime:
+                            latestEntriesByDate[
+                                date
+                            ].createdTime || 0
+
+                    };
+
+                }
+            );
+
+
+        // ==================================
+        // SORT NEWEST DATE FIRST
+        // ==================================
+
+        entries.sort(
+            function (a, b) {
+
+                return b.date.localeCompare(
+                    a.date
+                );
+
+            }
+        );
+
+
+        // ==================================
+        // TOTAL COLLECTION
+        // ==================================
+
+        let totalCollection = 0;
+
+
+        entries.forEach(
+            function (entry) {
+
+                totalCollection +=
+                    Number(
+                        entry.amount || 0
+                    );
+
+            }
+        );
+
+
+        // ==================================
+        // REMAINING TARGET
+        // ==================================
+
+        let remainingTarget =
+            target -
+            totalCollection;
+
+
+        if (remainingTarget < 0) {
+
+            remainingTarget = 0;
+
+        }
+
+
+        // ==================================
+        // COLLECTION PERCENTAGE
+        // ==================================
+
+        let percentage = 0;
+
+
+        if (target > 0) {
+
+            percentage =
+                (
+                    totalCollection /
+                    target
+                ) *
+                100;
+
+        }
+
+
+        /*
+         * Progress bar maximum 100%.
+         */
+
+        const progressPercentage =
+            Math.min(
+                percentage,
+                100
+            );
+
+
+        // ==================================
+        // SHOW SUMMARY
+        // ==================================
+
+        if (targetAmountElement) {
+
+            targetAmountElement.textContent =
+                "₹ " +
+                formatNumber(
+                    target
+                );
+
+        }
+
+
+        if (totalCollectionElement) {
+
+            totalCollectionElement.textContent =
+                "₹ " +
+                formatNumber(
+                    totalCollection
+                );
+
+        }
+
+
+        if (remainingTargetElement) {
+
+            remainingTargetElement.textContent =
+                "₹ " +
+                formatNumber(
+                    remainingTarget
+                );
+
+        }
+
+
+        if (
+            collectionPercentageElement
+        ) {
+
+            collectionPercentageElement.textContent =
+                percentage.toFixed(2) +
+                "%";
+
+        }
+
+
+        if (
+            progressPercentageElement
+        ) {
+
+            progressPercentageElement.textContent =
+                percentage.toFixed(2) +
+                "%";
+
+        }
+
+
+        if (progressBar) {
+
+            progressBar.style.width =
+                progressPercentage.toFixed(2) +
+                "%";
+
+        }
+
+
+        if (
+            progressCollectionElement
+        ) {
+
+            progressCollectionElement.textContent =
+                "₹ " +
+                formatNumber(
+                    totalCollection
+                );
+
+        }
+
+
+        if (progressTargetElement) {
+
+            progressTargetElement.textContent =
+                "₹ " +
+                formatNumber(
+                    target
+                );
+
+        }
+
+
+        if (collectionUnitsElement) {
+
+            collectionUnitsElement.textContent =
+                entries.length +
+                (
+                    entries.length === 1
+                        ? " Daily Entry"
+                        : " Daily Entries"
+                );
+
+        }
+
+
+        if (entryCountElement) {
+
+            entryCountElement.textContent =
+                entries.length +
+                (
+                    entries.length === 1
+                        ? " Entry"
+                        : " Entries"
+                );
+
+        }
+
+
+        // ==================================
+        // SHOW HISTORY
+        // ==================================
+
+        renderHistory(
+            entries
+        );
+
+
+        console.log(
+            "Summary Loaded:",
+            {
+                target,
+                totalCollection,
+                remainingTarget,
+                percentage,
+                entries
+            }
+        );
 
     }
     catch (error) {
 
         console.error(
-            "Teacher Info Error:",
+            "Load Teacher Summary Error:",
             error
+        );
+
+        showError(
+            "Summary load nahi ho saki: " +
+            error.message
         );
 
     }
@@ -275,35 +730,38 @@ async function loadTeacherInfo() {
 }
 
 
+// ======================================
+// RENDER DAILY HISTORY
+// ======================================
 
-/* ============================================================
-   LOAD DAILY ENTRIES
-   ============================================================ */
+function renderHistory(
+    entries
+) {
 
-async function loadDailyEntries() {
+    if (!summaryTableBody) {
 
-    const tableBody =
-        document.getElementById(
-            "summaryTableBody"
-        );
+        return;
+
+    }
 
 
-    if (tableBody) {
+    if (!entries.length) {
 
-        tableBody.innerHTML = `
+        summaryTableBody.innerHTML = `
 
             <tr>
 
                 <td
-                    colspan="3"
-                    class="loading-cell"
+                    colspan="4"
+                    class="empty"
                 >
 
                     <i
-                        class="fa-solid fa-spinner fa-spin"
+                        class="fa-solid fa-inbox"
                     ></i>
 
-                    Loading Collection...
+                    Abhi koi Daily Collection
+                    entry available nahi hai.
 
                 </td>
 
@@ -311,180 +769,46 @@ async function loadDailyEntries() {
 
         `;
 
-    }
-
-
-    try {
-
-        /*
-         * Existing Firestore collection:
-         *
-         * daily_entry
-         *
-         * Hum complete collection read kar rahe hain
-         * aur Employee Code ke basis par
-         * logged-in Teacher ki entries filter karenge.
-         */
-
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "daily_entry"
-                )
-            );
-
-
-        allEntries = [];
-
-
-        snapshot.forEach(
-            function (docSnap) {
-
-                const data =
-                    docSnap.data();
-
-
-                /*
-                 * Possible Employee Code fields
-                 */
-
-                const employeeCode =
-                    String(
-                        data.employeeCode ??
-                        data.employee_code ??
-                        data.empCode ??
-                        data.emp_code ??
-                        data.employee ??
-                        ""
-                    )
-                    .trim();
-
-
-                /*
-                 * Employee Code match
-                 */
-
-                if (
-                    employeeCode.toLowerCase() !==
-                    loggedInEmpCode.toLowerCase()
-                ) {
-
-                    return;
-
-                }
-
-
-                /*
-                 * DATE
-                 */
-
-                const entryDate =
-                    getEntryDate(
-                        data
-                    );
-
-
-                /*
-                 * AMOUNT
-                 */
-
-                const amount =
-                    getEntryAmount(
-                        data
-                    );
-
-
-                /*
-                 * REMARKS
-                 */
-
-                const remarks =
-                    String(
-                        data.remarks ??
-                        data.remark ??
-                        data.description ??
-                        ""
-                    )
-                    .trim();
-
-
-                allEntries.push({
-
-                    id:
-                        docSnap.id,
-
-                    employeeCode:
-                        employeeCode,
-
-                    date:
-                        entryDate,
-
-                    amount:
-                        amount,
-
-                    remarks:
-                        remarks,
-
-                    raw:
-                        data
-
-                });
-
-            }
-        );
-
-
-        /*
-         * Latest date first
-         */
-
-        allEntries.sort(
-            function (a, b) {
-
-                return (
-                    getDateTimeValue(b.date) -
-                    getDateTimeValue(a.date)
-                );
-
-            }
-        );
-
-
-        console.log(
-            "Teacher Summary Entries:",
-            allEntries
-        );
-
+        return;
 
     }
-    catch (error) {
-
-        console.error(
-            "Daily Entry Load Error:",
-            error
-        );
 
 
-        allEntries = [];
+    let html = "";
 
 
-        if (tableBody) {
+    entries.forEach(
+        function (entry, index) {
 
-            tableBody.innerHTML = `
+            html += `
 
                 <tr>
 
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        ${formatDate(
+                            entry.date
+                        )}
+                    </td>
+
                     <td
-                        colspan="3"
-                        class="error-cell"
+                        class="amount-cell"
                     >
+                        ₹ ${formatNumber(
+                            entry.amount
+                        )}
+                    </td>
 
-                        <i
-                            class="fa-solid fa-triangle-exclamation"
-                        ></i>
+                    <td>
 
-                        Collection load nahi ho saki.
+                        <span
+                            class="latest-badge"
+                        >
+                            Latest Entry
+                        </span>
 
                     </td>
 
@@ -493,997 +817,20 @@ async function loadDailyEntries() {
             `;
 
         }
+    );
 
 
-        throw error;
-
-    }
+    summaryTableBody.innerHTML =
+        html;
 
 }
 
 
-
-/* ============================================================
-   GET ENTRY DATE
-   ============================================================ */
-
-function getEntryDate(data) {
-
-    /*
-     * Different possible date field names
-     */
-
-    const possibleDate =
-        data.date ??
-        data.entryDate ??
-        data.collectionDate ??
-        data.dailyDate ??
-        data.createdAt ??
-        "";
-
-
-    /*
-     * Firestore Timestamp
-     */
-
-    if (
-        possibleDate &&
-        typeof possibleDate.toDate ===
-        "function"
-    ) {
-
-        const date =
-            possibleDate.toDate();
-
-
-        return formatDateForStorage(
-            date
-        );
-
-    }
-
-
-    /*
-     * JavaScript Date
-     */
-
-    if (
-        possibleDate instanceof Date
-    ) {
-
-        return formatDateForStorage(
-            possibleDate
-        );
-
-    }
-
-
-    /*
-     * String date
-     */
-
-    if (
-        typeof possibleDate ===
-        "string"
-    ) {
-
-        const value =
-            possibleDate.trim();
-
-
-        /*
-         * YYYY-MM-DD
-         */
-
-        if (
-            /^\d{4}-\d{2}-\d{2}$/
-                .test(value)
-        ) {
-
-            return value;
-
-        }
-
-
-        /*
-         * Try normal Date parsing
-         */
-
-        const parsed =
-            new Date(value);
-
-
-        if (
-            !Number.isNaN(
-                parsed.getTime()
-            )
-        ) {
-
-            return formatDateForStorage(
-                parsed
-            );
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-
-/* ============================================================
-   GET ENTRY AMOUNT
-   ============================================================ */
-
-function getEntryAmount(data) {
-
-    const possibleAmount =
-        data.amount ??
-        data.collectionAmount ??
-        data.dailyAmount ??
-        data.totalAmount ??
-        data.collection ??
-        0;
-
-
-    if (
-        typeof possibleAmount ===
-        "number"
-    ) {
-
-        return Number.isFinite(
-            possibleAmount
-        )
-            ? possibleAmount
-            : 0;
-
-    }
-
-
-    /*
-     * String amount
-     */
-
-    const cleaned =
-        String(
-            possibleAmount
-        )
-        .replace(
-            /₹/g,
-            ""
-        )
-        .replace(
-            /,/g,
-            ""
-        )
-        .trim();
-
-
-    const amount =
-        parseFloat(
-            cleaned
-        );
-
-
-    return Number.isFinite(
-        amount
-    )
-        ? amount
-        : 0;
-
-}
-
-
-
-/* ============================================================
-   FILTER EVENTS
-   ============================================================ */
-
-function setupFilterEvents() {
-
-    const applyFilter =
-        document.getElementById(
-            "applyFilter"
-        );
-
-
-    const resetFilter =
-        document.getElementById(
-            "resetFilter"
-        );
-
-
-    const searchFilter =
-        document.getElementById(
-            "searchFilter"
-        );
-
-
-    if (applyFilter) {
-
-        applyFilter.addEventListener(
-            "click",
-            function () {
-
-                applyFilters();
-
-            }
-        );
-
-    }
-
-
-    if (resetFilter) {
-
-        resetFilter.addEventListener(
-            "click",
-            function () {
-
-                resetFilters();
-
-            }
-        );
-
-    }
-
-
-    /*
-     * Enter key on search
-     */
-
-    if (searchFilter) {
-
-        searchFilter.addEventListener(
-            "keydown",
-            function (event) {
-
-                if (
-                    event.key ===
-                    "Enter"
-                ) {
-
-                    event.preventDefault();
-
-                    applyFilters();
-
-                }
-
-            }
-        );
-
-    }
-
-}
-
-
-
-/* ============================================================
-   APPLY FILTERS
-   ============================================================ */
-
-function applyFilters() {
-
-    const fromDateInput =
-        document.getElementById(
-            "fromDate"
-        );
-
-
-    const toDateInput =
-        document.getElementById(
-            "toDate"
-        );
-
-
-    const searchInput =
-        document.getElementById(
-            "searchFilter"
-        );
-
-
-    const fromDate =
-        fromDateInput
-            ? fromDateInput.value
-            : "";
-
-
-    const toDate =
-        toDateInput
-            ? toDateInput.value
-            : "";
-
-
-    const search =
-        searchInput
-            ? searchInput.value
-                .trim()
-                .toLowerCase()
-            : "";
-
-
-    filteredEntries =
-        allEntries.filter(
-            function (entry) {
-
-                /* ==============================
-                   FROM DATE
-                ============================== */
-
-                if (
-                    fromDate &&
-                    entry.date &&
-                    entry.date < fromDate
-                ) {
-
-                    return false;
-
-                }
-
-
-                /* ==============================
-                   TO DATE
-                ============================== */
-
-                if (
-                    toDate &&
-                    entry.date &&
-                    entry.date > toDate
-                ) {
-
-                    return false;
-
-                }
-
-
-                /* ==============================
-                   SEARCH REMARKS
-                ============================== */
-
-                if (search) {
-
-                    const remarks =
-                        String(
-                            entry.remarks ||
-                            ""
-                        )
-                        .toLowerCase();
-
-
-                    const amount =
-                        String(
-                            entry.amount
-                        )
-                        .toLowerCase();
-
-
-                    if (
-                        !remarks.includes(
-                            search
-                        ) &&
-                        !amount.includes(
-                            search
-                        )
-                    ) {
-
-                        return false;
-
-                    }
-
-                }
-
-
-                return true;
-
-            }
-        );
-
-
-    renderTable();
-
-    updateSelectedDateRange(
-        fromDate,
-        toDate
-    );
-
-}
-
-
-
-/* ============================================================
-   RESET FILTER
-   ============================================================ */
-
-function resetFilters() {
-
-    const fromDate =
-        document.getElementById(
-            "fromDate"
-        );
-
-
-    const toDate =
-        document.getElementById(
-            "toDate"
-        );
-
-
-    const search =
-        document.getElementById(
-            "searchFilter"
-        );
-
-
-    if (fromDate) {
-
-        fromDate.value = "";
-
-    }
-
-
-    if (toDate) {
-
-        toDate.value = "";
-
-    }
-
-
-    if (search) {
-
-        search.value = "";
-
-    }
-
-
-    filteredEntries =
-        [...allEntries];
-
-
-    renderTable();
-
-
-    updateSelectedDateRange(
-        "",
-        ""
-    );
-
-}
-
-
-
-/* ============================================================
-   RENDER SUMMARY CARDS
-   ============================================================ */
-
-function renderSummary() {
-
-    /*
-     * TOTAL COLLECTION
-     */
-
-    const totalCollection =
-        allEntries.reduce(
-            function (total, entry) {
-
-                return (
-                    total +
-                    Number(entry.amount || 0)
-                );
-
-            },
-            0
-        );
-
-
-    /*
-     * TODAY
-     */
-
-    const today =
-        getTodayString();
-
-
-    const todayCollection =
-        allEntries.reduce(
-            function (total, entry) {
-
-                if (
-                    entry.date ===
-                    today
-                ) {
-
-                    return (
-                        total +
-                        Number(
-                            entry.amount || 0
-                        )
-                    );
-
-                }
-
-
-                return total;
-
-            },
-            0
-        );
-
-
-    /*
-     * CURRENT MONTH
-     */
-
-    const currentMonth =
-        today.substring(
-            0,
-            7
-        );
-
-
-    const monthCollection =
-        allEntries.reduce(
-            function (total, entry) {
-
-                if (
-                    entry.date &&
-                    entry.date.substring(
-                        0,
-                        7
-                    ) === currentMonth
-                ) {
-
-                    return (
-                        total +
-                        Number(
-                            entry.amount || 0
-                        )
-                    );
-
-                }
-
-
-                return total;
-
-            },
-            0
-        );
-
-
-    /*
-     * TOTAL ENTRIES
-     */
-
-    const totalEntries =
-        allEntries.length;
-
-
-    /*
-     * UPDATE DOM
-     */
-
-    setText(
-        "totalCollection",
-        formatCurrency(
-            totalCollection
-        )
-    );
-
-
-    setText(
-        "todayCollection",
-        formatCurrency(
-            todayCollection
-        )
-    );
-
-
-    setText(
-        "monthCollection",
-        formatCurrency(
-            monthCollection
-        )
-    );
-
-
-    setText(
-        "totalEntries",
-        String(
-            totalEntries
-        )
-    );
-
-}
-
-
-
-/* ============================================================
-   RENDER TABLE
-   ============================================================ */
-
-function renderTable() {
-
-    const tableBody =
-        document.getElementById(
-            "summaryTableBody"
-        );
-
-
-    const resultCount =
-        document.getElementById(
-            "resultCount"
-        );
-
-
-    const tableGrandTotal =
-        document.getElementById(
-            "tableGrandTotal"
-        );
-
-
-    if (!tableBody) {
-        return;
-    }
-
-
-    /*
-     * RESULT COUNT
-     */
-
-    if (resultCount) {
-
-        resultCount.textContent =
-            filteredEntries.length +
-            (
-                filteredEntries.length === 1
-                    ? " Entry"
-                    : " Entries"
-            );
-
-    }
-
-
-    /*
-     * EMPTY
-     */
-
-    if (
-        filteredEntries.length ===
-        0
-    ) {
-
-        tableBody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="3"
-                    class="empty-cell"
-                >
-
-                    <i
-                        class="fa-solid fa-inbox"
-                    ></i>
-
-                    No collection entries found.
-
-                </td>
-
-            </tr>
-
-        `;
-
-
-        if (tableGrandTotal) {
-
-            tableGrandTotal.textContent =
-                formatCurrency(0);
-
-        }
-
-
-        return;
-
-    }
-
-
-    /*
-     * FILTERED GRAND TOTAL
-     */
-
-    const filteredTotal =
-        filteredEntries.reduce(
-            function (total, entry) {
-
-                return (
-                    total +
-                    Number(entry.amount || 0)
-                );
-
-            },
-            0
-        );
-
-
-    if (tableGrandTotal) {
-
-        tableGrandTotal.textContent =
-            formatCurrency(
-                filteredTotal
-            );
-
-    }
-
-
-    /*
-     * TABLE ROWS
-     */
-
-    tableBody.innerHTML =
-        filteredEntries
-            .map(
-                function (entry) {
-
-                    return `
-
-                        <tr>
-
-                            <td>
-                                ${formatDisplayDate(
-                                    entry.date
-                                )}
-                            </td>
-
-                            <td
-                                class="amount-cell"
-                            >
-                                ${formatCurrency(
-                                    entry.amount
-                                )}
-                            </td>
-
-                            <td
-                                class="remarks-cell"
-                            >
-                                ${
-                                    entry.remarks
-                                        ? escapeHtml(
-                                            entry.remarks
-                                        )
-                                        : "-"
-                                }
-                            </td>
-
-                        </tr>
-
-                    `;
-
-                }
-            )
-            .join("");
-
-}
-
-
-
-/* ============================================================
-   UPDATE DATE RANGE TEXT
-   ============================================================ */
-
-function updateSelectedDateRange(
-    fromDate,
-    toDate
-) {
-
-    const element =
-        document.getElementById(
-            "selectedDateRange"
-        );
-
-
-    if (!element) {
-        return;
-    }
-
-
-    if (
-        !fromDate &&
-        !toDate
-    ) {
-
-        element.textContent =
-            "All entries";
-
-        return;
-
-    }
-
-
-    if (
-        fromDate &&
-        toDate
-    ) {
-
-        element.textContent =
-            formatDisplayDate(
-                fromDate
-            ) +
-            " to " +
-            formatDisplayDate(
-                toDate
-            );
-
-        return;
-
-    }
-
-
-    if (fromDate) {
-
-        element.textContent =
-            "From " +
-            formatDisplayDate(
-                fromDate
-            );
-
-        return;
-
-    }
-
-
-    if (toDate) {
-
-        element.textContent =
-            "Up to " +
-            formatDisplayDate(
-                toDate
-            );
-
-    }
-
-}
-
-
-
-/* ============================================================
-   PAGE ERROR
-   ============================================================ */
-
-function showPageError(
-    message
-) {
-
-    const tableBody =
-        document.getElementById(
-            "summaryTableBody"
-        );
-
-
-    if (tableBody) {
-
-        tableBody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="3"
-                    class="error-cell"
-                >
-
-                    <i
-                        class="fa-solid fa-triangle-exclamation"
-                    ></i>
-
-                    ${escapeHtml(
-                        message
-                    )}
-
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-
-    const teacherInfo =
-        document.getElementById(
-            "teacherInfo"
-        );
-
-
-    if (teacherInfo) {
-
-        teacherInfo.innerHTML = `
-
-            <i
-                class="fa-solid fa-triangle-exclamation"
-            ></i>
-
-            <span>
-                ${escapeHtml(
-                    message
-                )}
-            </span>
-
-        `;
-
-    }
-
-
-    setText(
-        "totalCollection",
-        "₹ 0"
-    );
-
-
-    setText(
-        "todayCollection",
-        "₹ 0"
-    );
-
-
-    setText(
-        "monthCollection",
-        "₹ 0"
-    );
-
-
-    setText(
-        "totalEntries",
-        "0"
-    );
-
-
-    setText(
-        "tableGrandTotal",
-        "₹ 0"
-    );
-
-
-    setText(
-        "resultCount",
-        "0 Entries"
-    );
-
-}
-
-
-
-/* ============================================================
-   FORMAT CURRENCY
-   ============================================================ */
-
-function formatCurrency(
-    amount
-) {
-
-    const value =
-        Number(amount) || 0;
-
-
-    return (
-        "₹ " +
-        value.toLocaleString(
-            "en-IN",
-            {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            }
-        )
-    );
-
-}
-
-
-
-/* ============================================================
-   FORMAT DISPLAY DATE
-   ============================================================ */
-
-function formatDisplayDate(
+// ======================================
+// FORMAT DATE
+// ======================================
+
+function formatDate(
     dateString
 ) {
 
@@ -1494,180 +841,50 @@ function formatDisplayDate(
     }
 
 
-    /*
-     * YYYY-MM-DD
-     */
+    const parts =
+        String(dateString).split("-");
 
-    const match =
-        /^(\d{4})-(\d{2})-(\d{2})$/
-            .exec(
-                dateString
-            );
-
-
-    if (match) {
-
-        return (
-            match[3] +
-            "-" +
-            match[2] +
-            "-" +
-            match[1]
-        );
-
-    }
-
-
-    return dateString;
-
-}
-
-
-
-/* ============================================================
-   FORMAT DATE FOR STORAGE
-   ============================================================ */
-
-function formatDateForStorage(
-    date
-) {
 
     if (
-        !date ||
-        Number.isNaN(
-            date.getTime()
-        )
+        parts.length !== 3
     ) {
 
-        return "";
+        return dateString;
 
     }
-
-
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        )
-        .padStart(
-            2,
-            "0"
-        );
-
-
-    const day =
-        String(
-            date.getDate()
-        )
-        .padStart(
-            2,
-            "0"
-        );
 
 
     return (
-        year +
+        parts[2] +
         "-" +
-        month +
+        parts[1] +
         "-" +
-        day
+        parts[0]
     );
 
 }
 
 
+// ======================================
+// NUMBER FORMAT
+// ======================================
 
-/* ============================================================
-   TODAY STRING
-   ============================================================ */
+function formatNumber(
+    number
+) {
 
-function getTodayString() {
-
-    return formatDateForStorage(
-        new Date()
+    return Number(
+        number || 0
+    ).toLocaleString(
+        "en-IN"
     );
 
 }
 
 
-
-/* ============================================================
-   DATE TIME VALUE
-   ============================================================ */
-
-function getDateTimeValue(
-    dateString
-) {
-
-    if (!dateString) {
-
-        return 0;
-
-    }
-
-
-    const parts =
-        dateString.split(
-            "-"
-        );
-
-
-    if (
-        parts.length !==
-        3
-    ) {
-
-        return 0;
-
-    }
-
-
-    const date =
-        new Date(
-            Number(parts[0]),
-            Number(parts[1]) - 1,
-            Number(parts[2])
-        );
-
-
-    return date.getTime();
-
-}
-
-
-
-/* ============================================================
-   SET TEXT
-   ============================================================ */
-
-function setText(
-    id,
-    value
-) {
-
-    const element =
-        document.getElementById(
-            id
-        );
-
-
-    if (element) {
-
-        element.textContent =
-            value;
-
-    }
-
-}
-
-
-
-/* ============================================================
-   ESCAPE HTML
-   ============================================================ */
+// ======================================
+// ESCAPE HTML
+// ======================================
 
 function escapeHtml(
     value
@@ -1696,5 +913,30 @@ function escapeHtml(
         /'/g,
         "&#039;"
     );
+
+}
+
+
+// ======================================
+// ERROR
+// ======================================
+
+function showError(
+    message
+) {
+
+    if (!errorBox) {
+
+        return;
+
+    }
+
+
+    errorBox.textContent =
+        message;
+
+
+    errorBox.style.display =
+        "block";
 
 }
