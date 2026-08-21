@@ -1,6 +1,6 @@
 // ======================================================
 // TELETHON ADMIN DASHBOARD
-// ALL REGION USERS + TODAY / DATE COLLECTION
+// REGION USERS + TEACHER COLLECTION
 // 1 UNIT = ₹7,000
 // ======================================================
 
@@ -41,7 +41,9 @@ if (userRole !== "admin") {
 // ======================================================
 
 const EMPLOYEES_COLLECTION = "employees";
+
 const DAILY_ENTRY_COLLECTION = "daily_entry";
+
 const REGION_USERS_COLLECTION = "regionUsers";
 
 
@@ -53,7 +55,7 @@ const UNIT_AMOUNT = 7000;
 
 
 // ======================================================
-// HTML ELEMENTS - EXISTING DASHBOARD
+// HTML ELEMENTS
 // ======================================================
 
 const userSummaryTableBody =
@@ -82,6 +84,32 @@ const userSummaryTotalPercentage =
     );
 
 
+// TODAY COLLECTION
+
+const todayCollectionTableBody =
+    document.getElementById(
+        "todayCollectionTableBody"
+    );
+
+const todayCollectionDateFilter =
+    document.getElementById(
+        "todayCollectionDateFilter"
+    );
+
+const downloadTodayCollectionImageBtn =
+    document.getElementById(
+        "downloadTodayCollectionImageBtn"
+    );
+
+
+// DASHBOARD IMAGE
+
+const downloadDashboardImageBtn =
+    document.getElementById(
+        "downloadDashboardImageBtn"
+    );
+
+
 // ======================================================
 // DATA
 // ======================================================
@@ -93,16 +121,6 @@ let dailyEntries = [];
 let regionUsers = [];
 
 let userSummaryData = [];
-
-
-// ======================================================
-// TODAY COLLECTION ELEMENTS
-// ======================================================
-
-let todayCollectionDateFilter = null;
-let todayCollectionTableBody = null;
-let todayCollectionTotalAmount = null;
-let todayCollectionTotalUnit = null;
 
 
 // ======================================================
@@ -119,7 +137,7 @@ function normalize(value) {
 
 
 // ======================================================
-// NUMBER
+// NUMBER VALUE
 // ======================================================
 
 function numberValue(value) {
@@ -141,27 +159,7 @@ function numberValue(value) {
 
 
 // ======================================================
-// AMOUNT FORMAT
-// ======================================================
-
-function formatAmount(value) {
-
-    return (
-        "₹" +
-        numberValue(value).toLocaleString(
-            "en-IN",
-            {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            }
-        )
-    );
-
-}
-
-
-// ======================================================
-// UNIT FROM AMOUNT
+// UNIT
 // ======================================================
 
 function getUnitsFromAmount(value) {
@@ -217,6 +215,24 @@ function formatUnitNumber(value) {
 
 
 // ======================================================
+// FORMAT RUPEE
+// ======================================================
+
+function formatRupee(value) {
+
+    return "₹" +
+        numberValue(value).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        );
+
+}
+
+
+// ======================================================
 // UNIT TO AMOUNT
 // ======================================================
 
@@ -242,177 +258,6 @@ function escapeHTML(value) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-
-}
-
-
-// ======================================================
-// DATE - TODAY
-// ======================================================
-
-function getTodayDate() {
-
-    const today =
-        new Date();
-
-    const year =
-        today.getFullYear();
-
-    const month =
-        String(
-            today.getMonth() + 1
-        ).padStart(2, "0");
-
-    const day =
-        String(
-            today.getDate()
-        ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-
-}
-
-
-// ======================================================
-// NORMALIZE ENTRY DATE
-// ======================================================
-
-function normalizeEntryDate(value) {
-
-    if (!value) {
-        return "";
-    }
-
-
-    // Firestore Timestamp
-
-    if (
-        typeof value.toDate ===
-        "function"
-    ) {
-
-        const date =
-            value.toDate();
-
-        return formatDateObject(
-            date
-        );
-
-    }
-
-
-    if (
-        typeof value.toMillis ===
-        "function"
-    ) {
-
-        const date =
-            new Date(
-                value.toMillis()
-            );
-
-        return formatDateObject(
-            date
-        );
-
-    }
-
-
-    const stringValue =
-        String(value)
-            .trim();
-
-
-    // YYYY-MM-DD
-
-    if (
-        /^\d{4}-\d{2}-\d{2}$/
-            .test(stringValue)
-    ) {
-
-        return stringValue;
-
-    }
-
-
-    // DD-MM-YYYY
-
-    const dmy =
-        stringValue.match(
-            /^(\d{2})-(\d{2})-(\d{4})$/
-        );
-
-
-    if (dmy) {
-
-        return (
-            `${dmy[3]}-${dmy[2]}-${dmy[1]}`
-        );
-
-    }
-
-
-    // DD/MM/YYYY
-
-    const slash =
-        stringValue.match(
-            /^(\d{2})\/(\d{2})\/(\d{4})$/
-        );
-
-
-    if (slash) {
-
-        return (
-            `${slash[3]}-${slash[2]}-${slash[1]}`
-        );
-
-    }
-
-
-    const parsed =
-        new Date(
-            stringValue
-        );
-
-
-    if (
-        !Number.isNaN(
-            parsed.getTime()
-        )
-    ) {
-
-        return formatDateObject(
-            parsed
-        );
-
-    }
-
-
-    return stringValue;
-
-}
-
-
-// ======================================================
-// DATE OBJECT FORMAT
-// ======================================================
-
-function formatDateObject(date) {
-
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0");
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
 
 }
 
@@ -712,10 +557,9 @@ async function loadDailyEntries() {
     catch (error) {
 
         console.warn(
-            "createdAt orderBy failed. Loading without order.",
+            "createdAt orderBy failed. Loading without orderBy.",
             error
         );
-
 
         const snapshot =
             await getDocs(
@@ -749,8 +593,6 @@ async function loadDailyEntries() {
 
 // ======================================================
 // LOAD REGION USERS
-// IMPORTANT:
-// ALL USERS = regionUsers
 // ======================================================
 
 async function loadRegionUsers() {
@@ -820,10 +662,8 @@ function getCreatedTime(entry) {
             entry.createdAt
         );
 
-
     const time =
         date.getTime();
-
 
     return Number.isFinite(time)
         ? time
@@ -834,9 +674,6 @@ function getCreatedTime(entry) {
 
 // ======================================================
 // LATEST ENTRY PER EMPLOYEE + DATE
-//
-// Same employee + same date:
-// only latest entry will count.
 // ======================================================
 
 function getLatestEntries() {
@@ -855,9 +692,9 @@ function getLatestEntries() {
 
 
             const date =
-                normalizeEntryDate(
-                    entry.date
-                );
+                String(
+                    entry.date || ""
+                ).trim();
 
 
             if (
@@ -1218,7 +1055,6 @@ function employeeMatchesAccess(
 
 // ======================================================
 // USER TEACHERS
-// Used only to calculate collection belonging to user
 // ======================================================
 
 function getUserEmployees(user) {
@@ -1238,13 +1074,12 @@ function getUserEmployees(user) {
 
 
 // ======================================================
-// USER COLLECTION FOR SELECTED DATE
+// USER COLLECTION
 // ======================================================
 
-function getUserCollectionForDate(
+function getUserCollection(
     userEmployees,
-    latestEntries,
-    selectedDate
+    latestEntries
 ) {
 
     const employeeCodes =
@@ -1280,22 +1115,6 @@ function getUserCollectionForDate(
     latestEntries.forEach(
         (entry) => {
 
-            const entryDate =
-                normalizeEntryDate(
-                    entry.date
-                );
-
-
-            if (
-                entryDate !==
-                selectedDate
-            ) {
-
-                return;
-
-            }
-
-
             const entryCode =
                 normalize(
                     getEntryEmployeeCode(
@@ -1328,7 +1147,7 @@ function getUserCollectionForDate(
 
 // ======================================================
 // BUILD USER SUMMARY
-// Existing dashboard
+// ALL REGION USERS MUST SHOW
 // ======================================================
 
 function buildUserSummary() {
@@ -1340,9 +1159,6 @@ function buildUserSummary() {
     userSummaryData = [];
 
 
-    // IMPORTANT:
-    // regionUsers ke ALL users ko add karna hai.
-
     regionUsers.forEach(
         (user) => {
 
@@ -1353,10 +1169,9 @@ function buildUserSummary() {
 
 
             const collectionAmount =
-                getUserCollectionForDate(
+                getUserCollection(
                     userEmployees,
-                    latestEntries,
-                    getTodayDate()
+                    latestEntries
                 );
 
 
@@ -1429,7 +1244,6 @@ function buildUserSummary() {
 
 // ======================================================
 // UPDATE SUMMARY CARDS
-// Existing Dashboard
 // ======================================================
 
 function updateUserSummaryCards(list) {
@@ -1443,14 +1257,10 @@ function updateUserSummaryCards(list) {
         (user) => {
 
             totalTarget +=
-                numberValue(
-                    user.target
-                );
+                user.target;
 
             totalCollection +=
-                numberValue(
-                    user.collection
-                );
+                user.collection;
 
         }
     );
@@ -1548,7 +1358,6 @@ function displayUserSummary(list) {
         updateUserSummaryCards(
             list
         );
-
 
         return;
 
@@ -1778,6 +1587,17 @@ function displayUserSummary(list) {
         list
     );
 
+
+    attachUserSummaryEvents();
+
+}
+
+
+// ======================================================
+// USER SUMMARY EVENTS
+// ======================================================
+
+function attachUserSummaryEvents() {
 
     // ==================================================
     // SAVE TARGET
@@ -2067,445 +1887,182 @@ function displayUserSummary(list) {
 
 
 // ======================================================
-// CREATE TODAY COLLECTION SECTION
-//
-// Agar HTML mein already section hai,
-// to usi ko use karega.
-//
-// Agar IDs nahi hain,
-// to section automatically create karega.
+// TODAY DATE - LOCAL DATE
 // ======================================================
 
-function setupTodayCollectionSection() {
+function getTodayLocalDate() {
 
-    todayCollectionDateFilter =
-        document.getElementById(
-            "todayCollectionDateFilter"
+    const now =
+        new Date();
+
+
+    const year =
+        now.getFullYear();
+
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
         );
 
 
-    todayCollectionTableBody =
-        document.getElementById(
-            "todayCollectionTableBody"
+    const day =
+        String(
+            now.getDate()
+        ).padStart(
+            2,
+            "0"
         );
 
 
-    todayCollectionTotalAmount =
-        document.getElementById(
-            "todayCollectionTotalAmount"
-        );
-
-
-    todayCollectionTotalUnit =
-        document.getElementById(
-            "todayCollectionTotalUnit"
-        );
-
-
-    // ==================================================
-    // EXISTING HTML SECTION
-    // ==================================================
-
-    if (
-        todayCollectionDateFilter &&
-        todayCollectionTableBody
-    ) {
-
-        if (
-            !todayCollectionDateFilter.value
-        ) {
-
-            todayCollectionDateFilter.value =
-                getTodayDate();
-
-        }
-
-
-        todayCollectionDateFilter.addEventListener(
-            "change",
-            function () {
-
-                displayTodayCollection(
-                    this.value
-                );
-
-            }
-        );
-
-
-        return;
-
-    }
-
-
-    // ==================================================
-    // AUTO CREATE SECTION
-    // ==================================================
-
-    const captureArea =
-        document.getElementById(
-            "dashboardCaptureArea"
-        );
-
-
-    if (!captureArea) {
-        return;
-    }
-
-
-    const containers =
-        captureArea.querySelectorAll(
-            ".user-summary-container"
-        );
-
-
-    const insertAfter =
-        containers.length
-            ? containers[
-                containers.length - 1
-            ]
-            : null;
-
-
-    const section =
-        document.createElement(
-            "div"
-        );
-
-
-    section.className =
-        "user-summary-container today-collection-container";
-
-
-    section.innerHTML = `
-
-        <div
-            class="section-header"
-        >
-
-            <div>
-
-                <h3>
-
-                    <i
-                        class="
-                            fa-solid
-                            fa-calendar-day
-                        "
-                    ></i>
-
-                    Today Collection
-
-                </h3>
-
-                <p>
-                    Date-wise collection of all users
-                </p>
-
-            </div>
-
-
-            <div
-                style="
-                    display:flex;
-                    align-items:center;
-                    gap:10px;
-                    flex-wrap:wrap;
-                "
-            >
-
-                <label
-                    style="
-                        font-size:13px;
-                        font-weight:700;
-                        color:#5d687b;
-                    "
-                >
-                    Date
-                </label>
-
-
-                <input
-                    type="date"
-                    id="todayCollectionDateFilter"
-                    value="${getTodayDate()}"
-                    style="
-                        height:42px;
-                        border:1px solid #d6deea;
-                        border-radius:9px;
-                        padding:0 10px;
-                        outline:none;
-                        font-size:13px;
-                        font-weight:600;
-                    "
-                >
-
-            </div>
-
-        </div>
-
-
-        <div
-            style="
-                padding:18px 22px 5px;
-            "
-        >
-
-            <div
-                style="
-                    display:flex;
-                    gap:15px;
-                    flex-wrap:wrap;
-                "
-            >
-
-                <div
-                    style="
-                        background:#dcfce7;
-                        border:1px solid #bbf7d0;
-                        border-radius:12px;
-                        padding:14px 18px;
-                        min-width:220px;
-                    "
-                >
-
-                    <div
-                        style="
-                            color:#166534;
-                            font-size:12px;
-                            font-weight:700;
-                            margin-bottom:5px;
-                        "
-                    >
-                        Total Amount
-                    </div>
-
-
-                    <strong
-                        id="todayCollectionTotalAmount"
-                        style="
-                            color:#15803d;
-                            font-size:22px;
-                        "
-                    >
-                        ₹0
-                    </strong>
-
-                </div>
-
-
-                <div
-                    style="
-                        background:#e0e7ff;
-                        border:1px solid #c7d2fe;
-                        border-radius:12px;
-                        padding:14px 18px;
-                        min-width:180px;
-                    "
-                >
-
-                    <div
-                        style="
-                            color:#3730a3;
-                            font-size:12px;
-                            font-weight:700;
-                            margin-bottom:5px;
-                        "
-                    >
-                        Total Unit
-                    </div>
-
-
-                    <strong
-                        id="todayCollectionTotalUnit"
-                        style="
-                            color:#4338ca;
-                            font-size:22px;
-                        "
-                    >
-                        0 Unit
-                    </strong>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="user-summary-table-wrapper"
-        >
-
-            <table
-                class="user-summary-table"
-            >
-
-                <thead>
-
-                    <tr>
-
-                        <th>#</th>
-
-                        <th>User</th>
-
-                        <th>
-                            Collection
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody
-                    id="todayCollectionTableBody"
-                >
-
-                    <tr>
-
-                        <td
-                            colspan="3"
-                            class="no-data"
-                        >
-                            Loading...
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    `;
-
-
-    if (insertAfter) {
-
-        insertAfter.after(
-            section
-        );
-
-    }
-
-    else {
-
-        captureArea.appendChild(
-            section
-        );
-
-    }
-
-
-    todayCollectionDateFilter =
-        document.getElementById(
-            "todayCollectionDateFilter"
-        );
-
-
-    todayCollectionTableBody =
-        document.getElementById(
-            "todayCollectionTableBody"
-        );
-
-
-    todayCollectionTotalAmount =
-        document.getElementById(
-            "todayCollectionTotalAmount"
-        );
-
-
-    todayCollectionTotalUnit =
-        document.getElementById(
-            "todayCollectionTotalUnit"
-        );
-
-
-    if (
-        todayCollectionDateFilter
-    ) {
-
-        todayCollectionDateFilter.addEventListener(
-            "change",
-            function () {
-
-                displayTodayCollection(
-                    this.value
-                );
-
-            }
-        );
-
-    }
+    return `${year}-${month}-${day}`;
 
 }
 
 
 // ======================================================
-// DISPLAY TODAY / SELECTED DATE COLLECTION
-//
-// IMPORTANT:
-// ALL USERS = regionUsers
-//
-// No collection = ₹0
+// GET USER TODAY COLLECTION
+// ======================================================
+
+function getUserCollectionForDate(
+    user,
+    selectedDate,
+    latestEntries
+) {
+
+    const userEmployees =
+        getUserEmployees(
+            user
+        );
+
+
+    const employeeCodes =
+        new Set();
+
+
+    userEmployees.forEach(
+        (employee) => {
+
+            const code =
+                normalize(
+                    getEmployeeCode(
+                        employee
+                    )
+                );
+
+
+            if (code) {
+
+                employeeCodes.add(
+                    code
+                );
+
+            }
+
+        }
+    );
+
+
+    let total = 0;
+
+
+    latestEntries.forEach(
+        (entry) => {
+
+            const entryDate =
+                String(
+                    entry.date || ""
+                ).trim();
+
+
+            if (
+                entryDate !==
+                selectedDate
+            ) {
+
+                return;
+
+            }
+
+
+            const entryCode =
+                normalize(
+                    getEntryEmployeeCode(
+                        entry
+                    )
+                );
+
+
+            if (
+                employeeCodes.has(
+                    entryCode
+                )
+            ) {
+
+                total +=
+                    getEntryAmount(
+                        entry
+                    );
+
+            }
+
+        }
+    );
+
+
+    return total;
+
+}
+
+
+// ======================================================
+// DISPLAY TODAY COLLECTION
+// ALL REGION USERS SHOW
 // ======================================================
 
 function displayTodayCollection(
     selectedDate
 ) {
 
-    if (
-        !todayCollectionTableBody
-    ) {
-
+    if (!todayCollectionTableBody) {
         return;
-
     }
-
-
-    const date =
-        selectedDate ||
-        getTodayDate();
 
 
     const latestEntries =
         getLatestEntries();
 
 
-    let totalAmount = 0;
+    let grandTotal =
+        0;
 
 
     let html = "";
 
 
     // ==================================================
-    // ALL regionUsers
+    // ALL REGION USERS
     // ==================================================
 
     regionUsers.forEach(
         (user, index) => {
 
-            const userEmployees =
-                getUserEmployees(
-                    user
-                );
-
-
             const amount =
                 getUserCollectionForDate(
-                    userEmployees,
-                    latestEntries,
-                    date
+                    user,
+                    selectedDate,
+                    latestEntries
                 );
 
 
-            totalAmount +=
+            grandTotal +=
                 amount;
 
 
-            const safeName =
+            const userName =
                 escapeHTML(
                     getUserName(
                         user
@@ -2518,48 +2075,25 @@ function displayTodayCollection(
                 <tr>
 
                     <td>
-
                         <strong>
                             ${index + 1}
                         </strong>
-
                     </td>
 
-
                     <td>
-
-                        <strong
-                            style="
-                                color:#172033;
-                            "
-                        >
-                            ${safeName}
-                        </strong>
-
-                    </td>
-
-
-                    <td>
-
                         <span
-                            style="
-                                display:inline-block;
-                                font-size:14px;
-                                font-weight:700;
-                                color:${
-                                    amount > 0
-                                        ? "#16a34a"
-                                        : "#64748b"
-                                };
-                            "
+                            class="today-user-name"
                         >
-
-                            ${formatAmount(
-                                amount
-                            )}
-
+                            ${userName}
                         </span>
+                    </td>
 
+                    <td>
+                        <span
+                            class="today-total-amount"
+                        >
+                            ${formatRupee(amount)}
+                        </span>
                     </td>
 
                 </tr>
@@ -2571,12 +2105,41 @@ function displayTodayCollection(
 
 
     // ==================================================
-    // NO USERS
+    // GRAND TOTAL
     // ==================================================
 
-    if (
-        regionUsers.length === 0
-    ) {
+    html += `
+
+        <tr
+            class="today-grand-total"
+        >
+
+            <td
+                colspan="2"
+                class="today-total-label"
+            >
+
+                Total Amount
+
+            </td>
+
+
+            <td
+                class="today-total-value"
+            >
+
+                ${formatRupee(
+                    grandTotal
+                )}
+
+            </td>
+
+        </tr>
+
+    `;
+
+
+    if (regionUsers.length === 0) {
 
         html = `
 
@@ -2587,7 +2150,7 @@ function displayTodayCollection(
                     class="no-data"
                 >
 
-                    Koi User nahi mila.
+                    Koi Region User nahi mila.
 
                 </td>
 
@@ -2602,52 +2165,398 @@ function displayTodayCollection(
         html;
 
 
-    // ==================================================
-    // TOTAL AMOUNT
-    //
-    // Yehi selected date ke ALL USERS
-    // ke displayed amount ka total hai.
-    // ==================================================
-
-    if (
-        todayCollectionTotalAmount
-    ) {
-
-        todayCollectionTotalAmount.textContent =
-            formatAmount(
-                totalAmount
-            );
-
-    }
-
-
-    // ==================================================
-    // TOTAL UNIT
-    // ==================================================
-
-    if (
-        todayCollectionTotalUnit
-    ) {
-
-        todayCollectionTotalUnit.textContent =
-            getUnitsFromAmount(
-                totalAmount
-            ).toLocaleString(
-                "en-IN",
-                {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2
-                }
-            ) + " Unit";
-
-    }
-
-
     console.log(
         "Today Collection:",
-        date,
-        "Total:",
-        totalAmount
+        selectedDate,
+        grandTotal
+    );
+
+}
+
+
+// ======================================================
+// DOWNLOAD IMAGE - GENERIC
+// ======================================================
+
+async function downloadElementAsImage(
+    element,
+    button,
+    fileName,
+    options = {}
+) {
+
+    if (!element) {
+
+        alert(
+            "Download area nahi mila."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        typeof html2canvas ===
+        "undefined"
+    ) {
+
+        alert(
+            "html2canvas library load nahi hui. Page refresh karke dobara try karein."
+        );
+
+        return;
+
+    }
+
+
+    const oldHTML =
+        button
+            ? button.innerHTML
+            : "";
+
+
+    if (button) {
+
+        button.disabled =
+            true;
+
+        button.innerHTML = `
+
+            <i
+                class="
+                    fa-solid
+                    fa-spinner
+                    fa-spin
+                "
+            ></i>
+
+            Preparing Image...
+
+        `;
+
+    }
+
+
+    try {
+
+        // Wait for browser render
+
+        await new Promise(
+            (resolve) => {
+
+                requestAnimationFrame(
+                    () => {
+
+                        requestAnimationFrame(
+                            resolve
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        // Wait for fonts
+
+        if (
+            document.fonts &&
+            document.fonts.ready
+        ) {
+
+            await document.fonts.ready;
+
+        }
+
+
+        const rect =
+            element.getBoundingClientRect();
+
+
+        const width =
+            Math.max(
+                element.scrollWidth,
+                rect.width,
+                800
+            );
+
+
+        const height =
+            Math.max(
+                element.scrollHeight,
+                rect.height
+            );
+
+
+        const canvas =
+            await html2canvas(
+                element,
+                {
+
+                    scale:
+                        options.scale ||
+                        2,
+
+                    useCORS:
+                        true,
+
+                    allowTaint:
+                        true,
+
+                    backgroundColor:
+                        options.backgroundColor ||
+                        "#f4f7fb",
+
+                    logging:
+                        false,
+
+                    width:
+                        width,
+
+                    height:
+                        height,
+
+                    windowWidth:
+                        width,
+
+                    windowHeight:
+                        height,
+
+                    scrollX:
+                        0,
+
+                    scrollY:
+                        0,
+
+                    imageTimeout:
+                        15000,
+
+                    onclone:
+                        function (
+                            clonedDocument
+                        ) {
+
+                            // Hide all ignored elements
+
+                            clonedDocument
+                                .querySelectorAll(
+                                    '[data-html2canvas-ignore="true"]'
+                                )
+                                .forEach(
+                                    function (
+                                        item
+                                    ) {
+
+                                        item.style.display =
+                                            "none";
+
+                                    }
+                                );
+
+
+                            if (
+                                typeof options.onclone ===
+                                "function"
+                            ) {
+
+                                options.onclone(
+                                    clonedDocument
+                                );
+
+                            }
+
+                        }
+
+                }
+            );
+
+
+        const image =
+            canvas.toDataURL(
+                "image/png",
+                1.0
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.download =
+            fileName;
+
+
+        link.href =
+            image;
+
+
+        document.body.appendChild(
+            link
+        );
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        console.log(
+            "Image downloaded:",
+            fileName
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Image Download Error:",
+            error
+        );
+
+
+        alert(
+            "Image download nahi hui.\n\n" +
+            error.message
+        );
+
+    }
+
+    finally {
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+            button.innerHTML =
+                oldHTML;
+
+        }
+
+    }
+
+}
+
+
+// ======================================================
+// DASHBOARD IMAGE DOWNLOAD
+// ======================================================
+
+if (downloadDashboardImageBtn) {
+
+    downloadDashboardImageBtn.addEventListener(
+        "click",
+        async function () {
+
+            const dashboard =
+                document.getElementById(
+                    "dashboardCaptureArea"
+                );
+
+
+            const today =
+                getTodayLocalDate();
+
+
+            await downloadElementAsImage(
+
+                dashboard,
+
+                this,
+
+                `Telethon-Dashboard-${today}.png`,
+
+                {
+
+                    backgroundColor:
+                        "#f4f7fb"
+
+                }
+
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================================
+// TODAY COLLECTION IMAGE DOWNLOAD
+// ======================================================
+
+if (downloadTodayCollectionImageBtn) {
+
+    downloadTodayCollectionImageBtn.addEventListener(
+        "click",
+        async function () {
+
+            const captureArea =
+                document.getElementById(
+                    "todayCollectionCaptureArea"
+                );
+
+
+            const selectedDate =
+                todayCollectionDateFilter &&
+                todayCollectionDateFilter.value
+                    ? todayCollectionDateFilter.value
+                    : getTodayLocalDate();
+
+
+            await downloadElementAsImage(
+
+                captureArea,
+
+                this,
+
+                `Telethon-Today-Collection-${selectedDate}.png`,
+
+                {
+
+                    backgroundColor:
+                        "#f4f7fb"
+
+                }
+
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================================
+// DATE FILTER
+// ======================================================
+
+if (todayCollectionDateFilter) {
+
+    todayCollectionDateFilter.value =
+        getTodayLocalDate();
+
+
+    todayCollectionDateFilter.addEventListener(
+        "change",
+        function () {
+
+            const selectedDate =
+                this.value ||
+                getTodayLocalDate();
+
+
+            displayTodayCollection(
+                selectedDate
+            );
+
+        }
     );
 
 }
@@ -2676,6 +2585,7 @@ if (logoutBtn) {
                 "loggedInEmpCode"
             );
 
+
             localStorage.removeItem(
                 "userRole"
             );
@@ -2691,260 +2601,16 @@ if (logoutBtn) {
 
 
 // ======================================================
-// DOWNLOAD DASHBOARD DATA AS IMAGE
-// ======================================================
-
-const downloadDashboardImageBtn =
-    document.getElementById(
-        "downloadDashboardImageBtn"
-    );
-
-
-if (downloadDashboardImageBtn) {
-
-    downloadDashboardImageBtn.addEventListener(
-        "click",
-        async function () {
-
-            const dashboard =
-                document.getElementById(
-                    "dashboardCaptureArea"
-                );
-
-
-            if (!dashboard) {
-
-                alert(
-                    "Dashboard data area nahi mila."
-                );
-
-                return;
-
-            }
-
-
-            if (
-                typeof html2canvas ===
-                "undefined"
-            ) {
-
-                alert(
-                    "Image download library load nahi hui. Page refresh karke dobara try karein."
-                );
-
-                return;
-
-            }
-
-
-            const oldHTML =
-                this.innerHTML;
-
-
-            this.disabled =
-                true;
-
-
-            this.innerHTML = `
-
-                <i
-                    class="
-                        fa-solid
-                        fa-spinner
-                        fa-spin
-                    "
-                ></i>
-
-                Preparing Image...
-
-            `;
-
-
-            try {
-
-                await new Promise(
-                    function (resolve) {
-
-                        setTimeout(
-                            resolve,
-                            500
-                        );
-
-                    }
-                );
-
-
-                const canvas =
-                    await html2canvas(
-                        dashboard,
-                        {
-
-                            scale: 2,
-
-                            useCORS: true,
-
-                            allowTaint: true,
-
-                            backgroundColor:
-                                "#f4f7fb",
-
-                            logging: false,
-
-                            imageTimeout:
-                                15000,
-
-                            scrollX: 0,
-
-                            scrollY: 0,
-
-                            windowWidth:
-                                Math.max(
-                                    document.documentElement
-                                        .scrollWidth,
-                                    dashboard
-                                        .scrollWidth
-                                ),
-
-                            windowHeight:
-                                Math.max(
-                                    document.documentElement
-                                        .scrollHeight,
-                                    dashboard
-                                        .scrollHeight
-                                ),
-
-                            onclone:
-                                function (
-                                    clonedDocument
-                                ) {
-
-                                    const clonedButton =
-                                        clonedDocument
-                                            .getElementById(
-                                                "downloadDashboardImageBtn"
-                                            );
-
-
-                                    if (
-                                        clonedButton
-                                    ) {
-
-                                        clonedButton.style.display =
-                                            "none";
-
-                                    }
-
-                                }
-
-                        }
-                    );
-
-
-                const image =
-                    canvas.toDataURL(
-                        "image/png",
-                        1.0
-                    );
-
-
-                const today =
-                    new Date();
-
-
-                const year =
-                    today.getFullYear();
-
-
-                const month =
-                    String(
-                        today.getMonth() + 1
-                    ).padStart(
-                        2,
-                        "0"
-                    );
-
-
-                const day =
-                    String(
-                        today.getDate()
-                    ).padStart(
-                        2,
-                        "0"
-                    );
-
-
-                const link =
-                    document.createElement(
-                        "a"
-                    );
-
-
-                link.download =
-                    `Telethon-Dashboard-${year}-${month}-${day}.png`;
-
-
-                link.href =
-                    image;
-
-
-                document.body.appendChild(
-                    link
-                );
-
-
-                link.click();
-
-
-                document.body.removeChild(
-                    link
-                );
-
-
-                console.log(
-                    "Dashboard image downloaded successfully."
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Dashboard Image Download Error:",
-                    error
-                );
-
-
-                alert(
-                    "Dashboard image download nahi hui.\n\n" +
-                    error.message
-                );
-
-            }
-
-            finally {
-
-                this.disabled =
-                    false;
-
-
-                this.innerHTML =
-                    oldHTML;
-
-            }
-
-        }
-    );
-
-}
-
-
-// ======================================================
 // MAIN DASHBOARD
 // ======================================================
 
 async function loadDashboard() {
 
     try {
+
+        // ==================================================
+        // LOADING USER SUMMARY
+        // ==================================================
 
         if (userSummaryTableBody) {
 
@@ -2977,6 +2643,40 @@ async function loadDashboard() {
 
 
         // ==================================================
+        // LOADING TODAY COLLECTION
+        // ==================================================
+
+        if (todayCollectionTableBody) {
+
+            todayCollectionTableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="3"
+                        class="no-data"
+                    >
+
+                        <i
+                            class="
+                                fa-solid
+                                fa-spinner
+                                fa-spin
+                            "
+                        ></i>
+
+                        Loading Today Collection...
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        // ==================================================
         // LOAD ALL DATA
         // ==================================================
 
@@ -2992,7 +2692,7 @@ async function loadDashboard() {
 
 
         // ==================================================
-        // EXISTING DASHBOARD
+        // USER SUMMARY
         // ==================================================
 
         buildUserSummary();
@@ -3007,22 +2707,43 @@ async function loadDashboard() {
         // TODAY COLLECTION
         // ==================================================
 
-        setupTodayCollectionSection();
+        const selectedDate =
+            todayCollectionDateFilter &&
+            todayCollectionDateFilter.value
+                ? todayCollectionDateFilter.value
+                : getTodayLocalDate();
 
 
         displayTodayCollection(
-            getTodayDate()
+            selectedDate
         );
 
+
+        console.log(
+            "================================"
+        );
 
         console.log(
             "Dashboard Loaded Successfully"
         );
 
+        console.log(
+            "Region Users:",
+            regionUsers.length
+        );
 
         console.log(
-            "Total Region Users:",
-            regionUsers.length
+            "Employees:",
+            employees.length
+        );
+
+        console.log(
+            "Daily Entries:",
+            dailyEntries.length
+        );
+
+        console.log(
+            "================================"
         );
 
     }
@@ -3051,6 +2772,38 @@ async function loadDashboard() {
                     >
 
                         Dashboard data load nahi hua.
+
+                        <br><br>
+
+                        ${escapeHTML(
+                            error.message
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        if (todayCollectionTableBody) {
+
+            todayCollectionTableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="3"
+                        style="
+                            text-align:center;
+                            padding:30px;
+                            color:#dc2626;
+                        "
+                    >
+
+                        Today Collection data load nahi hua.
 
                         <br><br>
 
