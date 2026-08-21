@@ -2,6 +2,12 @@
 // TELETHON ADMIN DASHBOARD
 // REGION USERS + TEACHER COLLECTION
 // 1 UNIT = ₹7,000
+//
+// IMPORTANT:
+// ALL USERS = regionUsers
+// Teachers are NOT treated as Users.
+//
+// Users with 0 collection will ALWAYS be displayed.
 // ======================================================
 
 import { db } from "./firebase-config.js";
@@ -30,7 +36,6 @@ const userRole = String(
 if (userRole !== "admin") {
 
     localStorage.removeItem("loggedInEmpCode");
-
     localStorage.removeItem("userRole");
 
     window.location.href = "index.html";
@@ -41,11 +46,14 @@ if (userRole !== "admin") {
 // COLLECTIONS
 // ======================================================
 
-const EMPLOYEES_COLLECTION = "employees";
+const EMPLOYEES_COLLECTION =
+    "employees";
 
-const DAILY_ENTRY_COLLECTION = "daily_entry";
+const DAILY_ENTRY_COLLECTION =
+    "daily_entry";
 
-const REGION_USERS_COLLECTION = "regionUsers";
+const REGION_USERS_COLLECTION =
+    "regionUsers";
 
 
 // ======================================================
@@ -58,6 +66,10 @@ const UNIT_AMOUNT = 7000;
 // ======================================================
 // HTML ELEMENTS
 // ======================================================
+
+// ------------------------------------------------------
+// EXISTING DASHBOARD
+// ------------------------------------------------------
 
 const userSummaryTableBody =
     document.getElementById(
@@ -85,9 +97,19 @@ const userSummaryTotalPercentage =
     );
 
 
-// ======================================================
-// TODAY COLLECTION ELEMENTS
-// ======================================================
+// ------------------------------------------------------
+// EXISTING DASHBOARD IMAGE
+// ------------------------------------------------------
+
+const downloadDashboardImageBtn =
+    document.getElementById(
+        "downloadDashboardImageBtn"
+    );
+
+
+// ------------------------------------------------------
+// TODAY COLLECTION
+// ------------------------------------------------------
 
 const todayCollectionDateFilter =
     document.getElementById(
@@ -99,14 +121,14 @@ const todayCollectionTableBody =
         "todayCollectionTableBody"
     );
 
+const todayCollectionTotalAmount =
+    document.getElementById(
+        "todayCollectionTotalAmount"
+    );
+
 const downloadTodayCollectionImageBtn =
     document.getElementById(
         "downloadTodayCollectionImageBtn"
-    );
-
-const todayCollectionCaptureArea =
-    document.getElementById(
-        "todayCollectionCaptureArea"
     );
 
 
@@ -160,6 +182,7 @@ function numberValue(value) {
 
 // ======================================================
 // UNIT
+// 1 UNIT = ₹7,000
 // ======================================================
 
 function getUnitsFromAmount(value) {
@@ -196,6 +219,7 @@ function formatUnit(value) {
 
 // ======================================================
 // FORMAT UNIT NUMBER
+// Used for editable Target field
 // ======================================================
 
 function formatUnitNumber(value) {
@@ -215,24 +239,10 @@ function formatUnitNumber(value) {
 
 
 // ======================================================
-// UNIT TO AMOUNT
-// ======================================================
-
-function unitToAmount(units) {
-
-    return (
-        numberValue(units) *
-        UNIT_AMOUNT
-    );
-
-}
-
-
-// ======================================================
 // FORMAT RUPEE
 // ======================================================
 
-function formatRupee(value) {
+function formatAmount(value) {
 
     return (
         "₹" +
@@ -243,6 +253,20 @@ function formatRupee(value) {
                 maximumFractionDigits: 2
             }
         )
+    );
+
+}
+
+
+// ======================================================
+// UNIT TO AMOUNT
+// ======================================================
+
+function unitToAmount(units) {
+
+    return (
+        numberValue(units) *
+        UNIT_AMOUNT
     );
 
 }
@@ -678,6 +702,8 @@ function getCreatedTime(entry) {
 
 // ======================================================
 // LATEST ENTRY PER EMPLOYEE + DATE
+//
+// EXISTING DASHBOARD LOGIC
 // ======================================================
 
 function getLatestEntries() {
@@ -1074,6 +1100,7 @@ function getUserEmployees(user) {
 
 // ======================================================
 // USER COLLECTION
+// EXISTING DASHBOARD
 // ======================================================
 
 function getUserCollection(
@@ -1146,6 +1173,12 @@ function getUserCollection(
 
 // ======================================================
 // BUILD USER SUMMARY
+//
+// IMPORTANT:
+// ALL regionUsers ARE ALWAYS ADDED.
+// COLLECTION = 0 IS ALSO VALID.
+//
+// NO USER IS REMOVED BECAUSE OF COLLECTION.
 // ======================================================
 
 function buildUserSummary() {
@@ -1160,11 +1193,19 @@ function buildUserSummary() {
     regionUsers.forEach(
         (user) => {
 
+            // ------------------------------------------
+            // Find teachers assigned to this user
+            // ------------------------------------------
+
             const userEmployees =
                 getUserEmployees(
                     user
                 );
 
+
+            // ------------------------------------------
+            // Collection
+            // ------------------------------------------
 
             const collectionAmount =
                 getUserCollection(
@@ -1173,11 +1214,19 @@ function buildUserSummary() {
                 );
 
 
+            // ------------------------------------------
+            // Target
+            // ------------------------------------------
+
             const target =
                 getUserTarget(
                     user
                 );
 
+
+            // ------------------------------------------
+            // Remaining
+            // ------------------------------------------
 
             const remaining =
                 Math.max(
@@ -1187,6 +1236,10 @@ function buildUserSummary() {
                 );
 
 
+            // ------------------------------------------
+            // Percentage
+            // ------------------------------------------
+
             const percentage =
                 target > 0
                     ? (
@@ -1195,6 +1248,11 @@ function buildUserSummary() {
                     ) * 100
                     : 0;
 
+
+            // ------------------------------------------
+            // IMPORTANT:
+            // ALWAYS PUSH USER
+            // ------------------------------------------
 
             userSummaryData.push({
 
@@ -1215,13 +1273,13 @@ function buildUserSummary() {
                     target,
 
                 collection:
-                    collectionAmount,
+                    collectionAmount || 0,
 
                 remaining:
-                    remaining,
+                    remaining || 0,
 
                 percentage:
-                    percentage,
+                    percentage || 0,
 
                 teacherCount:
                     userEmployees.length,
@@ -1242,6 +1300,7 @@ function buildUserSummary() {
 
 // ======================================================
 // UPDATE SUMMARY CARDS
+// ONLY UNITS
 // ======================================================
 
 function updateUserSummaryCards(list) {
@@ -1332,6 +1391,11 @@ function displayUserSummary(list) {
         return;
     }
 
+
+    // --------------------------------------------------
+    // IMPORTANT:
+    // Only if there are genuinely NO regionUsers
+    // --------------------------------------------------
 
     if (list.length === 0) {
 
@@ -1634,7 +1698,6 @@ function displayUserSummary(list) {
                                 "Target Unit 0 se kam nahi ho sakta."
                             );
 
-
                             return;
 
                         }
@@ -1738,6 +1801,13 @@ function displayUserSummary(list) {
                                 userSummaryData
                             );
 
+
+                            // Today Collection remains
+                            // unchanged.
+
+                            renderTodayCollection();
+
+
                         }
 
                         catch (error) {
@@ -1802,7 +1872,6 @@ function displayUserSummary(list) {
                                 "User Name enter karein."
                             );
 
-
                             return;
 
                         }
@@ -1855,6 +1924,7 @@ function displayUserSummary(list) {
                                 newName;
 
 
+                            // Update Today Collection
                             renderTodayCollection();
 
                         }
@@ -1884,250 +1954,211 @@ function displayUserSummary(list) {
 
 
 // ======================================================
-// DATE - LOCAL YYYY-MM-DD
+// TODAY DATE
 // ======================================================
 
-function getLocalDateString(date = new Date()) {
+function getTodayDateString() {
+
+    const today =
+        new Date();
+
 
     const year =
-        date.getFullYear();
+        today.getFullYear();
+
 
     const month =
         String(
-            date.getMonth() + 1
+            today.getMonth() + 1
         ).padStart(
             2,
             "0"
         );
+
 
     const day =
         String(
-            date.getDate()
+            today.getDate()
         ).padStart(
             2,
             "0"
         );
 
 
-    return `${year}-${month}-${day}`;
+    return (
+        `${year}-${month}-${day}`
+    );
 
 }
 
 
 // ======================================================
-// DATE NORMALIZE
+// ENTRY DATE
 // ======================================================
 
-function normalizeEntryDate(value) {
+function getEntryDate(entry) {
 
-    if (!value) {
-        return "";
-    }
-
-
-    if (
-        typeof value.toDate ===
-        "function"
-    ) {
-
-        return getLocalDateString(
-            value.toDate()
-        );
-
-    }
-
-
-    if (
-        typeof value.toMillis ===
-        "function"
-    ) {
-
-        return getLocalDateString(
-            new Date(
-                value.toMillis()
-            )
-        );
-
-    }
-
-
-    if (
-        value.seconds !== undefined
-    ) {
-
-        return getLocalDateString(
-            new Date(
-                Number(value.seconds) *
-                1000
-            )
-        );
-
-    }
-
-
-    const text =
-        String(value).trim();
-
-
-    if (!text) {
-        return "";
-    }
-
-
-    /*
-     * If Firestore daily entry already
-     * stores date as YYYY-MM-DD,
-     * return it directly.
-     */
-
-    const match =
-        text.match(
-            /^(\d{4})-(\d{1,2})-(\d{1,2})/
-        );
-
-
-    if (match) {
-
-        return (
-            match[1] +
-            "-" +
-            String(
-                match[2]
-            ).padStart(
-                2,
-                "0"
-            ) +
-            "-" +
-            String(
-                match[3]
-            ).padStart(
-                2,
-                "0"
-            )
-        );
-
-    }
-
-
-    const parsed =
-        new Date(text);
-
-
-    if (
-        Number.isFinite(
-            parsed.getTime()
-        )
-    ) {
-
-        return getLocalDateString(
-            parsed
-        );
-
-    }
-
-
-    return text;
+    return String(
+        entry.date ||
+        entry.entryDate ||
+        entry.collectionDate ||
+        entry.collection_date ||
+        ""
+    ).trim();
 
 }
 
 
 // ======================================================
-// GET USER COLLECTION FOR SELECTED DATE
+// TODAY COLLECTION
+//
+// IMPORTANT:
+// This is separate from existing dashboard.
+//
+// For selected date:
+// ALL regionUsers are shown.
+//
+// If user has no collection:
+// Total Amount = ₹0
+//
+// Multiple entries for the same user/date
+// are ADDED.
 // ======================================================
 
-function getUserCollectionForDate(
-    user,
-    selectedDate,
-    latestEntries
+function getTodayCollectionData(
+    selectedDate
 ) {
 
-    const userEmployees =
-        getUserEmployees(
-            user
-        );
+    const result = [];
 
 
-    const employeeCodes =
-        new Set();
+    // --------------------------------------------------
+    // ALL regionUsers
+    // --------------------------------------------------
 
+    regionUsers.forEach(
+        (user) => {
 
-    userEmployees.forEach(
-        (employee) => {
-
-            const code =
-                normalize(
-                    getEmployeeCode(
-                        employee
-                    )
+            const userEmployees =
+                getUserEmployees(
+                    user
                 );
 
 
-            if (code) {
+            const employeeCodes =
+                new Set();
 
-                employeeCodes.add(
-                    code
-                );
 
-            }
+            userEmployees.forEach(
+                (employee) => {
+
+                    const code =
+                        normalize(
+                            getEmployeeCode(
+                                employee
+                            )
+                        );
+
+
+                    if (code) {
+
+                        employeeCodes.add(
+                            code
+                        );
+
+                    }
+
+                }
+            );
+
+
+            let totalAmount = 0;
+
+
+            // ------------------------------------------------
+            // ALL ENTRIES OF SELECTED DATE ARE ADDED
+            // ------------------------------------------------
+
+            dailyEntries.forEach(
+                (entry) => {
+
+                    const entryDate =
+                        getEntryDate(
+                            entry
+                        );
+
+
+                    if (
+                        entryDate !==
+                        selectedDate
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const entryCode =
+                        normalize(
+                            getEntryEmployeeCode(
+                                entry
+                            )
+                        );
+
+
+                    if (
+                        entryCode &&
+                        employeeCodes.has(
+                            entryCode
+                        )
+                    ) {
+
+                        totalAmount +=
+                            getEntryAmount(
+                                entry
+                            );
+
+                    }
+
+                }
+            );
+
+
+            // ------------------------------------------------
+            // ALWAYS ADD USER
+            // ------------------------------------------------
+
+            result.push({
+
+                id:
+                    user.id,
+
+                userCode:
+                    getUserCode(
+                        user
+                    ),
+
+                userName:
+                    getUserName(
+                        user
+                    ),
+
+                totalAmount:
+                    totalAmount || 0
+
+            });
 
         }
     );
 
 
-    let total = 0;
-
-
-    latestEntries.forEach(
-        (entry) => {
-
-            const entryDate =
-                normalizeEntryDate(
-                    entry.date
-                );
-
-
-            if (
-                entryDate !==
-                selectedDate
-            ) {
-
-                return;
-
-            }
-
-
-            const entryCode =
-                normalize(
-                    getEntryEmployeeCode(
-                        entry
-                    )
-                );
-
-
-            if (
-                employeeCodes.has(
-                    entryCode
-                )
-            ) {
-
-                total +=
-                    getEntryAmount(
-                        entry
-                    );
-
-            }
-
-        }
-    );
-
-
-    return total;
+    return result;
 
 }
 
 
 // ======================================================
-// RENDER TODAY COLLECTION
+// DISPLAY TODAY COLLECTION
 // ======================================================
 
 function renderTodayCollection() {
@@ -2137,13 +2168,58 @@ function renderTodayCollection() {
     }
 
 
-    const selectedDate =
+    let selectedDate =
         todayCollectionDateFilter
             ? todayCollectionDateFilter.value
-            : getLocalDateString();
+            : getTodayDateString();
 
 
     if (!selectedDate) {
+
+        selectedDate =
+            getTodayDateString();
+
+    }
+
+
+    const data =
+        getTodayCollectionData(
+            selectedDate
+        );
+
+
+    // --------------------------------------------------
+    // TOTAL
+    // --------------------------------------------------
+
+    let grandTotal = 0;
+
+
+    data.forEach(
+        (user) => {
+
+            grandTotal +=
+                user.totalAmount;
+
+        }
+    );
+
+
+    if (todayCollectionTotalAmount) {
+
+        todayCollectionTotalAmount.textContent =
+            formatAmount(
+                grandTotal
+            );
+
+    }
+
+
+    // --------------------------------------------------
+    // NO USERS
+    // --------------------------------------------------
+
+    if (data.length === 0) {
 
         todayCollectionTableBody.innerHTML = `
 
@@ -2154,7 +2230,7 @@ function renderTodayCollection() {
                     class="no-data"
                 >
 
-                    Please select a date.
+                    Koi Region User nahi mila.
 
                 </td>
 
@@ -2162,48 +2238,20 @@ function renderTodayCollection() {
 
         `;
 
-
         return;
 
     }
 
 
-    const latestEntries =
-        getLatestEntries();
-
-
-    let grandTotal = 0;
+    // --------------------------------------------------
+    // TABLE
+    // --------------------------------------------------
 
     let html = "";
 
-    let rowNumber = 0;
 
-
-    userSummaryData.forEach(
-        (user) => {
-
-            const amount =
-                getUserCollectionForDate(
-                    user.originalUser,
-                    selectedDate,
-                    latestEntries
-                );
-
-
-            /*
-             * Only users having collection
-             * on selected date are shown.
-             */
-
-            if (amount <= 0) {
-                return;
-            }
-
-
-            rowNumber++;
-
-            grandTotal += amount;
-
+    data.forEach(
+        (user, index) => {
 
             html += `
 
@@ -2212,7 +2260,7 @@ function renderTodayCollection() {
                     <td>
 
                         <strong>
-                            ${rowNumber}
+                            ${index + 1}
                         </strong>
 
                     </td>
@@ -2220,30 +2268,22 @@ function renderTodayCollection() {
 
                     <td>
 
-                        <span
-                            class="today-user-name"
-                        >
-
-                            ${escapeHTML(
-                                user.userName
-                            )}
-
-                        </span>
+                        ${escapeHTML(
+                            user.userName
+                        )}
 
                     </td>
 
 
                     <td>
 
-                        <span
-                            class="today-total-amount"
-                        >
+                        <strong>
 
-                            ${formatRupee(
-                                amount
+                            ${formatAmount(
+                                user.totalAmount
                             )}
 
-                        </span>
+                        </strong>
 
                     </td>
 
@@ -2255,65 +2295,34 @@ function renderTodayCollection() {
     );
 
 
-    if (rowNumber === 0) {
+    todayCollectionTableBody.innerHTML =
+        html;
 
-        todayCollectionTableBody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="3"
-                    class="no-data"
-                >
-
-                    Is date ke liye koi
-                    collection nahi mili.
-
-                </td>
-
-            </tr>
-
-        `;
+}
 
 
-        return;
+// ======================================================
+// TODAY COLLECTION DATE FILTER
+// ======================================================
+
+if (todayCollectionDateFilter) {
+
+    if (!todayCollectionDateFilter.value) {
+
+        todayCollectionDateFilter.value =
+            getTodayDateString();
 
     }
 
 
-    html += `
+    todayCollectionDateFilter.addEventListener(
+        "change",
+        function () {
 
-        <tr
-            class="today-grand-total"
-        >
+            renderTodayCollection();
 
-            <td
-                colspan="2"
-                class="today-total-label"
-            >
-
-                Total Amount
-
-            </td>
-
-
-            <td
-                class="today-total-value"
-            >
-
-                ${formatRupee(
-                    grandTotal
-                )}
-
-            </td>
-
-        </tr>
-
-    `;
-
-
-    todayCollectionTableBody.innerHTML =
-        html;
+        }
+    );
 
 }
 
@@ -2322,18 +2331,25 @@ function renderTodayCollection() {
 // DOWNLOAD TODAY COLLECTION IMAGE
 // ======================================================
 
-if (downloadTodayCollectionImageBtn) {
+if (
+    downloadTodayCollectionImageBtn
+) {
 
     downloadTodayCollectionImageBtn.addEventListener(
         "click",
         async function () {
 
-            if (!todayCollectionCaptureArea) {
-
-                alert(
-                    "Today Collection area nahi mila."
+            const captureArea =
+                document.getElementById(
+                    "todayCollectionCaptureArea"
                 );
 
+
+            if (!captureArea) {
+
+                alert(
+                    "Today Collection data area nahi mila."
+                );
 
                 return;
 
@@ -2348,7 +2364,6 @@ if (downloadTodayCollectionImageBtn) {
                 alert(
                     "Image download library load nahi hui. Page refresh karke dobara try karein."
                 );
-
 
                 return;
 
@@ -2392,15 +2407,9 @@ if (downloadTodayCollectionImageBtn) {
                 );
 
 
-                const selectedDate =
-                    todayCollectionDateFilter
-                        ? todayCollectionDateFilter.value
-                        : getLocalDateString();
-
-
                 const canvas =
                     await html2canvas(
-                        todayCollectionCaptureArea,
+                        captureArea,
                         {
 
                             scale: 2,
@@ -2410,9 +2419,12 @@ if (downloadTodayCollectionImageBtn) {
                             allowTaint: true,
 
                             backgroundColor:
-                                "#ffffff",
+                                "#f4f7fb",
 
                             logging: false,
+
+                            imageTimeout:
+                                15000,
 
                             scrollX: 0,
 
@@ -2439,41 +2451,6 @@ if (downloadTodayCollectionImageBtn) {
 
                                     }
 
-
-                                    /*
-                                     * Make sure the
-                                     * date filter remains
-                                     * visible in image.
-                                     */
-
-                                    const clonedFilter =
-                                        clonedDocument
-                                            .getElementById(
-                                                "todayCollectionDateFilter"
-                                            );
-
-
-                                    if (
-                                        clonedFilter
-                                    ) {
-
-                                        clonedFilter.style.appearance =
-                                            "none";
-
-                                        clonedFilter.style.webkitAppearance =
-                                            "none";
-
-                                        clonedFilter.style.background =
-                                            "#ffffff";
-
-                                        clonedFilter.style.border =
-                                            "1px solid #d6deea";
-
-                                        clonedFilter.style.padding =
-                                            "0 12px";
-
-                                    }
-
                                 }
 
                         }
@@ -2485,6 +2462,12 @@ if (downloadTodayCollectionImageBtn) {
                         "image/png",
                         1.0
                     );
+
+
+                const selectedDate =
+                    todayCollectionDateFilter
+                        ? todayCollectionDateFilter.value
+                        : getTodayDateString();
 
 
                 const link =
@@ -2511,11 +2494,6 @@ if (downloadTodayCollectionImageBtn) {
 
                 document.body.removeChild(
                     link
-                );
-
-
-                console.log(
-                    "Today Collection image downloaded successfully."
                 );
 
             }
@@ -2553,75 +2531,8 @@ if (downloadTodayCollectionImageBtn) {
 
 
 // ======================================================
-// DATE FILTER
+// DOWNLOAD COMPLETE DASHBOARD IMAGE
 // ======================================================
-
-if (todayCollectionDateFilter) {
-
-    todayCollectionDateFilter.value =
-        getLocalDateString();
-
-
-    todayCollectionDateFilter.addEventListener(
-        "change",
-        function () {
-
-            renderTodayCollection();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// LOGOUT
-// ======================================================
-
-const logoutBtn =
-    document.getElementById(
-        "logoutBtn"
-    );
-
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-        "click",
-        function (event) {
-
-            event.preventDefault();
-
-
-            localStorage.removeItem(
-                "loggedInEmpCode"
-            );
-
-
-            localStorage.removeItem(
-                "userRole"
-            );
-
-
-            window.location.href =
-                "index.html";
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// DOWNLOAD FULL DASHBOARD DATA AS IMAGE
-// EXISTING FUNCTIONALITY - UNCHANGED
-// ======================================================
-
-const downloadDashboardImageBtn =
-    document.getElementById(
-        "downloadDashboardImageBtn"
-    );
-
 
 if (downloadDashboardImageBtn) {
 
@@ -2641,7 +2552,6 @@ if (downloadDashboardImageBtn) {
                     "Dashboard data area nahi mila."
                 );
 
-
                 return;
 
             }
@@ -2655,7 +2565,6 @@ if (downloadDashboardImageBtn) {
                 alert(
                     "Image download library load nahi hui. Page refresh karke dobara try karein."
                 );
-
 
                 return;
 
@@ -2724,16 +2633,20 @@ if (downloadDashboardImageBtn) {
 
                             windowWidth:
                                 Math.max(
-                                    document.documentElement
+                                    document
+                                        .documentElement
                                         .scrollWidth,
+
                                     dashboard
                                         .scrollWidth
                                 ),
 
                             windowHeight:
                                 Math.max(
-                                    document.documentElement
+                                    document
+                                        .documentElement
                                         .scrollHeight,
+
                                     dashboard
                                         .scrollHeight
                                 ),
@@ -2755,6 +2668,23 @@ if (downloadDashboardImageBtn) {
                                     ) {
 
                                         clonedButton.style.display =
+                                            "none";
+
+                                    }
+
+
+                                    const clonedTodayButton =
+                                        clonedDocument
+                                            .getElementById(
+                                                "downloadTodayCollectionImageBtn"
+                                            );
+
+
+                                    if (
+                                        clonedTodayButton
+                                    ) {
+
+                                        clonedTodayButton.style.display =
                                             "none";
 
                                     }
@@ -2864,6 +2794,44 @@ if (downloadDashboardImageBtn) {
 
 
 // ======================================================
+// LOGOUT
+// ======================================================
+
+const logoutBtn =
+    document.getElementById(
+        "logoutBtn"
+    );
+
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener(
+        "click",
+        function (event) {
+
+            event.preventDefault();
+
+
+            localStorage.removeItem(
+                "loggedInEmpCode"
+            );
+
+
+            localStorage.removeItem(
+                "userRole"
+            );
+
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+}
+
+
+// ======================================================
 // MAIN DASHBOARD
 // ======================================================
 
@@ -2931,6 +2899,10 @@ async function loadDashboard() {
         }
 
 
+        // ==============================================
+        // LOAD ALL DATA
+        // ==============================================
+
         await Promise.all([
 
             loadEmployees(),
@@ -2942,6 +2914,10 @@ async function loadDashboard() {
         ]);
 
 
+        // ==============================================
+        // EXISTING DASHBOARD
+        // ==============================================
+
         buildUserSummary();
 
 
@@ -2950,11 +2926,33 @@ async function loadDashboard() {
         );
 
 
+        // ==============================================
+        // TODAY COLLECTION
+        // ==============================================
+
         renderTodayCollection();
 
 
         console.log(
             "Dashboard Loaded Successfully"
+        );
+
+
+        console.log(
+            "Total regionUsers:",
+            regionUsers.length
+        );
+
+
+        console.log(
+            "Total employees:",
+            employees.length
+        );
+
+
+        console.log(
+            "Total daily entries:",
+            dailyEntries.length
         );
 
     }
@@ -3016,6 +3014,12 @@ async function loadDashboard() {
 
                         Today Collection data
                         load nahi hua.
+
+                        <br><br>
+
+                        ${escapeHTML(
+                            error.message
+                        )}
 
                     </td>
 
