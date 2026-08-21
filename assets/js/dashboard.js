@@ -58,19 +58,6 @@ const UNIT_AMOUNT = 7000;
 // HTML ELEMENTS
 // ======================================================
 
-const totalAmountEl =
-    document.getElementById("totalAmount");
-
-const todayAmountEl =
-    document.getElementById("todayAmount");
-
-const totalEntriesCountEl =
-    document.getElementById("totalEntriesCount");
-
-const entriesTableBody =
-    document.getElementById("entriesTableBody");
-
-
 const userSummaryTableBody =
     document.getElementById(
         "userSummaryTableBody"
@@ -81,19 +68,9 @@ const userSummaryTotalTarget =
         "userSummaryTotalTarget"
     );
 
-const userSummaryTargetUnits =
-    document.getElementById(
-        "userSummaryTargetUnits"
-    );
-
 const userSummaryTotalCollection =
     document.getElementById(
         "userSummaryTotalCollection"
-    );
-
-const userSummaryCollectionUnits =
-    document.getElementById(
-        "userSummaryCollectionUnits"
     );
 
 const userSummaryTotalRemaining =
@@ -101,19 +78,9 @@ const userSummaryTotalRemaining =
         "userSummaryTotalRemaining"
     );
 
-const userSummaryRemainingUnits =
-    document.getElementById(
-        "userSummaryRemainingUnits"
-    );
-
 const userSummaryTotalPercentage =
     document.getElementById(
         "userSummaryTotalPercentage"
-    );
-
-const userSummarySearch =
-    document.getElementById(
-        "userSummarySearch"
     );
 
 
@@ -165,32 +132,28 @@ function numberValue(value) {
 
 
 // ======================================================
-// CURRENCY
+// UNIT
+// 1 UNIT = ₹7,000
 // ======================================================
 
-function formatCurrency(value) {
+function getUnitsFromAmount(value) {
 
-    return (
-        "₹ " +
-        Number(value || 0)
-            .toLocaleString("en-IN")
-    );
+    const amount =
+        numberValue(value);
+
+    return amount / UNIT_AMOUNT;
 
 }
 
 
 // ======================================================
-// UNIT
-// 1 UNIT = ₹7,000
+// FORMAT UNIT
 // ======================================================
 
 function formatUnit(value) {
 
-    const amount =
-        numberValue(value);
-
     const units =
-        amount / UNIT_AMOUNT;
+        getUnitsFromAmount(value);
 
     return (
         units.toLocaleString(
@@ -200,6 +163,41 @@ function formatUnit(value) {
                 maximumFractionDigits: 2
             }
         ) + " Unit"
+    );
+
+}
+
+
+// ======================================================
+// FORMAT UNIT NUMBER
+// Used for editable Target field
+// ======================================================
+
+function formatUnitNumber(value) {
+
+    const units =
+        getUnitsFromAmount(value);
+
+    return units.toLocaleString(
+        "en-IN",
+        {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+// ======================================================
+// UNIT TO AMOUNT
+// ======================================================
+
+function unitToAmount(units) {
+
+    return (
+        numberValue(units) *
+        UNIT_AMOUNT
     );
 
 }
@@ -466,11 +464,6 @@ async function loadEmployees() {
         }
     );
 
-    console.log(
-        "Employees:",
-        employees
-    );
-
 }
 
 
@@ -552,17 +545,11 @@ async function loadDailyEntries() {
 
     }
 
-    console.log(
-        "Daily Entries:",
-        dailyEntries
-    );
-
 }
 
 
 // ======================================================
 // LOAD REGION USERS
-// ONLY regionUsers
 // ======================================================
 
 async function loadRegionUsers() {
@@ -590,11 +577,6 @@ async function loadRegionUsers() {
             });
 
         }
-    );
-
-    console.log(
-        "regionUsers:",
-        regionUsers
     );
 
 }
@@ -1160,16 +1142,12 @@ function buildUserSummary() {
         }
     );
 
-    console.log(
-        "FINAL USER SUMMARY:",
-        userSummaryData
-    );
-
 }
 
 
 // ======================================================
 // UPDATE SUMMARY CARDS
+// ONLY UNITS
 // ======================================================
 
 function updateUserSummaryCards(list) {
@@ -1190,12 +1168,14 @@ function updateUserSummaryCards(list) {
         }
     );
 
+
     const totalRemaining =
         Math.max(
             totalTarget -
             totalCollection,
             0
         );
+
 
     const percentage =
         totalTarget > 0
@@ -1209,15 +1189,6 @@ function updateUserSummaryCards(list) {
     if (userSummaryTotalTarget) {
 
         userSummaryTotalTarget.textContent =
-            formatCurrency(
-                totalTarget
-            );
-
-    }
-
-    if (userSummaryTargetUnits) {
-
-        userSummaryTargetUnits.textContent =
             formatUnit(
                 totalTarget
             );
@@ -1228,15 +1199,6 @@ function updateUserSummaryCards(list) {
     if (userSummaryTotalCollection) {
 
         userSummaryTotalCollection.textContent =
-            formatCurrency(
-                totalCollection
-            );
-
-    }
-
-    if (userSummaryCollectionUnits) {
-
-        userSummaryCollectionUnits.textContent =
             formatUnit(
                 totalCollection
             );
@@ -1247,15 +1209,6 @@ function updateUserSummaryCards(list) {
     if (userSummaryTotalRemaining) {
 
         userSummaryTotalRemaining.textContent =
-            formatCurrency(
-                totalRemaining
-            );
-
-    }
-
-    if (userSummaryRemainingUnits) {
-
-        userSummaryRemainingUnits.textContent =
             formatUnit(
                 totalRemaining
             );
@@ -1293,11 +1246,7 @@ function displayUserSummary(list) {
 
                 <td
                     colspan="6"
-                    style="
-                        text-align:center;
-                        padding:30px;
-                        color:#64748b;
-                    "
+                    class="no-data"
                 >
 
                     Koi Region User nahi mila.
@@ -1324,6 +1273,7 @@ function displayUserSummary(list) {
 
             const percentage =
                 user.percentage;
+
 
             const progress =
                 Math.min(
@@ -1372,6 +1322,7 @@ function displayUserSummary(list) {
                     user.userName
                 );
 
+
             const safeId =
                 escapeHTML(
                     user.id
@@ -1382,12 +1333,15 @@ function displayUserSummary(list) {
 
                 <tr>
 
+
                     <!-- NUMBER -->
 
                     <td>
+
                         <strong>
                             ${index + 1}
                         </strong>
+
                     </td>
 
 
@@ -1406,7 +1360,7 @@ function displayUserSummary(list) {
                     </td>
 
 
-                    <!-- TARGET -->
+                    <!-- TARGET UNIT -->
 
                     <td>
 
@@ -1417,11 +1371,18 @@ function displayUserSummary(list) {
                             <input
                                 type="number"
                                 min="0"
+                                step="0.01"
                                 class="user-target-input"
                                 data-id="${safeId}"
-                                value="${user.target || ""}"
-                                placeholder="Enter Target"
+                                value="${formatUnitNumber(user.target)}"
+                                placeholder="Unit"
                             >
+
+                            <span
+                                class="unit-input-label"
+                            >
+                                Unit
+                            </span>
 
                             <button
                                 type="button"
@@ -1438,17 +1399,6 @@ function displayUserSummary(list) {
 
                         </div>
 
-                        <span
-                            class="
-                                amount-unit
-                                target-main
-                            "
-                        >
-                            ${formatUnit(
-                                user.target
-                            )}
-                        </span>
-
                     </td>
 
 
@@ -1458,21 +1408,15 @@ function displayUserSummary(list) {
 
                         <span
                             class="
-                                amount-main
+                                unit-main
                                 collection-main
                             "
                         >
-                            ${formatCurrency(
-                                user.collection
-                            )}
-                        </span>
 
-                        <span
-                            class="amount-unit"
-                        >
                             ${formatUnit(
                                 user.collection
                             )}
+
                         </span>
 
                     </td>
@@ -1484,24 +1428,15 @@ function displayUserSummary(list) {
 
                         <span
                             class="
-                                amount-main
+                                unit-main
                                 remaining-main
                             "
                         >
-                            ${formatCurrency(
-                                user.remaining
-                            )}
-                        </span>
 
-                        <span
-                            class="
-                                amount-unit
-                                remaining-main
-                            "
-                        >
                             ${formatUnit(
                                 user.remaining
                             )}
+
                         </span>
 
                     </td>
@@ -1549,6 +1484,7 @@ function displayUserSummary(list) {
 
                     </td>
 
+
                 </tr>
 
             `;
@@ -1567,7 +1503,7 @@ function displayUserSummary(list) {
 
 
     // ==================================================
-    // SAVE TARGET
+    // SAVE TARGET UNIT
     // ==================================================
 
     document
@@ -1584,19 +1520,44 @@ function displayUserSummary(list) {
                         const userId =
                             this.dataset.id;
 
+
                         const input =
                             document.querySelector(
                                 `.user-target-input[data-id="${CSS.escape(userId)}"]`
                             );
 
+
                         if (!input) {
                             return;
                         }
 
-                        const target =
+
+                        const targetUnits =
                             numberValue(
                                 input.value
                             );
+
+
+                        if (
+                            targetUnits < 0
+                        ) {
+
+                            alert(
+                                "Target Unit 0 se kam nahi ho sakta."
+                            );
+
+                            return;
+
+                        }
+
+
+                        // Unit -> Amount
+
+                        const targetAmount =
+                            unitToAmount(
+                                targetUnits
+                            );
+
 
                         const user =
                             userSummaryData.find(
@@ -1605,15 +1566,19 @@ function displayUserSummary(list) {
                                     userId
                             );
 
+
                         if (!user) {
                             return;
                         }
 
+
                         const oldHTML =
                             this.innerHTML;
 
+
                         this.disabled =
                             true;
+
 
                         this.innerHTML = `
 
@@ -1641,13 +1606,13 @@ function displayUserSummary(list) {
                                 {
 
                                     target:
-                                        target,
+                                        targetAmount,
 
                                     targetAmount:
-                                        target,
+                                        targetAmount,
 
                                     manualTarget:
-                                        target,
+                                        targetAmount,
 
                                     updatedAt:
                                         serverTimestamp()
@@ -1662,26 +1627,28 @@ function displayUserSummary(list) {
 
 
                             user.target =
-                                target;
+                                targetAmount;
+
 
                             user.remaining =
                                 Math.max(
-                                    target -
+                                    targetAmount -
                                     user.collection,
                                     0
                                 );
 
+
                             user.percentage =
-                                target > 0
+                                targetAmount > 0
                                     ? (
                                         user.collection /
-                                        target
+                                        targetAmount
                                     ) * 100
                                     : 0;
 
 
                             displayUserSummary(
-                                getFilteredUsers()
+                                userSummaryData
                             );
 
 
@@ -1693,6 +1660,7 @@ function displayUserSummary(list) {
                                 "Target Save Error:",
                                 error
                             );
+
 
                             alert(
                                 "Target save nahi hua:\n" +
@@ -1736,8 +1704,10 @@ function displayUserSummary(list) {
                         const userId =
                             this.dataset.id;
 
+
                         const newName =
                             this.value.trim();
+
 
                         if (!newName) {
 
@@ -1749,12 +1719,14 @@ function displayUserSummary(list) {
 
                         }
 
+
                         const user =
                             userSummaryData.find(
                                 item =>
                                     item.id ===
                                     userId
                             );
+
 
                         if (!user) {
                             return;
@@ -1794,6 +1766,7 @@ function displayUserSummary(list) {
                             user.userName =
                                 newName;
 
+
                         }
 
                         catch (error) {
@@ -1802,6 +1775,7 @@ function displayUserSummary(list) {
                                 "User Name Save Error:",
                                 error
                             );
+
 
                             alert(
                                 "User Name save nahi hua:\n" +
@@ -1820,324 +1794,6 @@ function displayUserSummary(list) {
 
 
 // ======================================================
-// FILTER USERS
-// ======================================================
-
-function getFilteredUsers() {
-
-    const search =
-        normalize(
-            userSummarySearch
-                ? userSummarySearch.value
-                : ""
-        );
-
-    if (!search) {
-
-        return userSummaryData;
-
-    }
-
-    return userSummaryData.filter(
-        (user) => {
-
-            return (
-
-                normalize(
-                    user.userName
-                ).includes(search)
-
-                ||
-
-                normalize(
-                    user.userCode
-                ).includes(search)
-
-            );
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// SEARCH
-// ======================================================
-
-if (userSummarySearch) {
-
-    userSummarySearch.addEventListener(
-        "input",
-        function () {
-
-            displayUserSummary(
-                getFilteredUsers()
-            );
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// RECENT COLLECTION
-// ======================================================
-
-async function loadRecentCollections() {
-
-    try {
-
-        const latestEntries =
-            getLatestEntries();
-
-
-        latestEntries.sort(
-            (a, b) => {
-
-                const dateA =
-                    new Date(
-                        a.date
-                    );
-
-                const dateB =
-                    new Date(
-                        b.date
-                    );
-
-                return dateB - dateA;
-
-            }
-        );
-
-
-        let totalCollection = 0;
-
-        let todayCollection = 0;
-
-
-        const todayStr =
-            new Date()
-                .toISOString()
-                .split("T")[0];
-
-
-        let tableRowsHTML = "";
-
-
-        latestEntries.forEach(
-            (data) => {
-
-                const amount =
-                    getEntryAmount(
-                        data
-                    );
-
-
-                totalCollection +=
-                    amount;
-
-
-                if (
-                    data.date ===
-                    todayStr
-                ) {
-
-                    todayCollection +=
-                        amount;
-
-                }
-
-
-                const employeeCode =
-                    data.employee_code ||
-                    data.employeeCode ||
-                    "-";
-
-
-                const teacherName =
-                    data.teacher_name ||
-                    data.teacherName ||
-                    "-";
-
-
-                const jamiatulMadina =
-                    data.jamiatul_madina ||
-                    data.jamiatulMadina ||
-                    "-";
-
-
-                const city =
-                    data.city ||
-                    "-";
-
-
-                const state =
-                    data.state ||
-                    "-";
-
-
-                const region =
-                    data.region ||
-                    "-";
-
-
-                const date =
-                    data.date ||
-                    "-";
-
-
-                tableRowsHTML += `
-
-                    <tr>
-
-                        <td>
-                            ${escapeHTML(date)}
-                        </td>
-
-                        <td>
-                            <b>
-                                ${escapeHTML(
-                                    employeeCode
-                                )}
-                            </b>
-                        </td>
-
-                        <td>
-                            ${escapeHTML(
-                                teacherName
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(
-                                jamiatulMadina
-                            )}
-                        </td>
-
-                        <td>
-
-                            ${escapeHTML(
-                                city
-                            )}
-
-                            ,
-
-                            ${escapeHTML(
-                                state
-                            )}
-
-                        </td>
-
-                        <td>
-                            ${escapeHTML(
-                                region
-                            )}
-                        </td>
-
-                        <td
-                            style="
-                                color:#10b981;
-                                font-weight:bold;
-                            "
-                        >
-
-                            ${formatCurrency(
-                                amount
-                            )}
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-        );
-
-
-        if (totalAmountEl) {
-
-            totalAmountEl.textContent =
-                formatCurrency(
-                    totalCollection
-                );
-
-        }
-
-
-        if (todayAmountEl) {
-
-            todayAmountEl.textContent =
-                formatCurrency(
-                    todayCollection
-                );
-
-        }
-
-
-        if (totalEntriesCountEl) {
-
-            totalEntriesCountEl.textContent =
-                latestEntries.length;
-
-        }
-
-
-        if (entriesTableBody) {
-
-            if (
-                latestEntries.length === 0
-            ) {
-
-                entriesTableBody.innerHTML = `
-
-                    <tr>
-
-                        <td
-                            colspan="7"
-                            style="
-                                text-align:center;
-                                padding:30px;
-                                color:#64748b;
-                            "
-                        >
-
-                            Koi collection entry nahi mili.
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-
-            else {
-
-                entriesTableBody.innerHTML =
-                    tableRowsHTML;
-
-            }
-
-        }
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Recent Collection Error:",
-            error
-        );
-
-    }
-
-}
-
-
-// ======================================================
 // LOGOUT
 // ======================================================
 
@@ -2145,6 +1801,7 @@ const logoutBtn =
     document.getElementById(
         "logoutBtn"
     );
+
 
 if (logoutBtn) {
 
@@ -2187,11 +1844,7 @@ async function loadDashboard() {
 
                     <td
                         colspan="6"
-                        style="
-                            text-align:center;
-                            padding:30px;
-                            color:#64748b;
-                        "
+                        class="no-data"
                     >
 
                         <i
@@ -2230,9 +1883,6 @@ async function loadDashboard() {
         displayUserSummary(
             userSummaryData
         );
-
-
-        await loadRecentCollections();
 
 
         console.log(
