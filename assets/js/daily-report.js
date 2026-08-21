@@ -286,9 +286,7 @@ function getEntryDate(entry) {
 
         "";
 
-    return String(
-        possibleDate || ""
-    ).trim();
+    return possibleDate;
 
 }
 
@@ -304,10 +302,13 @@ function normalizeDate(value) {
     }
 
 
+    // ==================================
     // Firestore Timestamp
+    // ==================================
+
     if (
         typeof value === "object" &&
-        value.toDate
+        typeof value.toDate === "function"
     ) {
 
         const date =
@@ -320,15 +321,18 @@ function normalizeDate(value) {
     }
 
 
-    // Firestore Timestamp object
+    // ==================================
+    // Firestore Timestamp Object
+    // ==================================
+
     if (
         typeof value === "object" &&
-        value.seconds
+        value.seconds !== undefined
     ) {
 
         const date =
             new Date(
-                value.seconds * 1000
+                Number(value.seconds) * 1000
             );
 
         return formatDateForInput(
@@ -342,7 +346,10 @@ function normalizeDate(value) {
         String(value).trim();
 
 
+    // ==================================
     // YYYY-MM-DD
+    // ==================================
+
     if (
         /^\d{4}-\d{2}-\d{2}$/
             .test(stringValue)
@@ -353,7 +360,10 @@ function normalizeDate(value) {
     }
 
 
+    // ==================================
     // DD-MM-YYYY
+    // ==================================
+
     let match =
         stringValue.match(
             /^(\d{2})-(\d{2})-(\d{4})$/
@@ -372,7 +382,10 @@ function normalizeDate(value) {
     }
 
 
+    // ==================================
     // DD/MM/YYYY
+    // ==================================
+
     match =
         stringValue.match(
             /^(\d{2})\/(\d{2})\/(\d{4})$/
@@ -391,7 +404,10 @@ function normalizeDate(value) {
     }
 
 
+    // ==================================
     // Date.parse fallback
+    // ==================================
+
     const parsed =
         new Date(stringValue);
 
@@ -516,6 +532,137 @@ function getDateList(
 
 
     return dates;
+
+}
+
+
+// ======================================
+// Entry Time
+// IMPORTANT
+// This decides which same-day entry
+// is considered the latest.
+// ======================================
+
+function getEntryTime(entry) {
+
+    const possibleTime =
+
+        entry.entryTime ||
+
+        entry.entry_time ||
+
+        entry.createdAt ||
+
+        entry.created_at ||
+
+        entry.timestamp ||
+
+        entry.time ||
+
+        entry.entryTimestamp ||
+
+        entry.entry_timestamp ||
+
+        entry.submittedAt ||
+
+        entry.submitted_at ||
+
+        null;
+
+
+    // ==================================
+    // Firestore Timestamp
+    // ==================================
+
+    if (
+        possibleTime &&
+        typeof possibleTime === "object" &&
+        typeof possibleTime.toDate === "function"
+    ) {
+
+        const date =
+            possibleTime.toDate();
+
+        return date.getTime();
+
+    }
+
+
+    // ==================================
+    // Firestore Timestamp Object
+    // ==================================
+
+    if (
+        possibleTime &&
+        typeof possibleTime === "object" &&
+        possibleTime.seconds !== undefined
+    ) {
+
+        return (
+            Number(
+                possibleTime.seconds
+            ) * 1000
+        );
+
+    }
+
+
+    // ==================================
+    // JS Date
+    // ==================================
+
+    if (
+        possibleTime instanceof Date
+    ) {
+
+        return possibleTime.getTime();
+
+    }
+
+
+    // ==================================
+    // Number Timestamp
+    // ==================================
+
+    if (
+        typeof possibleTime === "number"
+    ) {
+
+        return possibleTime;
+
+    }
+
+
+    // ==================================
+    // String Date / Time
+    // ==================================
+
+    if (possibleTime) {
+
+        const parsed =
+            new Date(
+                String(possibleTime)
+            );
+
+
+        if (
+            !Number.isNaN(
+                parsed.getTime()
+            )
+        ) {
+
+            return parsed.getTime();
+
+        }
+
+    }
+
+
+    // ==================================
+    // If no time found
+    // ==================================
+
+    return 0;
 
 }
 
@@ -857,7 +1004,10 @@ async function loadRegionUser() {
 
 function hasEmployeeAccess(employee) {
 
-    // Admin
+    // ==================================
+    // ADMIN
+    // ==================================
+
     if (
         currentUserRole === "admin"
     ) {
@@ -940,6 +1090,10 @@ function hasEmployeeAccess(employee) {
             }
 
 
+            // ==================================
+            // FULL REGION
+            // ==================================
+
             const fullRegion =
 
                 rule.fullRegion === true ||
@@ -967,6 +1121,10 @@ function hasEmployeeAccess(employee) {
 
             }
 
+
+            // ==================================
+            // STATES
+            // ==================================
 
             let states = [];
 
@@ -1023,7 +1181,9 @@ function hasEmployeeAccess(employee) {
 
             }
 
-            else if (rule.stateName) {
+            else if (
+                rule.stateName
+            ) {
 
                 states = [
                     rule.stateName
@@ -1086,7 +1246,10 @@ async function loadData() {
 
     try {
 
+        // ==================================
         // Region User
+        // ==================================
+
         await loadRegionUser();
 
 
@@ -1148,7 +1311,6 @@ async function loadData() {
 
                     ...entryDoc.data(),
 
-                    // Keep document order
                     _index:
                         dailyEntries.length
 
@@ -1176,10 +1338,12 @@ async function loadData() {
             allEmployees.length
         );
 
+
         console.log(
             "Visible Employees:",
             visibleEmployees.length
         );
+
 
         console.log(
             "Daily Entries:",
@@ -1586,7 +1750,6 @@ function setDefaultDates() {
         );
 
 
-    // Default = Today
     if (fromDate) {
 
         fromDate.value =
@@ -1760,7 +1923,20 @@ function getFilteredEmployees() {
 
 
 // ======================================
-// Get Last Entry For Employee + Date
+// Get Latest Entry For Employee + Date
+//
+// IMPORTANT:
+// Same Employee + Same Date
+// = ONLY latest Entry Time counted.
+//
+// Example:
+//
+// 10:19 AM  ₹500
+// 10:57 AM  ₹100
+// 10:57 AM  ₹600
+// 12:11 PM  ₹800
+//
+// Result = ₹800
 // ======================================
 
 function buildDailyMap() {
@@ -1771,6 +1947,10 @@ function buildDailyMap() {
     dailyEntries.forEach(
         (entry, index) => {
 
+            // ==================================
+            // Employee Code
+            // ==================================
+
             const code =
                 normalize(
                     getEntryEmployeeCode(
@@ -1779,6 +1959,10 @@ function buildDailyMap() {
                 );
 
 
+            // ==================================
+            // Date
+            // ==================================
+
             const date =
                 normalizeDate(
                     getEntryDate(
@@ -1786,6 +1970,10 @@ function buildDailyMap() {
                     )
                 );
 
+
+            // ==================================
+            // Invalid Entry
+            // ==================================
 
             if (
                 !code ||
@@ -1797,30 +1985,154 @@ function buildDailyMap() {
             }
 
 
+            // ==================================
+            // Unique Key
+            // ==================================
+
             const key =
                 code +
                 "|" +
                 date;
 
 
-            // Last entry wins
-            map.set(
-                key,
-                {
-                    amount:
-                        getEntryAmount(
+            // ==================================
+            // Actual Entry Time
+            // ==================================
+
+            const entryTime =
+                getEntryTime(
+                    entry
+                );
+
+
+            // ==================================
+            // Existing Record
+            // ==================================
+
+            const existing =
+                map.get(
+                    key
+                );
+
+
+            // ==================================
+            // First Entry
+            // ==================================
+
+            if (!existing) {
+
+                map.set(
+                    key,
+                    {
+
+                        amount:
+                            getEntryAmount(
+                                entry
+                            ),
+
+                        index:
+                            index,
+
+                        entryTime:
+                            entryTime,
+
+                        entry:
                             entry
-                        ),
 
-                    index:
-                        index,
+                    }
+                );
 
-                    entry:
-                        entry
+                return;
+
+            }
+
+
+            // ==================================
+            // LATEST ENTRY WINS
+            // ==================================
+
+            if (
+                entryTime >
+                existing.entryTime
+            ) {
+
+                map.set(
+                    key,
+                    {
+
+                        amount:
+                            getEntryAmount(
+                                entry
+                            ),
+
+                        index:
+                            index,
+
+                        entryTime:
+                            entryTime,
+
+                        entry:
+                            entry
+
+                    }
+                );
+
+                return;
+
+            }
+
+
+            // ==================================
+            // SAME TIME
+            // Use latest Firestore array record
+            // ==================================
+
+            if (
+                entryTime ===
+                existing.entryTime
+            ) {
+
+                if (
+                    index >
+                    existing.index
+                ) {
+
+                    map.set(
+                        key,
+                        {
+
+                            amount:
+                                getEntryAmount(
+                                    entry
+                                ),
+
+                            index:
+                                index,
+
+                            entryTime:
+                                entryTime,
+
+                            entry:
+                                entry
+
+                        }
+                    );
+
                 }
-            );
+
+            }
 
         }
+    );
+
+
+    // ==================================
+    // DEBUG
+    // ==================================
+
+    console.log(
+        "Daily Latest Entry Map:",
+        map
     );
 
 
@@ -2609,6 +2921,7 @@ if (fromDate) {
                 }
             );
 
+
             generateReport();
 
         }
@@ -2632,6 +2945,7 @@ if (toDate) {
 
                 }
             );
+
 
             generateReport();
 
@@ -2670,23 +2984,42 @@ if (resetFilter) {
         function () {
 
             if (regionFilter) {
-                regionFilter.value = "";
+
+                regionFilter.value =
+                    "";
+
             }
+
 
             if (stateFilter) {
-                stateFilter.value = "";
+
+                stateFilter.value =
+                    "";
+
             }
+
 
             if (cityFilter) {
-                cityFilter.value = "";
+
+                cityFilter.value =
+                    "";
+
             }
+
 
             if (jamiatulFilter) {
-                jamiatulFilter.value = "";
+
+                jamiatulFilter.value =
+                    "";
+
             }
 
+
             if (searchFilter) {
-                searchFilter.value = "";
+
+                searchFilter.value =
+                    "";
+
             }
 
 
