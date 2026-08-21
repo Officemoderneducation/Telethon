@@ -1,6 +1,9 @@
 <div class="admin-sidebar">
 
-    <!-- LOGO -->
+    <!-- =========================================
+         LOGO
+    ========================================= -->
+
     <div class="admin-sidebar-logo">
 
         <img
@@ -15,71 +18,126 @@
     </div>
 
 
-    <!-- MENU -->
+    <!-- =========================================
+         MENU
+    ========================================= -->
+
     <div class="admin-sidebar-menu">
 
+
         <!-- 1. DASHBOARD -->
-        <a href="dashboard.html" data-page="dashboard.html">
+
+        <a
+            href="dashboard.html"
+            data-page="dashboard.html"
+        >
+
             <i class="fa-solid fa-house"></i>
+
             <span>Dashboard</span>
+
         </a>
 
 
         <!-- 2. TEACHERS LIST -->
-        <a href="users.html" data-page="users.html">
+
+        <a
+            href="users.html"
+            data-page="users.html"
+        >
+
             <i class="fa-solid fa-users"></i>
+
             <span>Teachers List</span>
+
         </a>
 
 
         <!-- 3. COLLECTION SUMMARY -->
+
         <a
             href="collection-summary.html"
             data-page="collection-summary.html"
         >
+
             <i class="fa-solid fa-chart-pie"></i>
+
             <span>Collection Summary</span>
+
         </a>
 
 
         <!-- 4. TARGET MANAGEMENT -->
+
         <a
             href="target-management.html"
             data-page="target-management.html"
         >
+
             <i class="fa-solid fa-bullseye"></i>
+
             <span>Target Management</span>
+
         </a>
 
 
         <!-- 5. REGION USER MANAGEMENT -->
+
         <a
             href="region-user-management.html"
             data-page="region-user-management.html"
         >
+
             <i class="fa-solid fa-user-shield"></i>
+
             <span>Region User Management</span>
+
         </a>
 
 
-        <!-- 6. ALL ENTRY -->
+        <!-- 6. DAILY REPORT -->
+
+        <a
+            href="daily-report.html"
+            data-page="daily-report.html"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>Daily Report</span>
+
+        </a>
+
+
+        <!-- 7. ALL ENTRY -->
+
         <a
             href="all-entry.html"
             data-page="all-entry.html"
         >
+
             <i class="fa-solid fa-list"></i>
+
             <span>All Entry</span>
+
         </a>
 
 
-        <!-- 7. LOGOUT -->
+        <!-- 8. LOGOUT -->
+
         <a
             href="#"
             id="adminLogoutBtn"
         >
-            <i class="fa-solid fa-right-from-bracket"></i>
+
+            <i
+                class="fa-solid fa-right-from-bracket"
+            ></i>
+
             <span>Logout</span>
+
         </a>
+
 
     </div>
 
@@ -92,15 +150,20 @@
 
 <script type="module">
 
+
     /* =====================================
        FIREBASE
     ===================================== */
 
-    import { auth } from "./assets/js/firebase-config.js";
+    import {
+        auth
+    } from "./assets/js/firebase-config.js";
+
 
     import {
         signOut
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
 
 
     /* =====================================
@@ -108,45 +171,76 @@
     ===================================== */
 
     const currentPage =
+
         window.location.pathname
             .split("/")
             .pop()
             .toLowerCase();
 
 
+
     const sidebar =
-        document.querySelector(".admin-sidebar");
+
+        document.querySelector(
+            ".admin-sidebar"
+        );
+
 
 
     if (sidebar) {
 
+
         const menuLinks =
+
             sidebar.querySelectorAll(
                 ".admin-sidebar-menu a[data-page]"
             );
 
 
-        menuLinks.forEach(function (link) {
 
-            const page =
-                link
-                    .getAttribute("data-page")
-                    .toLowerCase();
+        menuLinks.forEach(
+            function (link) {
 
 
-            if (page === currentPage) {
+                const page =
 
-                link.classList.add("active");
+                    link
+                        .getAttribute(
+                            "data-page"
+                        )
+                        .toLowerCase();
 
-            } else {
 
-                link.classList.remove("active");
+
+                if (
+                    page === currentPage
+                ) {
+
+
+                    link.classList.add(
+                        "active"
+                    );
+
+
+                }
+
+                else {
+
+
+                    link.classList.remove(
+                        "active"
+                    );
+
+
+                }
+
 
             }
+        );
 
-        });
 
     }
+
 
 
     /* =====================================
@@ -154,40 +248,75 @@
     ===================================== */
 
     const logoutBtn =
-        document.getElementById("adminLogoutBtn");
+
+        document.getElementById(
+            "adminLogoutBtn"
+        );
+
 
 
     if (logoutBtn) {
+
 
         logoutBtn.addEventListener(
             "click",
             async function (e) {
 
+
                 e.preventDefault();
+
 
 
                 try {
 
-                    /* Firebase Sign Out */
-                    await signOut(auth);
+
+                    /* ==========================
+                       FIREBASE SIGN OUT
+                    ========================== */
+
+                    await signOut(
+                        auth
+                    );
 
 
-                    /* Clear Local Storage */
+
+                    /* ==========================
+                       CLEAR LOCAL STORAGE
+                    ========================== */
+
                     localStorage.removeItem(
                         "loggedInEmpCode"
                     );
+
 
                     localStorage.removeItem(
                         "userRole"
                     );
 
 
-                    /* Go To Login Page */
+                    localStorage.removeItem(
+                        "adminLoggedIn"
+                    );
+
+
+                    localStorage.removeItem(
+                        "isAdmin"
+                    );
+
+
+
+                    /* ==========================
+                       GO TO LOGIN
+                    ========================== */
+
                     window.location.href =
                         "index.html";
 
 
-                } catch (error) {
+                }
+
+                catch (error) {
+
 
                     console.error(
                         "Logout Error:",
@@ -195,15 +324,20 @@
                     );
 
 
+
                     alert(
                         "Logout nahi ho saka. Please try again."
                     );
 
+
                 }
+
 
             }
         );
 
+
     }
+
 
 </script>
