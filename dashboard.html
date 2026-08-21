@@ -45,7 +45,6 @@
 
     <!-- ==========================================
          HTML2CANVAS
-         Used for Dashboard Image Download
     =========================================== -->
 
     <script
@@ -101,7 +100,6 @@
             background: #f4f7fb;
 
             padding: 0;
-
         }
 
 
@@ -373,20 +371,6 @@
             background: #1d4ed8;
 
             transform: translateY(-1px);
-
-            box-shadow:
-                0 7px 18px rgba(
-                    37,
-                    99,
-                    235,
-                    0.28
-                );
-        }
-
-
-        .download-dashboard-image-btn:active {
-
-            transform: translateY(0);
         }
 
 
@@ -709,31 +693,25 @@
             height: 100%;
 
             border-radius: 20px;
-
-            transition: width 0.5s ease;
         }
 
 
         .user-progress-bar.low {
-
             background: #ef4444;
         }
 
 
         .user-progress-bar.medium {
-
             background: #f59e0b;
         }
 
 
         .user-progress-bar.good {
-
             background: #3b82f6;
         }
 
 
         .user-progress-bar.complete {
-
             background: #16a34a;
         }
 
@@ -749,6 +727,304 @@
             color: #718096;
 
             padding: 30px !important;
+        }
+
+
+        /* ==========================================
+           TODAY COLLECTION
+        =========================================== */
+
+        .today-collection-container {
+
+            background: #ffffff;
+
+            border-radius: 18px;
+
+            border: 1px solid #e8edf5;
+
+            box-shadow:
+                0 7px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.06
+                );
+
+            overflow: hidden;
+
+            margin-bottom: 25px;
+        }
+
+
+        .today-collection-header {
+
+            padding: 20px 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            border-bottom: 1px solid #edf1f7;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff,
+                    #f9fbff
+                );
+        }
+
+
+        .today-collection-title h3 {
+
+            margin: 0;
+
+            color: #172033;
+
+            font-size: 18px;
+
+            font-weight: 700;
+        }
+
+
+        .today-collection-title h3 i {
+
+            color: #16a34a;
+
+            margin-right: 7px;
+        }
+
+
+        .today-collection-title p {
+
+            margin: 5px 0 0;
+
+            color: #8490a5;
+
+            font-size: 12px;
+        }
+
+
+        .today-collection-controls {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .today-date-label {
+
+            font-size: 13px;
+
+            color: #64748b;
+
+            font-weight: 700;
+        }
+
+
+        .today-date-filter {
+
+            height: 42px;
+
+            padding: 0 12px;
+
+            border: 1px solid #d6deea;
+
+            border-radius: 9px;
+
+            background: #ffffff;
+
+            color: #172033;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            outline: none;
+
+            cursor: pointer;
+        }
+
+
+        .today-date-filter:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
+        }
+
+
+        .download-today-image-btn {
+
+            border: none;
+
+            background: #16a34a;
+
+            color: #ffffff;
+
+            height: 42px;
+
+            padding: 0 16px;
+
+            border-radius: 9px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 5px 15px rgba(
+                    22,
+                    163,
+                    74,
+                    0.20
+                );
+
+            transition: all 0.2s ease;
+
+            white-space: nowrap;
+        }
+
+
+        .download-today-image-btn:hover {
+
+            background: #15803d;
+
+            transform: translateY(-1px);
+        }
+
+
+        .download-today-image-btn:disabled {
+
+            opacity: 0.7;
+
+            cursor: wait;
+
+            transform: none;
+        }
+
+
+        .today-collection-content {
+
+            padding: 18px;
+        }
+
+
+        .today-collection-table {
+
+            width: 100%;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
+        }
+
+
+        .today-collection-table thead th {
+
+            background: #f7f9fc;
+
+            color: #5d687b;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.3px;
+
+            padding: 14px 15px;
+
+            border-bottom: 1px solid #e5eaf1;
+
+            text-align: left;
+        }
+
+
+        .today-collection-table tbody td {
+
+            padding: 15px;
+
+            border-bottom: 1px solid #edf1f6;
+
+            color: #273449;
+
+            font-size: 14px;
+        }
+
+
+        .today-user-name {
+
+            font-weight: 700;
+
+            color: #172033;
+        }
+
+
+        .today-total-amount {
+
+            font-weight: 800;
+
+            color: #16a34a;
+
+            white-space: nowrap;
+        }
+
+
+        .today-grand-total {
+
+            background: #f0fdf4;
+        }
+
+
+        .today-grand-total td {
+
+            font-weight: 800 !important;
+
+            color: #166534 !important;
+
+            border-bottom: none !important;
+        }
+
+
+        .today-total-label {
+
+            text-align: right;
+
+            font-size: 14px !important;
+        }
+
+
+        .today-total-value {
+
+            font-size: 16px !important;
+
+            white-space: nowrap;
         }
 
 
@@ -800,6 +1076,32 @@
             .user-name-input {
 
                 width: 150px;
+            }
+
+
+            .today-collection-header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+
+            .today-collection-controls {
+
+                width: 100%;
+
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+
+            .today-date-filter,
+
+            .download-today-image-btn {
+
+                width: 100%;
             }
 
         }
@@ -1004,9 +1306,7 @@
                     </div>
 
 
-                    <!-- ==================================
-                         DOWNLOAD IMAGE BUTTON
-                    =================================== -->
+                    <!-- DOWNLOAD IMAGE -->
 
                     <button
                         type="button"
@@ -1030,9 +1330,7 @@
                 </div>
 
 
-                <!-- ======================================
-                     TABLE
-                ======================================= -->
+                <!-- TABLE -->
 
                 <div
                     class="
@@ -1089,6 +1387,164 @@
 
                 </div>
 
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ==================================================
+             TODAY COLLECTION
+             THIS IS THE NEW SECTION
+        =================================================== -->
+
+        <div
+            id="todayCollectionCaptureArea"
+            class="today-collection-container"
+        >
+
+
+            <!-- ==========================================
+                 TODAY COLLECTION HEADER
+            =========================================== -->
+
+            <div class="today-collection-header">
+
+
+                <div
+                    class="today-collection-title"
+                >
+
+                    <h3>
+
+                        <i
+                            class="
+                                fa-solid
+                                fa-calendar-day
+                            "
+                        ></i>
+
+                        Today Collection
+
+                    </h3>
+
+                    <p>
+                        Date-wise user collection
+                        amount
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="today-collection-controls"
+                >
+
+
+                    <!-- DATE FILTER -->
+
+                    <label
+                        class="today-date-label"
+                        for="todayCollectionDateFilter"
+                    >
+
+                        Date Filter
+
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="todayCollectionDateFilter"
+                        class="today-date-filter"
+                    >
+
+
+                    <!-- DOWNLOAD IMAGE -->
+
+                    <button
+                        type="button"
+                        id="downloadTodayCollectionImageBtn"
+                        class="
+                            download-today-image-btn
+                        "
+                        data-html2canvas-ignore="true"
+                        title="Download Today Collection as Image"
+                    >
+
+                        <i
+                            class="fa-solid fa-image"
+                        ></i>
+
+                        Download Image
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ==========================================
+                 TODAY COLLECTION TABLE
+            =========================================== -->
+
+            <div
+                class="today-collection-content"
+            >
+
+                <table
+                    class="today-collection-table"
+                >
+
+                    <thead>
+
+                        <tr>
+
+                            <th
+                                style="width:80px;"
+                            >
+                                #
+                            </th>
+
+                            <th>
+                                User
+                            </th>
+
+                            <th>
+                                Total Amount
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="todayCollectionTableBody"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="3"
+                                class="no-data"
+                            >
+
+                                Loading Today
+                                Collection...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
 
             </div>
 
