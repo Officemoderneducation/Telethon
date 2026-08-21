@@ -44,6 +44,11 @@
     box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
 
     font-family: Arial, sans-serif;
+
+    transform: translateX(0);
+
+    transition:
+        transform 0.25s ease;
 }
 
 
@@ -100,6 +105,7 @@
 
 .region-sidebar-brand-text {
     min-width: 0;
+
     overflow: hidden;
 }
 
@@ -397,12 +403,7 @@
 
 /* =====================================================
    MAIN PAGE
-   IMPORTANT
 ===================================================== */
-
-/*
-   Main page ko sidebar ke right se start karna hai.
-*/
 
 body.region-sidebar-page {
     margin: 0 !important;
@@ -419,9 +420,9 @@ body.region-sidebar-page {
 }
 
 
-/*
-   Common main containers
-*/
+/* =====================================================
+   MAIN CONTAINERS
+===================================================== */
 
 body.region-sidebar-page > .main,
 body.region-sidebar-page > .main-area,
@@ -429,6 +430,7 @@ body.region-sidebar-page > .page-content,
 body.region-sidebar-page > .content,
 body.region-sidebar-page > #mainContent,
 body.region-sidebar-page > #pageContent {
+
     margin-left: 0 !important;
 
     width: auto !important;
@@ -443,7 +445,9 @@ body.region-sidebar-page > #pageContent {
    SIDEBAR LOAD CONTAINER
 ===================================================== */
 
-#regionSidebarContainer {
+#regionSidebarContainer,
+#regionSidebar {
+
     display: block;
 
     width: 240px;
@@ -460,32 +464,142 @@ body.region-sidebar-page > #pageContent {
 
 
 /* =====================================================
+   MOBILE MENU BUTTON
+===================================================== */
+
+#regionSidebarToggle {
+
+    display: none;
+
+    position: fixed;
+
+    top: 12px;
+    left: 12px;
+
+    width: 44px;
+    height: 44px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    z-index: 100002;
+
+    align-items: center;
+    justify-content: center;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.20);
+}
+
+
+/* =====================================================
+   MOBILE OVERLAY
+===================================================== */
+
+#regionSidebarOverlay {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.45);
+
+    z-index: 99998;
+}
+
+
+/* =====================================================
    MOBILE
 ===================================================== */
 
 @media (max-width: 800px) {
 
     .region-sidebar {
+
         width: 220px;
 
         transform: translateX(-100%);
 
-        transition: transform 0.25s ease;
+        transition:
+            transform 0.25s ease;
     }
 
 
     .region-sidebar.open {
+
         transform: translateX(0);
     }
 
 
     body.region-sidebar-page {
+
         padding-left: 0 !important;
     }
 
 
-    #regionSidebarContainer {
+    #regionSidebarContainer,
+    #regionSidebar {
+
         width: 220px;
+
+        position: fixed;
+
+        left: 0;
+        top: 0;
+
+        height: 100vh;
+
+        z-index: 99999;
+    }
+
+
+    /* -----------------------------------------
+       MENU BUTTON
+    ----------------------------------------- */
+
+    #regionSidebarToggle {
+
+        display: flex;
+    }
+
+
+    /* -----------------------------------------
+       OVERLAY
+    ----------------------------------------- */
+
+    #regionSidebarOverlay.show {
+
+        display: block;
+    }
+
+
+    /* -----------------------------------------
+       MAIN
+    ----------------------------------------- */
+
+    body.region-sidebar-page > .main,
+    body.region-sidebar-page > .main-area,
+    body.region-sidebar-page > .page-content,
+    body.region-sidebar-page > .content,
+    body.region-sidebar-page > #mainContent,
+    body.region-sidebar-page > #pageContent {
+
+        margin-left: 0 !important;
+
+        width: 100% !important;
+
+        padding-top: 70px;
     }
 
 }
@@ -498,11 +612,13 @@ body.region-sidebar-page > #pageContent {
 @media (max-width: 500px) {
 
     .region-sidebar {
+
         width: 220px;
     }
 
 
     .region-sidebar-brand {
+
         height: 68px;
         min-height: 68px;
 
@@ -511,6 +627,7 @@ body.region-sidebar-page > #pageContent {
 
 
     .region-sidebar-logo {
+
         width: 40px !important;
         height: 40px !important;
 
@@ -522,8 +639,20 @@ body.region-sidebar-page > #pageContent {
     }
 
 
-    #regionSidebarContainer {
+    #regionSidebarContainer,
+    #regionSidebar {
+
         width: 220px;
+    }
+
+
+    #regionSidebarToggle {
+
+        top: 10px;
+        left: 10px;
+
+        width: 42px;
+        height: 42px;
     }
 
 }
