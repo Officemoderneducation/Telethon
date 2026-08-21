@@ -5,34 +5,60 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Telethon Admin Dashboard</title>
 
-    <!-- Font Awesome -->
+
+    <!-- ==========================================
+         FONT AWESOME
+    =========================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
-    <!-- Dashboard CSS -->
+
+    <!-- ==========================================
+         DASHBOARD CSS
+    =========================================== -->
+
     <link
         rel="stylesheet"
         href="assets/css/dashboard.css"
     >
 
-    <!-- Admin Sidebar CSS -->
+
+    <!-- ==========================================
+         ADMIN SIDEBAR CSS
+    =========================================== -->
+
     <link
         rel="stylesheet"
         href="components/admin-sidebar.css"
     >
+
+
+    <!-- ==========================================
+         HTML2CANVAS
+         Used for Dashboard Image Download
+    =========================================== -->
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    ></script>
+
 
     <style>
 
         * {
             box-sizing: border-box;
         }
+
 
         html,
         body {
@@ -42,6 +68,7 @@
             min-height: 100%;
         }
 
+
         body {
             background: #f4f7fb;
         }
@@ -49,19 +76,38 @@
 
         /* ==========================================
            MAIN CONTENT
-        ========================================== */
+        =========================================== */
 
         .main-content {
+
             margin-left: 260px;
+
             padding: 30px;
+
             min-height: 100vh;
+
             background: #f4f7fb;
         }
 
 
         /* ==========================================
+           DASHBOARD CAPTURE AREA
+        =========================================== */
+
+        #dashboardCaptureArea {
+
+            width: 100%;
+
+            background: #f4f7fb;
+
+            padding: 0;
+
+        }
+
+
+        /* ==========================================
            SUMMARY CARDS
-        ========================================== */
+        =========================================== */
 
         .user-summary-cards {
 
@@ -194,7 +240,7 @@
 
         /* ==========================================
            ACADEMIC DEPARTMENT SUMMARY
-        ========================================== */
+        =========================================== */
 
         .user-summary-container {
 
@@ -217,6 +263,10 @@
             margin-bottom: 25px;
         }
 
+
+        /* ==========================================
+           SECTION HEADER
+        =========================================== */
 
         .section-header {
 
@@ -272,8 +322,87 @@
 
 
         /* ==========================================
+           DOWNLOAD IMAGE BUTTON
+        =========================================== */
+
+        .download-dashboard-image-btn {
+
+            border: none;
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+            height: 42px;
+
+            padding: 0 16px;
+
+            border-radius: 9px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 5px 15px rgba(
+                    37,
+                    99,
+                    235,
+                    0.20
+                );
+
+            transition:
+                all 0.2s ease;
+
+            white-space: nowrap;
+        }
+
+
+        .download-dashboard-image-btn:hover {
+
+            background: #1d4ed8;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 7px 18px rgba(
+                    37,
+                    99,
+                    235,
+                    0.28
+                );
+        }
+
+
+        .download-dashboard-image-btn:active {
+
+            transform: translateY(0);
+        }
+
+
+        .download-dashboard-image-btn:disabled {
+
+            opacity: 0.7;
+
+            cursor: wait;
+
+            transform: none;
+        }
+
+
+        /* ==========================================
            TABLE
-        ========================================== */
+        =========================================== */
 
         .user-summary-table-wrapper {
 
@@ -341,7 +470,7 @@
 
         /* ==========================================
            USER NAME
-        ========================================== */
+        =========================================== */
 
         .user-name-input {
 
@@ -371,13 +500,18 @@
 
             box-shadow:
                 0 0 0 3px
-                rgba(37, 99, 235, 0.10);
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
         }
 
 
         /* ==========================================
            TARGET UNIT EDIT
-        ========================================== */
+        =========================================== */
 
         .target-edit-box {
 
@@ -417,7 +551,12 @@
 
             box-shadow:
                 0 0 0 3px
-                rgba(37, 99, 235, 0.10);
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
         }
 
 
@@ -461,7 +600,7 @@
 
         /* ==========================================
            UNIT DISPLAY
-        ========================================== */
+        =========================================== */
 
         .unit-main {
 
@@ -495,7 +634,7 @@
 
         /* ==========================================
            PERCENTAGE
-        ========================================== */
+        =========================================== */
 
         .percentage-wrapper {
 
@@ -601,7 +740,7 @@
 
         /* ==========================================
            NO DATA
-        ========================================== */
+        =========================================== */
 
         .no-data {
 
@@ -615,7 +754,7 @@
 
         /* ==========================================
            MOBILE / TABLET
-        ========================================== */
+        =========================================== */
 
         @media (max-width: 1100px) {
 
@@ -652,6 +791,12 @@
             }
 
 
+            .download-dashboard-image-btn {
+
+                width: 100%;
+            }
+
+
             .user-name-input {
 
                 width: 150px;
@@ -682,180 +827,271 @@
 
 
         <!-- ======================================
-             SUMMARY CARDS
+             DASHBOARD IMAGE CAPTURE AREA
         ======================================= -->
 
-        <div class="user-summary-cards">
+        <div id="dashboardCaptureArea">
 
 
-            <!-- TOTAL TARGET -->
+            <!-- ======================================
+                 SUMMARY CARDS
+            ======================================= -->
 
-            <div class="user-summary-card">
+            <div class="user-summary-cards">
 
-                <div class="summary-card-icon target">
 
-                    <i class="fa-solid fa-bullseye"></i>
+                <!-- TOTAL TARGET -->
+
+                <div class="user-summary-card">
+
+                    <div
+                        class="summary-card-icon target"
+                    >
+
+                        <i
+                            class="fa-solid fa-bullseye"
+                        ></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Total Target</span>
+
+                        <strong
+                            id="userSummaryTotalTarget"
+                        >
+                            0 Unit
+                        </strong>
+
+                    </div>
 
                 </div>
 
-                <div>
 
-                    <span>Total Target</span>
+                <!-- TOTAL COLLECTION -->
 
-                    <strong id="userSummaryTotalTarget">
-                        0 Unit
-                    </strong>
+                <div class="user-summary-card">
+
+                    <div
+                        class="
+                            summary-card-icon
+                            collection
+                        "
+                    >
+
+                        <i
+                            class="fa-solid fa-chart-column"
+                        ></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Total Collection</span>
+
+                        <strong
+                            id="userSummaryTotalCollection"
+                        >
+                            0 Unit
+                        </strong>
+
+                    </div>
 
                 </div>
+
+
+                <!-- REMAINING -->
+
+                <div class="user-summary-card">
+
+                    <div
+                        class="
+                            summary-card-icon
+                            remaining
+                        "
+                    >
+
+                        <i
+                            class="fa-solid fa-chart-line"
+                        ></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Remaining Target</span>
+
+                        <strong
+                            id="userSummaryTotalRemaining"
+                        >
+                            0 Unit
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PERCENTAGE -->
+
+                <div class="user-summary-card">
+
+                    <div
+                        class="
+                            summary-card-icon
+                            percent
+                        "
+                    >
+
+                        <i
+                            class="fa-solid fa-percent"
+                        ></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Overall Percentage</span>
+
+                        <strong
+                            id="userSummaryTotalPercentage"
+                        >
+                            0.00%
+                        </strong>
+
+                    </div>
+
+                </div>
+
 
             </div>
 
 
-            <!-- TOTAL COLLECTION -->
+            <!-- ======================================
+                 ACADEMIC DEPARTMENT
+            ======================================= -->
 
-            <div class="user-summary-card">
+            <div class="user-summary-container">
 
-                <div class="summary-card-icon collection">
 
-                    <i class="fa-solid fa-chart-column"></i>
+                <!-- SECTION HEADER -->
+
+                <div class="section-header">
+
+
+                    <div>
+
+                        <h3>
+
+                            <i
+                                class="
+                                    fa-solid
+                                    fa-building-columns
+                                "
+                            ></i>
+
+                            Academic Department,
+                            Jamiatul Madina
+
+                        </h3>
+
+                        <p>
+                            User-wise target and
+                            collection performance
+                        </p>
+
+                    </div>
+
+
+                    <!-- ==================================
+                         DOWNLOAD IMAGE BUTTON
+                    =================================== -->
+
+                    <button
+                        type="button"
+                        id="downloadDashboardImageBtn"
+                        class="
+                            download-dashboard-image-btn
+                        "
+                        data-html2canvas-ignore="true"
+                        title="Download Dashboard Data as Image"
+                    >
+
+                        <i
+                            class="fa-solid fa-image"
+                        ></i>
+
+                        Download Image
+
+                    </button>
+
 
                 </div>
 
-                <div>
 
-                    <span>Total Collection</span>
+                <!-- ======================================
+                     TABLE
+                ======================================= -->
 
-                    <strong id="userSummaryTotalCollection">
-                        0 Unit
-                    </strong>
+                <div
+                    class="
+                        user-summary-table-wrapper
+                    "
+                >
+
+                    <table
+                        class="user-summary-table"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+
+                                <th>User Name</th>
+
+                                <th>Target Unit</th>
+
+                                <th>Total Collection</th>
+
+                                <th>Remaining Target</th>
+
+                                <th>Percentage</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="userSummaryTableBody"
+                        >
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="no-data"
+                                >
+
+                                    Loading User
+                                    Summary...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
 
                 </div>
+
 
             </div>
 
-
-            <!-- REMAINING -->
-
-            <div class="user-summary-card">
-
-                <div class="summary-card-icon remaining">
-
-                    <i class="fa-solid fa-chart-line"></i>
-
-                </div>
-
-                <div>
-
-                    <span>Remaining Target</span>
-
-                    <strong id="userSummaryTotalRemaining">
-                        0 Unit
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <!-- PERCENTAGE -->
-
-            <div class="user-summary-card">
-
-                <div class="summary-card-icon percent">
-
-                    <i class="fa-solid fa-percent"></i>
-
-                </div>
-
-                <div>
-
-                    <span>Overall Percentage</span>
-
-                    <strong id="userSummaryTotalPercentage">
-                        0.00%
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-        </div>
-
-
-        <!-- ======================================
-             ACADEMIC DEPARTMENT
-        ======================================= -->
-
-        <div class="user-summary-container">
-
-
-            <div class="section-header">
-
-                <div>
-
-                    <h3>
-
-                        <i class="fa-solid fa-building-columns"></i>
-
-                        Academic Department, Jamiatul Madina
-
-                    </h3>
-
-                    <p>
-                        User-wise target and collection performance
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="user-summary-table-wrapper">
-
-                <table class="user-summary-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>#</th>
-
-                            <th>User Name</th>
-
-                            <th>Target Unit</th>
-
-                            <th>Total Collection</th>
-
-                            <th>Remaining Target</th>
-
-                            <th>Percentage</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="userSummaryTableBody">
-
-                        <tr>
-
-                            <td
-                                colspan="6"
-                                class="no-data"
-                            >
-
-                                Loading User Summary...
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
 
         </div>
 
@@ -873,149 +1109,164 @@
             "DOMContentLoaded",
             function () {
 
-                fetch("components/admin-sidebar.html")
+                fetch(
+                    "components/admin-sidebar.html"
+                )
 
-                    .then(function (response) {
+                    .then(
+                        function (response) {
 
-                        if (!response.ok) {
+                            if (!response.ok) {
 
-                            throw new Error(
-                                "Admin Sidebar not found: " +
-                                response.status
-                            );
-
-                        }
-
-                        return response.text();
-
-                    })
-
-                    .then(function (data) {
-
-                        const sidebar =
-                            document.getElementById(
-                                "adminSidebar"
-                            );
-
-                        if (!sidebar) {
-                            return;
-                        }
-
-                        sidebar.innerHTML = data;
-
-
-                        /* ==================================
-                           ACTIVE PAGE
-                        ================================== */
-
-                        let currentPage =
-                            window.location.pathname
-                                .split("/")
-                                .pop()
-                                .toLowerCase();
-
-
-                        if (
-                            !currentPage ||
-                            currentPage === ""
-                        ) {
-
-                            currentPage =
-                                "dashboard.html";
-
-                        }
-
-
-                        const menuLinks =
-                            sidebar.querySelectorAll(
-                                ".admin-sidebar-menu a[data-page]"
-                            );
-
-
-                        menuLinks.forEach(
-                            function (link) {
-
-                                const page =
-                                    link
-                                        .getAttribute(
-                                            "data-page"
-                                        )
-                                        .toLowerCase();
-
-
-                                if (
-                                    page ===
-                                    currentPage
-                                ) {
-
-                                    link.classList.add(
-                                        "active"
-                                    );
-
-                                } else {
-
-                                    link.classList.remove(
-                                        "active"
-                                    );
-
-                                }
+                                throw new Error(
+                                    "Admin Sidebar not found: " +
+                                    response.status
+                                );
 
                             }
-                        );
+
+                            return response.text();
+
+                        }
+                    )
+
+                    .then(
+                        function (data) {
+
+                            const sidebar =
+                                document.getElementById(
+                                    "adminSidebar"
+                                );
 
 
-                        /* ==================================
-                           LOGOUT
-                        ================================== */
-
-                        const logoutBtn =
-                            sidebar.querySelector(
-                                "#adminLogoutBtn"
-                            );
+                            if (!sidebar) {
+                                return;
+                            }
 
 
-                        if (logoutBtn) {
+                            sidebar.innerHTML =
+                                data;
 
-                            logoutBtn.addEventListener(
-                                "click",
-                                function (e) {
 
-                                    e.preventDefault();
+                            /* ==============================
+                               ACTIVE PAGE
+                            ============================== */
 
-                                    localStorage.removeItem(
-                                        "loggedInEmpCode"
-                                    );
+                            let currentPage =
+                                window.location.pathname
+                                    .split("/")
+                                    .pop()
+                                    .toLowerCase();
 
-                                    localStorage.removeItem(
-                                        "userRole"
-                                    );
 
-                                    localStorage.removeItem(
-                                        "adminLoggedIn"
-                                    );
+                            if (
+                                !currentPage ||
+                                currentPage === ""
+                            ) {
 
-                                    localStorage.removeItem(
-                                        "isAdmin"
-                                    );
+                                currentPage =
+                                    "dashboard.html";
 
-                                    window.location.href =
-                                        "index.html";
+                            }
+
+
+                            const menuLinks =
+                                sidebar.querySelectorAll(
+                                    ".admin-sidebar-menu a[data-page]"
+                                );
+
+
+                            menuLinks.forEach(
+                                function (link) {
+
+                                    const page =
+                                        link
+                                            .getAttribute(
+                                                "data-page"
+                                            )
+                                            .toLowerCase();
+
+
+                                    if (
+                                        page ===
+                                        currentPage
+                                    ) {
+
+                                        link.classList.add(
+                                            "active"
+                                        );
+
+                                    }
+
+                                    else {
+
+                                        link.classList.remove(
+                                            "active"
+                                        );
+
+                                    }
 
                                 }
                             );
 
+
+                            /* ==============================
+                               LOGOUT
+                            ============================== */
+
+                            const logoutBtn =
+                                sidebar.querySelector(
+                                    "#adminLogoutBtn"
+                                );
+
+
+                            if (logoutBtn) {
+
+                                logoutBtn.addEventListener(
+                                    "click",
+                                    function (e) {
+
+                                        e.preventDefault();
+
+
+                                        localStorage.removeItem(
+                                            "loggedInEmpCode"
+                                        );
+
+                                        localStorage.removeItem(
+                                            "userRole"
+                                        );
+
+                                        localStorage.removeItem(
+                                            "adminLoggedIn"
+                                        );
+
+                                        localStorage.removeItem(
+                                            "isAdmin"
+                                        );
+
+
+                                        window.location.href =
+                                            "index.html";
+
+                                    }
+                                );
+
+                            }
+
                         }
+                    )
 
-                    })
+                    .catch(
+                        function (error) {
 
-                    .catch(function (error) {
+                            console.error(
+                                "Admin Sidebar Error:",
+                                error
+                            );
 
-                        console.error(
-                            "Admin Sidebar Error:",
-                            error
-                        );
-
-                    });
+                        }
+                    );
 
             }
         );
