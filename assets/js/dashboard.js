@@ -83,9 +83,6 @@ const userSummaryTotalPercentage =
         "userSummaryTotalPercentage"
     );
 
-
-// TODAY COLLECTION
-
 const todayCollectionTableBody =
     document.getElementById(
         "todayCollectionTableBody"
@@ -96,17 +93,14 @@ const todayCollectionDateFilter =
         "todayCollectionDateFilter"
     );
 
-const downloadTodayCollectionImageBtn =
-    document.getElementById(
-        "downloadTodayCollectionImageBtn"
-    );
-
-
-// DASHBOARD IMAGE
-
 const downloadDashboardImageBtn =
     document.getElementById(
         "downloadDashboardImageBtn"
+    );
+
+const downloadTodayCollectionImageBtn =
+    document.getElementById(
+        "downloadTodayCollectionImageBtn"
     );
 
 
@@ -159,7 +153,7 @@ function numberValue(value) {
 
 
 // ======================================================
-// UNIT
+// UNIT FROM AMOUNT
 // ======================================================
 
 function getUnitsFromAmount(value) {
@@ -215,19 +209,21 @@ function formatUnitNumber(value) {
 
 
 // ======================================================
-// FORMAT RUPEE
+// FORMAT RUPEES
 // ======================================================
 
-function formatRupee(value) {
+function formatAmount(value) {
 
-    return "₹" +
+    return (
+        "₹" +
         numberValue(value).toLocaleString(
             "en-IN",
             {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 2
             }
-        );
+        )
+    );
 
 }
 
@@ -632,7 +628,9 @@ async function loadRegionUsers() {
 function getCreatedTime(entry) {
 
     if (!entry.createdAt) {
+
         return 0;
+
     }
 
 
@@ -662,8 +660,10 @@ function getCreatedTime(entry) {
             entry.createdAt
         );
 
+
     const time =
         date.getTime();
+
 
     return Number.isFinite(time)
         ? time
@@ -802,7 +802,9 @@ function getUserAccessRules(user) {
 function isFullRegionRule(rule) {
 
     if (!rule) {
+
         return false;
+
     }
 
 
@@ -972,7 +974,9 @@ function employeeMatchesAccess(
         (rule) => {
 
             if (!rule) {
+
                 return false;
+
             }
 
 
@@ -1147,7 +1151,7 @@ function getUserCollection(
 
 // ======================================================
 // BUILD USER SUMMARY
-// ALL REGION USERS MUST SHOW
+// ALL regionUsers MUST SHOW
 // ======================================================
 
 function buildUserSummary() {
@@ -1283,7 +1287,9 @@ function updateUserSummaryCards(list) {
             : 0;
 
 
-    if (userSummaryTotalTarget) {
+    if (
+        userSummaryTotalTarget
+    ) {
 
         userSummaryTotalTarget.textContent =
             formatUnit(
@@ -1293,7 +1299,9 @@ function updateUserSummaryCards(list) {
     }
 
 
-    if (userSummaryTotalCollection) {
+    if (
+        userSummaryTotalCollection
+    ) {
 
         userSummaryTotalCollection.textContent =
             formatUnit(
@@ -1303,7 +1311,9 @@ function updateUserSummaryCards(list) {
     }
 
 
-    if (userSummaryTotalRemaining) {
+    if (
+        userSummaryTotalRemaining
+    ) {
 
         userSummaryTotalRemaining.textContent =
             formatUnit(
@@ -1313,7 +1323,9 @@ function updateUserSummaryCards(list) {
     }
 
 
-    if (userSummaryTotalPercentage) {
+    if (
+        userSummaryTotalPercentage
+    ) {
 
         userSummaryTotalPercentage.textContent =
             percentage.toFixed(2) +
@@ -1330,12 +1342,18 @@ function updateUserSummaryCards(list) {
 
 function displayUserSummary(list) {
 
-    if (!userSummaryTableBody) {
+    if (
+        !userSummaryTableBody
+    ) {
+
         return;
+
     }
 
 
-    if (list.length === 0) {
+    if (
+        list.length === 0
+    ) {
 
         userSummaryTableBody.innerHTML = `
 
@@ -1358,6 +1376,7 @@ function displayUserSummary(list) {
         updateUserSummaryCards(
             list
         );
+
 
         return;
 
@@ -1433,9 +1452,11 @@ function displayUserSummary(list) {
                 <tr>
 
                     <td>
+
                         <strong>
                             ${index + 1}
                         </strong>
+
                     </td>
 
 
@@ -1588,17 +1609,6 @@ function displayUserSummary(list) {
     );
 
 
-    attachUserSummaryEvents();
-
-}
-
-
-// ======================================================
-// USER SUMMARY EVENTS
-// ======================================================
-
-function attachUserSummaryEvents() {
-
     // ==================================================
     // SAVE TARGET
     // ==================================================
@@ -1625,7 +1635,9 @@ function attachUserSummaryEvents() {
 
 
                         if (!input) {
+
                             return;
+
                         }
 
 
@@ -1663,7 +1675,9 @@ function attachUserSummaryEvents() {
 
 
                         if (!user) {
+
                             return;
+
                         }
 
 
@@ -1768,6 +1782,7 @@ function attachUserSummaryEvents() {
                             this.disabled =
                                 false;
 
+
                             this.innerHTML =
                                 oldHTML;
 
@@ -1823,7 +1838,9 @@ function attachUserSummaryEvents() {
 
 
                         if (!user) {
+
                             return;
+
                         }
 
 
@@ -1887,22 +1904,22 @@ function attachUserSummaryEvents() {
 
 
 // ======================================================
-// TODAY DATE - LOCAL DATE
+// DATE - TODAY
 // ======================================================
 
-function getTodayLocalDate() {
+function getTodayDate() {
 
-    const now =
+    const today =
         new Date();
 
 
     const year =
-        now.getFullYear();
+        today.getFullYear();
 
 
     const month =
         String(
-            now.getMonth() + 1
+            today.getMonth() + 1
         ).padStart(
             2,
             "0"
@@ -1911,20 +1928,57 @@ function getTodayLocalDate() {
 
     const day =
         String(
-            now.getDate()
+            today.getDate()
         ).padStart(
             2,
             "0"
         );
 
 
-    return `${year}-${month}-${day}`;
+    return (
+        `${year}-${month}-${day}`
+    );
 
 }
 
 
 // ======================================================
-// GET USER TODAY COLLECTION
+// FORMAT DATE FOR DISPLAY
+// ======================================================
+
+function formatDisplayDate(dateValue) {
+
+    if (!dateValue) {
+
+        return "";
+
+    }
+
+
+    const parts =
+        String(
+            dateValue
+        ).split("-");
+
+
+    if (
+        parts.length !== 3
+    ) {
+
+        return dateValue;
+
+    }
+
+
+    return (
+        `${parts[2]}-${parts[1]}-${parts[0]}`
+    );
+
+}
+
+
+// ======================================================
+// GET USER COLLECTION FOR SELECTED DATE
 // ======================================================
 
 function getUserCollectionForDate(
@@ -2027,8 +2081,22 @@ function displayTodayCollection(
     selectedDate
 ) {
 
-    if (!todayCollectionTableBody) {
+    if (
+        !todayCollectionTableBody
+    ) {
+
         return;
+
+    }
+
+
+    if (
+        !selectedDate
+    ) {
+
+        selectedDate =
+            getTodayDate();
+
     }
 
 
@@ -2036,15 +2104,16 @@ function displayTodayCollection(
         getLatestEntries();
 
 
-    let grandTotal =
-        0;
+    let grandTotal = 0;
 
 
     let html = "";
 
 
     // ==================================================
-    // ALL REGION USERS
+    // IMPORTANT:
+    // regionUsers = USERS
+    // Employees = Teachers
     // ==================================================
 
     regionUsers.forEach(
@@ -2075,25 +2144,41 @@ function displayTodayCollection(
                 <tr>
 
                     <td>
+
                         <strong>
                             ${index + 1}
                         </strong>
+
                     </td>
 
+
                     <td>
+
                         <span
                             class="today-user-name"
                         >
+
                             ${userName}
+
                         </span>
+
                     </td>
 
+
                     <td>
+
                         <span
-                            class="today-total-amount"
+                            class="
+                                today-total-amount
+                            "
                         >
-                            ${formatRupee(amount)}
+
+                            ${formatAmount(
+                                amount
+                            )}
+
                         </span>
+
                     </td>
 
                 </tr>
@@ -2105,7 +2190,7 @@ function displayTodayCollection(
 
 
     // ==================================================
-    // GRAND TOTAL
+    // TOTAL AMOUNT
     // ==================================================
 
     html += `
@@ -2128,7 +2213,7 @@ function displayTodayCollection(
                 class="today-total-value"
             >
 
-                ${formatRupee(
+                ${formatAmount(
                     grandTotal
                 )}
 
@@ -2139,35 +2224,12 @@ function displayTodayCollection(
     `;
 
 
-    if (regionUsers.length === 0) {
-
-        html = `
-
-            <tr>
-
-                <td
-                    colspan="3"
-                    class="no-data"
-                >
-
-                    Koi Region User nahi mila.
-
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-
     todayCollectionTableBody.innerHTML =
         html;
 
 
     console.log(
-        "Today Collection:",
-        selectedDate,
+        "Today Collection Total:",
         grandTotal
     );
 
@@ -2175,280 +2237,39 @@ function displayTodayCollection(
 
 
 // ======================================================
-// DOWNLOAD IMAGE - GENERIC
+// DATE FILTER
 // ======================================================
 
-async function downloadElementAsImage(
-    element,
-    button,
-    fileName,
-    options = {}
+if (
+    todayCollectionDateFilter
 ) {
 
-    if (!element) {
-
-        alert(
-            "Download area nahi mila."
-        );
-
-        return;
-
-    }
+    todayCollectionDateFilter.value =
+        getTodayDate();
 
 
-    if (
-        typeof html2canvas ===
-        "undefined"
-    ) {
+    todayCollectionDateFilter.addEventListener(
+        "change",
+        function () {
 
-        alert(
-            "html2canvas library load nahi hui. Page refresh karke dobara try karein."
-        );
-
-        return;
-
-    }
-
-
-    const oldHTML =
-        button
-            ? button.innerHTML
-            : "";
-
-
-    if (button) {
-
-        button.disabled =
-            true;
-
-        button.innerHTML = `
-
-            <i
-                class="
-                    fa-solid
-                    fa-spinner
-                    fa-spin
-                "
-            ></i>
-
-            Preparing Image...
-
-        `;
-
-    }
-
-
-    try {
-
-        // Wait for browser render
-
-        await new Promise(
-            (resolve) => {
-
-                requestAnimationFrame(
-                    () => {
-
-                        requestAnimationFrame(
-                            resolve
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-
-        // Wait for fonts
-
-        if (
-            document.fonts &&
-            document.fonts.ready
-        ) {
-
-            await document.fonts.ready;
+            displayTodayCollection(
+                this.value
+            );
 
         }
-
-
-        const rect =
-            element.getBoundingClientRect();
-
-
-        const width =
-            Math.max(
-                element.scrollWidth,
-                rect.width,
-                800
-            );
-
-
-        const height =
-            Math.max(
-                element.scrollHeight,
-                rect.height
-            );
-
-
-        const canvas =
-            await html2canvas(
-                element,
-                {
-
-                    scale:
-                        options.scale ||
-                        2,
-
-                    useCORS:
-                        true,
-
-                    allowTaint:
-                        true,
-
-                    backgroundColor:
-                        options.backgroundColor ||
-                        "#f4f7fb",
-
-                    logging:
-                        false,
-
-                    width:
-                        width,
-
-                    height:
-                        height,
-
-                    windowWidth:
-                        width,
-
-                    windowHeight:
-                        height,
-
-                    scrollX:
-                        0,
-
-                    scrollY:
-                        0,
-
-                    imageTimeout:
-                        15000,
-
-                    onclone:
-                        function (
-                            clonedDocument
-                        ) {
-
-                            // Hide all ignored elements
-
-                            clonedDocument
-                                .querySelectorAll(
-                                    '[data-html2canvas-ignore="true"]'
-                                )
-                                .forEach(
-                                    function (
-                                        item
-                                    ) {
-
-                                        item.style.display =
-                                            "none";
-
-                                    }
-                                );
-
-
-                            if (
-                                typeof options.onclone ===
-                                "function"
-                            ) {
-
-                                options.onclone(
-                                    clonedDocument
-                                );
-
-                            }
-
-                        }
-
-                }
-            );
-
-
-        const image =
-            canvas.toDataURL(
-                "image/png",
-                1.0
-            );
-
-
-        const link =
-            document.createElement(
-                "a"
-            );
-
-
-        link.download =
-            fileName;
-
-
-        link.href =
-            image;
-
-
-        document.body.appendChild(
-            link
-        );
-
-
-        link.click();
-
-
-        link.remove();
-
-
-        console.log(
-            "Image downloaded:",
-            fileName
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Image Download Error:",
-            error
-        );
-
-
-        alert(
-            "Image download nahi hui.\n\n" +
-            error.message
-        );
-
-    }
-
-    finally {
-
-        if (button) {
-
-            button.disabled =
-                false;
-
-            button.innerHTML =
-                oldHTML;
-
-        }
-
-    }
+    );
 
 }
 
 
 // ======================================================
-// DASHBOARD IMAGE DOWNLOAD
+// DOWNLOAD DASHBOARD IMAGE
+// FIXED FULL WIDTH
 // ======================================================
 
-if (downloadDashboardImageBtn) {
+if (
+    downloadDashboardImageBtn
+) {
 
     downloadDashboardImageBtn.addEventListener(
         "click",
@@ -2460,26 +2281,388 @@ if (downloadDashboardImageBtn) {
                 );
 
 
-            const today =
-                getTodayLocalDate();
+            if (!dashboard) {
+
+                alert(
+                    "Dashboard data area nahi mila."
+                );
+
+                return;
+
+            }
 
 
-            await downloadElementAsImage(
+            if (
+                typeof html2canvas ===
+                "undefined"
+            ) {
 
-                dashboard,
+                alert(
+                    "Image download library load nahi hui. Page refresh karke dobara try karein."
+                );
 
-                this,
+                return;
 
-                `Telethon-Dashboard-${today}.png`,
+            }
 
-                {
 
-                    backgroundColor:
-                        "#f4f7fb"
+            const oldHTML =
+                this.innerHTML;
 
-                }
 
-            );
+            this.disabled =
+                true;
+
+
+            this.innerHTML = `
+
+                <i
+                    class="
+                        fa-solid
+                        fa-spinner
+                        fa-spin
+                    "
+                ></i>
+
+                Preparing Image...
+
+            `;
+
+
+            let originalBodyOverflow =
+                "";
+
+
+            let originalHtmlOverflow =
+                "";
+
+
+            try {
+
+                await new Promise(
+                    function (resolve) {
+
+                        requestAnimationFrame(
+                            function () {
+
+                                requestAnimationFrame(
+                                    resolve
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+
+                // ======================================
+                // SAVE ORIGINAL OVERFLOW
+                // ======================================
+
+                originalBodyOverflow =
+                    document.body.style.overflow;
+
+
+                originalHtmlOverflow =
+                    document.documentElement.style.overflow;
+
+
+                document.body.style.overflow =
+                    "visible";
+
+
+                document.documentElement.style.overflow =
+                    "visible";
+
+
+                // ======================================
+                // EXACT CAPTURE SIZE
+                // ======================================
+
+                const captureWidth =
+                    dashboard.scrollWidth;
+
+
+                const captureHeight =
+                    dashboard.scrollHeight;
+
+
+                // ======================================
+                // CAPTURE
+                // ======================================
+
+                const canvas =
+                    await html2canvas(
+                        dashboard,
+                        {
+
+                            scale: 2,
+
+                            useCORS: true,
+
+                            allowTaint: false,
+
+                            backgroundColor:
+                                "#f4f7fb",
+
+                            logging: false,
+
+                            imageTimeout:
+                                15000,
+
+                            scrollX: 0,
+
+                            scrollY: 0,
+
+                            width:
+                                captureWidth,
+
+                            height:
+                                captureHeight,
+
+                            windowWidth:
+                                captureWidth,
+
+                            windowHeight:
+                                captureHeight,
+
+                            onclone:
+                                function (
+                                    clonedDocument
+                                ) {
+
+                                    // ==================================
+                                    // HIDE DOWNLOAD BUTTON
+                                    // ==================================
+
+                                    const clonedButton =
+                                        clonedDocument
+                                            .getElementById(
+                                                "downloadDashboardImageBtn"
+                                            );
+
+
+                                    if (
+                                        clonedButton
+                                    ) {
+
+                                        clonedButton.style.display =
+                                            "none";
+
+                                    }
+
+
+                                    // ==================================
+                                    // DASHBOARD WIDTH
+                                    // ==================================
+
+                                    const clonedDashboard =
+                                        clonedDocument
+                                            .getElementById(
+                                                "dashboardCaptureArea"
+                                            );
+
+
+                                    if (
+                                        clonedDashboard
+                                    ) {
+
+                                        clonedDashboard.style.width =
+                                            captureWidth + "px";
+
+                                        clonedDashboard.style.maxWidth =
+                                            "none";
+
+                                        clonedDashboard.style.margin =
+                                            "0";
+
+                                        clonedDashboard.style.padding =
+                                            "0";
+
+                                        clonedDashboard.style.overflow =
+                                            "visible";
+
+                                    }
+
+
+                                    // ==================================
+                                    // TABLE WRAPPER
+                                    // ==================================
+
+                                    const wrappers =
+                                        clonedDocument.querySelectorAll(
+                                            ".user-summary-table-wrapper"
+                                        );
+
+
+                                    wrappers.forEach(
+                                        function (
+                                            wrapper
+                                        ) {
+
+                                            wrapper.style.width =
+                                                "100%";
+
+                                            wrapper.style.maxWidth =
+                                                "none";
+
+                                            wrapper.style.overflow =
+                                                "visible";
+
+                                        }
+                                    );
+
+
+                                    // ==================================
+                                    // TABLE
+                                    // ==================================
+
+                                    const tables =
+                                        clonedDocument.querySelectorAll(
+                                            ".user-summary-table"
+                                        );
+
+
+                                    tables.forEach(
+                                        function (
+                                            table
+                                        ) {
+
+                                            table.style.width =
+                                                "100%";
+
+                                            table.style.maxWidth =
+                                                "none";
+
+                                        }
+                                    );
+
+                                }
+
+                        }
+                    );
+
+
+                // ======================================
+                // RESTORE PAGE
+                // ======================================
+
+                document.body.style.overflow =
+                    originalBodyOverflow;
+
+
+                document.documentElement.style.overflow =
+                    originalHtmlOverflow;
+
+
+                // ======================================
+                // CREATE IMAGE
+                // ======================================
+
+                const image =
+                    canvas.toDataURL(
+                        "image/png",
+                        1.0
+                    );
+
+
+                // ======================================
+                // DATE
+                // ======================================
+
+                const today =
+                    new Date();
+
+
+                const year =
+                    today.getFullYear();
+
+
+                const month =
+                    String(
+                        today.getMonth() + 1
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                const day =
+                    String(
+                        today.getDate()
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                // ======================================
+                // DOWNLOAD
+                // ======================================
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                link.download =
+                    `Telethon-Dashboard-${year}-${month}-${day}.png`;
+
+
+                link.href =
+                    image;
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                document.body.removeChild(
+                    link
+                );
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Dashboard Image Download Error:",
+                    error
+                );
+
+
+                document.body.style.overflow =
+                    originalBodyOverflow;
+
+
+                document.documentElement.style.overflow =
+                    originalHtmlOverflow;
+
+
+                alert(
+                    "Dashboard image download nahi hui.\n\n" +
+                    error.message
+                );
+
+            }
+
+            finally {
+
+                this.disabled =
+                    false;
+
+
+                this.innerHTML =
+                    oldHTML;
+
+            }
 
         }
     );
@@ -2488,10 +2671,13 @@ if (downloadDashboardImageBtn) {
 
 
 // ======================================================
-// TODAY COLLECTION IMAGE DOWNLOAD
+// DOWNLOAD TODAY COLLECTION IMAGE
+// FIXED FULL WIDTH
 // ======================================================
 
-if (downloadTodayCollectionImageBtn) {
+if (
+    downloadTodayCollectionImageBtn
+) {
 
     downloadTodayCollectionImageBtn.addEventListener(
         "click",
@@ -2503,58 +2689,325 @@ if (downloadTodayCollectionImageBtn) {
                 );
 
 
-            const selectedDate =
-                todayCollectionDateFilter &&
-                todayCollectionDateFilter.value
-                    ? todayCollectionDateFilter.value
-                    : getTodayLocalDate();
+            if (!captureArea) {
+
+                alert(
+                    "Today Collection area nahi mila."
+                );
+
+                return;
+
+            }
 
 
-            await downloadElementAsImage(
+            if (
+                typeof html2canvas ===
+                "undefined"
+            ) {
 
-                captureArea,
+                alert(
+                    "Image download library load nahi hui."
+                );
 
-                this,
+                return;
 
-                `Telethon-Today-Collection-${selectedDate}.png`,
-
-                {
-
-                    backgroundColor:
-                        "#f4f7fb"
-
-                }
-
-            );
-
-        }
-    );
-
-}
+            }
 
 
-// ======================================================
-// DATE FILTER
-// ======================================================
-
-if (todayCollectionDateFilter) {
-
-    todayCollectionDateFilter.value =
-        getTodayLocalDate();
+            const oldHTML =
+                this.innerHTML;
 
 
-    todayCollectionDateFilter.addEventListener(
-        "change",
-        function () {
-
-            const selectedDate =
-                this.value ||
-                getTodayLocalDate();
+            this.disabled =
+                true;
 
 
-            displayTodayCollection(
-                selectedDate
-            );
+            this.innerHTML = `
+
+                <i
+                    class="
+                        fa-solid
+                        fa-spinner
+                        fa-spin
+                    "
+                ></i>
+
+                Preparing Image...
+
+            `;
+
+
+            let originalBodyOverflow =
+                "";
+
+
+            let originalHtmlOverflow =
+                "";
+
+
+            try {
+
+                await new Promise(
+                    function (resolve) {
+
+                        requestAnimationFrame(
+                            function () {
+
+                                requestAnimationFrame(
+                                    resolve
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+
+                originalBodyOverflow =
+                    document.body.style.overflow;
+
+
+                originalHtmlOverflow =
+                    document.documentElement.style.overflow;
+
+
+                document.body.style.overflow =
+                    "visible";
+
+
+                document.documentElement.style.overflow =
+                    "visible";
+
+
+                const captureWidth =
+                    captureArea.scrollWidth;
+
+
+                const captureHeight =
+                    captureArea.scrollHeight;
+
+
+                const canvas =
+                    await html2canvas(
+                        captureArea,
+                        {
+
+                            scale: 2,
+
+                            useCORS: true,
+
+                            allowTaint: false,
+
+                            backgroundColor:
+                                "#ffffff",
+
+                            logging: false,
+
+                            imageTimeout:
+                                15000,
+
+                            scrollX: 0,
+
+                            scrollY: 0,
+
+                            width:
+                                captureWidth,
+
+                            height:
+                                captureHeight,
+
+                            windowWidth:
+                                captureWidth,
+
+                            windowHeight:
+                                captureHeight,
+
+                            onclone:
+                                function (
+                                    clonedDocument
+                                ) {
+
+                                    // ==================================
+                                    // HIDE DOWNLOAD BUTTON
+                                    // ==================================
+
+                                    const clonedButton =
+                                        clonedDocument
+                                            .getElementById(
+                                                "downloadTodayCollectionImageBtn"
+                                            );
+
+
+                                    if (
+                                        clonedButton
+                                    ) {
+
+                                        clonedButton.style.display =
+                                            "none";
+
+                                    }
+
+
+                                    // ==================================
+                                    // REMOVE DATE CONTROLS FROM IMAGE
+                                    // ==================================
+
+                                    const clonedControls =
+                                        clonedDocument
+                                            .querySelector(
+                                                ".today-collection-controls"
+                                            );
+
+
+                                    if (
+                                        clonedControls
+                                    ) {
+
+                                        clonedControls.style.display =
+                                            "none";
+
+                                    }
+
+
+                                    // ==================================
+                                    // FIX WIDTH
+                                    // ==================================
+
+                                    const clonedArea =
+                                        clonedDocument
+                                            .getElementById(
+                                                "todayCollectionCaptureArea"
+                                            );
+
+
+                                    if (
+                                        clonedArea
+                                    ) {
+
+                                        clonedArea.style.width =
+                                            captureWidth + "px";
+
+                                        clonedArea.style.maxWidth =
+                                            "none";
+
+                                        clonedArea.style.margin =
+                                            "0";
+
+                                        clonedArea.style.overflow =
+                                            "visible";
+
+                                    }
+
+                                }
+
+                        }
+                    );
+
+
+                // ======================================
+                // RESTORE PAGE
+                // ======================================
+
+                document.body.style.overflow =
+                    originalBodyOverflow;
+
+
+                document.documentElement.style.overflow =
+                    originalHtmlOverflow;
+
+
+                // ======================================
+                // IMAGE
+                // ======================================
+
+                const image =
+                    canvas.toDataURL(
+                        "image/png",
+                        1.0
+                    );
+
+
+                // ======================================
+                // SELECTED DATE
+                // ======================================
+
+                const selectedDate =
+                    todayCollectionDateFilter
+                        ? todayCollectionDateFilter.value
+                        : getTodayDate();
+
+
+                const safeDate =
+                    selectedDate ||
+                    getTodayDate();
+
+
+                // ======================================
+                // DOWNLOAD
+                // ======================================
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                link.download =
+                    `Telethon-Today-Collection-${safeDate}.png`;
+
+
+                link.href =
+                    image;
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                document.body.removeChild(
+                    link
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Today Collection Image Download Error:",
+                    error
+                );
+
+
+                document.body.style.overflow =
+                    originalBodyOverflow;
+
+
+                document.documentElement.style.overflow =
+                    originalHtmlOverflow;
+
+
+                alert(
+                    "Today Collection image download nahi hui.\n\n" +
+                    error.message
+                );
+
+            }
+
+            finally {
+
+                this.disabled =
+                    false;
+
+
+                this.innerHTML =
+                    oldHTML;
+
+            }
 
         }
     );
@@ -2608,11 +3061,13 @@ async function loadDashboard() {
 
     try {
 
-        // ==================================================
-        // LOADING USER SUMMARY
-        // ==================================================
+        // ==============================================
+        // USER SUMMARY LOADING
+        // ==============================================
 
-        if (userSummaryTableBody) {
+        if (
+            userSummaryTableBody
+        ) {
 
             userSummaryTableBody.innerHTML = `
 
@@ -2642,11 +3097,13 @@ async function loadDashboard() {
         }
 
 
-        // ==================================================
-        // LOADING TODAY COLLECTION
-        // ==================================================
+        // ==============================================
+        // TODAY COLLECTION LOADING
+        // ==============================================
 
-        if (todayCollectionTableBody) {
+        if (
+            todayCollectionTableBody
+        ) {
 
             todayCollectionTableBody.innerHTML = `
 
@@ -2676,9 +3133,9 @@ async function loadDashboard() {
         }
 
 
-        // ==================================================
+        // ==============================================
         // LOAD ALL DATA
-        // ==================================================
+        // ==============================================
 
         await Promise.all([
 
@@ -2691,9 +3148,9 @@ async function loadDashboard() {
         ]);
 
 
-        // ==================================================
+        // ==============================================
         // USER SUMMARY
-        // ==================================================
+        // ==============================================
 
         buildUserSummary();
 
@@ -2703,15 +3160,15 @@ async function loadDashboard() {
         );
 
 
-        // ==================================================
+        // ==============================================
         // TODAY COLLECTION
-        // ==================================================
+        // ==============================================
 
         const selectedDate =
             todayCollectionDateFilter &&
             todayCollectionDateFilter.value
                 ? todayCollectionDateFilter.value
-                : getTodayLocalDate();
+                : getTodayDate();
 
 
         displayTodayCollection(
@@ -2720,30 +3177,25 @@ async function loadDashboard() {
 
 
         console.log(
-            "================================"
-        );
-
-        console.log(
             "Dashboard Loaded Successfully"
         );
+
 
         console.log(
             "Region Users:",
             regionUsers.length
         );
 
+
         console.log(
             "Employees:",
             employees.length
         );
 
+
         console.log(
             "Daily Entries:",
             dailyEntries.length
-        );
-
-        console.log(
-            "================================"
         );
 
     }
@@ -2756,7 +3208,9 @@ async function loadDashboard() {
         );
 
 
-        if (userSummaryTableBody) {
+        if (
+            userSummaryTableBody
+        ) {
 
             userSummaryTableBody.innerHTML = `
 
@@ -2788,7 +3242,9 @@ async function loadDashboard() {
         }
 
 
-        if (todayCollectionTableBody) {
+        if (
+            todayCollectionTableBody
+        ) {
 
             todayCollectionTableBody.innerHTML = `
 
@@ -2803,7 +3259,8 @@ async function loadDashboard() {
                         "
                     >
 
-                        Today Collection data load nahi hua.
+                        Today Collection data
+                        load nahi hua.
 
                         <br><br>
 
