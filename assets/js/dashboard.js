@@ -86,6 +86,31 @@ const userSummaryTotalPercentage =
 
 
 // ======================================================
+// TODAY COLLECTION ELEMENTS
+// ======================================================
+
+const todayCollectionDateFilter =
+    document.getElementById(
+        "todayCollectionDateFilter"
+    );
+
+const todayCollectionTableBody =
+    document.getElementById(
+        "todayCollectionTableBody"
+    );
+
+const downloadTodayCollectionImageBtn =
+    document.getElementById(
+        "downloadTodayCollectionImageBtn"
+    );
+
+const todayCollectionCaptureArea =
+    document.getElementById(
+        "todayCollectionCaptureArea"
+    );
+
+
+// ======================================================
 // DATA
 // ======================================================
 
@@ -135,7 +160,6 @@ function numberValue(value) {
 
 // ======================================================
 // UNIT
-// 1 UNIT = ₹7,000
 // ======================================================
 
 function getUnitsFromAmount(value) {
@@ -172,7 +196,6 @@ function formatUnit(value) {
 
 // ======================================================
 // FORMAT UNIT NUMBER
-// Used for editable Target field
 // ======================================================
 
 function formatUnitNumber(value) {
@@ -200,6 +223,26 @@ function unitToAmount(units) {
     return (
         numberValue(units) *
         UNIT_AMOUNT
+    );
+
+}
+
+
+// ======================================================
+// FORMAT RUPEE
+// ======================================================
+
+function formatRupee(value) {
+
+    return (
+        "₹" +
+        numberValue(value).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        )
     );
 
 }
@@ -1199,7 +1242,6 @@ function buildUserSummary() {
 
 // ======================================================
 // UPDATE SUMMARY CARDS
-// ONLY UNITS
 // ======================================================
 
 function updateUserSummaryCards(list) {
@@ -1389,8 +1431,6 @@ function displayUserSummary(list) {
 
                 <tr>
 
-                    <!-- NUMBER -->
-
                     <td>
 
                         <strong>
@@ -1399,8 +1439,6 @@ function displayUserSummary(list) {
 
                     </td>
 
-
-                    <!-- USER NAME -->
 
                     <td>
 
@@ -1414,8 +1452,6 @@ function displayUserSummary(list) {
 
                     </td>
 
-
-                    <!-- TARGET UNIT -->
 
                     <td>
 
@@ -1460,8 +1496,6 @@ function displayUserSummary(list) {
                     </td>
 
 
-                    <!-- TOTAL COLLECTION -->
-
                     <td>
 
                         <span
@@ -1480,8 +1514,6 @@ function displayUserSummary(list) {
                     </td>
 
 
-                    <!-- REMAINING TARGET -->
-
                     <td>
 
                         <span
@@ -1499,8 +1531,6 @@ function displayUserSummary(list) {
 
                     </td>
 
-
-                    <!-- PERCENTAGE -->
 
                     <td>
 
@@ -1824,6 +1854,9 @@ function displayUserSummary(list) {
                             user.userName =
                                 newName;
 
+
+                            renderTodayCollection();
+
                         }
 
                         catch (error) {
@@ -1846,6 +1879,697 @@ function displayUserSummary(list) {
 
             }
         );
+
+}
+
+
+// ======================================================
+// DATE - LOCAL YYYY-MM-DD
+// ======================================================
+
+function getLocalDateString(date = new Date()) {
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+// ======================================================
+// DATE NORMALIZE
+// ======================================================
+
+function normalizeEntryDate(value) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    if (
+        typeof value.toDate ===
+        "function"
+    ) {
+
+        return getLocalDateString(
+            value.toDate()
+        );
+
+    }
+
+
+    if (
+        typeof value.toMillis ===
+        "function"
+    ) {
+
+        return getLocalDateString(
+            new Date(
+                value.toMillis()
+            )
+        );
+
+    }
+
+
+    if (
+        value.seconds !== undefined
+    ) {
+
+        return getLocalDateString(
+            new Date(
+                Number(value.seconds) *
+                1000
+            )
+        );
+
+    }
+
+
+    const text =
+        String(value).trim();
+
+
+    if (!text) {
+        return "";
+    }
+
+
+    /*
+     * If Firestore daily entry already
+     * stores date as YYYY-MM-DD,
+     * return it directly.
+     */
+
+    const match =
+        text.match(
+            /^(\d{4})-(\d{1,2})-(\d{1,2})/
+        );
+
+
+    if (match) {
+
+        return (
+            match[1] +
+            "-" +
+            String(
+                match[2]
+            ).padStart(
+                2,
+                "0"
+            ) +
+            "-" +
+            String(
+                match[3]
+            ).padStart(
+                2,
+                "0"
+            )
+        );
+
+    }
+
+
+    const parsed =
+        new Date(text);
+
+
+    if (
+        Number.isFinite(
+            parsed.getTime()
+        )
+    ) {
+
+        return getLocalDateString(
+            parsed
+        );
+
+    }
+
+
+    return text;
+
+}
+
+
+// ======================================================
+// GET USER COLLECTION FOR SELECTED DATE
+// ======================================================
+
+function getUserCollectionForDate(
+    user,
+    selectedDate,
+    latestEntries
+) {
+
+    const userEmployees =
+        getUserEmployees(
+            user
+        );
+
+
+    const employeeCodes =
+        new Set();
+
+
+    userEmployees.forEach(
+        (employee) => {
+
+            const code =
+                normalize(
+                    getEmployeeCode(
+                        employee
+                    )
+                );
+
+
+            if (code) {
+
+                employeeCodes.add(
+                    code
+                );
+
+            }
+
+        }
+    );
+
+
+    let total = 0;
+
+
+    latestEntries.forEach(
+        (entry) => {
+
+            const entryDate =
+                normalizeEntryDate(
+                    entry.date
+                );
+
+
+            if (
+                entryDate !==
+                selectedDate
+            ) {
+
+                return;
+
+            }
+
+
+            const entryCode =
+                normalize(
+                    getEntryEmployeeCode(
+                        entry
+                    )
+                );
+
+
+            if (
+                employeeCodes.has(
+                    entryCode
+                )
+            ) {
+
+                total +=
+                    getEntryAmount(
+                        entry
+                    );
+
+            }
+
+        }
+    );
+
+
+    return total;
+
+}
+
+
+// ======================================================
+// RENDER TODAY COLLECTION
+// ======================================================
+
+function renderTodayCollection() {
+
+    if (!todayCollectionTableBody) {
+        return;
+    }
+
+
+    const selectedDate =
+        todayCollectionDateFilter
+            ? todayCollectionDateFilter.value
+            : getLocalDateString();
+
+
+    if (!selectedDate) {
+
+        todayCollectionTableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="3"
+                    class="no-data"
+                >
+
+                    Please select a date.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    const latestEntries =
+        getLatestEntries();
+
+
+    let grandTotal = 0;
+
+    let html = "";
+
+    let rowNumber = 0;
+
+
+    userSummaryData.forEach(
+        (user) => {
+
+            const amount =
+                getUserCollectionForDate(
+                    user.originalUser,
+                    selectedDate,
+                    latestEntries
+                );
+
+
+            /*
+             * Only users having collection
+             * on selected date are shown.
+             */
+
+            if (amount <= 0) {
+                return;
+            }
+
+
+            rowNumber++;
+
+            grandTotal += amount;
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+                            ${rowNumber}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="today-user-name"
+                        >
+
+                            ${escapeHTML(
+                                user.userName
+                            )}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="today-total-amount"
+                        >
+
+                            ${formatRupee(
+                                amount
+                            )}
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    if (rowNumber === 0) {
+
+        todayCollectionTableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="3"
+                    class="no-data"
+                >
+
+                    Is date ke liye koi
+                    collection nahi mili.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    html += `
+
+        <tr
+            class="today-grand-total"
+        >
+
+            <td
+                colspan="2"
+                class="today-total-label"
+            >
+
+                Total Amount
+
+            </td>
+
+
+            <td
+                class="today-total-value"
+            >
+
+                ${formatRupee(
+                    grandTotal
+                )}
+
+            </td>
+
+        </tr>
+
+    `;
+
+
+    todayCollectionTableBody.innerHTML =
+        html;
+
+}
+
+
+// ======================================================
+// DOWNLOAD TODAY COLLECTION IMAGE
+// ======================================================
+
+if (downloadTodayCollectionImageBtn) {
+
+    downloadTodayCollectionImageBtn.addEventListener(
+        "click",
+        async function () {
+
+            if (!todayCollectionCaptureArea) {
+
+                alert(
+                    "Today Collection area nahi mila."
+                );
+
+
+                return;
+
+            }
+
+
+            if (
+                typeof html2canvas ===
+                "undefined"
+            ) {
+
+                alert(
+                    "Image download library load nahi hui. Page refresh karke dobara try karein."
+                );
+
+
+                return;
+
+            }
+
+
+            const oldHTML =
+                this.innerHTML;
+
+
+            this.disabled =
+                true;
+
+
+            this.innerHTML = `
+
+                <i
+                    class="
+                        fa-solid
+                        fa-spinner
+                        fa-spin
+                    "
+                ></i>
+
+                Preparing Image...
+
+            `;
+
+
+            try {
+
+                await new Promise(
+                    function (resolve) {
+
+                        setTimeout(
+                            resolve,
+                            300
+                        );
+
+                    }
+                );
+
+
+                const selectedDate =
+                    todayCollectionDateFilter
+                        ? todayCollectionDateFilter.value
+                        : getLocalDateString();
+
+
+                const canvas =
+                    await html2canvas(
+                        todayCollectionCaptureArea,
+                        {
+
+                            scale: 2,
+
+                            useCORS: true,
+
+                            allowTaint: true,
+
+                            backgroundColor:
+                                "#ffffff",
+
+                            logging: false,
+
+                            scrollX: 0,
+
+                            scrollY: 0,
+
+                            onclone:
+                                function (
+                                    clonedDocument
+                                ) {
+
+                                    const clonedButton =
+                                        clonedDocument
+                                            .getElementById(
+                                                "downloadTodayCollectionImageBtn"
+                                            );
+
+
+                                    if (
+                                        clonedButton
+                                    ) {
+
+                                        clonedButton.style.display =
+                                            "none";
+
+                                    }
+
+
+                                    /*
+                                     * Make sure the
+                                     * date filter remains
+                                     * visible in image.
+                                     */
+
+                                    const clonedFilter =
+                                        clonedDocument
+                                            .getElementById(
+                                                "todayCollectionDateFilter"
+                                            );
+
+
+                                    if (
+                                        clonedFilter
+                                    ) {
+
+                                        clonedFilter.style.appearance =
+                                            "none";
+
+                                        clonedFilter.style.webkitAppearance =
+                                            "none";
+
+                                        clonedFilter.style.background =
+                                            "#ffffff";
+
+                                        clonedFilter.style.border =
+                                            "1px solid #d6deea";
+
+                                        clonedFilter.style.padding =
+                                            "0 12px";
+
+                                    }
+
+                                }
+
+                        }
+                    );
+
+
+                const image =
+                    canvas.toDataURL(
+                        "image/png",
+                        1.0
+                    );
+
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                link.download =
+                    `Telethon-Today-Collection-${selectedDate}.png`;
+
+
+                link.href =
+                    image;
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                document.body.removeChild(
+                    link
+                );
+
+
+                console.log(
+                    "Today Collection image downloaded successfully."
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Today Collection Image Download Error:",
+                    error
+                );
+
+
+                alert(
+                    "Today Collection image download nahi hui.\n\n" +
+                    error.message
+                );
+
+            }
+
+            finally {
+
+                this.disabled =
+                    false;
+
+
+                this.innerHTML =
+                    oldHTML;
+
+            }
+
+        }
+    );
+
+}
+
+
+// ======================================================
+// DATE FILTER
+// ======================================================
+
+if (todayCollectionDateFilter) {
+
+    todayCollectionDateFilter.value =
+        getLocalDateString();
+
+
+    todayCollectionDateFilter.addEventListener(
+        "change",
+        function () {
+
+            renderTodayCollection();
+
+        }
+    );
 
 }
 
@@ -1889,7 +2613,8 @@ if (logoutBtn) {
 
 
 // ======================================================
-// DOWNLOAD DASHBOARD DATA AS IMAGE
+// DOWNLOAD FULL DASHBOARD DATA AS IMAGE
+// EXISTING FUNCTIONALITY - UNCHANGED
 // ======================================================
 
 const downloadDashboardImageBtn =
@@ -1922,10 +2647,6 @@ if (downloadDashboardImageBtn) {
             }
 
 
-            // ==========================================
-            // CHECK HTML2CANVAS
-            // ==========================================
-
             if (
                 typeof html2canvas ===
                 "undefined"
@@ -1940,10 +2661,6 @@ if (downloadDashboardImageBtn) {
 
             }
 
-
-            // ==========================================
-            // SAVE BUTTON STATE
-            // ==========================================
 
             const oldHTML =
                 this.innerHTML;
@@ -1970,10 +2687,6 @@ if (downloadDashboardImageBtn) {
 
             try {
 
-                // ======================================
-                // WAIT FOR DASHBOARD RENDER
-                // ======================================
-
                 await new Promise(
                     function (resolve) {
 
@@ -1985,10 +2698,6 @@ if (downloadDashboardImageBtn) {
                     }
                 );
 
-
-                // ======================================
-                // CAPTURE DASHBOARD
-                // ======================================
 
                 const canvas =
                     await html2canvas(
@@ -2056,20 +2765,12 @@ if (downloadDashboardImageBtn) {
                     );
 
 
-                // ======================================
-                // CONVERT CANVAS TO PNG
-                // ======================================
-
                 const image =
                     canvas.toDataURL(
                         "image/png",
                         1.0
                     );
 
-
-                // ======================================
-                // DATE
-                // ======================================
 
                 const today =
                     new Date();
@@ -2096,10 +2797,6 @@ if (downloadDashboardImageBtn) {
                         "0"
                     );
 
-
-                // ======================================
-                // DOWNLOAD FILE
-                // ======================================
 
                 const link =
                     document.createElement(
@@ -2204,6 +2901,36 @@ async function loadDashboard() {
         }
 
 
+        if (todayCollectionTableBody) {
+
+            todayCollectionTableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="3"
+                        class="no-data"
+                    >
+
+                        <i
+                            class="
+                                fa-solid
+                                fa-spinner
+                                fa-spin
+                            "
+                        ></i>
+
+                        Loading Today Collection...
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
         await Promise.all([
 
             loadEmployees(),
@@ -2221,6 +2948,9 @@ async function loadDashboard() {
         displayUserSummary(
             userSummaryData
         );
+
+
+        renderTodayCollection();
 
 
         console.log(
@@ -2259,6 +2989,33 @@ async function loadDashboard() {
                         ${escapeHTML(
                             error.message
                         )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        if (todayCollectionTableBody) {
+
+            todayCollectionTableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="3"
+                        style="
+                            text-align:center;
+                            padding:30px;
+                            color:#dc2626;
+                        "
+                    >
+
+                        Today Collection data
+                        load nahi hua.
 
                     </td>
 
