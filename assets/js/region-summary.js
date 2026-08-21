@@ -207,7 +207,12 @@ function formatUnit(value) {
 
 
 // ======================================================
-// GET CURRENT REGION USER IDENTIFIER
+// GET CURRENT REGION USER IDENTIFIERS
+// ======================================================
+// IMPORTANT:
+// Only login/session identifiers are used first.
+// Display-only values such as regionUserName are
+// NOT used to identify the current user.
 // ======================================================
 
 function getCurrentUserIdentifiers() {
@@ -217,21 +222,11 @@ function getCurrentUserIdentifiers() {
 
     const keys = [
 
-        "loggedInEmpCode",
-
         "regionUserId",
 
         "regionUserCode",
 
-        "userCode",
-
-        "employeeCode",
-
-        "empCode",
-
-        "username",
-
-        "userName"
+        "loggedInEmpCode"
 
     ];
 
@@ -258,7 +253,13 @@ function getCurrentUserIdentifiers() {
     );
 
 
-    return identifiers;
+    return [
+        ...new Set(
+            identifiers.map(
+                normalize
+            ).filter(Boolean)
+        )
+    ];
 
 }
 
@@ -268,6 +269,13 @@ function getCurrentUserIdentifiers() {
 // ======================================================
 
 function getUserCode(user) {
+
+    if (!user) {
+
+        return "";
+
+    }
+
 
     return String(
 
@@ -290,8 +298,6 @@ function getUserCode(user) {
         user.username ||
 
         user.userName ||
-
-        user.id ||
 
         ""
 
@@ -761,6 +767,16 @@ function employeeMatchesAccess(
     user
 ) {
 
+    if (
+        !employee ||
+        !user
+    ) {
+
+        return false;
+
+    }
+
+
     const accessRules =
         getUserAccessRules(user);
 
@@ -903,15 +919,69 @@ function employeeMatchesAccess(
 
 function getAssignedEmployees(user) {
 
-    return employees.filter(
+    if (!user) {
+
+        return [];
+
+    }
+
+
+    const matched =
+        employees.filter(
+            function (employee) {
+
+                return employeeMatchesAccess(
+                    employee,
+                    user
+                );
+
+            }
+        );
+
+
+    // --------------------------------------------------
+    // REMOVE DUPLICATE EMPLOYEES
+    // --------------------------------------------------
+
+    const employeeMap =
+        new Map();
+
+
+    matched.forEach(
         function (employee) {
 
-            return employeeMatchesAccess(
-                employee,
-                user
-            );
+            const code =
+                normalize(
+                    getEmployeeCode(
+                        employee
+                    )
+                );
+
+
+            if (!code) {
+
+                return;
+
+            }
+
+
+            if (
+                !employeeMap.has(code)
+            ) {
+
+                employeeMap.set(
+                    code,
+                    employee
+                );
+
+            }
 
         }
+    );
+
+
+    return Array.from(
+        employeeMap.values()
     );
 
 }
@@ -951,7 +1021,68 @@ async function loadRegionUsers() {
     );
 
 
+    console.log(
+        "Region Users Loaded:",
+        users.length
+    );
+
+
     return users;
+
+}
+
+
+// ======================================================
+// GET POSSIBLE USER IDENTIFIERS
+// ======================================================
+
+function getUserIdentifiers(user) {
+
+    if (!user) {
+
+        return [];
+
+    }
+
+
+    const values = [
+
+        user.id,
+
+        user.userCode,
+
+        user.user_code,
+
+        user.regionUserId,
+
+        user.region_user_id,
+
+        user.regionUserCode,
+
+        user.region_user_code,
+
+        user.employeeCode,
+
+        user.employee_code,
+
+        user.empCode,
+
+        user.emp_code,
+
+        user.username,
+
+        user.userName
+
+    ];
+
+
+    return [
+        ...new Set(
+            values
+                .map(normalize)
+                .filter(Boolean)
+        )
+    ];
 
 }
 
@@ -959,66 +1090,57 @@ async function loadRegionUsers() {
 // ======================================================
 // FIND CURRENT REGION USER
 // ======================================================
+// IMPORTANT:
+// Exact identifier matching is used.
+// Name matching is NOT used as an identity fallback.
+// This prevents another user's teachers from appearing.
+// ======================================================
 
-function findCurrentRegionUser(
-    users
-) {
+function findCurrentRegionUser(users) {
 
     const identifiers =
-        getCurrentUserIdentifiers()
-            .map(normalize)
-            .filter(Boolean);
+        getCurrentUserIdentifiers();
 
 
     console.log(
-        "Region User Identifiers:",
+        "Current Region User Identifiers:",
         identifiers
     );
 
 
+    if (
+        identifiers.length === 0
+    ) {
+
+        console.error(
+            "No Region User login identifier found."
+        );
+
+
+        return null;
+
+    }
+
+
     // --------------------------------------------------
-    // FIRST: MATCH BY ID / USER CODE
+    // FIND EXACT MATCH
     // --------------------------------------------------
 
-    let found =
-        users.find(
+    const matches =
+        users.filter(
             function (user) {
 
-                const possibleValues = [
-
-                    user.id,
-
-                    user.userCode,
-
-                    user.user_code,
-
-                    user.regionUserCode,
-
-                    user.region_user_code,
-
-                    user.employeeCode,
-
-                    user.employee_code,
-
-                    user.empCode,
-
-                    user.emp_code,
-
-                    user.username,
-
-                    user.userName
-
-                ];
+                const userIdentifiers =
+                    getUserIdentifiers(
+                        user
+                    );
 
 
-                return possibleValues.some(
-                    function (value) {
+                return identifiers.some(
+                    function (identifier) {
 
-                        return (
-                            value &&
-                            identifiers.includes(
-                                normalize(value)
-                            )
+                        return userIdentifiers.includes(
+                            identifier
                         );
 
                     }
@@ -1028,45 +1150,132 @@ function findCurrentRegionUser(
         );
 
 
-    if (found) {
+    console.log(
+        "Matching Region Users:",
+        matches
+    );
 
-        return found;
+
+    // --------------------------------------------------
+    // NO MATCH
+    // --------------------------------------------------
+
+    if (
+        matches.length === 0
+    ) {
+
+        return null;
 
     }
 
 
     // --------------------------------------------------
-    // FALLBACK:
-    // SAVED REGION USER NAME
+    // ONE MATCH
     // --------------------------------------------------
 
-    const savedName =
+    if (
+        matches.length === 1
+    ) {
+
+        return matches[0];
+
+    }
+
+
+    // --------------------------------------------------
+    // MULTIPLE MATCHES
+    // --------------------------------------------------
+    // Prefer regionUserId / document ID match.
+    // --------------------------------------------------
+
+    const regionUserId =
         normalize(
             localStorage.getItem(
-                "regionUserName"
+                "regionUserId"
             )
         );
 
 
-    if (savedName) {
+    if (regionUserId) {
 
-        found =
-            users.find(
+        const exactIdMatch =
+            matches.find(
                 function (user) {
 
                     return (
                         normalize(
-                            getUserName(user)
-                        ) === savedName
+                            user.id
+                        ) ===
+                        regionUserId
                     );
 
                 }
             );
 
+
+        if (exactIdMatch) {
+
+            return exactIdMatch;
+
+        }
+
     }
 
 
-    return found || null;
+    // --------------------------------------------------
+    // NEXT: REGION USER CODE
+    // --------------------------------------------------
+
+    const regionUserCode =
+        normalize(
+            localStorage.getItem(
+                "regionUserCode"
+            )
+        );
+
+
+    if (regionUserCode) {
+
+        const exactCodeMatch =
+            matches.find(
+                function (user) {
+
+                    return (
+                        normalize(
+                            getUserCode(
+                                user
+                            )
+                        ) ===
+                        regionUserCode
+                    );
+
+                }
+            );
+
+
+        if (exactCodeMatch) {
+
+            return exactCodeMatch;
+
+        }
+
+    }
+
+
+    // --------------------------------------------------
+    // AMBIGUOUS MATCH
+    // --------------------------------------------------
+    // Do NOT randomly select a user.
+    // This is important to prevent wrong teacher data.
+    // --------------------------------------------------
+
+    console.error(
+        "Multiple Region Users matched the same login identifier.",
+        matches
+    );
+
+
+    return null;
 
 }
 
@@ -1157,7 +1366,6 @@ async function loadDailyEntries() {
 
             }
         );
-
 
     }
     catch (error) {
@@ -1250,7 +1458,9 @@ function getLatestEntries() {
 
 
             const existing =
-                latestMap.get(key);
+                latestMap.get(
+                    key
+                );
 
 
             if (!existing) {
@@ -1404,7 +1614,9 @@ function getRegionName(user) {
 
     if (
         directRegion &&
-        String(directRegion).trim()
+        String(
+            directRegion
+        ).trim()
     ) {
 
         return String(
@@ -1436,11 +1648,15 @@ function getRegionName(user) {
 
             if (
                 region &&
-                String(region).trim()
+                String(
+                    region
+                ).trim()
             ) {
 
                 regions.push(
-                    String(region).trim()
+                    String(
+                        region
+                    ).trim()
                 );
 
             }
@@ -1895,10 +2111,6 @@ async function loadRegionSummary() {
             role !== "region user"
         ) {
 
-            // Do not redirect if role is empty.
-            // This allows existing region-user login
-            // implementations to work.
-
             console.warn(
                 "Unexpected userRole:",
                 role
@@ -1908,11 +2120,13 @@ async function loadRegionSummary() {
 
 
         // ------------------------------------------
-        // LOAD DATA
+        // LOAD ALL REQUIRED DATA
         // ------------------------------------------
 
         const [
-            regionUsers
+            regionUsers,
+            ,
+            ,
         ] = await Promise.all([
 
             loadRegionUsers(),
@@ -1925,7 +2139,7 @@ async function loadRegionSummary() {
 
 
         // ------------------------------------------
-        // FIND CURRENT USER
+        // FIND EXACT CURRENT USER
         // ------------------------------------------
 
         currentRegionUser =
@@ -1949,6 +2163,28 @@ async function loadRegionSummary() {
         );
 
 
+        console.log(
+            "Current Region User ID:",
+            currentRegionUser.id
+        );
+
+
+        console.log(
+            "Current Region User Code:",
+            getUserCode(
+                currentRegionUser
+            )
+        );
+
+
+        console.log(
+            "Current Region User Access:",
+            getUserAccessRules(
+                currentRegionUser
+            )
+        );
+
+
         // ------------------------------------------
         // USER INFORMATION
         // ------------------------------------------
@@ -1969,8 +2205,42 @@ async function loadRegionSummary() {
 
 
         console.log(
+            "Assigned Teachers Count:",
+            assignedEmployees.length
+        );
+
+
+        console.log(
             "Assigned Teachers:",
-            assignedEmployees
+            assignedEmployees.map(
+                function (employee) {
+
+                    return {
+
+                        code:
+                            getEmployeeCode(
+                                employee
+                            ),
+
+                        name:
+                            getEmployeeName(
+                                employee
+                            ),
+
+                        region:
+                            getEmployeeRegion(
+                                employee
+                            ),
+
+                        state:
+                            getEmployeeState(
+                                employee
+                            )
+
+                    };
+
+                }
+            )
         );
 
 
@@ -2017,7 +2287,6 @@ async function loadRegionSummary() {
         console.log(
             "Region Summary Loaded Successfully"
         );
-
 
     }
     catch (error) {
