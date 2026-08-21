@@ -30,6 +30,7 @@ const userRole = String(
 if (userRole !== "admin") {
 
     localStorage.removeItem("loggedInEmpCode");
+
     localStorage.removeItem("userRole");
 
     window.location.href = "index.html";
@@ -116,13 +117,14 @@ function normalize(value) {
 
 function numberValue(value) {
 
-    const number = Number(
-        String(value ?? "")
-            .replace(/,/g, "")
-            .replace(/₹/g, "")
-            .replace(/\s/g, "")
-            .trim()
-    );
+    const number =
+        Number(
+            String(value ?? "")
+                .replace(/,/g, "")
+                .replace(/₹/g, "")
+                .replace(/\s/g, "")
+                .trim()
+        );
 
     return Number.isFinite(number)
         ? number
@@ -592,6 +594,7 @@ function getCreatedTime(entry) {
         return 0;
     }
 
+
     if (
         typeof entry.createdAt.toMillis ===
         "function"
@@ -600,6 +603,7 @@ function getCreatedTime(entry) {
         return entry.createdAt.toMillis();
 
     }
+
 
     if (entry.createdAt.seconds) {
 
@@ -611,13 +615,16 @@ function getCreatedTime(entry) {
 
     }
 
+
     const date =
         new Date(
             entry.createdAt
         );
 
+
     const time =
         date.getTime();
+
 
     return Number.isFinite(time)
         ? time
@@ -635,6 +642,7 @@ function getLatestEntries() {
     const latestMap =
         new Map();
 
+
     dailyEntries.forEach(
         (entry) => {
 
@@ -643,20 +651,25 @@ function getLatestEntries() {
                     entry
                 );
 
+
             const date =
                 String(
                     entry.date || ""
                 ).trim();
 
+
             if (!employeeCode || !date) {
                 return;
             }
 
+
             const key =
                 `${normalize(employeeCode)}_${date}`;
 
+
             const existing =
                 latestMap.get(key);
+
 
             if (!existing) {
 
@@ -666,17 +679,21 @@ function getLatestEntries() {
                 );
 
                 return;
+
             }
+
 
             const currentTime =
                 getCreatedTime(
                     entry
                 );
 
+
             const existingTime =
                 getCreatedTime(
                     existing
                 );
+
 
             if (
                 currentTime >
@@ -692,6 +709,7 @@ function getLatestEntries() {
 
         }
     );
+
 
     return Array.from(
         latestMap.values()
@@ -716,6 +734,7 @@ function getUserAccessRules(user) {
 
     }
 
+
     if (
         Array.isArray(
             user.accessRules
@@ -725,6 +744,7 @@ function getUserAccessRules(user) {
         return user.accessRules;
 
     }
+
 
     return [];
 
@@ -740,6 +760,7 @@ function isFullRegionRule(rule) {
     if (!rule) {
         return false;
     }
+
 
     return (
 
@@ -805,6 +826,7 @@ function getRuleStates(rule) {
 
     }
 
+
     if (
         typeof rule.states ===
         "string"
@@ -816,6 +838,7 @@ function getRuleStates(rule) {
 
     }
 
+
     if (
         Array.isArray(
             rule.selectedStates
@@ -825,6 +848,7 @@ function getRuleStates(rule) {
         return rule.selectedStates;
 
     }
+
 
     if (
         Array.isArray(
@@ -836,6 +860,7 @@ function getRuleStates(rule) {
 
     }
 
+
     if (rule.state) {
 
         return [
@@ -844,6 +869,7 @@ function getRuleStates(rule) {
 
     }
 
+
     if (rule.stateName) {
 
         return [
@@ -851,6 +877,7 @@ function getRuleStates(rule) {
         ];
 
     }
+
 
     return [];
 
@@ -871,6 +898,7 @@ function employeeMatchesAccess(
             user
         );
 
+
     if (
         accessRules.length === 0
     ) {
@@ -879,12 +907,14 @@ function employeeMatchesAccess(
 
     }
 
+
     const employeeRegion =
         normalize(
             getEmployeeRegion(
                 employee
             )
         );
+
 
     const employeeState =
         normalize(
@@ -893,6 +923,7 @@ function employeeMatchesAccess(
             )
         );
 
+
     return accessRules.some(
         (rule) => {
 
@@ -900,10 +931,12 @@ function employeeMatchesAccess(
                 return false;
             }
 
+
             const assignedRegion =
                 getRuleRegion(
                     rule
                 );
+
 
             if (
                 assignedRegion &&
@@ -915,6 +948,7 @@ function employeeMatchesAccess(
 
             }
 
+
             if (
                 isFullRegionRule(
                     rule
@@ -925,10 +959,12 @@ function employeeMatchesAccess(
 
             }
 
+
             const states =
                 getRuleStates(
                     rule
                 );
+
 
             if (
                 states.length === 0
@@ -938,6 +974,7 @@ function employeeMatchesAccess(
 
             }
 
+
             return states.some(
                 (state) => {
 
@@ -945,6 +982,7 @@ function employeeMatchesAccess(
                         normalize(
                             state
                         );
+
 
                     if (
                         normalizedState === "*" ||
@@ -955,6 +993,7 @@ function employeeMatchesAccess(
                         return true;
 
                     }
+
 
                     return (
                         normalizedState ===
@@ -1002,6 +1041,7 @@ function getUserCollection(
     const employeeCodes =
         new Set();
 
+
     userEmployees.forEach(
         (employee) => {
 
@@ -1011,6 +1051,7 @@ function getUserCollection(
                         employee
                     )
                 );
+
 
             if (code) {
 
@@ -1023,7 +1064,9 @@ function getUserCollection(
         }
     );
 
+
     let total = 0;
+
 
     latestEntries.forEach(
         (entry) => {
@@ -1034,6 +1077,7 @@ function getUserCollection(
                         entry
                     )
                 );
+
 
             if (
                 employeeCodes.has(
@@ -1051,6 +1095,7 @@ function getUserCollection(
         }
     );
 
+
     return total;
 
 }
@@ -1065,7 +1110,9 @@ function buildUserSummary() {
     const latestEntries =
         getLatestEntries();
 
+
     userSummaryData = [];
+
 
     regionUsers.forEach(
         (user) => {
@@ -1075,16 +1122,19 @@ function buildUserSummary() {
                     user
                 );
 
+
             const collectionAmount =
                 getUserCollection(
                     userEmployees,
                     latestEntries
                 );
 
+
             const target =
                 getUserTarget(
                     user
                 );
+
 
             const remaining =
                 Math.max(
@@ -1093,6 +1143,7 @@ function buildUserSummary() {
                     0
                 );
 
+
             const percentage =
                 target > 0
                     ? (
@@ -1100,6 +1151,7 @@ function buildUserSummary() {
                         target
                     ) * 100
                     : 0;
+
 
             userSummaryData.push({
 
@@ -1155,6 +1207,7 @@ function updateUserSummaryCards(list) {
     let totalTarget = 0;
 
     let totalCollection = 0;
+
 
     list.forEach(
         (user) => {
@@ -1257,11 +1310,14 @@ function displayUserSummary(list) {
 
         `;
 
+
         updateUserSummaryCards(
             list
         );
 
+
         return;
+
     }
 
 
@@ -1333,7 +1389,6 @@ function displayUserSummary(list) {
 
                 <tr>
 
-
                     <!-- NUMBER -->
 
                     <td>
@@ -1374,7 +1429,9 @@ function displayUserSummary(list) {
                                 step="0.01"
                                 class="user-target-input"
                                 data-id="${safeId}"
-                                value="${formatUnitNumber(user.target)}"
+                                value="${formatUnitNumber(
+                                    user.target
+                                )}"
                                 placeholder="Unit"
                             >
 
@@ -1383,6 +1440,7 @@ function displayUserSummary(list) {
                             >
                                 Unit
                             </span>
+
 
                             <button
                                 type="button"
@@ -1546,12 +1604,11 @@ function displayUserSummary(list) {
                                 "Target Unit 0 se kam nahi ho sakta."
                             );
 
+
                             return;
 
                         }
 
-
-                        // Unit -> Amount
 
                         const targetAmount =
                             unitToAmount(
@@ -1651,7 +1708,6 @@ function displayUserSummary(list) {
                                 userSummaryData
                             );
 
-
                         }
 
                         catch (error) {
@@ -1673,6 +1729,7 @@ function displayUserSummary(list) {
 
                             this.disabled =
                                 false;
+
 
                             this.innerHTML =
                                 oldHTML;
@@ -1714,6 +1771,7 @@ function displayUserSummary(list) {
                             alert(
                                 "User Name enter karein."
                             );
+
 
                             return;
 
@@ -1766,7 +1824,6 @@ function displayUserSummary(list) {
                             user.userName =
                                 newName;
 
-
                         }
 
                         catch (error) {
@@ -1811,16 +1868,297 @@ if (logoutBtn) {
 
             event.preventDefault();
 
+
             localStorage.removeItem(
                 "loggedInEmpCode"
             );
+
 
             localStorage.removeItem(
                 "userRole"
             );
 
+
             window.location.href =
                 "index.html";
+
+        }
+    );
+
+}
+
+
+// ======================================================
+// DOWNLOAD DASHBOARD DATA AS IMAGE
+// ======================================================
+
+const downloadDashboardImageBtn =
+    document.getElementById(
+        "downloadDashboardImageBtn"
+    );
+
+
+if (downloadDashboardImageBtn) {
+
+    downloadDashboardImageBtn.addEventListener(
+        "click",
+        async function () {
+
+            const dashboard =
+                document.getElementById(
+                    "dashboardCaptureArea"
+                );
+
+
+            if (!dashboard) {
+
+                alert(
+                    "Dashboard data area nahi mila."
+                );
+
+
+                return;
+
+            }
+
+
+            // ==========================================
+            // CHECK HTML2CANVAS
+            // ==========================================
+
+            if (
+                typeof html2canvas ===
+                "undefined"
+            ) {
+
+                alert(
+                    "Image download library load nahi hui. Page refresh karke dobara try karein."
+                );
+
+
+                return;
+
+            }
+
+
+            // ==========================================
+            // SAVE BUTTON STATE
+            // ==========================================
+
+            const oldHTML =
+                this.innerHTML;
+
+
+            this.disabled =
+                true;
+
+
+            this.innerHTML = `
+
+                <i
+                    class="
+                        fa-solid
+                        fa-spinner
+                        fa-spin
+                    "
+                ></i>
+
+                Preparing Image...
+
+            `;
+
+
+            try {
+
+                // ======================================
+                // WAIT FOR DASHBOARD RENDER
+                // ======================================
+
+                await new Promise(
+                    function (resolve) {
+
+                        setTimeout(
+                            resolve,
+                            500
+                        );
+
+                    }
+                );
+
+
+                // ======================================
+                // CAPTURE DASHBOARD
+                // ======================================
+
+                const canvas =
+                    await html2canvas(
+                        dashboard,
+                        {
+
+                            scale: 2,
+
+                            useCORS: true,
+
+                            allowTaint: true,
+
+                            backgroundColor:
+                                "#f4f7fb",
+
+                            logging: false,
+
+                            imageTimeout:
+                                15000,
+
+                            scrollX: 0,
+
+                            scrollY: 0,
+
+                            windowWidth:
+                                Math.max(
+                                    document.documentElement
+                                        .scrollWidth,
+                                    dashboard
+                                        .scrollWidth
+                                ),
+
+                            windowHeight:
+                                Math.max(
+                                    document.documentElement
+                                        .scrollHeight,
+                                    dashboard
+                                        .scrollHeight
+                                ),
+
+                            onclone:
+                                function (
+                                    clonedDocument
+                                ) {
+
+                                    const clonedButton =
+                                        clonedDocument
+                                            .getElementById(
+                                                "downloadDashboardImageBtn"
+                                            );
+
+
+                                    if (
+                                        clonedButton
+                                    ) {
+
+                                        clonedButton.style.display =
+                                            "none";
+
+                                    }
+
+                                }
+
+                        }
+                    );
+
+
+                // ======================================
+                // CONVERT CANVAS TO PNG
+                // ======================================
+
+                const image =
+                    canvas.toDataURL(
+                        "image/png",
+                        1.0
+                    );
+
+
+                // ======================================
+                // DATE
+                // ======================================
+
+                const today =
+                    new Date();
+
+
+                const year =
+                    today.getFullYear();
+
+
+                const month =
+                    String(
+                        today.getMonth() + 1
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                const day =
+                    String(
+                        today.getDate()
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                // ======================================
+                // DOWNLOAD FILE
+                // ======================================
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                link.download =
+                    `Telethon-Dashboard-${year}-${month}-${day}.png`;
+
+
+                link.href =
+                    image;
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                document.body.removeChild(
+                    link
+                );
+
+
+                console.log(
+                    "Dashboard image downloaded successfully."
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Dashboard Image Download Error:",
+                    error
+                );
+
+
+                alert(
+                    "Dashboard image download nahi hui.\n\n" +
+                    error.message
+                );
+
+            }
+
+            finally {
+
+                this.disabled =
+                    false;
+
+
+                this.innerHTML =
+                    oldHTML;
+
+            }
 
         }
     );
