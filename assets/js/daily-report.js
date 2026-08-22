@@ -1926,6 +1926,7 @@ function getFilteredEmployees() {
 // Get Latest Entry For Employee + Date
 //
 // IMPORTANT:
+//
 // Same Employee + Same Date
 // = ONLY latest Entry Time counted.
 //
@@ -2142,6 +2143,87 @@ function buildDailyMap() {
 
 
 // ======================================
+// TEACHER ALL-TIME TOTAL COLLECTION
+//
+// IMPORTANT:
+//
+// Selected From Date / To Date ka
+// filter yahan apply nahi hoga.
+//
+// Same Employee + Same Date
+// = Latest Entry only.
+//
+// Iske baad Teacher ki saari
+// available dates ka total niklega.
+// ======================================
+
+function buildTeacherAllTimeTotalMap() {
+
+    const totalMap = new Map();
+
+
+    const dailyMap =
+        buildDailyMap();
+
+
+    dailyMap.forEach(
+        (record) => {
+
+            if (
+                !record ||
+                !record.entry
+            ) {
+
+                return;
+
+            }
+
+
+            const employeeCode =
+                normalize(
+                    getEntryEmployeeCode(
+                        record.entry
+                    )
+                );
+
+
+            if (!employeeCode) {
+
+                return;
+
+            }
+
+
+            const currentTotal =
+                totalMap.get(
+                    employeeCode
+                ) || 0;
+
+
+            totalMap.set(
+                employeeCode,
+                currentTotal +
+                numberValue(
+                    record.amount
+                )
+            );
+
+        }
+    );
+
+
+    console.log(
+        "Teacher All-Time Total:",
+        totalMap
+    );
+
+
+    return totalMap;
+
+}
+
+
+// ======================================
 // Generate Report
 // ======================================
 
@@ -2311,6 +2393,16 @@ function renderBody(
     }
 
 
+    // ==================================
+    // ALL-TIME TOTAL
+    //
+    // Date filter yahan apply nahi hoga.
+    // ==================================
+
+    const teacherAllTimeTotalMap =
+        buildTeacherAllTimeTotalMap();
+
+
     let html = "";
 
 
@@ -2430,13 +2522,30 @@ function renderBody(
             );
 
 
+            // ==================================
+            // AB TAK KA TOTAL COLLECTION
+            //
+            // IMPORTANT:
+            // Selected dates ka teacherTotal
+            // yahan use NAHI ho raha.
+            //
+            // Complete Teacher history ka
+            // total show hoga.
+            // ==================================
+
+            const allTimeTotal =
+                teacherAllTimeTotalMap.get(
+                    employeeCode
+                ) || 0;
+
+
             html += `
 
                     <td
                         class="total-collection"
                     >
                         ${formatCurrency(
-                            teacherTotal
+                            allTimeTotal
                         )}
                     </td>
 
