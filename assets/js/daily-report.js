@@ -1925,19 +1925,8 @@ function getFilteredEmployees() {
 // ======================================
 // Get Latest Entry For Employee + Date
 //
-// IMPORTANT:
-//
 // Same Employee + Same Date
 // = ONLY latest Entry Time counted.
-//
-// Example:
-//
-// 10:19 AM  ₹500
-// 10:57 AM  ₹100
-// 10:57 AM  ₹600
-// 12:11 PM  ₹800
-//
-// Result = ₹800
 // ======================================
 
 function buildDailyMap() {
@@ -2085,7 +2074,7 @@ function buildDailyMap() {
 
             // ==================================
             // SAME TIME
-            // Use latest Firestore array record
+            // Latest Firestore array record
             // ==================================
 
             if (
@@ -2127,10 +2116,6 @@ function buildDailyMap() {
     );
 
 
-    // ==================================
-    // DEBUG
-    // ==================================
-
     console.log(
         "Daily Latest Entry Map:",
         map
@@ -2145,16 +2130,10 @@ function buildDailyMap() {
 // ======================================
 // TEACHER ALL-TIME TOTAL COLLECTION
 //
-// IMPORTANT:
-//
-// Selected From Date / To Date ka
-// filter yahan apply nahi hoga.
-//
 // Same Employee + Same Date
 // = Latest Entry only.
 //
-// Iske baad Teacher ki saari
-// available dates ka total niklega.
+// Date Filter yahan apply nahi hota.
 // ======================================
 
 function buildTeacherAllTimeTotalMap() {
@@ -2395,8 +2374,6 @@ function renderBody(
 
     // ==================================
     // ALL-TIME TOTAL
-    //
-    // Date filter yahan apply nahi hoga.
     // ==================================
 
     const teacherAllTimeTotalMap =
@@ -2439,9 +2416,6 @@ function renderBody(
                 "-";
 
 
-            let teacherTotal = 0;
-
-
             html += `
 
                 <tr>
@@ -2482,10 +2456,6 @@ function renderBody(
                             : 0;
 
 
-                    teacherTotal +=
-                        amount;
-
-
                     if (
                         amount > 0
                     ) {
@@ -2523,14 +2493,7 @@ function renderBody(
 
 
             // ==================================
-            // AB TAK KA TOTAL COLLECTION
-            //
-            // IMPORTANT:
-            // Selected dates ka teacherTotal
-            // yahan use NAHI ho raha.
-            //
-            // Complete Teacher history ka
-            // total show hoga.
+            // TEACHER ALL-TIME TOTAL
             // ==================================
 
             const allTimeTotal =
@@ -2565,6 +2528,22 @@ function renderBody(
 
 // ======================================
 // Render Footer
+//
+// IMPORTANT:
+//
+// Date columns:
+//     Selected Date Range ka total
+//
+// Last Total column:
+//     Selected teachers ke
+//     ALL-TIME TOTAL ka sum
+//
+// Example:
+//
+// T001 = 1000
+// T002 = 10000
+//
+// Total = 11000
 // ======================================
 
 function renderFooter(
@@ -2578,6 +2557,14 @@ function renderFooter(
     }
 
 
+    // ==================================
+    // ALL-TIME TOTAL MAP
+    // ==================================
+
+    const teacherAllTimeTotalMap =
+        buildTeacherAllTimeTotalMap();
+
+
     let html = `
 
         <tr class="total-row">
@@ -2589,7 +2576,11 @@ function renderFooter(
     `;
 
 
-    let grandTotalValue = 0;
+    // ==================================
+    // Selected Date Range Total
+    // ==================================
+
+    let selectedDateGrandTotal = 0;
 
 
     dates.forEach(
@@ -2624,7 +2615,9 @@ function renderFooter(
                     if (record) {
 
                         dateTotal +=
-                            record.amount;
+                            numberValue(
+                                record.amount
+                            );
 
                     }
 
@@ -2632,7 +2625,7 @@ function renderFooter(
             );
 
 
-            grandTotalValue +=
+            selectedDateGrandTotal +=
                 dateTotal;
 
 
@@ -2652,12 +2645,57 @@ function renderFooter(
     );
 
 
+    // ==================================
+    // ALL-TIME GRAND TOTAL
+    //
+    // IMPORTANT FIX
+    //
+    // Last Total column ab selected
+    // date ka total nahi hoga.
+    //
+    // Selected teachers ke complete
+    // history ka total hoga.
+    // ==================================
+
+    let allTimeGrandTotal = 0;
+
+
+    employees.forEach(
+        (employee) => {
+
+            const employeeCode =
+                normalize(
+                    getEmployeeCode(
+                        employee
+                    )
+                );
+
+
+            const teacherTotal =
+                teacherAllTimeTotalMap.get(
+                    employeeCode
+                ) || 0;
+
+
+            allTimeGrandTotal +=
+                numberValue(
+                    teacherTotal
+                );
+
+        }
+    );
+
+
+    // ==================================
+    // Last Total Column
+    // ==================================
+
     html += `
 
             <td class="grand-total">
 
                 ${formatCurrency(
-                    grandTotalValue
+                    allTimeGrandTotal
                 )}
 
             </td>
@@ -2670,11 +2708,30 @@ function renderFooter(
     reportTableFoot.innerHTML =
         html;
 
+
+    // ==================================
+    // DEBUG
+    // ==================================
+
+    console.log(
+        "Selected Date Range Grand Total:",
+        selectedDateGrandTotal
+    );
+
+
+    console.log(
+        "All-Time Grand Total:",
+        allTimeGrandTotal
+    );
+
 }
 
 
 // ======================================
 // Report Information
+//
+// IMPORTANT:
+// Top Grand Total = Selected Date Range
 // ======================================
 
 function updateReportInfo(
@@ -2715,7 +2772,9 @@ function updateReportInfo(
                     if (record) {
 
                         total +=
-                            record.amount;
+                            numberValue(
+                                record.amount
+                            );
 
                     }
 
@@ -2745,6 +2804,12 @@ function updateReportInfo(
 
     }
 
+
+    // ==================================
+    // TOP GRAND TOTAL
+    //
+    // Selected Date Range ka total
+    // ==================================
 
     if (grandTotal) {
 
@@ -3191,6 +3256,7 @@ if (logoutBtn) {
                 "index.html";
 
         }
+
     );
 
 }
