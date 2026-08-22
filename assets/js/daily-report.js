@@ -1,15 +1,9 @@
-// ======================================================
-// TELETHON - DAILY COLLECTION REPORT
-// ======================================================
-// IMPORTANT:
-// 1. Only CURRENT logged-in Region User's teachers.
-// 2. User ID / User Code matching has highest priority.
-// 3. No Region User mixing.
-// 4. Same Employee Code + Date = latest entry only.
-// 5. Filters work only inside current user's teachers.
-// 6. Admin can see all teachers.
-// ======================================================
-
+// ======================================
+// Telethon
+// Daily Collection Report
+// Region User / Admin
+// Firebase Firestore
+// ======================================
 
 import { db } from "./firebase-config.js";
 
@@ -17,1557 +11,518 @@ import {
     collection,
     getDocs,
     query,
-    orderBy
+    where,
+    doc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-// ======================================================
-// COLLECTIONS
-// ======================================================
+// ======================================
+// HTML Elements
+// ======================================
 
-const EMPLOYEES_COLLECTION =
-    "employees";
+const regionFilter =
+    document.getElementById("regionFilter");
 
-const DAILY_ENTRY_COLLECTION =
-    "daily_entry";
+const stateFilter =
+    document.getElementById("stateFilter");
 
-const REGION_USERS_COLLECTION =
-    "regionUsers";
+const cityFilter =
+    document.getElementById("cityFilter");
+
+const jamiatulFilter =
+    document.getElementById("jamiatulFilter");
+
+const fromDate =
+    document.getElementById("fromDate");
+
+const toDate =
+    document.getElementById("toDate");
+
+const searchFilter =
+    document.getElementById("searchFilter");
+
+const applyFilter =
+    document.getElementById("applyFilter");
+
+const resetFilter =
+    document.getElementById("resetFilter");
+
+const reportTableHead =
+    document.getElementById("reportTableHead");
+
+const reportTableBody =
+    document.getElementById("reportTableBody");
+
+const reportTableFoot =
+    document.getElementById("reportTableFoot");
+
+const resultCount =
+    document.getElementById("resultCount");
+
+const selectedDateRange =
+    document.getElementById("selectedDateRange");
+
+const totalTeachers =
+    document.getElementById("totalTeachers");
+
+const grandTotal =
+    document.getElementById("grandTotal");
+
+const regionUserInfo =
+    document.getElementById("regionUserInfo");
+
+const regionUserInfoTop =
+    document.getElementById("regionUserInfoTop");
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
 
 
-// ======================================================
-// LOCAL STORAGE
-// ======================================================
+// ======================================
+// Data
+// ======================================
 
-const loggedInEmpCode =
+let allEmployees = [];
+
+let visibleEmployees = [];
+
+let dailyEntries = [];
+
+let accessRules = [];
+
+
+// ======================================
+// Login
+// ======================================
+
+const currentUserRole =
     String(
-        localStorage.getItem(
-            "loggedInEmpCode"
-        ) || ""
-    ).trim();
-
-
-const userRole =
-    String(
-        localStorage.getItem(
-            "userRole"
-        ) || ""
+        localStorage.getItem("userRole") || ""
     )
     .trim()
     .toLowerCase();
 
 
-const adminLoggedIn =
-    localStorage.getItem(
-        "adminLoggedIn"
-    ) === "true";
-
-
-const isAdminFlag =
-    localStorage.getItem(
-        "isAdmin"
-    ) === "true";
-
-
-const isAdmin =
-    adminLoggedIn ||
-    isAdminFlag ||
-    userRole === "admin";
-
-
-// ======================================================
-// DATA
-// ======================================================
-
-let employees = [];
-
-let dailyEntries = [];
-
-let regionUsers = [];
-
-let currentRegionUser = null;
-
-let assignedEmployees = [];
-
-
-// ======================================================
-// FILTER STATE
-// ======================================================
-
-let currentFilteredEmployees = [];
-
-let currentFilteredEntries = [];
-
-
-// ======================================================
-// DOM
-// ======================================================
-
-const regionUserInfo =
-    document.getElementById(
-        "regionUserInfo"
-    );
-
-
-const regionUserInfoTop =
-    document.getElementById(
-        "regionUserInfoTop"
-    );
-
-
-const regionFilter =
-    document.getElementById(
-        "regionFilter"
-    );
-
-
-const stateFilter =
-    document.getElementById(
-        "stateFilter"
-    );
-
-
-const cityFilter =
-    document.getElementById(
-        "cityFilter"
-    );
-
-
-const jamiatulFilter =
-    document.getElementById(
-        "jamiatulFilter"
-    );
-
-
-const fromDate =
-    document.getElementById(
-        "fromDate"
-    );
-
-
-const toDate =
-    document.getElementById(
-        "toDate"
-    );
-
-
-const searchFilter =
-    document.getElementById(
-        "searchFilter"
-    );
-
-
-const applyFilter =
-    document.getElementById(
-        "applyFilter"
-    );
-
-
-const resetFilter =
-    document.getElementById(
-        "resetFilter"
-    );
-
-
-const selectedDateRange =
-    document.getElementById(
-        "selectedDateRange"
-    );
-
-
-const resultCount =
-    document.getElementById(
-        "resultCount"
-    );
-
-
-const totalTeachers =
-    document.getElementById(
-        "totalTeachers"
-    );
-
-
-const grandTotal =
-    document.getElementById(
-        "grandTotal"
-    );
-
-
-const reportTableHead =
-    document.getElementById(
-        "reportTableHead"
-    );
-
-
-const reportTableBody =
-    document.getElementById(
-        "reportTableBody"
-    );
-
-
-const reportTableFoot =
-    document.getElementById(
-        "reportTableFoot"
-    );
-
-
-// ======================================================
-// NORMALIZE
-// ======================================================
-
-function normalize(value) {
-
-    return String(
-        value ?? ""
+const loggedInUser =
+    String(
+        localStorage.getItem("loggedInEmpCode") || ""
     )
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, " ");
+    .trim();
 
+
+// ======================================
+// Escape HTML
+// ======================================
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
-// ======================================================
-// NUMBER
-// ======================================================
+// ======================================
+// Normalize
+// ======================================
+
+function normalize(value) {
+
+    return String(value ?? "")
+        .trim()
+        .toLowerCase();
+}
+
+
+// ======================================
+// Number
+// ======================================
 
 function numberValue(value) {
 
-    if (
-        value === null ||
-        value === undefined ||
-        value === ""
-    ) {
-
-        return 0;
-
-    }
-
-
-    const cleaned =
-        String(value)
-            .replace(/,/g, "")
-            .replace(/[₹$]/g, "")
-            .trim();
-
-
     const number =
-        Number(cleaned);
-
+        Number(
+            String(value ?? "")
+                .replace(/,/g, "")
+                .replace(/₹/g, "")
+                .trim()
+        );
 
     return Number.isFinite(number)
         ? number
         : 0;
-
 }
 
 
-// ======================================================
-// ESCAPE HTML
-// ======================================================
-
-function escapeHTML(value) {
-
-    return String(
-        value ?? ""
-    )
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-// ======================================================
-// CURRENCY
-// ======================================================
+// ======================================
+// Currency
+// ======================================
 
 function formatCurrency(value) {
 
-    return (
-        "₹ " +
+    return "₹ " +
         Number(value || 0)
-            .toLocaleString(
-                "en-IN",
-                {
-                    maximumFractionDigits: 0
-                }
-            )
-    );
+            .toLocaleString("en-IN");
 
 }
 
 
-// ======================================================
-// EMPLOYEE CODE
-// ======================================================
+// ======================================
+// Employee Code
+// ======================================
 
 function getEmployeeCode(employee) {
 
     return String(
-        employee?.employeeCode ||
-        employee?.employee_code ||
-        employee?.empCode ||
-        employee?.emp_code ||
-        employee?.employeeID ||
-        employee?.employeeId ||
-        employee?.userCode ||
-        employee?.user_code ||
-        employee?.id ||
+
+        employee.employeeCode ||
+
+        employee.employee_code ||
+
+        employee.empCode ||
+
+        employee.emp_code ||
+
+        employee.employeeID ||
+
+        employee.employeeId ||
+
+        employee.userCode ||
+
+        employee.user_code ||
+
+        employee.id ||
+
         ""
+
     ).trim();
 
 }
 
 
-// ======================================================
-// ENTRY EMPLOYEE CODE
-// ======================================================
+// ======================================
+// Entry Employee Code
+// ======================================
 
 function getEntryEmployeeCode(entry) {
 
     return String(
-        entry?.employee_code ||
-        entry?.employeeCode ||
-        entry?.empCode ||
-        entry?.emp_code ||
-        entry?.employeeID ||
-        entry?.employeeId ||
-        entry?.userCode ||
-        entry?.user_code ||
+
+        entry.employeeCode ||
+
+        entry.employee_code ||
+
+        entry.empCode ||
+
+        entry.emp_code ||
+
+        entry.employeeID ||
+
+        entry.employeeId ||
+
+        entry.userCode ||
+
+        entry.user_code ||
+
+        entry.emp_id ||
+
+        entry.employee ||
+
         ""
+
     ).trim();
 
 }
 
 
-// ======================================================
-// ENTRY AMOUNT
-// ======================================================
+// ======================================
+// Entry Amount
+// ======================================
 
 function getEntryAmount(entry) {
 
     return numberValue(
-        entry?.amount ??
-        entry?.collection ??
-        entry?.collectionAmount ??
-        entry?.totalCollection ??
-        entry?.total_collection ??
+
+        entry.amount ||
+
+        entry.collection ||
+
+        entry.collectionAmount ||
+
+        entry.totalCollection ||
+
+        entry.total_collection ||
+
         0
+
     );
 
 }
 
 
-// ======================================================
-// EMPLOYEE REGION
-// ======================================================
-
-function getEmployeeRegion(employee) {
-
-    return String(
-        employee?.region ||
-        employee?.regionName ||
-        employee?.region_name ||
-        ""
-    ).trim();
-
-}
-
-
-// ======================================================
-// EMPLOYEE STATE
-// ======================================================
-
-function getEmployeeState(employee) {
-
-    return String(
-        employee?.state ||
-        employee?.stateName ||
-        employee?.state_name ||
-        ""
-    ).trim();
-
-}
-
-
-// ======================================================
-// EMPLOYEE CITY
-// ======================================================
-
-function getEmployeeCity(employee) {
-
-    return String(
-        employee?.city ||
-        employee?.cityName ||
-        employee?.city_name ||
-        ""
-    ).trim();
-
-}
-
-
-// ======================================================
-// EMPLOYEE JAMIATUL
-// ======================================================
-
-function getEmployeeJamiatul(employee) {
-
-    return String(
-        employee?.jamiatul_madina ||
-        employee?.jamiatulMadina ||
-        employee?.jamiatul ||
-        employee?.jamiatulName ||
-        employee?.jamiatul_name ||
-        ""
-    ).trim();
-
-}
-
-
-// ======================================================
-// EMPLOYEE NAME
-// ======================================================
-
-function getEmployeeName(employee) {
-
-    return String(
-        employee?.teacher_name ||
-        employee?.teacherName ||
-        employee?.name ||
-        employee?.fullName ||
-        employee?.full_name ||
-        employee?.teacher ||
-        ""
-    ).trim();
-
-}
-
-
-// ======================================================
-// ENTRY TEACHER NAME
-// ======================================================
-
-function getEntryTeacherName(entry) {
-
-    return String(
-        entry?.teacher_name ||
-        entry?.teacherName ||
-        entry?.name ||
-        ""
-    ).trim();
-
-}
-
-
-// ======================================================
-// ENTRY DATE
-// ======================================================
+// ======================================
+// Date Value
+// ======================================
 
 function getEntryDate(entry) {
 
-    return String(
-        entry?.date || ""
-    ).trim();
+    const possibleDate =
+
+        entry.date ||
+
+        entry.entryDate ||
+
+        entry.collectionDate ||
+
+        entry.collection_date ||
+
+        entry.createdDate ||
+
+        entry.created_date ||
+
+        "";
+
+    return possibleDate;
 
 }
 
 
-// ======================================================
-// USER CODE
-// ======================================================
+// ======================================
+// Convert Date To YYYY-MM-DD
+// ======================================
 
-function getUserCode(user) {
+function normalizeDate(value) {
 
-    return String(
-        user?.userCode ||
-        user?.user_code ||
-        user?.employeeCode ||
-        user?.employee_code ||
-        user?.empCode ||
-        user?.emp_code ||
-        user?.loginId ||
-        user?.loginID ||
-        user?.username ||
-        user?.id ||
-        ""
-    ).trim();
-
-}
+    if (!value) {
+        return "";
+    }
 
 
-// ======================================================
-// USER NAME
-// ======================================================
-
-function getUserName(user) {
-
-    return String(
-        user?.userName ||
-        user?.username ||
-        user?.name ||
-        user?.fullName ||
-        user?.full_name ||
-        "Unknown User"
-    ).trim();
-
-}
-
-
-// ======================================================
-// USER REGION
-// ======================================================
-
-function getUserRegion(user) {
-
-    return String(
-        user?.region ||
-        user?.assignedRegion ||
-        user?.regionName ||
-        user?.region_name ||
-        ""
-    ).trim();
-
-}
-
-
-// ======================================================
-// USER ACCESS RULES
-// ======================================================
-
-function getUserAccessRules(user) {
+    // ==================================
+    // Firestore Timestamp
+    // ==================================
 
     if (
-        Array.isArray(
-            user?.access
+        typeof value === "object" &&
+        typeof value.toDate === "function"
+    ) {
+
+        const date =
+            value.toDate();
+
+        return formatDateForInput(
+            date
+        );
+
+    }
+
+
+    // ==================================
+    // Firestore Timestamp Object
+    // ==================================
+
+    if (
+        typeof value === "object" &&
+        value.seconds !== undefined
+    ) {
+
+        const date =
+            new Date(
+                Number(value.seconds) * 1000
+            );
+
+        return formatDateForInput(
+            date
+        );
+
+    }
+
+
+    const stringValue =
+        String(value).trim();
+
+
+    // ==================================
+    // YYYY-MM-DD
+    // ==================================
+
+    if (
+        /^\d{4}-\d{2}-\d{2}$/
+            .test(stringValue)
+    ) {
+
+        return stringValue;
+
+    }
+
+
+    // ==================================
+    // DD-MM-YYYY
+    // ==================================
+
+    let match =
+        stringValue.match(
+            /^(\d{2})-(\d{2})-(\d{4})$/
+        );
+
+    if (match) {
+
+        return (
+            match[3] +
+            "-" +
+            match[2] +
+            "-" +
+            match[1]
+        );
+
+    }
+
+
+    // ==================================
+    // DD/MM/YYYY
+    // ==================================
+
+    match =
+        stringValue.match(
+            /^(\d{2})\/(\d{2})\/(\d{4})$/
+        );
+
+    if (match) {
+
+        return (
+            match[3] +
+            "-" +
+            match[2] +
+            "-" +
+            match[1]
+        );
+
+    }
+
+
+    // ==================================
+    // Date.parse fallback
+    // ==================================
+
+    const parsed =
+        new Date(stringValue);
+
+
+    if (
+        !Number.isNaN(
+            parsed.getTime()
         )
     ) {
 
-        return user.access;
+        return formatDateForInput(
+            parsed
+        );
 
     }
 
 
-    if (
-        Array.isArray(
-            user?.accessRules
-        )
-    ) {
-
-        return user.accessRules;
-
-    }
-
-
-    return [];
+    return "";
 
 }
 
 
-// ======================================================
-// RULE REGION
-// ======================================================
+// ======================================
+// Format JS Date
+// ======================================
 
-function getRuleRegion(rule) {
+function formatDateForInput(date) {
 
-    return normalize(
-        rule?.region ||
-        rule?.assignedRegion ||
-        rule?.regionName ||
-        rule?.region_name ||
-        ""
-    );
+    const year =
+        date.getFullYear();
 
-}
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
 
-
-// ======================================================
-// RULE STATES
-// ======================================================
-
-function getRuleStates(rule) {
-
-    if (
-        Array.isArray(
-            rule?.states
-        )
-    ) {
-
-        return rule.states;
-
-    }
-
-
-    if (
-        typeof rule?.states ===
-        "string"
-    ) {
-
-        return [
-            rule.states
-        ];
-
-    }
-
-
-    if (
-        Array.isArray(
-            rule?.selectedStates
-        )
-    ) {
-
-        return rule.selectedStates;
-
-    }
-
-
-    if (
-        Array.isArray(
-            rule?.assignedStates
-        )
-    ) {
-
-        return rule.assignedStates;
-
-    }
-
-
-    if (
-        rule?.state
-    ) {
-
-        return [
-            rule.state
-        ];
-
-    }
-
-
-    if (
-        rule?.stateName
-    ) {
-
-        return [
-            rule.stateName
-        ];
-
-    }
-
-
-    return [];
-
-}
-
-
-// ======================================================
-// FULL REGION RULE
-// ======================================================
-
-function isFullRegionRule(rule) {
-
-    if (!rule) {
-
-        return false;
-
-    }
-
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
 
     return (
-        rule.fullRegion === true ||
-
-        normalize(
-            rule.fullRegion
-        ) === "true" ||
-
-        normalize(
-            rule.fullRegion
-        ) === "yes" ||
-
-        normalize(
-            rule.accessType
-        ) === "full" ||
-
-        normalize(
-            rule.type
-        ) === "full"
+        year +
+        "-" +
+        month +
+        "-" +
+        day
     );
 
 }
 
 
-// ======================================================
-// EMPLOYEE ACCESS
-// ======================================================
+// ======================================
+// Display Date
+// ======================================
 
-function employeeMatchesAccess(
-    employee,
-    user
-) {
+function displayDate(dateString) {
 
-    if (!user) {
-
-        return false;
-
-    }
-
-
-    const employeeRegion =
-        normalize(
-            getEmployeeRegion(
-                employee
-            )
-        );
-
-
-    const employeeState =
-        normalize(
-            getEmployeeState(
-                employee
-            )
-        );
-
-
-    const accessRules =
-        getUserAccessRules(
-            user
-        );
-
-
-    const directRegion =
-        normalize(
-            getUserRegion(
-                user
-            )
-        );
-
-
-    // ==================================================
-    // ACCESS RULES AVAILABLE
-    // ==================================================
-
-    if (
-        accessRules.length > 0
-    ) {
-
-        return accessRules.some(
-            function (rule) {
-
-                if (!rule) {
-
-                    return false;
-
-                }
-
-
-                const assignedRegion =
-                    getRuleRegion(
-                        rule
-                    );
-
-
-                // Region must match
-                if (
-                    assignedRegion &&
-                    assignedRegion !==
-                    employeeRegion
-                ) {
-
-                    return false;
-
-                }
-
-
-                // Full region
-                if (
-                    isFullRegionRule(
-                        rule
-                    )
-                ) {
-
-                    return true;
-
-                }
-
-
-                const states =
-                    getRuleStates(
-                        rule
-                    );
-
-
-                // No state restriction
-                if (
-                    states.length === 0
-                ) {
-
-                    return true;
-
-                }
-
-
-                return states.some(
-                    function (state) {
-
-                        const normalizedState =
-                            normalize(
-                                state
-                            );
-
-
-                        if (
-                            normalizedState === "*" ||
-                            normalizedState === "all" ||
-                            normalizedState === "all states"
-                        ) {
-
-                            return true;
-
-                        }
-
-
-                        return (
-                            normalizedState ===
-                            employeeState
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-    }
-
-
-    // ==================================================
-    // OLD DIRECT REGION FORMAT
-    // ==================================================
-
-    if (
-        directRegion
-    ) {
-
-        return (
-            directRegion ===
-            employeeRegion
-        );
-
-    }
-
-
-    return false;
-
-}
-
-
-// ======================================================
-// LOAD EMPLOYEES
-// ======================================================
-
-async function loadEmployees() {
-
-    const snapshot =
-        await getDocs(
-            collection(
-                db,
-                EMPLOYEES_COLLECTION
-            )
-        );
-
-
-    employees = [];
-
-
-    snapshot.forEach(
-        function (docSnapshot) {
-
-            employees.push({
-
-                id:
-                    docSnapshot.id,
-
-                ...docSnapshot.data()
-
-            });
-
-        }
-    );
-
-
-    console.log(
-        "Daily Report Employees:",
-        employees.length
-    );
-
-}
-
-
-// ======================================================
-// LOAD DAILY ENTRIES
-// ======================================================
-
-async function loadDailyEntries() {
-
-    try {
-
-        const entriesQuery =
-            query(
-                collection(
-                    db,
-                    DAILY_ENTRY_COLLECTION
-                ),
-                orderBy(
-                    "createdAt",
-                    "desc"
-                )
-            );
-
-
-        const snapshot =
-            await getDocs(
-                entriesQuery
-            );
-
-
-        dailyEntries = [];
-
-
-        snapshot.forEach(
-            function (docSnapshot) {
-
-                dailyEntries.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    ...docSnapshot.data()
-
-                });
-
-            }
-        );
-
-    }
-
-    catch (error) {
-
-        console.warn(
-            "createdAt orderBy failed. Loading without orderBy.",
-            error
-        );
-
-
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    DAILY_ENTRY_COLLECTION
-                )
-            );
-
-
-        dailyEntries = [];
-
-
-        snapshot.forEach(
-            function (docSnapshot) {
-
-                dailyEntries.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    ...docSnapshot.data()
-
-                });
-
-            }
-        );
-
-    }
-
-
-    console.log(
-        "Daily Report Entries:",
-        dailyEntries.length
-    );
-
-}
-
-
-// ======================================================
-// LOAD REGION USERS
-// ======================================================
-
-async function loadRegionUsers() {
-
-    const snapshot =
-        await getDocs(
-            collection(
-                db,
-                REGION_USERS_COLLECTION
-            )
-        );
-
-
-    regionUsers = [];
-
-
-    snapshot.forEach(
-        function (docSnapshot) {
-
-            regionUsers.push({
-
-                id:
-                    docSnapshot.id,
-
-                ...docSnapshot.data()
-
-            });
-
-        }
-    );
-
-
-    console.log(
-        "Daily Report Region Users:",
-        regionUsers.length
-    );
-
-}
-
-
-// ======================================================
-// FIND CURRENT REGION USER
-// ======================================================
-// IMPORTANT:
-// Exact ID / code first.
-// Name / region is NEVER used to select another user.
-// ======================================================
-
-function findCurrentRegionUser() {
-
-    if (isAdmin) {
-
-        return null;
-
-    }
-
-
-    const loginCode =
-        normalize(
-            loggedInEmpCode
-        );
-
-
-    if (!loginCode) {
-
-        console.error(
-            "loggedInEmpCode missing."
-        );
-
-        return null;
-
-    }
-
-
-    // ==================================================
-    // 1. FIRESTORE DOCUMENT ID
-    // ==================================================
-
-    let exactUser =
-        regionUsers.find(
-            function (user) {
-
-                return (
-                    normalize(
-                        user.id
-                    ) ===
-                    loginCode
-                );
-
-            }
-        );
-
-
-    if (exactUser) {
-
-        console.log(
-            "Region User matched by document ID:",
-            exactUser
-        );
-
-        return exactUser;
-
-    }
-
-
-    // ==================================================
-    // 2. USER CODE
-    // ==================================================
-
-    exactUser =
-        regionUsers.find(
-            function (user) {
-
-                return (
-                    normalize(
-                        getUserCode(
-                            user
-                        )
-                    ) ===
-                    loginCode
-                );
-
-            }
-        );
-
-
-    if (exactUser) {
-
-        console.log(
-            "Region User matched by User Code:",
-            exactUser
-        );
-
-        return exactUser;
-
-    }
-
-
-    // ==================================================
-    // 3. EXPLICIT REGION USER FIELDS
-    // ==================================================
-
-    exactUser =
-        regionUsers.find(
-            function (user) {
-
-                const possibleIds = [
-
-                    user.regionUserId,
-                    user.region_user_id,
-                    user.regionUserCode,
-                    user.region_user_code,
-                    user.loginId,
-                    user.loginID
-
-                ];
-
-
-                return possibleIds.some(
-                    function (value) {
-
-                        return (
-                            normalize(
-                                value
-                            ) ===
-                            loginCode
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-
-    if (exactUser) {
-
-        console.log(
-            "Region User matched by explicit ID field:",
-            exactUser
-        );
-
-        return exactUser;
-
-    }
-
-
-    // ==================================================
-    // IMPORTANT:
-    // DO NOT MATCH BY:
-    // - region name
-    // - user name
-    // - saved regionUserName
-    // ==================================================
-
-    console.error(
-        "Current Region User NOT FOUND for:",
-        loggedInEmpCode
-    );
-
-
-    return null;
-
-}
-
-
-// ======================================================
-// GET ASSIGNED EMPLOYEES
-// ======================================================
-
-function getAssignedEmployees() {
-
-    // ==================================================
-    // ADMIN
-    // ==================================================
-
-    if (isAdmin) {
-
-        return [
-            ...employees
-        ];
-
-    }
-
-
-    // ==================================================
-    // REGION USER
-    // ==================================================
-
-    if (
-        !currentRegionUser
-    ) {
-
-        return [];
-
-    }
-
-
-    const result =
-        employees.filter(
-            function (employee) {
-
-                return employeeMatchesAccess(
-                    employee,
-                    currentRegionUser
-                );
-
-            }
-        );
-
-
-    console.log(
-        "CURRENT USER:",
-        getUserName(
-            currentRegionUser
-        )
-    );
-
-
-    console.log(
-        "CURRENT USER ID:",
-        getUserCode(
-            currentRegionUser
-        )
-    );
-
-
-    console.log(
-        "ASSIGNED TEACHERS:",
-        result
-    );
-
-
-    return result;
-
-}
-
-
-// ======================================================
-// GET CREATED TIME
-// ======================================================
-
-function getCreatedTime(entry) {
-
-    const createdAt =
-        entry?.createdAt;
-
-
-    if (
-        createdAt &&
-        typeof createdAt.toMillis ===
-        "function"
-    ) {
-
-        return createdAt.toMillis();
-
-    }
-
-
-    if (
-        createdAt &&
-        typeof createdAt.seconds ===
-        "number"
-    ) {
-
-        return (
-            Number(
-                createdAt.seconds
-            ) * 1000
-        );
-
-    }
-
-
-    if (
-        createdAt instanceof Date
-    ) {
-
-        return createdAt.getTime();
-
-    }
-
-
-    if (
-        typeof createdAt ===
-        "number"
-    ) {
-
-        return createdAt;
-
-    }
-
-
-    const time =
+    const date =
         new Date(
-            createdAt
-        ).getTime();
+            dateString + "T00:00:00"
+        );
 
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
 
-    return Number.isFinite(
-        time
-    )
-        ? time
-        : 0;
+        return dateString;
 
-}
+    }
 
-
-// ======================================================
-// GET LATEST ENTRY
-// ======================================================
-// Same Employee Code + same Date:
-// only latest createdAt entry is used.
-// ======================================================
-
-function getLatestEntries() {
-
-    const latestMap =
-        new Map();
-
-
-    dailyEntries.forEach(
-        function (entry) {
-
-            const employeeCode =
-                getEntryEmployeeCode(
-                    entry
-                );
-
-
-            const date =
-                getEntryDate(
-                    entry
-                );
-
-
-            if (
-                !employeeCode ||
-                !date
-            ) {
-
-                return;
-
-            }
-
-
-            const key =
-                normalize(
-                    employeeCode
-                ) +
-                "_" +
-                date;
-
-
-            const existing =
-                latestMap.get(
-                    key
-                );
-
-
-            if (!existing) {
-
-                latestMap.set(
-                    key,
-                    entry
-                );
-
-                return;
-
-            }
-
-
-            const currentTime =
-                getCreatedTime(
-                    entry
-                );
-
-
-            const existingTime =
-                getCreatedTime(
-                    existing
-                );
-
-
-            if (
-                currentTime >=
-                existingTime
-            ) {
-
-                latestMap.set(
-                    key,
-                    entry
-                );
-
-            }
-
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short"
         }
     );
 
-
-    return Array.from(
-        latestMap.values()
-    );
-
 }
 
 
-// ======================================================
-// EMPLOYEE CODE SET
-// ======================================================
+// ======================================
+// Date List
+// ======================================
 
-function getAssignedEmployeeCodeSet(
-    employeeList
-) {
-
-    const set =
-        new Set();
-
-
-    employeeList.forEach(
-        function (employee) {
-
-            const code =
-                normalize(
-                    getEmployeeCode(
-                        employee
-                    )
-                );
-
-
-            if (code) {
-
-                set.add(
-                    code
-                );
-
-            }
-
-        }
-    );
-
-
-    return set;
-
-}
-
-
-// ======================================================
-// DATE RANGE
-// ======================================================
-
-function getAllDates(
+function getDateList(
     startDate,
     endDate
 ) {
 
     const dates = [];
 
-
-    if (
-        !startDate ||
-        !endDate
-    ) {
-
-        return dates;
-
-    }
-
-
     let current =
         new Date(
-            startDate +
-            "T00:00:00"
+            startDate + "T00:00:00"
         );
 
-
-    const end =
+    const last =
         new Date(
-            endDate +
-            "T00:00:00"
+            endDate + "T00:00:00"
         );
-
-
-    if (
-        Number.isNaN(
-            current.getTime()
-        ) ||
-        Number.isNaN(
-            end.getTime()
-        )
-    ) {
-
-        return dates;
-
-    }
 
 
     while (
-        current <= end
+        current <= last
     ) {
 
-        const year =
-            current.getFullYear();
-
-
-        const month =
-            String(
-                current.getMonth() + 1
-            )
-            .padStart(
-                2,
-                "0"
-            );
-
-
-        const day =
-            String(
-                current.getDate()
-            )
-            .padStart(
-                2,
-                "0"
-            );
-
-
         dates.push(
-            `${year}-${month}-${day}`
+            formatDateForInput(
+                current
+            )
         );
-
 
         current.setDate(
             current.getDate() + 1
@@ -1581,228 +536,159 @@ function getAllDates(
 }
 
 
-// ======================================================
-// DEFAULT DATE RANGE
-// ======================================================
+// ======================================
+// Entry Time
+// IMPORTANT
+// This decides which same-day entry
+// is considered the latest.
+// ======================================
 
-function setDefaultDates() {
+function getEntryTime(entry) {
 
-    const today =
-        new Date();
+    const possibleTime =
 
+        entry.entryTime ||
 
-    const year =
-        today.getFullYear();
+        entry.entry_time ||
 
+        entry.createdAt ||
 
-    const month =
-        String(
-            today.getMonth() + 1
-        )
-        .padStart(
-            2,
-            "0"
-        );
+        entry.created_at ||
 
+        entry.timestamp ||
 
-    const day =
-        String(
-            today.getDate()
-        )
-        .padStart(
-            2,
-            "0"
-        );
+        entry.time ||
 
+        entry.entryTimestamp ||
 
-    const todayString =
-        `${year}-${month}-${day}`;
+        entry.entry_timestamp ||
+
+        entry.submittedAt ||
+
+        entry.submitted_at ||
+
+        null;
 
 
-    fromDate.value =
-        todayString;
+    // ==================================
+    // Firestore Timestamp
+    // ==================================
 
+    if (
+        possibleTime &&
+        typeof possibleTime === "object" &&
+        typeof possibleTime.toDate === "function"
+    ) {
 
-    toDate.value =
-        todayString;
+        const date =
+            possibleTime.toDate();
 
-}
-
-
-// ======================================================
-// POPULATE FILTER
-// ======================================================
-
-function populateSelect(
-    select,
-    values,
-    firstText
-) {
-
-    if (!select) {
-
-        return;
+        return date.getTime();
 
     }
 
 
-    select.innerHTML =
-        "";
+    // ==================================
+    // Firestore Timestamp Object
+    // ==================================
 
+    if (
+        possibleTime &&
+        typeof possibleTime === "object" &&
+        possibleTime.seconds !== undefined
+    ) {
 
-    const firstOption =
-        document.createElement(
-            "option"
+        return (
+            Number(
+                possibleTime.seconds
+            ) * 1000
         );
 
-
-    firstOption.value =
-        "";
+    }
 
 
-    firstOption.textContent =
-        firstText;
+    // ==================================
+    // JS Date
+    // ==================================
+
+    if (
+        possibleTime instanceof Date
+    ) {
+
+        return possibleTime.getTime();
+
+    }
 
 
-    select.appendChild(
-        firstOption
-    );
+    // ==================================
+    // Number Timestamp
+    // ==================================
+
+    if (
+        typeof possibleTime === "number"
+    ) {
+
+        return possibleTime;
+
+    }
 
 
-    values
-        .filter(Boolean)
-        .sort(
-            function (a, b) {
+    // ==================================
+    // String Date / Time
+    // ==================================
 
-                return String(a)
-                    .localeCompare(
-                        String(b)
-                    );
+    if (possibleTime) {
 
-            }
-        )
-        .forEach(
-            function (value) {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+        const parsed =
+            new Date(
+                String(possibleTime)
+            );
 
 
-                option.value =
-                    value;
+        if (
+            !Number.isNaN(
+                parsed.getTime()
+            )
+        ) {
+
+            return parsed.getTime();
+
+        }
+
+    }
 
 
-                option.textContent =
-                    value;
+    // ==================================
+    // If no time found
+    // ==================================
 
-
-                select.appendChild(
-                    option
-                );
-
-            }
-        );
+    return 0;
 
 }
 
 
-// ======================================================
-// POPULATE FILTERS
-// ======================================================
+// ======================================
+// Load Region User
+// ======================================
 
-function populateFilters(
-    employeeList
-) {
+async function loadRegionUser() {
 
-    const regions =
-        [
-            ...new Set(
-                employeeList.map(
-                    getEmployeeRegion
-                )
-            )
-        ];
+    // ==================================
+    // ADMIN
+    // ==================================
 
-
-    const states =
-        [
-            ...new Set(
-                employeeList.map(
-                    getEmployeeState
-                )
-            )
-        ];
-
-
-    const cities =
-        [
-            ...new Set(
-                employeeList.map(
-                    getEmployeeCity
-                )
-            )
-        ];
-
-
-    const jamiatuls =
-        [
-            ...new Set(
-                employeeList.map(
-                    getEmployeeJamiatul
-                )
-            )
-        ];
-
-
-    populateSelect(
-        regionFilter,
-        regions,
-        "All Regions"
-    );
-
-
-    populateSelect(
-        stateFilter,
-        states,
-        "All States"
-    );
-
-
-    populateSelect(
-        cityFilter,
-        cities,
-        "All Cities"
-    );
-
-
-    populateSelect(
-        jamiatulFilter,
-        jamiatuls,
-        "All Jamiatul Madina"
-    );
-
-}
-
-
-// ======================================================
-// UPDATE REGION INFO
-// ======================================================
-
-function displayCurrentUser() {
-
-    if (isAdmin) {
+    if (
+        currentUserRole === "admin"
+    ) {
 
         if (regionUserInfo) {
 
             regionUserInfo.innerHTML =
                 `
+                Region User:
                 <strong>
-                    Admin Report
+                    Administrator
                 </strong>
-                <br>
-                All Teachers are available for reporting.
                 `;
 
         }
@@ -1811,94 +697,260 @@ function displayCurrentUser() {
         if (regionUserInfoTop) {
 
             regionUserInfoTop.textContent =
-                localStorage.getItem(
-                    "adminUserName"
-                ) ||
                 "Administrator";
 
         }
 
 
+        accessRules = [];
+
         return;
 
     }
 
 
+    // ==================================
+    // REGION USER CHECK
+    // ==================================
+
     if (
-        !currentRegionUser
+
+        currentUserRole !== "regionuser" &&
+
+        currentUserRole !== "region_user" &&
+
+        currentUserRole !== "region-user"
+
     ) {
 
-        if (regionUserInfo) {
+        throw new Error(
+            "Region User login required."
+        );
 
-            regionUserInfo.innerHTML =
-                `
-                <strong>
-                    Region User not found
-                </strong>
-                <br>
-                Logged-in User ID:
-                ${escapeHTML(
-                    loggedInEmpCode
-                )}
-                `;
+    }
 
+
+    if (!loggedInUser) {
+
+        throw new Error(
+            "Login session nahi mili. Please dobara login karein."
+        );
+
+    }
+
+
+    let userData = null;
+
+
+    // ==================================
+    // Collections
+    // ==================================
+
+    const collectionNames = [
+
+        "region_users",
+
+        "regionUsers"
+
+    ];
+
+
+    // ==================================
+    // Fields
+    // ==================================
+
+    const fieldsToCheck = [
+
+        "userCode",
+
+        "employeeCode",
+
+        "employee_code",
+
+        "user_code",
+
+        "empCode",
+
+        "emp_code"
+
+    ];
+
+
+    // ==================================
+    // Search User
+    // ==================================
+
+    for (
+        const collectionName
+        of collectionNames
+    ) {
+
+        if (userData) {
+            break;
         }
 
 
-        return;
+        for (
+            const fieldName
+            of fieldsToCheck
+        ) {
+
+            if (userData) {
+                break;
+            }
+
+
+            try {
+
+                const q =
+                    query(
+
+                        collection(
+                            db,
+                            collectionName
+                        ),
+
+                        where(
+                            fieldName,
+                            "==",
+                            loggedInUser
+                        )
+
+                    );
+
+
+                const snapshot =
+                    await getDocs(q);
+
+
+                if (
+                    !snapshot.empty
+                ) {
+
+                    userData =
+                        snapshot.docs[0].data();
+
+                    break;
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.warn(
+                    "Region User Search Error:",
+                    error
+                );
+
+            }
+
+        }
 
     }
 
 
-    const name =
-        getUserName(
-            currentRegionUser
+    // ==================================
+    // Document ID
+    // ==================================
+
+    if (!userData) {
+
+        for (
+            const collectionName
+            of collectionNames
+        ) {
+
+            if (userData) {
+                break;
+            }
+
+
+            try {
+
+                const userRef =
+                    doc(
+                        db,
+                        collectionName,
+                        loggedInUser
+                    );
+
+
+                const userSnap =
+                    await getDoc(
+                        userRef
+                    );
+
+
+                if (
+                    userSnap.exists()
+                ) {
+
+                    userData =
+                        userSnap.data();
+
+                    break;
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.warn(
+                    "Document Search Error:",
+                    error
+                );
+
+            }
+
+        }
+
+    }
+
+
+    // ==================================
+    // User Not Found
+    // ==================================
+
+    if (!userData) {
+
+        throw new Error(
+            "Region User record nahi mila."
         );
 
-
-    const code =
-        getUserCode(
-            currentRegionUser
-        );
+    }
 
 
-    const region =
-        getUserRegion(
-            currentRegionUser
-        );
+    // ==================================
+    // User Name
+    // ==================================
+
+    const userName =
+
+        userData.userName ||
+
+        userData.username ||
+
+        userData.name ||
+
+        userData.teacherName ||
+
+        userData.teacher_name ||
+
+        userData.fullName ||
+
+        loggedInUser;
 
 
     if (regionUserInfo) {
 
-        regionUserInfo.innerHTML =
-            `
+        regionUserInfo.innerHTML = `
+            Region User:
             <strong>
-                ${escapeHTML(name)}
+                ${escapeHTML(userName)}
             </strong>
-
-            <br>
-
-            User ID:
-            <strong>
-                ${escapeHTML(
-                    code || loggedInEmpCode
-                )}
-            </strong>
-
-            &nbsp; | &nbsp;
-
-            Region:
-            <strong>
-                ${escapeHTML(
-                    region || "Assigned Region"
-                )}
-            </strong>
-
-            <br>
-
-            Only this user's assigned Teachers
-            are shown below.
-            `;
+        `;
 
     }
 
@@ -1906,85 +958,891 @@ function displayCurrentUser() {
     if (regionUserInfoTop) {
 
         regionUserInfoTop.textContent =
-            name;
+            userName;
+
+    }
+
+
+    // ==================================
+    // Access Rules
+    // ==================================
+
+    if (
+        Array.isArray(
+            userData.access
+        )
+    ) {
+
+        accessRules =
+            userData.access;
+
+    }
+
+    else if (
+        Array.isArray(
+            userData.accessRules
+        )
+    ) {
+
+        accessRules =
+            userData.accessRules;
+
+    }
+
+    else {
+
+        accessRules = [];
 
     }
 
 }
 
 
-// ======================================================
-// FILTER EMPLOYEES
-// ======================================================
+// ======================================
+// Employee Access
+// ======================================
 
-function filterEmployees() {
+function hasEmployeeAccess(employee) {
+
+    // ==================================
+    // ADMIN
+    // ==================================
+
+    if (
+        currentUserRole === "admin"
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        !Array.isArray(accessRules) ||
+        accessRules.length === 0
+    ) {
+
+        return false;
+
+    }
+
+
+    const employeeRegion =
+        normalize(
+
+            employee.region ||
+
+            employee.regionName ||
+
+            employee.region_name ||
+
+            ""
+
+        );
+
+
+    const employeeState =
+        normalize(
+
+            employee.state ||
+
+            employee.stateName ||
+
+            employee.state_name ||
+
+            ""
+
+        );
+
+
+    return accessRules.some(
+        (rule) => {
+
+            if (!rule) {
+                return false;
+            }
+
+
+            const assignedRegion =
+                normalize(
+
+                    rule.region ||
+
+                    rule.assignedRegion ||
+
+                    rule.regionName ||
+
+                    rule.region_name ||
+
+                    ""
+
+                );
+
+
+            if (
+                assignedRegion &&
+                assignedRegion !==
+                employeeRegion
+            ) {
+
+                return false;
+
+            }
+
+
+            // ==================================
+            // FULL REGION
+            // ==================================
+
+            const fullRegion =
+
+                rule.fullRegion === true ||
+
+                normalize(
+                    rule.fullRegion
+                ) === "true" ||
+
+                normalize(
+                    rule.fullRegion
+                ) === "yes" ||
+
+                normalize(
+                    rule.accessType
+                ) === "full" ||
+
+                normalize(
+                    rule.type
+                ) === "full";
+
+
+            if (fullRegion) {
+
+                return true;
+
+            }
+
+
+            // ==================================
+            // STATES
+            // ==================================
+
+            let states = [];
+
+
+            if (rule.state) {
+
+                states = [
+                    rule.state
+                ];
+
+            }
+
+            else if (
+                Array.isArray(
+                    rule.states
+                )
+            ) {
+
+                states =
+                    rule.states;
+
+            }
+
+            else if (
+                typeof rule.states ===
+                "string"
+            ) {
+
+                states = [
+                    rule.states
+                ];
+
+            }
+
+            else if (
+                Array.isArray(
+                    rule.selectedStates
+                )
+            ) {
+
+                states =
+                    rule.selectedStates;
+
+            }
+
+            else if (
+                Array.isArray(
+                    rule.assignedStates
+                )
+            ) {
+
+                states =
+                    rule.assignedStates;
+
+            }
+
+            else if (
+                rule.stateName
+            ) {
+
+                states = [
+                    rule.stateName
+                ];
+
+            }
+
+
+            // No state restriction
+            if (
+                states.length === 0
+            ) {
+
+                return true;
+
+            }
+
+
+            return states.some(
+                (state) => {
+
+                    const allowedState =
+                        normalize(state);
+
+
+                    if (
+
+                        allowedState === "*" ||
+
+                        allowedState === "all" ||
+
+                        allowedState === "all states"
+
+                    ) {
+
+                        return true;
+
+                    }
+
+
+                    return (
+                        allowedState ===
+                        employeeState
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Load All Data
+// ======================================
+
+async function loadData() {
+
+    try {
+
+        // ==================================
+        // Region User
+        // ==================================
+
+        await loadRegionUser();
+
+
+        // ==================================
+        // Employees
+        // ==================================
+
+        const employeeSnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "employees"
+                )
+            );
+
+
+        allEmployees = [];
+
+
+        employeeSnapshot.forEach(
+            (employeeDoc) => {
+
+                allEmployees.push({
+
+                    id:
+                        employeeDoc.id,
+
+                    ...employeeDoc.data()
+
+                });
+
+            }
+        );
+
+
+        // ==================================
+        // Daily Entries
+        // ==================================
+
+        const entrySnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "daily_entry"
+                )
+            );
+
+
+        dailyEntries = [];
+
+
+        entrySnapshot.forEach(
+            (entryDoc) => {
+
+                dailyEntries.push({
+
+                    id:
+                        entryDoc.id,
+
+                    ...entryDoc.data(),
+
+                    _index:
+                        dailyEntries.length
+
+                });
+
+            }
+        );
+
+
+        // ==================================
+        // Permission
+        // ==================================
+
+        visibleEmployees =
+            allEmployees.filter(
+                (employee) =>
+                    hasEmployeeAccess(
+                        employee
+                    )
+            );
+
+
+        console.log(
+            "All Employees:",
+            allEmployees.length
+        );
+
+
+        console.log(
+            "Visible Employees:",
+            visibleEmployees.length
+        );
+
+
+        console.log(
+            "Daily Entries:",
+            dailyEntries.length
+        );
+
+
+        // ==================================
+        // Filters
+        // ==================================
+
+        loadRegionOptions();
+
+        loadStateOptions();
+
+        loadCityOptions();
+
+        loadJamiatulOptions();
+
+
+        // ==================================
+        // Default Date
+        // ==================================
+
+        setDefaultDates();
+
+
+        // ==================================
+        // Initial Report
+        // ==================================
+
+        generateReport();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Daily Report Load Error:",
+            error
+        );
+
+
+        if (reportTableBody) {
+
+            reportTableBody.innerHTML = `
+                <tr>
+                    <td
+                        colspan="20"
+                        class="error-cell"
+                    >
+                        ${escapeHTML(
+                            error.message
+                        )}
+                    </td>
+                </tr>
+            `;
+
+        }
+
+    }
+
+}
+
+
+// ======================================
+// Region Options
+// ======================================
+
+function loadRegionOptions() {
+
+    if (!regionFilter) {
+        return;
+    }
+
+
+    const regions =
+        new Set();
+
+
+    visibleEmployees.forEach(
+        (employee) => {
+
+            const region =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            if (region) {
+
+                regions.add(
+                    region
+                );
+
+            }
+
+        }
+    );
+
+
+    regionFilter.innerHTML = `
+        <option value="">
+            All Regions
+        </option>
+    `;
+
+
+    [...regions]
+        .sort()
+        .forEach(
+            (region) => {
+
+                regionFilter.innerHTML += `
+                    <option value="${escapeHTML(region)}">
+                        ${escapeHTML(region)}
+                    </option>
+                `;
+
+            }
+        );
+
+}
+
+
+// ======================================
+// State Options
+// ======================================
+
+function loadStateOptions() {
+
+    if (!stateFilter) {
+        return;
+    }
+
+
+    const selectedRegion =
+        String(
+            regionFilter?.value || ""
+        ).trim();
+
+
+    const states =
+        new Set();
+
+
+    visibleEmployees.forEach(
+        (employee) => {
+
+            const employeeRegion =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            const state =
+                String(
+                    employee.state || ""
+                ).trim();
+
+
+            const regionMatch =
+                !selectedRegion ||
+
+                normalize(
+                    employeeRegion
+                ) ===
+                normalize(
+                    selectedRegion
+                );
+
+
+            if (
+                state &&
+                regionMatch
+            ) {
+
+                states.add(
+                    state
+                );
+
+            }
+
+        }
+    );
+
+
+    stateFilter.innerHTML = `
+        <option value="">
+            All States
+        </option>
+    `;
+
+
+    [...states]
+        .sort()
+        .forEach(
+            (state) => {
+
+                stateFilter.innerHTML += `
+                    <option value="${escapeHTML(state)}">
+                        ${escapeHTML(state)}
+                    </option>
+                `;
+
+            }
+        );
+
+}
+
+
+// ======================================
+// City Options
+// ======================================
+
+function loadCityOptions() {
+
+    if (!cityFilter) {
+        return;
+    }
+
+
+    const selectedRegion =
+        String(
+            regionFilter?.value || ""
+        ).trim();
+
+
+    const selectedState =
+        String(
+            stateFilter?.value || ""
+        ).trim();
+
+
+    const cities =
+        new Set();
+
+
+    visibleEmployees.forEach(
+        (employee) => {
+
+            const employeeRegion =
+                String(
+                    employee.region || ""
+                ).trim();
+
+
+            const employeeState =
+                String(
+                    employee.state || ""
+                ).trim();
+
+
+            const city =
+                String(
+                    employee.city || ""
+                ).trim();
+
+
+            const regionMatch =
+                !selectedRegion ||
+
+                normalize(
+                    employeeRegion
+                ) ===
+                normalize(
+                    selectedRegion
+                );
+
+
+            const stateMatch =
+                !selectedState ||
+
+                normalize(
+                    employeeState
+                ) ===
+                normalize(
+                    selectedState
+                );
+
+
+            if (
+                city &&
+                regionMatch &&
+                stateMatch
+            ) {
+
+                cities.add(
+                    city
+                );
+
+            }
+
+        }
+    );
+
+
+    cityFilter.innerHTML = `
+        <option value="">
+            All Cities
+        </option>
+    `;
+
+
+    [...cities]
+        .sort()
+        .forEach(
+            (city) => {
+
+                cityFilter.innerHTML += `
+                    <option value="${escapeHTML(city)}">
+                        ${escapeHTML(city)}
+                    </option>
+                `;
+
+            }
+        );
+
+}
+
+
+// ======================================
+// Jamiatul Options
+// ======================================
+
+function loadJamiatulOptions() {
+
+    if (!jamiatulFilter) {
+        return;
+    }
+
+
+    const jamiatuls =
+        new Set();
+
+
+    visibleEmployees.forEach(
+        (employee) => {
+
+            const jamiatul =
+
+                employee.jamiatulMadina ||
+
+                employee.jamiatul_madina ||
+
+                employee.jamiatul ||
+
+                employee.madina ||
+
+                "";
+
+
+            if (
+                String(jamiatul).trim()
+            ) {
+
+                jamiatuls.add(
+                    String(jamiatul).trim()
+                );
+
+            }
+
+        }
+    );
+
+
+    jamiatulFilter.innerHTML = `
+        <option value="">
+            All Jamiatul Madina
+        </option>
+    `;
+
+
+    [...jamiatuls]
+        .sort()
+        .forEach(
+            (jamiatul) => {
+
+                jamiatulFilter.innerHTML += `
+                    <option value="${escapeHTML(jamiatul)}">
+                        ${escapeHTML(jamiatul)}
+                    </option>
+                `;
+
+            }
+        );
+
+}
+
+
+// ======================================
+// Set Default Dates
+// ======================================
+
+function setDefaultDates() {
+
+    const today =
+        new Date();
+
+
+    const todayString =
+        formatDateForInput(
+            today
+        );
+
+
+    if (fromDate) {
+
+        fromDate.value =
+            todayString;
+
+    }
+
+
+    if (toDate) {
+
+        toDate.value =
+            todayString;
+
+    }
+
+}
+
+
+// ======================================
+// Get Selected Employees
+// ======================================
+
+function getFilteredEmployees() {
 
     const selectedRegion =
         normalize(
-            regionFilter?.value
+            regionFilter?.value || ""
         );
 
 
     const selectedState =
         normalize(
-            stateFilter?.value
+            stateFilter?.value || ""
         );
 
 
     const selectedCity =
         normalize(
-            cityFilter?.value
+            cityFilter?.value || ""
         );
 
 
     const selectedJamiatul =
         normalize(
-            jamiatulFilter?.value
+            jamiatulFilter?.value || ""
         );
 
 
     const search =
         normalize(
-            searchFilter?.value
+            searchFilter?.value || ""
         );
 
 
-    return assignedEmployees.filter(
-        function (employee) {
+    return visibleEmployees.filter(
+        (employee) => {
 
-            const region =
+            const employeeRegion =
                 normalize(
-                    getEmployeeRegion(
-                        employee
-                    )
+                    employee.region || ""
                 );
 
 
-            const state =
+            const employeeState =
                 normalize(
-                    getEmployeeState(
-                        employee
-                    )
+                    employee.state || ""
                 );
 
 
-            const city =
+            const employeeCity =
                 normalize(
-                    getEmployeeCity(
-                        employee
-                    )
+                    employee.city || ""
                 );
 
 
-            const jamiatul =
+            const employeeJamiatul =
+
                 normalize(
-                    getEmployeeJamiatul(
-                        employee
-                    )
+
+                    employee.jamiatulMadina ||
+
+                    employee.jamiatul_madina ||
+
+                    employee.jamiatul ||
+
+                    employee.madina ||
+
+                    ""
+
                 );
 
 
-            const code =
+            const employeeCode =
                 normalize(
                     getEmployeeCode(
                         employee
@@ -1992,385 +1850,107 @@ function filterEmployees() {
                 );
 
 
-            const name =
+            const teacherName =
+
                 normalize(
-                    getEmployeeName(
-                        employee
-                    )
+
+                    employee.teacherName ||
+
+                    employee.teacher_name ||
+
+                    employee.name ||
+
+                    ""
+
                 );
 
 
-            if (
-                selectedRegion &&
-                region !==
-                selectedRegion
-            ) {
-
-                return false;
-
-            }
+            const regionMatch =
+                !selectedRegion ||
+                employeeRegion ===
+                selectedRegion;
 
 
-            if (
-                selectedState &&
-                state !==
-                selectedState
-            ) {
-
-                return false;
-
-            }
+            const stateMatch =
+                !selectedState ||
+                employeeState ===
+                selectedState;
 
 
-            if (
-                selectedCity &&
-                city !==
-                selectedCity
-            ) {
-
-                return false;
-
-            }
+            const cityMatch =
+                !selectedCity ||
+                employeeCity ===
+                selectedCity;
 
 
-            if (
-                selectedJamiatul &&
-                jamiatul !==
-                selectedJamiatul
-            ) {
-
-                return false;
-
-            }
+            const jamiatulMatch =
+                !selectedJamiatul ||
+                employeeJamiatul ===
+                selectedJamiatul;
 
 
-            if (
-                search &&
-                !code.includes(search) &&
-                !name.includes(search)
-            ) {
+            const searchMatch =
 
-                return false;
+                !search ||
 
-            }
+                employeeCode.includes(
+                    search
+                ) ||
 
-
-            return true;
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// FILTER ENTRIES
-// ======================================================
-
-function filterEntries(
-    employeeList
-) {
-
-    const latestEntries =
-        getLatestEntries();
-
-
-    const employeeCodes =
-        getAssignedEmployeeCodeSet(
-            employeeList
-        );
-
-
-    const start =
-        String(
-            fromDate?.value || ""
-        ).trim();
-
-
-    const end =
-        String(
-            toDate?.value || ""
-        ).trim();
-
-
-    return latestEntries.filter(
-        function (entry) {
-
-            const code =
-                normalize(
-                    getEntryEmployeeCode(
-                        entry
-                    )
+                teacherName.includes(
+                    search
                 );
 
 
-            const date =
-                getEntryDate(
-                    entry
-                );
+            return (
 
+                regionMatch &&
 
-            if (
-                !employeeCodes.has(
-                    code
-                )
-            ) {
+                stateMatch &&
 
-                return false;
+                cityMatch &&
 
-            }
+                jamiatulMatch &&
 
+                searchMatch
 
-            if (
-                start &&
-                date < start
-            ) {
-
-                return false;
-
-            }
-
-
-            if (
-                end &&
-                date > end
-            ) {
-
-                return false;
-
-            }
-
-
-            return true;
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// GET TEACHER DATE AMOUNT
-// ======================================================
-
-function getTeacherDateAmount(
-    employee,
-    date,
-    entryMap
-) {
-
-    const code =
-        normalize(
-            getEmployeeCode(
-                employee
-            )
-        );
-
-
-    const key =
-        code +
-        "_" +
-        date;
-
-
-    const entry =
-        entryMap.get(
-            key
-        );
-
-
-    if (!entry) {
-
-        return 0;
-
-    }
-
-
-    return getEntryAmount(
-        entry
-    );
-
-}
-
-
-// ======================================================
-// DISPLAY TABLE
-// ======================================================
-
-function renderReport() {
-
-    const filteredEmployees =
-        filterEmployees();
-
-
-    const filteredEntries =
-        filterEntries(
-            filteredEmployees
-        );
-
-
-    currentFilteredEmployees =
-        filteredEmployees;
-
-
-    currentFilteredEntries =
-        filteredEntries;
-
-
-    // ==================================================
-    // DATES
-    // ==================================================
-
-    let start =
-        String(
-            fromDate?.value || ""
-        ).trim();
-
-
-    let end =
-        String(
-            toDate?.value || ""
-        ).trim();
-
-
-    if (!start && !end) {
-
-        setDefaultDates();
-
-        start =
-            fromDate.value;
-
-        end =
-            toDate.value;
-
-    }
-
-
-    if (
-        start &&
-        end &&
-        start > end
-    ) {
-
-        if (selectedDateRange) {
-
-            selectedDateRange.textContent =
-                "Invalid date range";
-
-        }
-
-
-        if (reportTableBody) {
-
-            reportTableBody.innerHTML =
-                `
-                <tr>
-                    <td
-                        colspan="30"
-                        class="error-cell"
-                    >
-                        From Date cannot be greater
-                        than To Date.
-                    </td>
-                </tr>
-                `;
-
-        }
-
-
-        if (reportTableFoot) {
-
-            reportTableFoot.innerHTML =
-                "";
-
-        }
-
-
-        return;
-
-    }
-
-
-    const dates =
-        getAllDates(
-            start,
-            end
-        );
-
-
-    // ==================================================
-    // DATE RANGE TEXT
-    // ==================================================
-
-    if (selectedDateRange) {
-
-        if (
-            start &&
-            end &&
-            start === end
-        ) {
-
-            selectedDateRange.textContent =
-                "Date: " +
-                start;
-
-        }
-        else {
-
-            selectedDateRange.textContent =
-                "Date Range: " +
-                (
-                    start || "-"
-                ) +
-                " to " +
-                (
-                    end || "-"
-                );
-
-        }
-
-    }
-
-
-    // ==================================================
-    // RESULT COUNT
-    // ==================================================
-
-    if (resultCount) {
-
-        resultCount.textContent =
-            filteredEmployees.length +
-            (
-                filteredEmployees.length === 1
-                    ? " Teacher"
-                    : " Teachers"
             );
 
-    }
+        }
+    );
+
+}
 
 
-    // ==================================================
-    // TOTAL TEACHERS
-    // ==================================================
+// ======================================
+// Get Latest Entry For Employee + Date
+//
+// IMPORTANT:
+//
+// Same Employee + Same Date
+// = ONLY latest Entry Time counted.
+//
+// Example:
+//
+// 10:19 AM  ₹500
+// 10:57 AM  ₹100
+// 10:57 AM  ₹600
+// 12:11 PM  ₹800
+//
+// Result = ₹800
+// ======================================
 
-    if (totalTeachers) {
+function buildDailyMap() {
 
-        totalTeachers.textContent =
-            filteredEmployees.length;
-
-    }
+    const map = new Map();
 
 
-    // ==================================================
-    // ENTRY MAP
-    // ==================================================
+    dailyEntries.forEach(
+        (entry, index) => {
 
-    const entryMap =
-        new Map();
-
-
-    filteredEntries.forEach(
-        function (entry) {
+            // ==================================
+            // Employee Code
+            // ==================================
 
             const code =
                 normalize(
@@ -2380,11 +1960,21 @@ function renderReport() {
                 );
 
 
+            // ==================================
+            // Date
+            // ==================================
+
             const date =
-                getEntryDate(
-                    entry
+                normalizeDate(
+                    getEntryDate(
+                        entry
+                    )
                 );
 
+
+            // ==================================
+            // Invalid Entry
+            // ==================================
 
             if (
                 !code ||
@@ -2396,445 +1986,846 @@ function renderReport() {
             }
 
 
-            entryMap.set(
+            // ==================================
+            // Unique Key
+            // ==================================
+
+            const key =
                 code +
-                "_" +
-                date,
-                entry
-            );
-
-        }
-    );
+                "|" +
+                date;
 
 
-    // ==================================================
-    // GRAND TOTAL
-    // ==================================================
+            // ==================================
+            // Actual Entry Time
+            // ==================================
 
-    let grandTotalAmount =
-        0;
-
-
-    filteredEntries.forEach(
-        function (entry) {
-
-            grandTotalAmount +=
-                getEntryAmount(
+            const entryTime =
+                getEntryTime(
                     entry
                 );
 
+
+            // ==================================
+            // Existing Record
+            // ==================================
+
+            const existing =
+                map.get(
+                    key
+                );
+
+
+            // ==================================
+            // First Entry
+            // ==================================
+
+            if (!existing) {
+
+                map.set(
+                    key,
+                    {
+
+                        amount:
+                            getEntryAmount(
+                                entry
+                            ),
+
+                        index:
+                            index,
+
+                        entryTime:
+                            entryTime,
+
+                        entry:
+                            entry
+
+                    }
+                );
+
+                return;
+
+            }
+
+
+            // ==================================
+            // LATEST ENTRY WINS
+            // ==================================
+
+            if (
+                entryTime >
+                existing.entryTime
+            ) {
+
+                map.set(
+                    key,
+                    {
+
+                        amount:
+                            getEntryAmount(
+                                entry
+                            ),
+
+                        index:
+                            index,
+
+                        entryTime:
+                            entryTime,
+
+                        entry:
+                            entry
+
+                    }
+                );
+
+                return;
+
+            }
+
+
+            // ==================================
+            // SAME TIME
+            // Use latest Firestore array record
+            // ==================================
+
+            if (
+                entryTime ===
+                existing.entryTime
+            ) {
+
+                if (
+                    index >
+                    existing.index
+                ) {
+
+                    map.set(
+                        key,
+                        {
+
+                            amount:
+                                getEntryAmount(
+                                    entry
+                                ),
+
+                            index:
+                                index,
+
+                            entryTime:
+                                entryTime,
+
+                            entry:
+                                entry
+
+                        }
+                    );
+
+                }
+
+            }
+
         }
     );
 
 
-    if (grandTotal) {
+    // ==================================
+    // DEBUG
+    // ==================================
 
-        grandTotal.textContent =
-            formatCurrency(
-                grandTotalAmount
-            );
-
-    }
-
-
-    // ==================================================
-    // TABLE HEADER
-    // ==================================================
-
-    if (reportTableHead) {
-
-        let headerHTML =
-            `
-            <tr>
-
-                <th>
-                    Jamiatul Madina
-                </th>
-
-                <th>
-                    Teacher Name
-                </th>
-            `;
+    console.log(
+        "Daily Latest Entry Map:",
+        map
+    );
 
 
-        dates.forEach(
-            function (date) {
+    return map;
 
-                headerHTML +=
-                    `
-                    <th>
-                        ${escapeHTML(date)}
-                    </th>
-                    `;
+}
+
+
+// ======================================
+// TEACHER ALL-TIME TOTAL COLLECTION
+//
+// IMPORTANT:
+//
+// Selected From Date / To Date ka
+// filter yahan apply nahi hoga.
+//
+// Same Employee + Same Date
+// = Latest Entry only.
+//
+// Iske baad Teacher ki saari
+// available dates ka total niklega.
+// ======================================
+
+function buildTeacherAllTimeTotalMap() {
+
+    const totalMap = new Map();
+
+
+    const dailyMap =
+        buildDailyMap();
+
+
+    dailyMap.forEach(
+        (record) => {
+
+            if (
+                !record ||
+                !record.entry
+            ) {
+
+                return;
 
             }
-        );
 
 
-        headerHTML +=
-            `
-                <th>
-                    Total Collection
-                </th>
-
-            </tr>
-            `;
+            const employeeCode =
+                normalize(
+                    getEntryEmployeeCode(
+                        record.entry
+                    )
+                );
 
 
-        reportTableHead.innerHTML =
-            headerHTML;
+            if (!employeeCode) {
 
-    }
+                return;
+
+            }
 
 
-    // ==================================================
-    // EMPTY
-    // ==================================================
+            const currentTotal =
+                totalMap.get(
+                    employeeCode
+                ) || 0;
+
+
+            totalMap.set(
+                employeeCode,
+                currentTotal +
+                numberValue(
+                    record.amount
+                )
+            );
+
+        }
+    );
+
+
+    console.log(
+        "Teacher All-Time Total:",
+        totalMap
+    );
+
+
+    return totalMap;
+
+}
+
+
+// ======================================
+// Generate Report
+// ======================================
+
+function generateReport() {
+
+    const startDate =
+        fromDate?.value || "";
+
+
+    const endDate =
+        toDate?.value || "";
+
 
     if (
-        filteredEmployees.length === 0
+        !startDate ||
+        !endDate
     ) {
 
-        if (reportTableBody) {
-
-            reportTableBody.innerHTML =
-                `
-                <tr>
-
-                    <td
-                        colspan="${Math.max(
-                            dates.length + 3,
-                            3
-                        )}"
-                        class="empty-cell"
-                    >
-
-                        <i
-                            class="fa-solid fa-users-slash"
-                        ></i>
-
-                        <br><br>
-
-                        Is Region User ke liye
-                        koi assigned Teacher nahi mila.
-
-                    </td>
-
-                </tr>
-                `;
-
-        }
-
-
-        if (reportTableFoot) {
-
-            reportTableFoot.innerHTML =
-                "";
-
-        }
-
+        showTableMessage(
+            "Please select From Date and To Date."
+        );
 
         return;
 
     }
 
 
-    // ==================================================
-    // TABLE BODY
-    // ==================================================
+    if (
+        startDate > endDate
+    ) {
 
-    let bodyHTML =
-        "";
-
-
-    const dateTotals =
-        {};
-
-
-    dates.forEach(
-        function (date) {
-
-            dateTotals[date] =
-                0;
-
-        }
-    );
-
-
-    let visibleGrandTotal =
-        0;
-
-
-    filteredEmployees
-        .slice()
-        .sort(
-            function (a, b) {
-
-                const nameA =
-                    normalize(
-                        getEmployeeName(
-                            a
-                        )
-                    );
-
-
-                const nameB =
-                    normalize(
-                        getEmployeeName(
-                            b
-                        )
-                    );
-
-
-                return nameA.localeCompare(
-                    nameB
-                );
-
-            }
-        )
-        .forEach(
-            function (employee) {
-
-                const jamiatul =
-                    getEmployeeJamiatul(
-                        employee
-                    ) ||
-                    "-";
-
-
-                const teacherName =
-                    getEmployeeName(
-                        employee
-                    ) ||
-                    "-";
-
-
-                let teacherTotal =
-                    0;
-
-
-                let rowHTML =
-                    `
-                    <tr>
-
-                        <td class="jamiatul">
-                            ${escapeHTML(
-                                jamiatul
-                            )}
-                        </td>
-
-                        <td>
-
-                            <div
-                                class="teacher-name"
-                            >
-                                ${escapeHTML(
-                                    teacherName
-                                )}
-                            </div>
-
-                        </td>
-                    `;
-
-
-                dates.forEach(
-                    function (date) {
-
-                        const amount =
-                            getTeacherDateAmount(
-                                employee,
-                                date,
-                                entryMap
-                            );
-
-
-                        teacherTotal +=
-                            amount;
-
-
-                        dateTotals[date] +=
-                            amount;
-
-
-                        if (amount > 0) {
-
-                            rowHTML +=
-                                `
-                                <td
-                                    class="date-amount"
-                                >
-                                    ${formatCurrency(
-                                        amount
-                                    )}
-                                </td>
-                                `;
-
-                        }
-                        else {
-
-                            rowHTML +=
-                                `
-                                <td
-                                    class="no-entry"
-                                >
-                                    -
-                                </td>
-                                `;
-
-                        }
-
-                    }
-                );
-
-
-                visibleGrandTotal +=
-                    teacherTotal;
-
-
-                rowHTML +=
-                    `
-                        <td
-                            class="total-collection"
-                        >
-                            ${formatCurrency(
-                                teacherTotal
-                            )}
-                        </td>
-
-                    </tr>
-                    `;
-
-
-                bodyHTML +=
-                    rowHTML;
-
-            }
+        showTableMessage(
+            "From Date, To Date se chhoti honi chahiye."
         );
 
-
-    if (reportTableBody) {
-
-        reportTableBody.innerHTML =
-            bodyHTML;
+        return;
 
     }
 
 
-    // ==================================================
-    // TABLE FOOTER
-    // ==================================================
-
-    if (reportTableFoot) {
-
-        let footerHTML =
-            `
-            <tr>
-
-                <td
-                    colspan="2"
-                >
-                    Date Total
-                </td>
-            `;
-
-
-        dates.forEach(
-            function (date) {
-
-                footerHTML +=
-                    `
-                    <td
-                        class="date-total"
-                    >
-                        ${formatCurrency(
-                            dateTotals[date]
-                        )}
-                    </td>
-                    `;
-
-            }
+    const dates =
+        getDateList(
+            startDate,
+            endDate
         );
 
 
-        footerHTML +=
-            `
-                <td
-                    class="grand-total"
-                >
-                    ${formatCurrency(
-                        visibleGrandTotal
-                    )}
-                </td>
-
-            </tr>
-            `;
+    const employees =
+        getFilteredEmployees();
 
 
-        reportTableFoot.innerHTML =
-            footerHTML;
-
-    }
+    const dailyMap =
+        buildDailyMap();
 
 
-    // ==================================================
-    // LOGGING
-    // ==================================================
-
-    console.log(
-        "===================================="
+    renderHeader(
+        dates
     );
 
 
-    console.log(
-        "DAILY REPORT CURRENT USER:",
-        currentRegionUser
+    renderBody(
+        employees,
+        dates,
+        dailyMap
     );
 
 
-    console.log(
-        "DAILY REPORT ASSIGNED TEACHERS:",
-        filteredEmployees
+    renderFooter(
+        employees,
+        dates,
+        dailyMap
     );
 
 
-    console.log(
-        "DAILY REPORT ENTRIES:",
-        filteredEntries
-    );
-
-
-    console.log(
-        "DAILY REPORT TOTAL:",
-        visibleGrandTotal
-    );
-
-
-    console.log(
-        "===================================="
+    updateReportInfo(
+        employees,
+        dates,
+        dailyMap
     );
 
 }
 
 
-// ======================================================
-// APPLY FILTER
-// ======================================================
+// ======================================
+// Render Table Header
+// ======================================
 
-if (applyFilter) {
+function renderHeader(dates) {
 
-    applyFilter.addEventListener(
-        "click",
-        function () {
+    if (!reportTableHead) {
+        return;
+    }
 
-            // Remove quick button active
-            document
-                .querySelectorAll(
-                    ".quick-date-btn"
-                )
-                .forEach(
-                    function (button) {
 
-                        button.classList.remove(
+    let html = `
+
+        <tr>
+
+            <th>
+                Jamiatul Madina
+            </th>
+
+            <th>
+                Teacher Name
+            </th>
+
+    `;
+
+
+    dates.forEach(
+        (date) => {
+
+            html += `
+
+                <th>
+                    ${escapeHTML(
+                        displayDate(date)
+                    )}
+                </th>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+            <th>
+                Ab Tak Ka Total Collection
+            </th>
+
+        </tr>
+
+    `;
+
+
+    reportTableHead.innerHTML =
+        html;
+
+}
+
+
+// ======================================
+// Render Body
+// ======================================
+
+function renderBody(
+    employees,
+    dates,
+    dailyMap
+) {
+
+    if (!reportTableBody) {
+        return;
+    }
+
+
+    if (!employees.length) {
+
+        showTableMessage(
+            "Selected filter ke according koi Teacher nahi mila."
+        );
+
+        return;
+
+    }
+
+
+    // ==================================
+    // ALL-TIME TOTAL
+    //
+    // Date filter yahan apply nahi hoga.
+    // ==================================
+
+    const teacherAllTimeTotalMap =
+        buildTeacherAllTimeTotalMap();
+
+
+    let html = "";
+
+
+    employees.forEach(
+        (employee) => {
+
+            const employeeCode =
+                normalize(
+                    getEmployeeCode(
+                        employee
+                    )
+                );
+
+
+            const jamiatul =
+
+                employee.jamiatulMadina ||
+
+                employee.jamiatul_madina ||
+
+                employee.jamiatul ||
+
+                "-";
+
+
+            const teacherName =
+
+                employee.teacherName ||
+
+                employee.teacher_name ||
+
+                employee.name ||
+
+                "-";
+
+
+            let teacherTotal = 0;
+
+
+            html += `
+
+                <tr>
+
+                    <td class="jamiatul">
+                        ${escapeHTML(
+                            jamiatul
+                        )}
+                    </td>
+
+                    <td class="teacher-name">
+                        ${escapeHTML(
+                            teacherName
+                        )}
+                    </td>
+
+            `;
+
+
+            dates.forEach(
+                (date) => {
+
+                    const key =
+                        employeeCode +
+                        "|" +
+                        date;
+
+
+                    const record =
+                        dailyMap.get(
+                            key
+                        );
+
+
+                    const amount =
+                        record
+                            ? record.amount
+                            : 0;
+
+
+                    teacherTotal +=
+                        amount;
+
+
+                    if (
+                        amount > 0
+                    ) {
+
+                        html += `
+
+                            <td
+                                class="date-amount"
+                            >
+                                ${formatCurrency(
+                                    amount
+                                )}
+                            </td>
+
+                        `;
+
+                    }
+
+                    else {
+
+                        html += `
+
+                            <td
+                                class="no-entry"
+                            >
+                                —
+                            </td>
+
+                        `;
+
+                    }
+
+                }
+            );
+
+
+            // ==================================
+            // AB TAK KA TOTAL COLLECTION
+            //
+            // IMPORTANT:
+            // Selected dates ka teacherTotal
+            // yahan use NAHI ho raha.
+            //
+            // Complete Teacher history ka
+            // total show hoga.
+            // ==================================
+
+            const allTimeTotal =
+                teacherAllTimeTotalMap.get(
+                    employeeCode
+                ) || 0;
+
+
+            html += `
+
+                    <td
+                        class="total-collection"
+                    >
+                        ${formatCurrency(
+                            allTimeTotal
+                        )}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    reportTableBody.innerHTML =
+        html;
+
+}
+
+
+// ======================================
+// Render Footer
+// ======================================
+
+function renderFooter(
+    employees,
+    dates,
+    dailyMap
+) {
+
+    if (!reportTableFoot) {
+        return;
+    }
+
+
+    let html = `
+
+        <tr class="total-row">
+
+            <td colspan="2">
+                TOTAL
+            </td>
+
+    `;
+
+
+    let grandTotalValue = 0;
+
+
+    dates.forEach(
+        (date) => {
+
+            let dateTotal = 0;
+
+
+            employees.forEach(
+                (employee) => {
+
+                    const employeeCode =
+                        normalize(
+                            getEmployeeCode(
+                                employee
+                            )
+                        );
+
+
+                    const key =
+                        employeeCode +
+                        "|" +
+                        date;
+
+
+                    const record =
+                        dailyMap.get(
+                            key
+                        );
+
+
+                    if (record) {
+
+                        dateTotal +=
+                            record.amount;
+
+                    }
+
+                }
+            );
+
+
+            grandTotalValue +=
+                dateTotal;
+
+
+            html += `
+
+                <td class="date-total">
+
+                    ${formatCurrency(
+                        dateTotal
+                    )}
+
+                </td>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+            <td class="grand-total">
+
+                ${formatCurrency(
+                    grandTotalValue
+                )}
+
+            </td>
+
+        </tr>
+
+    `;
+
+
+    reportTableFoot.innerHTML =
+        html;
+
+}
+
+
+// ======================================
+// Report Information
+// ======================================
+
+function updateReportInfo(
+    employees,
+    dates,
+    dailyMap
+) {
+
+    let total = 0;
+
+
+    employees.forEach(
+        (employee) => {
+
+            const code =
+                normalize(
+                    getEmployeeCode(
+                        employee
+                    )
+                );
+
+
+            dates.forEach(
+                (date) => {
+
+                    const key =
+                        code +
+                        "|" +
+                        date;
+
+
+                    const record =
+                        dailyMap.get(
+                            key
+                        );
+
+
+                    if (record) {
+
+                        total +=
+                            record.amount;
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    if (selectedDateRange) {
+
+        selectedDateRange.textContent =
+            `${displayDate(
+                dates[0]
+            )} - ${displayDate(
+                dates[dates.length - 1]
+            )}`;
+
+    }
+
+
+    if (totalTeachers) {
+
+        totalTeachers.textContent =
+            employees.length;
+
+    }
+
+
+    if (grandTotal) {
+
+        grandTotal.textContent =
+            formatCurrency(
+                total
+            );
+
+    }
+
+
+    if (resultCount) {
+
+        resultCount.textContent =
+            `${employees.length} Teacher(s) • ${dates.length} Day(s)`;
+
+    }
+
+}
+
+
+// ======================================
+// Show Message
+// ======================================
+
+function showTableMessage(message) {
+
+    if (!reportTableBody) {
+        return;
+    }
+
+
+    reportTableBody.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="20"
+                class="empty-cell"
+            >
+
+                ${escapeHTML(message)}
+
+            </td>
+
+        </tr>
+
+    `;
+
+
+    if (reportTableFoot) {
+
+        reportTableFoot.innerHTML =
+            "";
+
+    }
+
+}
+
+
+// ======================================
+// Quick Date Buttons
+// ======================================
+
+const quickButtons =
+    document.querySelectorAll(
+        ".quick-date-btn"
+    );
+
+
+quickButtons.forEach(
+    (button) => {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                quickButtons.forEach(
+                    (btn) => {
+
+                        btn.classList.remove(
                             "active"
                         );
 
@@ -2842,7 +2833,94 @@ if (applyFilter) {
                 );
 
 
-            renderReport();
+                this.classList.add(
+                    "active"
+                );
+
+
+                const days =
+                    Number(
+                        this.dataset.days
+                    );
+
+
+                const today =
+                    new Date();
+
+
+                const start =
+                    new Date(
+                        today
+                    );
+
+
+                start.setDate(
+                    today.getDate() -
+                    days +
+                    1
+                );
+
+
+                if (fromDate) {
+
+                    fromDate.value =
+                        formatDateForInput(
+                            start
+                        );
+
+                }
+
+
+                if (toDate) {
+
+                    toDate.value =
+                        formatDateForInput(
+                            today
+                        );
+
+                }
+
+
+                generateReport();
+
+            }
+        );
+
+    }
+);
+
+
+// ======================================
+// Region Change
+// ======================================
+
+if (regionFilter) {
+
+    regionFilter.addEventListener(
+        "change",
+        function () {
+
+            if (stateFilter) {
+
+                stateFilter.value =
+                    "";
+
+            }
+
+
+            if (cityFilter) {
+
+                cityFilter.value =
+                    "";
+
+            }
+
+
+            loadStateOptions();
+
+            loadCityOptions();
+
+            generateReport();
 
         }
     );
@@ -2850,9 +2928,163 @@ if (applyFilter) {
 }
 
 
-// ======================================================
-// RESET FILTER
-// ======================================================
+// ======================================
+// State Change
+// ======================================
+
+if (stateFilter) {
+
+    stateFilter.addEventListener(
+        "change",
+        function () {
+
+            if (cityFilter) {
+
+                cityFilter.value =
+                    "";
+
+            }
+
+
+            loadCityOptions();
+
+            generateReport();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// City Change
+// ======================================
+
+if (cityFilter) {
+
+    cityFilter.addEventListener(
+        "change",
+        function () {
+
+            generateReport();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Jamiatul Change
+// ======================================
+
+if (jamiatulFilter) {
+
+    jamiatulFilter.addEventListener(
+        "change",
+        function () {
+
+            generateReport();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Search
+// ======================================
+
+if (searchFilter) {
+
+    searchFilter.addEventListener(
+        "input",
+        function () {
+
+            generateReport();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Date Change
+// ======================================
+
+if (fromDate) {
+
+    fromDate.addEventListener(
+        "change",
+        function () {
+
+            quickButtons.forEach(
+                (btn) => {
+
+                    btn.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            generateReport();
+
+        }
+    );
+
+}
+
+
+if (toDate) {
+
+    toDate.addEventListener(
+        "change",
+        function () {
+
+            quickButtons.forEach(
+                (btn) => {
+
+                    btn.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            generateReport();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Apply Filter
+// ======================================
+
+if (applyFilter) {
+
+    applyFilter.addEventListener(
+        "click",
+        function () {
+
+            generateReport();
+
+        }
+    );
+
+}
+
+
+// ======================================
+// Reset
+// ======================================
 
 if (resetFilter) {
 
@@ -2900,436 +3132,72 @@ if (resetFilter) {
             }
 
 
-            setDefaultDates();
+            quickButtons.forEach(
+                (btn) => {
 
-
-            document
-                .querySelectorAll(
-                    ".quick-date-btn"
-                )
-                .forEach(
-                    function (button) {
-
-                        button.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-            renderReport();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// SEARCH ENTER
-// ======================================================
-
-if (searchFilter) {
-
-    searchFilter.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (
-                event.key ===
-                "Enter"
-            ) {
-
-                event.preventDefault();
-
-                renderReport();
-
-            }
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// QUICK DATE BUTTONS
-// ======================================================
-
-document
-    .querySelectorAll(
-        ".quick-date-btn"
-    )
-    .forEach(
-        function (button) {
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    document
-                        .querySelectorAll(
-                            ".quick-date-btn"
-                        )
-                        .forEach(
-                            function (btn) {
-
-                                btn.classList.remove(
-                                    "active"
-                                );
-
-                            }
-                        );
-
-
-                    button.classList.add(
+                    btn.classList.remove(
                         "active"
                     );
-
-
-                    const days =
-                        Number(
-                            button.dataset.days
-                        );
-
-
-                    if (
-                        !Number.isFinite(
-                            days
-                        ) ||
-                        days < 1
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    const today =
-                        new Date();
-
-
-                    const endYear =
-                        today.getFullYear();
-
-
-                    const endMonth =
-                        String(
-                            today.getMonth() + 1
-                        )
-                        .padStart(
-                            2,
-                            "0"
-                        );
-
-
-                    const endDay =
-                        String(
-                            today.getDate()
-                        )
-                        .padStart(
-                            2,
-                            "0"
-                        );
-
-
-                    const startDate =
-                        new Date(
-                            today
-                        );
-
-
-                    startDate.setDate(
-                        today.getDate() -
-                        (
-                            days - 1
-                        )
-                    );
-
-
-                    const startYear =
-                        startDate.getFullYear();
-
-
-                    const startMonth =
-                        String(
-                            startDate.getMonth() + 1
-                        )
-                        .padStart(
-                            2,
-                            "0"
-                        );
-
-
-                    const startDay =
-                        String(
-                            startDate.getDate()
-                        )
-                        .padStart(
-                            2,
-                            "0"
-                        );
-
-
-                    fromDate.value =
-                        `${startYear}-${startMonth}-${startDay}`;
-
-
-                    toDate.value =
-                        `${endYear}-${endMonth}-${endDay}`;
-
-
-                    renderReport();
 
                 }
             );
 
+
+            setDefaultDates();
+
+            loadStateOptions();
+
+            loadCityOptions();
+
+            loadJamiatulOptions();
+
+            generateReport();
+
         }
     );
 
-
-// ======================================================
-// DOWNLOAD EVENTS
-// ======================================================
-// HTML already has its own download handlers.
-// We intentionally do not add duplicate handlers here.
-// ======================================================
+}
 
 
-// ======================================================
-// INITIAL LOAD
-// ======================================================
+// ======================================
+// Logout
+// ======================================
 
-async function initializeDailyReport() {
+if (logoutBtn) {
 
-    try {
+    logoutBtn.addEventListener(
+        "click",
+        function (e) {
 
-        if (
-            !isAdmin &&
-            userRole !== "regionuser"
-        ) {
+            e.preventDefault();
 
-            throw new Error(
-                "Region User login required."
+
+            localStorage.removeItem(
+                "loggedInEmpCode"
             );
 
-        }
+
+            localStorage.removeItem(
+                "userRole"
+            );
 
 
-        if (reportTableBody) {
+            localStorage.removeItem(
+                "userName"
+            );
 
-            reportTableBody.innerHTML =
-                `
-                <tr>
 
-                    <td
-                        colspan="20"
-                        class="loading-cell"
-                    >
-
-                        <i
-                            class="fa-solid fa-spinner fa-spin"
-                        ></i>
-
-                        Loading Daily Report...
-
-                    </td>
-
-                </tr>
-                `;
+            window.location.href =
+                "index.html";
 
         }
-
-
-        // ==================================================
-        // LOAD DATA
-        // ==================================================
-
-        await Promise.all([
-
-            loadEmployees(),
-
-            loadDailyEntries(),
-
-            loadRegionUsers()
-
-        ]);
-
-
-        // ==================================================
-        // FIND EXACT USER
-        // ==================================================
-
-        if (!isAdmin) {
-
-            currentRegionUser =
-                findCurrentRegionUser();
-
-
-            if (
-                !currentRegionUser
-            ) {
-
-                throw new Error(
-                    "Current Region User Firebase me nahi mila. Logged-in User ID: " +
-                    loggedInEmpCode
-                );
-
-            }
-
-        }
-
-
-        // ==================================================
-        // ASSIGNED TEACHERS
-        // ==================================================
-
-        assignedEmployees =
-            getAssignedEmployees();
-
-
-        currentFilteredEmployees =
-            [
-                ...assignedEmployees
-            ];
-
-
-        // ==================================================
-        // USER INFO
-        // ==================================================
-
-        displayCurrentUser();
-
-
-        // ==================================================
-        // FILTER OPTIONS
-        // ==================================================
-
-        populateFilters(
-            assignedEmployees
-        );
-
-
-        // ==================================================
-        // DEFAULT DATE
-        // ==================================================
-
-        setDefaultDates();
-
-
-        // ==================================================
-        // INITIAL REPORT
-        // ==================================================
-
-        renderReport();
-
-
-        console.log(
-            "Daily Report initialized successfully."
-        );
-
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Daily Report Error:",
-            error
-        );
-
-
-        if (regionUserInfo) {
-
-            regionUserInfo.innerHTML =
-                `
-                <strong>
-                    Daily Report Error
-                </strong>
-
-                <br><br>
-
-                ${escapeHTML(
-                    error.message ||
-                    error
-                )}
-                `;
-
-        }
-
-
-        if (resultCount) {
-
-            resultCount.textContent =
-                "Error";
-
-        }
-
-
-        if (reportTableBody) {
-
-            reportTableBody.innerHTML =
-                `
-                <tr>
-
-                    <td
-                        colspan="20"
-                        class="error-cell"
-                    >
-
-                        <i
-                            class="fa-solid fa-triangle-exclamation"
-                        ></i>
-
-                        <br><br>
-
-                        Daily Report load nahi ho saki.
-
-                        <br><br>
-
-                        ${escapeHTML(
-                            error.message ||
-                            error
-                        )}
-
-                    </td>
-
-                </tr>
-                `;
-
-        }
-
-
-        if (reportTableFoot) {
-
-            reportTableFoot.innerHTML =
-                "";
-
-        }
-
-    }
-
-}
-
-
-// ======================================================
-// START
-// ======================================================
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initializeDailyReport
     );
 
 }
-else {
 
-    initializeDailyReport();
 
-}
+// ======================================
+// START
+// ======================================
+
+loadData();
