@@ -3,7 +3,32 @@
 // Daily Collection Report
 // Region User / Admin
 // Firebase Firestore
+//
+// DATA SOURCES:
+//
+// OLD ENTRIES:
+//     daily_entry
+//
+// NEW ENTRIES:
+//     teacher_entries
+//
+// IMPORTANT:
+//
+// 1. Old daily_entry data is READ ONLY.
+// 2. teacher_entries is also READ ONLY.
+// 3. Both collections are merged.
+// 4. Same Teacher + Same Date = SUM.
+// 5. Region User = Assigned Teachers only.
+// 6. Admin = All Teachers.
+// 7. Date-wise columns.
+// 8. Teacher-wise All-Time Total.
+// 9. Footer Last TOTAL = All-Time Total.
+// 10. Top Grand Total = Selected Date Range.
+// 11. Region -> State -> City dependent filters.
+// 12. Quick Date buttons.
+//
 // ======================================
+
 
 import { db } from "./firebase-config.js";
 
@@ -18,7 +43,7 @@ import {
 
 
 // ======================================
-// HTML Elements
+// HTML ELEMENTS
 // ======================================
 
 const regionFilter =
@@ -80,7 +105,7 @@ const logoutBtn =
 
 
 // ======================================
-// Data
+// DATA
 // ======================================
 
 let allEmployees = [];
@@ -89,30 +114,34 @@ let visibleEmployees = [];
 
 let dailyEntries = [];
 
+let teacherEntries = [];
+
+let allCollectionEntries = [];
+
 let accessRules = [];
 
 
 // ======================================
-// Login
+// LOGIN
 // ======================================
 
 const currentUserRole =
     String(
         localStorage.getItem("userRole") || ""
     )
-    .trim()
-    .toLowerCase();
+        .trim()
+        .toLowerCase();
 
 
 const loggedInUser =
     String(
         localStorage.getItem("loggedInEmpCode") || ""
     )
-    .trim();
+        .trim();
 
 
 // ======================================
-// Escape HTML
+// ESCAPE HTML
 // ======================================
 
 function escapeHTML(value) {
@@ -127,7 +156,7 @@ function escapeHTML(value) {
 
 
 // ======================================
-// Normalize
+// NORMALIZE
 // ======================================
 
 function normalize(value) {
@@ -135,11 +164,12 @@ function normalize(value) {
     return String(value ?? "")
         .trim()
         .toLowerCase();
+
 }
 
 
 // ======================================
-// Number
+// NUMBER
 // ======================================
 
 function numberValue(value) {
@@ -155,11 +185,12 @@ function numberValue(value) {
     return Number.isFinite(number)
         ? number
         : 0;
+
 }
 
 
 // ======================================
-// Currency
+// CURRENCY
 // ======================================
 
 function formatCurrency(value) {
@@ -172,7 +203,7 @@ function formatCurrency(value) {
 
 
 // ======================================
-// Employee Code
+// EMPLOYEE CODE
 // ======================================
 
 function getEmployeeCode(employee) {
@@ -205,7 +236,7 @@ function getEmployeeCode(employee) {
 
 
 // ======================================
-// Entry Employee Code
+// ENTRY EMPLOYEE CODE
 // ======================================
 
 function getEntryEmployeeCode(entry) {
@@ -232,6 +263,10 @@ function getEntryEmployeeCode(entry) {
 
         entry.employee ||
 
+        entry.teacherCode ||
+
+        entry.teacher_code ||
+
         ""
 
     ).trim();
@@ -240,7 +275,7 @@ function getEntryEmployeeCode(entry) {
 
 
 // ======================================
-// Entry Amount
+// ENTRY AMOUNT
 // ======================================
 
 function getEntryAmount(entry) {
@@ -257,6 +292,10 @@ function getEntryAmount(entry) {
 
         entry.total_collection ||
 
+        entry.collectedAmount ||
+
+        entry.collected_amount ||
+
         0
 
     );
@@ -265,12 +304,12 @@ function getEntryAmount(entry) {
 
 
 // ======================================
-// Date Value
+// ENTRY DATE
 // ======================================
 
 function getEntryDate(entry) {
 
-    const possibleDate =
+    return (
 
         entry.date ||
 
@@ -284,15 +323,15 @@ function getEntryDate(entry) {
 
         entry.created_date ||
 
-        "";
+        ""
 
-    return possibleDate;
+    );
 
 }
 
 
 // ======================================
-// Convert Date To YYYY-MM-DD
+// NORMALIZE DATE
 // ======================================
 
 function normalizeDate(value) {
@@ -303,7 +342,7 @@ function normalizeDate(value) {
 
 
     // ==================================
-    // Firestore Timestamp
+    // FIRESTORE TIMESTAMP
     // ==================================
 
     if (
@@ -311,18 +350,15 @@ function normalizeDate(value) {
         typeof value.toDate === "function"
     ) {
 
-        const date =
-            value.toDate();
-
         return formatDateForInput(
-            date
+            value.toDate()
         );
 
     }
 
 
     // ==================================
-    // Firestore Timestamp Object
+    // FIRESTORE TIMESTAMP OBJECT
     // ==================================
 
     if (
@@ -330,13 +366,10 @@ function normalizeDate(value) {
         value.seconds !== undefined
     ) {
 
-        const date =
+        return formatDateForInput(
             new Date(
                 Number(value.seconds) * 1000
-            );
-
-        return formatDateForInput(
-            date
+            )
         );
 
     }
@@ -369,6 +402,7 @@ function normalizeDate(value) {
             /^(\d{2})-(\d{2})-(\d{4})$/
         );
 
+
     if (match) {
 
         return (
@@ -391,6 +425,7 @@ function normalizeDate(value) {
             /^(\d{2})\/(\d{2})\/(\d{4})$/
         );
 
+
     if (match) {
 
         return (
@@ -405,7 +440,7 @@ function normalizeDate(value) {
 
 
     // ==================================
-    // Date.parse fallback
+    // Date.parse FALLBACK
     // ==================================
 
     const parsed =
@@ -431,7 +466,7 @@ function normalizeDate(value) {
 
 
 // ======================================
-// Format JS Date
+// FORMAT JS DATE
 // ======================================
 
 function formatDateForInput(date) {
@@ -461,7 +496,7 @@ function formatDateForInput(date) {
 
 
 // ======================================
-// Display Date
+// DISPLAY DATE
 // ======================================
 
 function displayDate(dateString) {
@@ -470,6 +505,7 @@ function displayDate(dateString) {
         new Date(
             dateString + "T00:00:00"
         );
+
 
     if (
         Number.isNaN(
@@ -480,6 +516,7 @@ function displayDate(dateString) {
         return dateString;
 
     }
+
 
     return date.toLocaleDateString(
         "en-IN",
@@ -493,7 +530,7 @@ function displayDate(dateString) {
 
 
 // ======================================
-// Date List
+// DATE LIST
 // ======================================
 
 function getDateList(
@@ -503,10 +540,12 @@ function getDateList(
 
     const dates = [];
 
+
     let current =
         new Date(
             startDate + "T00:00:00"
         );
+
 
     const last =
         new Date(
@@ -524,6 +563,7 @@ function getDateList(
             )
         );
 
+
         current.setDate(
             current.getDate() + 1
         );
@@ -537,10 +577,13 @@ function getDateList(
 
 
 // ======================================
-// Entry Time
-// IMPORTANT
-// This decides which same-day entry
-// is considered the latest.
+// ENTRY TIME
+//
+// Only used for debug/order information.
+// Amount is NOT selected as latest anymore.
+//
+// Same Teacher + Same Date:
+// ALL entries are SUMMED.
 // ======================================
 
 function getEntryTime(entry) {
@@ -570,9 +613,7 @@ function getEntryTime(entry) {
         null;
 
 
-    // ==================================
     // Firestore Timestamp
-    // ==================================
 
     if (
         possibleTime &&
@@ -580,17 +621,14 @@ function getEntryTime(entry) {
         typeof possibleTime.toDate === "function"
     ) {
 
-        const date =
-            possibleTime.toDate();
-
-        return date.getTime();
+        return possibleTime
+            .toDate()
+            .getTime();
 
     }
 
 
-    // ==================================
-    // Firestore Timestamp Object
-    // ==================================
+    // Firestore timestamp object
 
     if (
         possibleTime &&
@@ -607,9 +645,7 @@ function getEntryTime(entry) {
     }
 
 
-    // ==================================
     // JS Date
-    // ==================================
 
     if (
         possibleTime instanceof Date
@@ -620,9 +656,7 @@ function getEntryTime(entry) {
     }
 
 
-    // ==================================
-    // Number Timestamp
-    // ==================================
+    // Number
 
     if (
         typeof possibleTime === "number"
@@ -633,9 +667,7 @@ function getEntryTime(entry) {
     }
 
 
-    // ==================================
-    // String Date / Time
-    // ==================================
+    // String
 
     if (possibleTime) {
 
@@ -658,17 +690,13 @@ function getEntryTime(entry) {
     }
 
 
-    // ==================================
-    // If no time found
-    // ==================================
-
     return 0;
 
 }
 
 
 // ======================================
-// Load Region User
+// LOAD REGION USER
 // ======================================
 
 async function loadRegionUser() {
@@ -743,7 +771,7 @@ async function loadRegionUser() {
 
 
     // ==================================
-    // Collections
+    // COLLECTIONS
     // ==================================
 
     const collectionNames = [
@@ -756,7 +784,7 @@ async function loadRegionUser() {
 
 
     // ==================================
-    // Fields
+    // FIELDS
     // ==================================
 
     const fieldsToCheck = [
@@ -777,7 +805,7 @@ async function loadRegionUser() {
 
 
     // ==================================
-    // Search User
+    // SEARCH USER
     // ==================================
 
     for (
@@ -851,7 +879,7 @@ async function loadRegionUser() {
 
 
     // ==================================
-    // Document ID
+    // DOCUMENT ID
     // ==================================
 
     if (!userData) {
@@ -910,7 +938,7 @@ async function loadRegionUser() {
 
 
     // ==================================
-    // User Not Found
+    // USER NOT FOUND
     // ==================================
 
     if (!userData) {
@@ -923,7 +951,7 @@ async function loadRegionUser() {
 
 
     // ==================================
-    // User Name
+    // USER NAME
     // ==================================
 
     const userName =
@@ -964,7 +992,7 @@ async function loadRegionUser() {
 
 
     // ==================================
-    // Access Rules
+    // ACCESS RULES
     // ==================================
 
     if (
@@ -999,7 +1027,7 @@ async function loadRegionUser() {
 
 
 // ======================================
-// Employee Access
+// EMPLOYEE ACCESS
 // ======================================
 
 function hasEmployeeAccess(employee) {
@@ -1192,7 +1220,8 @@ function hasEmployeeAccess(employee) {
             }
 
 
-            // No state restriction
+            // No State Restriction
+
             if (
                 states.length === 0
             ) {
@@ -1239,7 +1268,56 @@ function hasEmployeeAccess(employee) {
 
 
 // ======================================
-// Load All Data
+// LOAD COLLECTION
+//
+// Helper function.
+// ======================================
+
+async function loadCollectionData(
+    collectionName
+) {
+
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                collectionName
+            )
+        );
+
+
+    const result = [];
+
+
+    snapshot.forEach(
+        (entryDoc) => {
+
+            result.push({
+
+                id:
+                    entryDoc.id,
+
+                ...entryDoc.data(),
+
+                _source:
+                    collectionName,
+
+                _index:
+                    result.length
+
+            });
+
+        }
+    );
+
+
+    return result;
+
+}
+
+
+// ======================================
+// LOAD ALL DATA
 // ======================================
 
 async function loadData() {
@@ -1247,14 +1325,14 @@ async function loadData() {
     try {
 
         // ==================================
-        // Region User
+        // REGION USER
         // ==================================
 
         await loadRegionUser();
 
 
         // ==================================
-        // Employees
+        // EMPLOYEES
         // ==================================
 
         const employeeSnapshot =
@@ -1286,42 +1364,44 @@ async function loadData() {
 
 
         // ==================================
-        // Daily Entries
+        // OLD ENTRIES
+        //
+        // READ ONLY
         // ==================================
 
-        const entrySnapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "daily_entry"
-                )
+        dailyEntries =
+            await loadCollectionData(
+                "daily_entry"
             );
 
 
-        dailyEntries = [];
+        // ==================================
+        // NEW TEACHER ENTRIES
+        //
+        // READ ONLY
+        // ==================================
 
-
-        entrySnapshot.forEach(
-            (entryDoc) => {
-
-                dailyEntries.push({
-
-                    id:
-                        entryDoc.id,
-
-                    ...entryDoc.data(),
-
-                    _index:
-                        dailyEntries.length
-
-                });
-
-            }
-        );
+        teacherEntries =
+            await loadCollectionData(
+                "teacher_entries"
+            );
 
 
         // ==================================
-        // Permission
+        // MERGE BOTH SOURCES
+        // ==================================
+
+        allCollectionEntries = [
+
+            ...dailyEntries,
+
+            ...teacherEntries
+
+        ];
+
+
+        // ==================================
+        // PERMISSION
         // ==================================
 
         visibleEmployees =
@@ -1332,6 +1412,10 @@ async function loadData() {
                     )
             );
 
+
+        // ==================================
+        // DEBUG
+        // ==================================
 
         console.log(
             "All Employees:",
@@ -1346,13 +1430,25 @@ async function loadData() {
 
 
         console.log(
-            "Daily Entries:",
+            "Old daily_entry Entries:",
             dailyEntries.length
         );
 
 
+        console.log(
+            "New teacher_entries:",
+            teacherEntries.length
+        );
+
+
+        console.log(
+            "Combined Entries:",
+            allCollectionEntries.length
+        );
+
+
         // ==================================
-        // Filters
+        // FILTERS
         // ==================================
 
         loadRegionOptions();
@@ -1365,14 +1461,14 @@ async function loadData() {
 
 
         // ==================================
-        // Default Date
+        // DEFAULT DATE
         // ==================================
 
         setDefaultDates();
 
 
         // ==================================
-        // Initial Report
+        // INITIAL REPORT
         // ==================================
 
         generateReport();
@@ -1410,7 +1506,7 @@ async function loadData() {
 
 
 // ======================================
-// Region Options
+// REGION OPTIONS
 // ======================================
 
 function loadRegionOptions() {
@@ -1470,7 +1566,7 @@ function loadRegionOptions() {
 
 
 // ======================================
-// State Options
+// STATE OPTIONS
 // ======================================
 
 function loadStateOptions() {
@@ -1556,7 +1652,7 @@ function loadStateOptions() {
 
 
 // ======================================
-// City Options
+// CITY OPTIONS
 // ======================================
 
 function loadCityOptions() {
@@ -1666,7 +1762,7 @@ function loadCityOptions() {
 
 
 // ======================================
-// Jamiatul Options
+// JAMIATUL OPTIONS
 // ======================================
 
 function loadJamiatulOptions() {
@@ -1735,7 +1831,7 @@ function loadJamiatulOptions() {
 
 
 // ======================================
-// Set Default Dates
+// DEFAULT DATES
 // ======================================
 
 function setDefaultDates() {
@@ -1769,7 +1865,7 @@ function setDefaultDates() {
 
 
 // ======================================
-// Get Selected Employees
+// FILTERED EMPLOYEES
 // ======================================
 
 function getFilteredEmployees() {
@@ -1923,22 +2019,45 @@ function getFilteredEmployees() {
 
 
 // ======================================
-// Get Latest Entry For Employee + Date
+// BUILD DAILY MAP
 //
-// Same Employee + Same Date
-// = ONLY latest Entry Time counted.
+// IMPORTANT:
+//
+// OLD:
+// daily_entry
+//
+// NEW:
+// teacher_entries
+//
+// BOTH are merged.
+//
+// Same Teacher + Same Date:
+// ALL AMOUNTS ARE SUMMED.
+//
+// Example:
+//
+// daily_entry:
+// T001 | 29 Aug | 500
+//
+// teacher_entries:
+// T001 | 29 Aug | 300
+//
+// RESULT:
+// T001 | 29 Aug | 800
+//
 // ======================================
 
 function buildDailyMap() {
 
-    const map = new Map();
+    const map =
+        new Map();
 
 
-    dailyEntries.forEach(
+    allCollectionEntries.forEach(
         (entry, index) => {
 
             // ==================================
-            // Employee Code
+            // EMPLOYEE CODE
             // ==================================
 
             const code =
@@ -1950,7 +2069,7 @@ function buildDailyMap() {
 
 
             // ==================================
-            // Date
+            // DATE
             // ==================================
 
             const date =
@@ -1962,7 +2081,7 @@ function buildDailyMap() {
 
 
             // ==================================
-            // Invalid Entry
+            // INVALID ENTRY
             // ==================================
 
             if (
@@ -1976,7 +2095,9 @@ function buildDailyMap() {
 
 
             // ==================================
-            // Unique Key
+            // UNIQUE KEY
+            //
+            // Teacher + Date
             // ==================================
 
             const key =
@@ -1986,7 +2107,17 @@ function buildDailyMap() {
 
 
             // ==================================
-            // Actual Entry Time
+            // AMOUNT
+            // ==================================
+
+            const amount =
+                getEntryAmount(
+                    entry
+                );
+
+
+            // ==================================
+            // ENTRY TIME
             // ==================================
 
             const entryTime =
@@ -1996,7 +2127,7 @@ function buildDailyMap() {
 
 
             // ==================================
-            // Existing Record
+            // EXISTING
             // ==================================
 
             const existing =
@@ -2006,7 +2137,7 @@ function buildDailyMap() {
 
 
             // ==================================
-            // First Entry
+            // FIRST ENTRY
             // ==================================
 
             if (!existing) {
@@ -2016,18 +2147,21 @@ function buildDailyMap() {
                     {
 
                         amount:
-                            getEntryAmount(
+                            amount,
+
+                        count:
+                            1,
+
+                        entries:
+                            [
                                 entry
-                            ),
+                            ],
 
-                        index:
-                            index,
-
-                        entryTime:
+                        lastEntryTime:
                             entryTime,
 
-                        entry:
-                            entry
+                        lastIndex:
+                            index
 
                     }
                 );
@@ -2038,75 +2172,55 @@ function buildDailyMap() {
 
 
             // ==================================
-            // LATEST ENTRY WINS
+            // SUM
+            //
+            // IMPORTANT:
+            // No latest-entry replacement.
+            // Every entry is added.
+            // ==================================
+
+            existing.amount +=
+                amount;
+
+
+            existing.count +=
+                1;
+
+
+            existing.entries.push(
+                entry
+            );
+
+
+            // ==================================
+            // Keep latest metadata
             // ==================================
 
             if (
                 entryTime >
-                existing.entryTime
+                existing.lastEntryTime
             ) {
 
-                map.set(
-                    key,
-                    {
+                existing.lastEntryTime =
+                    entryTime;
 
-                        amount:
-                            getEntryAmount(
-                                entry
-                            ),
-
-                        index:
-                            index,
-
-                        entryTime:
-                            entryTime,
-
-                        entry:
-                            entry
-
-                    }
-                );
-
-                return;
+                existing.lastIndex =
+                    index;
 
             }
 
-
-            // ==================================
-            // SAME TIME
-            // Latest Firestore array record
-            // ==================================
-
-            if (
+            else if (
                 entryTime ===
-                existing.entryTime
+                existing.lastEntryTime
             ) {
 
                 if (
                     index >
-                    existing.index
+                    existing.lastIndex
                 ) {
 
-                    map.set(
-                        key,
-                        {
-
-                            amount:
-                                getEntryAmount(
-                                    entry
-                                ),
-
-                            index:
-                                index,
-
-                            entryTime:
-                                entryTime,
-
-                            entry:
-                                entry
-
-                        }
-                    );
+                    existing.lastIndex =
+                        index;
 
                 }
 
@@ -2117,7 +2231,7 @@ function buildDailyMap() {
 
 
     console.log(
-        "Daily Latest Entry Map:",
+        "Combined Teacher + Date SUM Map:",
         map
     );
 
@@ -2128,17 +2242,30 @@ function buildDailyMap() {
 
 
 // ======================================
-// TEACHER ALL-TIME TOTAL COLLECTION
+// TEACHER ALL-TIME TOTAL
 //
-// Same Employee + Same Date
-// = Latest Entry only.
+// Date filter does NOT apply here.
 //
-// Date Filter yahan apply nahi hota.
+// Same Teacher + Same Date:
+// Already SUMMED in dailyMap.
+//
+// Then all dates are added.
+//
+// Example:
+//
+// T001
+//
+// 28 Aug = 500 + 300 = 800
+// 29 Aug = 1000
+//
+// All-Time Total = 1800
+//
 // ======================================
 
 function buildTeacherAllTimeTotalMap() {
 
-    const totalMap = new Map();
+    const totalMap =
+        new Map();
 
 
     const dailyMap =
@@ -2146,11 +2273,23 @@ function buildTeacherAllTimeTotalMap() {
 
 
     dailyMap.forEach(
-        (record) => {
+        (record, key) => {
 
             if (
-                !record ||
-                !record.entry
+                !record
+            ) {
+
+                return;
+
+            }
+
+
+            const separatorIndex =
+                key.indexOf("|");
+
+
+            if (
+                separatorIndex === -1
             ) {
 
                 return;
@@ -2159,10 +2298,9 @@ function buildTeacherAllTimeTotalMap() {
 
 
             const employeeCode =
-                normalize(
-                    getEntryEmployeeCode(
-                        record.entry
-                    )
+                key.substring(
+                    0,
+                    separatorIndex
                 );
 
 
@@ -2181,10 +2319,12 @@ function buildTeacherAllTimeTotalMap() {
 
             totalMap.set(
                 employeeCode,
+
                 currentTotal +
                 numberValue(
                     record.amount
                 )
+
             );
 
         }
@@ -2203,7 +2343,7 @@ function buildTeacherAllTimeTotalMap() {
 
 
 // ======================================
-// Generate Report
+// GENERATE REPORT
 // ======================================
 
 function generateReport() {
@@ -2258,10 +2398,18 @@ function generateReport() {
         buildDailyMap();
 
 
+    // ==================================
+    // HEADER
+    // ==================================
+
     renderHeader(
         dates
     );
 
+
+    // ==================================
+    // BODY
+    // ==================================
 
     renderBody(
         employees,
@@ -2270,12 +2418,20 @@ function generateReport() {
     );
 
 
+    // ==================================
+    // FOOTER
+    // ==================================
+
     renderFooter(
         employees,
         dates,
         dailyMap
     );
 
+
+    // ==================================
+    // TOP INFO
+    // ==================================
 
     updateReportInfo(
         employees,
@@ -2287,7 +2443,7 @@ function generateReport() {
 
 
 // ======================================
-// Render Table Header
+// RENDER HEADER
 // ======================================
 
 function renderHeader(dates) {
@@ -2347,7 +2503,7 @@ function renderHeader(dates) {
 
 
 // ======================================
-// Render Body
+// RENDER BODY
 // ======================================
 
 function renderBody(
@@ -2435,6 +2591,10 @@ function renderBody(
             `;
 
 
+            // ==================================
+            // DATE COLUMNS
+            // ==================================
+
             dates.forEach(
                 (date) => {
 
@@ -2452,7 +2612,9 @@ function renderBody(
 
                     const amount =
                         record
-                            ? record.amount
+                            ? numberValue(
+                                record.amount
+                            )
                             : 0;
 
 
@@ -2493,7 +2655,7 @@ function renderBody(
 
 
             // ==================================
-            // TEACHER ALL-TIME TOTAL
+            // ALL-TIME TEACHER TOTAL
             // ==================================
 
             const allTimeTotal =
@@ -2527,23 +2689,14 @@ function renderBody(
 
 
 // ======================================
-// Render Footer
+// RENDER FOOTER
 //
-// IMPORTANT:
+// DATE COLUMNS:
+// Selected Date Range total.
 //
-// Date columns:
-//     Selected Date Range ka total
+// LAST TOTAL COLUMN:
+// Complete All-Time Total.
 //
-// Last Total column:
-//     Selected teachers ke
-//     ALL-TIME TOTAL ka sum
-//
-// Example:
-//
-// T001 = 1000
-// T002 = 10000
-//
-// Total = 11000
 // ======================================
 
 function renderFooter(
@@ -2556,10 +2709,6 @@ function renderFooter(
         return;
     }
 
-
-    // ==================================
-    // ALL-TIME TOTAL MAP
-    // ==================================
 
     const teacherAllTimeTotalMap =
         buildTeacherAllTimeTotalMap();
@@ -2577,16 +2726,18 @@ function renderFooter(
 
 
     // ==================================
-    // Selected Date Range Total
+    // SELECTED DATE RANGE TOTAL
     // ==================================
 
-    let selectedDateGrandTotal = 0;
+    let selectedDateGrandTotal =
+        0;
 
 
     dates.forEach(
         (date) => {
 
-            let dateTotal = 0;
+            let dateTotal =
+                0;
 
 
             employees.forEach(
@@ -2647,17 +2798,10 @@ function renderFooter(
 
     // ==================================
     // ALL-TIME GRAND TOTAL
-    //
-    // IMPORTANT FIX
-    //
-    // Last Total column ab selected
-    // date ka total nahi hoga.
-    //
-    // Selected teachers ke complete
-    // history ka total hoga.
     // ==================================
 
-    let allTimeGrandTotal = 0;
+    let allTimeGrandTotal =
+        0;
 
 
     employees.forEach(
@@ -2687,7 +2831,7 @@ function renderFooter(
 
 
     // ==================================
-    // Last Total Column
+    // LAST TOTAL COLUMN
     // ==================================
 
     html += `
@@ -2728,10 +2872,13 @@ function renderFooter(
 
 
 // ======================================
-// Report Information
+// TOP REPORT INFORMATION
 //
-// IMPORTANT:
-// Top Grand Total = Selected Date Range
+// TOP GRAND TOTAL:
+// Selected Date Range ONLY.
+//
+// It does NOT use All-Time Total.
+//
 // ======================================
 
 function updateReportInfo(
@@ -2740,7 +2887,8 @@ function updateReportInfo(
     dailyMap
 ) {
 
-    let total = 0;
+    let total =
+        0;
 
 
     employees.forEach(
@@ -2785,6 +2933,10 @@ function updateReportInfo(
     );
 
 
+    // ==================================
+    // DATE RANGE
+    // ==================================
+
     if (selectedDateRange) {
 
         selectedDateRange.textContent =
@@ -2797,6 +2949,10 @@ function updateReportInfo(
     }
 
 
+    // ==================================
+    // TEACHERS
+    // ==================================
+
     if (totalTeachers) {
 
         totalTeachers.textContent =
@@ -2808,7 +2964,7 @@ function updateReportInfo(
     // ==================================
     // TOP GRAND TOTAL
     //
-    // Selected Date Range ka total
+    // Selected Date Range
     // ==================================
 
     if (grandTotal) {
@@ -2821,6 +2977,10 @@ function updateReportInfo(
     }
 
 
+    // ==================================
+    // RESULT COUNT
+    // ==================================
+
     if (resultCount) {
 
         resultCount.textContent =
@@ -2832,7 +2992,7 @@ function updateReportInfo(
 
 
 // ======================================
-// Show Message
+// SHOW TABLE MESSAGE
 // ======================================
 
 function showTableMessage(message) {
@@ -2871,7 +3031,7 @@ function showTableMessage(message) {
 
 
 // ======================================
-// Quick Date Buttons
+// QUICK DATE BUTTONS
 // ======================================
 
 const quickButtons =
@@ -2956,7 +3116,7 @@ quickButtons.forEach(
 
 
 // ======================================
-// Region Change
+// REGION CHANGE
 // ======================================
 
 if (regionFilter) {
@@ -2964,6 +3124,8 @@ if (regionFilter) {
     regionFilter.addEventListener(
         "change",
         function () {
+
+            // Reset State
 
             if (stateFilter) {
 
@@ -2973,6 +3135,8 @@ if (regionFilter) {
             }
 
 
+            // Reset City
+
             if (cityFilter) {
 
                 cityFilter.value =
@@ -2981,9 +3145,14 @@ if (regionFilter) {
             }
 
 
+            // Reload dependent filters
+
             loadStateOptions();
 
             loadCityOptions();
+
+
+            // Report
 
             generateReport();
 
@@ -2994,7 +3163,7 @@ if (regionFilter) {
 
 
 // ======================================
-// State Change
+// STATE CHANGE
 // ======================================
 
 if (stateFilter) {
@@ -3003,6 +3172,8 @@ if (stateFilter) {
         "change",
         function () {
 
+            // Reset City
+
             if (cityFilter) {
 
                 cityFilter.value =
@@ -3011,7 +3182,12 @@ if (stateFilter) {
             }
 
 
+            // Reload Cities
+
             loadCityOptions();
+
+
+            // Report
 
             generateReport();
 
@@ -3022,7 +3198,7 @@ if (stateFilter) {
 
 
 // ======================================
-// City Change
+// CITY CHANGE
 // ======================================
 
 if (cityFilter) {
@@ -3040,7 +3216,7 @@ if (cityFilter) {
 
 
 // ======================================
-// Jamiatul Change
+// JAMIATUL CHANGE
 // ======================================
 
 if (jamiatulFilter) {
@@ -3058,7 +3234,7 @@ if (jamiatulFilter) {
 
 
 // ======================================
-// Search
+// SEARCH
 // ======================================
 
 if (searchFilter) {
@@ -3076,7 +3252,7 @@ if (searchFilter) {
 
 
 // ======================================
-// Date Change
+// FROM DATE CHANGE
 // ======================================
 
 if (fromDate) {
@@ -3104,6 +3280,10 @@ if (fromDate) {
 }
 
 
+// ======================================
+// TO DATE CHANGE
+// ======================================
+
 if (toDate) {
 
     toDate.addEventListener(
@@ -3130,7 +3310,7 @@ if (toDate) {
 
 
 // ======================================
-// Apply Filter
+// APPLY FILTER
 // ======================================
 
 if (applyFilter) {
@@ -3148,7 +3328,7 @@ if (applyFilter) {
 
 
 // ======================================
-// Reset
+// RESET FILTER
 // ======================================
 
 if (resetFilter) {
@@ -3156,6 +3336,8 @@ if (resetFilter) {
     resetFilter.addEventListener(
         "click",
         function () {
+
+            // Region
 
             if (regionFilter) {
 
@@ -3165,6 +3347,8 @@ if (resetFilter) {
             }
 
 
+            // State
+
             if (stateFilter) {
 
                 stateFilter.value =
@@ -3172,6 +3356,8 @@ if (resetFilter) {
 
             }
 
+
+            // City
 
             if (cityFilter) {
 
@@ -3181,6 +3367,8 @@ if (resetFilter) {
             }
 
 
+            // Jamiatul
+
             if (jamiatulFilter) {
 
                 jamiatulFilter.value =
@@ -3189,6 +3377,8 @@ if (resetFilter) {
             }
 
 
+            // Search
+
             if (searchFilter) {
 
                 searchFilter.value =
@@ -3196,6 +3386,8 @@ if (resetFilter) {
 
             }
 
+
+            // Quick buttons
 
             quickButtons.forEach(
                 (btn) => {
@@ -3208,13 +3400,21 @@ if (resetFilter) {
             );
 
 
+            // Default dates
+
             setDefaultDates();
+
+
+            // Reload filters
 
             loadStateOptions();
 
             loadCityOptions();
 
             loadJamiatulOptions();
+
+
+            // Generate
 
             generateReport();
 
@@ -3225,7 +3425,7 @@ if (resetFilter) {
 
 
 // ======================================
-// Logout
+// LOGOUT
 // ======================================
 
 if (logoutBtn) {
