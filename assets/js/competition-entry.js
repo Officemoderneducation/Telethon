@@ -1,6 +1,6 @@
 // ======================================================
 // TELETHON
-// ACADEMIC DEPARTMENT COMPETITION
+// COMPETITION ENTRY
 //
 // File:
 // assets/js/competition-entry.js
@@ -9,48 +9,56 @@
 //
 // 1. Create Competition
 // 2. Edit Competition
-// 3. Update Competition
-// 4. Delete Competition
-// 5. Manual Participant Name
-// 6. Region list from employees
-// 7. State list based on Region
-// 8. Unique competition URL
-// 9. Ended competition status
-// 10. Firebase collection = competitions
+// 3. Competition Name
+// 4. Competition Date
+// 5. Competition End Time
+// 6. Side A
+// 7. Side B
+// 8. Multiple Region / State per Side
+// 9. Region list from employees collection
+// 10. State list based on selected Region
+// 11. Firebase collection = competitions
+// 12. Unique Competition ID
+// 13. Separate public link can use document ID
 //
 // IMPORTANT:
 //
-// Collection / Amount / Unit yahan save nahi hoga.
+// Collection / Amount / Unit is NOT saved here.
+//
+// Competition Date + End Time will later be used
+// as the competition cut-off.
+//
+// Entries after End Time will NOT count in competition.
 //
 // ======================================================
 
 
 import { db } from "./firebase-config.js";
 
-
 import {
     collection,
     addDoc,
-    getDocs,
     doc,
     getDoc,
+    getDocs,
     updateDoc,
-    deleteDoc,
     serverTimestamp
-}
-from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 // ======================================================
-// COLLECTION
+// COLLECTIONS
 // ======================================================
 
 const COMPETITION_COLLECTION =
     "competitions";
 
+const EMPLOYEES_COLLECTION =
+    "employees";
+
 
 // ======================================================
-// HTML
+// HTML ELEMENTS
 // ======================================================
 
 const competitionForm =
@@ -77,15 +85,27 @@ const competitionEndTime =
     );
 
 
-const participantContainer =
+const sideAContainer =
     document.getElementById(
-        "participantContainer"
+        "sideAContainer"
     );
 
 
-const addParticipantBtn =
+const sideBContainer =
     document.getElementById(
-        "addParticipantBtn"
+        "sideBContainer"
+    );
+
+
+const addSideARowBtn =
+    document.getElementById(
+        "addSideARow"
+    );
+
+
+const addSideBRowBtn =
+    document.getElementById(
+        "addSideBRow"
     );
 
 
@@ -101,21 +121,21 @@ const resetCompetitionBtn =
     );
 
 
+const logoutBtn =
+    document.getElementById(
+        "logoutBtn"
+    );
+
+
 const messageBox =
     document.getElementById(
         "competitionMessage"
     );
 
 
-const competitionTableBody =
+const pageLoading =
     document.getElementById(
-        "competitionTableBody"
-    );
-
-
-const logoutBtn =
-    document.getElementById(
-        "logoutBtn"
+        "pageLoading"
     );
 
 
@@ -125,9 +145,12 @@ const logoutBtn =
 
 let allEmployees = [];
 
-let editingCompetitionId = null;
 
-let allCompetitions = [];
+// ======================================================
+// EDIT MODE
+// ======================================================
+
+let editCompetitionId = null;
 
 
 // ======================================================
@@ -202,7 +225,7 @@ function escapeHTML(value) {
 
 
 // ======================================================
-// MESSAGE
+// SHOW MESSAGE
 // ======================================================
 
 function showMessage(
@@ -228,6 +251,12 @@ function showMessage(
         "block";
 
 
+    messageBox.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+
+
     setTimeout(
         () => {
 
@@ -246,7 +275,43 @@ function showMessage(
 
 
 // ======================================================
-// DATE
+// PAGE LOADING
+// ======================================================
+
+function setPageLoading(
+    show,
+    text = "Loading Competition..."
+) {
+
+    if (!pageLoading) {
+        return;
+    }
+
+
+    const span =
+        pageLoading.querySelector(
+            "span"
+        );
+
+
+    if (span) {
+
+        span.textContent =
+            text;
+
+    }
+
+
+    pageLoading.classList.toggle(
+        "show",
+        show
+    );
+
+}
+
+
+// ======================================================
+// DATE FORMAT
 // ======================================================
 
 function formatDateForInput(
@@ -299,7 +364,9 @@ function setDefaultDate() {
     }
 
 
-    if (!competitionDate.value) {
+    if (
+        !competitionDate.value
+    ) {
 
         competitionDate.value =
             formatDateForInput(
@@ -369,7 +436,7 @@ async function loadEmployees() {
             await getDocs(
                 collection(
                     db,
-                    "employees"
+                    EMPLOYEES_COLLECTION
                 )
             );
 
@@ -378,7 +445,7 @@ async function loadEmployees() {
 
 
         snapshot.forEach(
-            employeeDoc => {
+            (employeeDoc) => {
 
                 allEmployees.push({
 
@@ -394,10 +461,12 @@ async function loadEmployees() {
 
 
         console.log(
-            "Competition Employees:",
+            "Competition Employees Loaded:",
             allEmployees.length
         );
 
+
+        initializeRows();
 
     }
 
@@ -410,7 +479,7 @@ async function loadEmployees() {
 
 
         showMessage(
-            "Region / State list load nahi ho saki.",
+            "Employees data load nahi ho saka. Firebase employees collection check karein.",
             "error"
         );
 
@@ -420,17 +489,17 @@ async function loadEmployees() {
 
 
 // ======================================================
-// UNIQUE REGIONS
+// GET UNIQUE REGIONS
 // ======================================================
 
 function getRegions() {
 
-    const regionSet =
-        new Set();
+    const regionMap =
+        new Map();
 
 
     allEmployees.forEach(
-        employee => {
+        (employee) => {
 
             const region =
                 getEmployeeRegion(
@@ -438,9 +507,23 @@ function getRegions() {
                 );
 
 
-            if (region) {
+            if (!region) {
+                return;
+            }
 
-                regionSet.add(
+
+            const key =
+                normalize(
+                    region
+                );
+
+
+            if (
+                !regionMap.has(key)
+            ) {
+
+                regionMap.set(
+                    key,
                     region
                 );
 
@@ -451,30 +534,31 @@ function getRegions() {
 
 
     return [
-        ...regionSet
-    ]
-        .sort(
-            (a, b) =>
-                a.localeCompare(b)
-        );
+        ...regionMap.values()
+    ].sort(
+        (a, b) =>
+            a.localeCompare(
+                b
+            )
+    );
 
 }
 
 
 // ======================================================
-// STATES
+// GET STATES FOR REGION
 // ======================================================
 
 function getStatesForRegion(
     selectedRegion
 ) {
 
-    const stateSet =
-        new Set();
+    const stateMap =
+        new Map();
 
 
     allEmployees.forEach(
-        employee => {
+        (employee) => {
 
             const region =
                 getEmployeeRegion(
@@ -490,6 +574,8 @@ function getStatesForRegion(
 
             if (
 
+                region &&
+
                 state &&
 
                 normalize(region) ===
@@ -499,9 +585,22 @@ function getStatesForRegion(
 
             ) {
 
-                stateSet.add(
-                    state
-                );
+                const key =
+                    normalize(
+                        state
+                    );
+
+
+                if (
+                    !stateMap.has(key)
+                ) {
+
+                    stateMap.set(
+                        key,
+                        state
+                    );
+
+                }
 
             }
 
@@ -510,12 +609,13 @@ function getStatesForRegion(
 
 
     return [
-        ...stateSet
-    ]
-        .sort(
-            (a, b) =>
-                a.localeCompare(b)
-        );
+        ...stateMap.values()
+    ].sort(
+        (a, b) =>
+            a.localeCompare(
+                b
+            )
+    );
 
 }
 
@@ -524,9 +624,13 @@ function getStatesForRegion(
 // REGION OPTIONS
 // ======================================================
 
-function getRegionOptions(
+function getRegionOptionsHTML(
     selectedValue = ""
 ) {
+
+    const regions =
+        getRegions();
+
 
     let html = `
 
@@ -537,38 +641,35 @@ function getRegionOptions(
     `;
 
 
-    getRegions()
-        .forEach(
-            region => {
+    regions.forEach(
+        (region) => {
 
-                const selected =
-                    normalize(
+            const selected =
+                normalize(region) ===
+                normalize(
+                    selectedValue
+                )
+                    ? "selected"
+                    : "";
+
+
+            html += `
+
+                <option
+                    value="${escapeHTML(
                         region
-                    ) ===
-                    normalize(
-                        selectedValue
-                    )
-                        ? "selected"
-                        : "";
+                    )}"
+                    ${selected}
+                >
+                    ${escapeHTML(
+                        region
+                    )}
+                </option>
 
+            `;
 
-                html += `
-
-                    <option
-                        value="${escapeHTML(
-                            region
-                        )}"
-                        ${selected}
-                    >
-                        ${escapeHTML(
-                            region
-                        )}
-                    </option>
-
-                `;
-
-            }
-        );
+        }
+    );
 
 
     return html;
@@ -580,8 +681,8 @@ function getRegionOptions(
 // STATE OPTIONS
 // ======================================================
 
-function getStateOptions(
-    region,
+function getStateOptionsHTML(
+    region = "",
     selectedState = ""
 ) {
 
@@ -598,6 +699,12 @@ function getStateOptions(
     }
 
 
+    const states =
+        getStatesForRegion(
+            region
+        );
+
+
     let html = `
 
         <option value="">
@@ -607,40 +714,35 @@ function getStateOptions(
     `;
 
 
-    getStatesForRegion(
-        region
-    )
-        .forEach(
-            state => {
+    states.forEach(
+        (state) => {
 
-                const selected =
-                    normalize(
+            const selected =
+                normalize(state) ===
+                normalize(
+                    selectedState
+                )
+                    ? "selected"
+                    : "";
+
+
+            html += `
+
+                <option
+                    value="${escapeHTML(
                         state
-                    ) ===
-                    normalize(
-                        selectedState
-                    )
-                        ? "selected"
-                        : "";
+                    )}"
+                    ${selected}
+                >
+                    ${escapeHTML(
+                        state
+                    )}
+                </option>
 
+            `;
 
-                html += `
-
-                    <option
-                        value="${escapeHTML(
-                            state
-                        )}"
-                        ${selected}
-                    >
-                        ${escapeHTML(
-                            state
-                        )}
-                    </option>
-
-                `;
-
-            }
-        );
+        }
+    );
 
 
     return html;
@@ -649,11 +751,12 @@ function getStateOptions(
 
 
 // ======================================================
-// CREATE PARTICIPANT ROW
+// CREATE SIDE ROW
 // ======================================================
 
-function createParticipantRow(
-    participant = {}
+function createSideRow(
+    side,
+    data = {}
 ) {
 
     const row =
@@ -663,111 +766,135 @@ function createParticipantRow(
 
 
     row.className =
-        "participant-row";
+        "competition-side-row";
 
 
-    const participantName =
-        participant.name || "";
+    row.dataset.side =
+        side;
 
 
     const selectedRegion =
-        participant.region || "";
+        String(
+            data.region || ""
+        ).trim();
 
 
     const selectedState =
-        participant.state || "";
+        String(
+            data.state || ""
+        ).trim();
 
 
     row.innerHTML = `
 
-        <div class="participant-field">
+        <div class="side-row-top">
 
-            <label>
-                Participant / Team Name
-            </label>
+            <span class="participant-number">
 
-            <input
-                type="text"
-                class="participant-name"
-                placeholder="Example: Kolkata Team"
-                value="${escapeHTML(
-                    participantName
-                )}"
-            >
-
-        </div>
-
-
-        <div class="participant-field">
-
-            <label>
-                Region
-            </label>
-
-            <select
-                class="participant-region"
-            >
-
-                ${getRegionOptions(
-                    selectedRegion
+                ${escapeHTML(
+                    side
                 )}
+                Participant
 
-            </select>
-
-        </div>
+            </span>
 
 
-        <div class="participant-field">
-
-            <label>
-                State
-            </label>
-
-            <select
-                class="participant-state"
-                ${selectedRegion
-                    ? ""
-                    : "disabled"}
+            <button
+                type="button"
+                class="remove-side-row"
+                title="Remove Participant"
             >
 
-                ${getStateOptions(
-                    selectedRegion,
-                    selectedState
-                )}
+                <i class="fa-solid fa-trash"></i>
 
-            </select>
+            </button>
 
         </div>
 
 
-        <button
-            type="button"
-            class="remove-participant"
-            title="Remove Participant"
-        >
+        <div class="side-field-grid">
 
-            <i class="fa-solid fa-trash"></i>
 
-        </button>
+            <!-- REGION -->
+
+            <div class="competition-field">
+
+                <label>
+                    Region
+                </label>
+
+                <select
+                    class="competition-region"
+                >
+
+                    ${getRegionOptionsHTML(
+                        selectedRegion
+                    )}
+
+                </select>
+
+            </div>
+
+
+            <!-- STATE -->
+
+            <div class="competition-field">
+
+                <label>
+                    State
+                </label>
+
+                <select
+                    class="competition-state"
+                    ${
+                        selectedRegion
+                            ? ""
+                            : "disabled"
+                    }
+                >
+
+                    ${
+                        getStateOptionsHTML(
+                            selectedRegion,
+                            selectedState
+                        )
+                    }
+
+                </select>
+
+            </div>
+
+
+        </div>
 
     `;
 
 
     // ==================================================
-    // REGION CHANGE
+    // ELEMENTS
     // ==================================================
 
     const regionSelect =
         row.querySelector(
-            ".participant-region"
+            ".competition-region"
         );
 
 
     const stateSelect =
         row.querySelector(
-            ".participant-state"
+            ".competition-state"
         );
 
+
+    const removeButton =
+        row.querySelector(
+            ".remove-side-row"
+        );
+
+
+    // ==================================================
+    // REGION CHANGE
+    // ==================================================
 
     regionSelect.addEventListener(
         "change",
@@ -778,7 +905,7 @@ function createParticipantRow(
 
 
             stateSelect.innerHTML =
-                getStateOptions(
+                getStateOptionsHTML(
                     region
                 );
 
@@ -791,22 +918,27 @@ function createParticipantRow(
 
 
     // ==================================================
-    // REMOVE
+    // REMOVE ROW
     // ==================================================
 
-    const removeBtn =
-        row.querySelector(
-            ".remove-participant"
-        );
-
-
-    removeBtn.addEventListener(
+    removeButton.addEventListener(
         "click",
         function () {
 
+            const container =
+                side === "A"
+                    ? sideAContainer
+                    : sideBContainer;
+
+
+            if (!container) {
+                return;
+            }
+
+
             const rows =
-                participantContainer.querySelectorAll(
-                    ".participant-row"
+                container.querySelectorAll(
+                    ".competition-side-row"
                 );
 
 
@@ -815,7 +947,7 @@ function createParticipantRow(
             ) {
 
                 showMessage(
-                    "Kam se kam 1 participant hona chahiye.",
+                    `Side ${side} mein kam se kam 1 Region/State participant hona chahiye.`,
                     "error"
                 );
 
@@ -836,65 +968,115 @@ function createParticipantRow(
 
 
 // ======================================================
-// ADD PARTICIPANT
+// INITIALIZE ROWS
 // ======================================================
 
-function addParticipant(
-    participant = {}
-) {
+function initializeRows() {
 
-    if (!participantContainer) {
+    if (
+        !sideAContainer ||
+        !sideBContainer
+    ) {
+
         return;
+
     }
 
 
-    const row =
-        createParticipantRow(
-            participant
-        );
+    sideAContainer.innerHTML =
+        "";
 
 
-    participantContainer.appendChild(
-        row
+    sideBContainer.innerHTML =
+        "";
+
+
+    sideAContainer.appendChild(
+        createSideRow(
+            "A"
+        )
+    );
+
+
+    sideBContainer.appendChild(
+        createSideRow(
+            "B"
+        )
     );
 
 }
 
 
 // ======================================================
-// INITIALIZE PARTICIPANTS
+// ADD SIDE A
 // ======================================================
 
-function initializeParticipants() {
+if (addSideARowBtn) {
 
-    if (!participantContainer) {
-        return;
-    }
+    addSideARowBtn.addEventListener(
+        "click",
+        function () {
+
+            if (!sideAContainer) {
+                return;
+            }
 
 
-    participantContainer.innerHTML =
-        "";
+            sideAContainer.appendChild(
+                createSideRow(
+                    "A"
+                )
+            );
 
-
-    addParticipant();
+        }
+    );
 
 }
 
 
 // ======================================================
-// GET PARTICIPANTS
+// ADD SIDE B
 // ======================================================
 
-function getParticipants() {
+if (addSideBRowBtn) {
 
-    if (!participantContainer) {
+    addSideBRowBtn.addEventListener(
+        "click",
+        function () {
+
+            if (!sideBContainer) {
+                return;
+            }
+
+
+            sideBContainer.appendChild(
+                createSideRow(
+                    "B"
+                )
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================================
+// GET SIDE DATA
+// ======================================================
+
+function getSideData(
+    container
+) {
+
+    if (!container) {
         return [];
     }
 
 
     const rows =
-        participantContainer.querySelectorAll(
-            ".participant-row"
+        container.querySelectorAll(
+            ".competition-side-row"
         );
 
 
@@ -902,58 +1084,43 @@ function getParticipants() {
 
 
     rows.forEach(
-        row => {
+        (row) => {
 
-            const name =
-                String(
-                    row.querySelector(
-                        ".participant-name"
-                    )?.value ||
-                    ""
-                )
-                    .trim();
+            const regionSelect =
+                row.querySelector(
+                    ".competition-region"
+                );
+
+
+            const stateSelect =
+                row.querySelector(
+                    ".competition-state"
+                );
 
 
             const region =
                 String(
-                    row.querySelector(
-                        ".participant-region"
-                    )?.value ||
+                    regionSelect?.value ||
                     ""
-                )
-                    .trim();
+                ).trim();
 
 
             const state =
                 String(
-                    row.querySelector(
-                        ".participant-state"
-                    )?.value ||
+                    stateSelect?.value ||
                     ""
-                )
-                    .trim();
+                ).trim();
 
 
-            if (
-                name ||
-                region ||
-                state
-            ) {
+            result.push({
 
-                result.push({
+                region:
+                    region,
 
-                    name:
-                        name,
+                state:
+                    state
 
-                    region:
-                        region,
-
-                    state:
-                        state
-
-                });
-
-            }
+            });
 
         }
     );
@@ -965,15 +1132,98 @@ function getParticipants() {
 
 
 // ======================================================
-// VALIDATE PARTICIPANTS
+// CLEAN SIDE DATA
 // ======================================================
 
-function validateParticipants(
-    participants
+function cleanSideData(
+    sideData
+) {
+
+    return sideData
+        .map(
+            (item) => ({
+
+                region:
+                    String(
+                        item?.region ||
+                        ""
+                    ).trim(),
+
+                state:
+                    String(
+                        item?.state ||
+                        ""
+                    ).trim()
+
+            })
+        )
+        .filter(
+            (item) =>
+                item.region
+        );
+
+}
+
+
+// ======================================================
+// REMOVE DUPLICATES
+// ======================================================
+
+function removeDuplicateSideEntries(
+    sideData
+) {
+
+    const map =
+        new Map();
+
+
+    sideData.forEach(
+        (item) => {
+
+            const key =
+                normalize(
+                    item.region
+                ) +
+                "|" +
+                normalize(
+                    item.state
+                );
+
+
+            if (
+                !map.has(key)
+            ) {
+
+                map.set(
+                    key,
+                    item
+                );
+
+            }
+
+        }
+    );
+
+
+    return [
+        ...map.values()
+    ];
+
+}
+
+
+// ======================================================
+// VALIDATE SIDE
+// ======================================================
+
+function validateSide(
+    sideData,
+    sideName
 ) {
 
     if (
-        !participants.length
+        !Array.isArray(sideData) ||
+        sideData.length === 0
     ) {
 
         return {
@@ -982,7 +1232,7 @@ function validateParticipants(
                 false,
 
             message:
-                "Kam se kam 1 participant add karein."
+                `Side ${sideName} mein kam se kam 1 Region select karein.`
 
         };
 
@@ -990,29 +1240,9 @@ function validateParticipants(
 
 
     for (
-        let i = 0;
-        i < participants.length;
-        i++
+        const item
+        of sideData
     ) {
-
-        const item =
-            participants[i];
-
-
-        if (!item.name) {
-
-            return {
-
-                valid:
-                    false,
-
-                message:
-                    `Participant ${i + 1} ka Name enter karein.`
-
-            };
-
-        }
-
 
         if (!item.region) {
 
@@ -1022,7 +1252,7 @@ function validateParticipants(
                     false,
 
                 message:
-                    `Participant ${i + 1} ke liye Region select karein.`
+                    `Side ${sideName} ke har participant mein Region select karein.`
 
             };
 
@@ -1045,464 +1275,612 @@ function validateParticipants(
 
 
 // ======================================================
-// COMPETITION END DATE/TIME
+// GET URL EDIT ID
+//
+// Supported:
+//
+// competition-entry.html?id=ABC
+// competition-entry.html?competitionId=ABC
+//
 // ======================================================
 
-function getCompetitionEndDate(
-    competition
-) {
+function getEditCompetitionId() {
 
-    if (
-        !competition?.date ||
-        !competition?.endTime
-    ) {
-
-        return null;
-
-    }
-
-
-    const dateTime =
-        new Date(
-            `${competition.date}T${competition.endTime}:00`
+    const params =
+        new URLSearchParams(
+            window.location.search
         );
-
-
-    if (
-        Number.isNaN(
-            dateTime.getTime()
-        )
-    ) {
-
-        return null;
-
-    }
-
-
-    return dateTime;
-
-}
-
-
-// ======================================================
-// CHECK ENDED
-// ======================================================
-
-function isCompetitionEnded(
-    competition
-) {
-
-    const endDate =
-        getCompetitionEndDate(
-            competition
-        );
-
-
-    if (!endDate) {
-
-        return false;
-
-    }
 
 
     return (
-        new Date().getTime() >=
-        endDate.getTime()
-    );
+        params.get(
+            "competitionId"
+        ) ||
+
+        params.get(
+            "id"
+        ) ||
+
+        ""
+    ).trim();
 
 }
 
 
 // ======================================================
-// LOAD COMPETITIONS
+// LOAD COMPETITION FOR EDIT
 // ======================================================
 
-async function loadCompetitions() {
+async function loadCompetitionForEdit(
+    competitionId
+) {
+
+    if (!competitionId) {
+        return;
+    }
+
 
     try {
 
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    COMPETITION_COLLECTION
-                )
+        setPageLoading(
+            true,
+            "Loading Competition..."
+        );
+
+
+        const competitionRef =
+            doc(
+                db,
+                COMPETITION_COLLECTION,
+                competitionId
             );
 
 
-        allCompetitions = [];
+        const competitionSnapshot =
+            await getDoc(
+                competitionRef
+            );
 
 
-        snapshot.forEach(
-            competitionDoc => {
+        if (
+            !competitionSnapshot.exists()
+        ) {
 
-                allCompetitions.push({
+            throw new Error(
+                "Competition nahi mili."
+            );
 
-                    id:
-                        competitionDoc.id,
+        }
 
-                    ...competitionDoc.data()
 
-                });
+        const data =
+            competitionSnapshot.data();
 
-            }
+
+        editCompetitionId =
+            competitionId;
+
+
+        // ==================================================
+        // BASIC DATA
+        // ==================================================
+
+        if (competitionName) {
+
+            competitionName.value =
+                String(
+                    data.name || ""
+                );
+
+        }
+
+
+        if (competitionDate) {
+
+            competitionDate.value =
+                String(
+                    data.date || ""
+                );
+
+        }
+
+
+        if (competitionEndTime) {
+
+            competitionEndTime.value =
+                String(
+                    data.endTime || ""
+                );
+
+        }
+
+
+        // ==================================================
+        // SIDE DATA
+        // ==================================================
+
+        const sideA =
+            Array.isArray(
+                data.sideA
+            )
+                ? data.sideA
+                : [];
+
+
+        const sideB =
+            Array.isArray(
+                data.sideB
+            )
+                ? data.sideB
+                : [];
+
+
+        renderSideData(
+            sideAContainer,
+            "A",
+            sideA
         );
 
 
-        allCompetitions.sort(
-            (a, b) => {
-
-                const aTime =
-                    getCompetitionEndDate(
-                        a
-                    )?.getTime() || 0;
-
-
-                const bTime =
-                    getCompetitionEndDate(
-                        b
-                    )?.getTime() || 0;
-
-
-                return bTime - aTime;
-
-            }
+        renderSideData(
+            sideBContainer,
+            "B",
+            sideB
         );
 
 
-        displayCompetitionList();
+        // ==================================================
+        // EDIT UI
+        // ==================================================
+
+        document.body.classList.add(
+            "edit-mode"
+        );
+
+
+        if (saveCompetitionBtn) {
+
+            saveCompetitionBtn.innerHTML = `
+
+                <i class="fa-solid fa-pen-to-square"></i>
+
+                Update Competition
+
+            `;
+
+        }
+
+
+        console.log(
+            "Competition Edit Loaded:",
+            competitionId,
+            data
+        );
 
     }
 
     catch (error) {
 
         console.error(
-            "Competition Load Error:",
+            "Competition Edit Load Error:",
             error
         );
 
 
         showMessage(
-            "Competition list load nahi ho saki.",
+            error.message ||
+            "Competition load nahi ho saki.",
             "error"
         );
 
     }
 
-}
+    finally {
 
-
-// ======================================================
-// DISPLAY COMPETITIONS
-// ======================================================
-
-function displayCompetitionList() {
-
-    if (!competitionTableBody) {
-        return;
-    }
-
-
-    if (!allCompetitions.length) {
-
-        competitionTableBody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="6"
-                    style="
-                        text-align:center;
-                        padding:30px;
-                        color:#6b7280;
-                    "
-                >
-
-                    <i class="fa-solid fa-trophy"></i>
-
-                    &nbsp;
-
-                    Abhi koi competition nahi hai.
-
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
-
-    }
-
-
-    competitionTableBody.innerHTML =
-        allCompetitions
-            .map(
-                competition => {
-
-                    const participants =
-                        Array.isArray(
-                            competition.participants
-                        )
-                            ? competition.participants
-                            : [];
-
-
-                    const ended =
-                        isCompetitionEnded(
-                            competition
-                        );
-
-
-                    const statusHTML =
-                        ended
-
-                            ? `
-
-                                <span class="status-badge status-ended">
-
-                                    Ended
-
-                                </span>
-
-                              `
-
-                            : `
-
-                                <span class="status-badge status-active">
-
-                                    Active
-
-                                </span>
-
-                              `;
-
-
-                    return `
-
-                        <tr>
-
-                            <td>
-
-                                <strong>
-                                    ${escapeHTML(
-                                        competition.name
-                                    )}
-                                </strong>
-
-                            </td>
-
-
-                            <td>
-
-                                ${escapeHTML(
-                                    competition.date || "-"
-                                )}
-
-                            </td>
-
-
-                            <td>
-
-                                ${escapeHTML(
-                                    formatTime(
-                                        competition.endTime
-                                    )
-                                )}
-
-                            </td>
-
-
-                            <td>
-
-                                ${participants.length}
-
-                            </td>
-
-
-                            <td>
-
-                                ${statusHTML}
-
-                            </td>
-
-
-                            <td>
-
-                                <div class="table-actions">
-
-
-                                    <a
-                                        href="competition.html?id=${encodeURIComponent(
-                                            competition.id
-                                        )}"
-                                        target="_blank"
-                                        class="table-btn open"
-                                        title="Open Competition"
-                                    >
-
-                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-
-                                    </a>
-
-
-                                    <button
-                                        type="button"
-                                        class="table-btn edit"
-                                        title="Edit"
-                                        data-edit-id="${escapeHTML(
-                                            competition.id
-                                        )}"
-                                    >
-
-                                        <i class="fa-solid fa-pen"></i>
-
-                                    </button>
-
-
-                                    <button
-                                        type="button"
-                                        class="table-btn delete"
-                                        title="Delete"
-                                        data-delete-id="${escapeHTML(
-                                            competition.id
-                                        )}"
-                                    >
-
-                                        <i class="fa-solid fa-trash"></i>
-
-                                    </button>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                    `;
-
-                }
-            )
-            .join("");
-
-
-    // ==================================================
-    // EDIT EVENTS
-    // ==================================================
-
-    competitionTableBody
-        .querySelectorAll(
-            "[data-edit-id]"
-        )
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        editCompetition(
-                            button.dataset.editId
-                        );
-
-                    }
-                );
-
-            }
+        setPageLoading(
+            false
         );
 
-
-    // ==================================================
-    // DELETE EVENTS
-    // ==================================================
-
-    competitionTableBody
-        .querySelectorAll(
-            "[data-delete-id]"
-        )
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        deleteCompetition(
-                            button.dataset.deleteId
-                        );
-
-                    }
-                );
-
-            }
-        );
+    }
 
 }
 
 
 // ======================================================
-// FORMAT TIME
+// RENDER SIDE DATA
 // ======================================================
 
-function formatTime(
-    time
+function renderSideData(
+    container,
+    side,
+    sideData
 ) {
 
-    if (!time) {
-        return "-";
+    if (!container) {
+        return;
     }
 
 
-    const parts =
-        String(time)
-            .split(":");
+    container.innerHTML =
+        "";
+
+
+    const data =
+        Array.isArray(sideData) &&
+        sideData.length
+            ? sideData
+            : [
+                {
+                    region: "",
+                    state: ""
+                }
+            ];
+
+
+    data.forEach(
+        (item) => {
+
+            container.appendChild(
+                createSideRow(
+                    side,
+                    item
+                )
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================================
+// BUILD COMPETITION DATA
+// ======================================================
+
+function buildCompetitionData() {
+
+    const name =
+        String(
+            competitionName?.value ||
+            ""
+        ).trim();
+
+
+    const date =
+        String(
+            competitionDate?.value ||
+            ""
+        ).trim();
+
+
+    const endTime =
+        String(
+            competitionEndTime?.value ||
+            ""
+        ).trim();
+
+
+    let sideA =
+        getSideData(
+            sideAContainer
+        );
+
+
+    let sideB =
+        getSideData(
+            sideBContainer
+        );
+
+
+    sideA =
+        removeDuplicateSideEntries(
+            cleanSideData(
+                sideA
+            )
+        );
+
+
+    sideB =
+        removeDuplicateSideEntries(
+            cleanSideData(
+                sideB
+            )
+        );
+
+
+    return {
+
+        name:
+            name,
+
+        date:
+            date,
+
+        endTime:
+            endTime,
+
+        sideA:
+            sideA,
+
+        sideB:
+            sideB
+
+    };
+
+}
+
+
+// ======================================================
+// VALIDATE COMPETITION
+// ======================================================
+
+function validateCompetition(
+    data
+) {
+
+    if (!data.name) {
+
+        return {
+
+            valid:
+                false,
+
+            message:
+                "Competition Name enter karein."
+
+        };
+
+    }
+
+
+    if (!data.date) {
+
+        return {
+
+            valid:
+                false,
+
+            message:
+                "Competition Date select karein."
+
+        };
+
+    }
+
+
+    if (!data.endTime) {
+
+        return {
+
+            valid:
+                false,
+
+            message:
+                "Competition End Time select karein."
+
+        };
+
+    }
+
+
+    const sideAValidation =
+        validateSide(
+            data.sideA,
+            "A"
+        );
 
 
     if (
-        parts.length < 2
+        !sideAValidation.valid
     ) {
 
-        return time;
+        return sideAValidation;
 
     }
 
 
-    let hour =
-        parseInt(
-            parts[0],
-            10
+    const sideBValidation =
+        validateSide(
+            data.sideB,
+            "B"
         );
 
 
-    const minute =
-        parts[1];
+    if (
+        !sideBValidation.valid
+    ) {
+
+        return sideBValidation;
+
+    }
 
 
-    const suffix =
-        hour >= 12
-            ? "PM"
-            : "AM";
+    return {
 
+        valid:
+            true,
 
-    hour =
-        hour % 12 ||
-        12;
+        message:
+            ""
 
-
-    return `${hour}:${minute} ${suffix}`;
+    };
 
 }
 
 
 // ======================================================
-// SAVE / UPDATE
+// CREATE FIREBASE DATA
+// ======================================================
+
+function getFirebaseCompetitionData(
+    data
+) {
+
+    return {
+
+        // ==================================================
+        // BASIC
+        // ==================================================
+
+        name:
+            data.name,
+
+        date:
+            data.date,
+
+        endTime:
+            data.endTime,
+
+
+        // ==================================================
+        // PARTICIPANTS
+        // ==================================================
+
+        sideA:
+            data.sideA,
+
+        sideB:
+            data.sideB,
+
+
+        // ==================================================
+        // STATUS
+        // ==================================================
+
+        status:
+            "active",
+
+        // ==================================================
+        // CREATED BY
+        // ==================================================
+
+        createdBy:
+            loggedInUser ||
+            "admin",
+
+        createdRole:
+            currentUserRole ||
+            "admin"
+
+    };
+
+}
+
+
+// ======================================================
+// SAVE NEW COMPETITION
+// ======================================================
+
+async function createCompetition(
+    data
+) {
+
+    const firebaseData =
+        getFirebaseCompetitionData(
+            data
+        );
+
+
+    firebaseData.createdAt =
+        serverTimestamp();
+
+
+    firebaseData.updatedAt =
+        serverTimestamp();
+
+
+    console.log(
+        "New Competition Data:",
+        firebaseData
+    );
+
+
+    const competitionRef =
+        await addDoc(
+            collection(
+                db,
+                COMPETITION_COLLECTION
+            ),
+            firebaseData
+        );
+
+
+    return competitionRef.id;
+
+}
+
+
+// ======================================================
+// UPDATE EXISTING COMPETITION
+// ======================================================
+
+async function updateCompetition(
+    competitionId,
+    data
+) {
+
+    if (!competitionId) {
+
+        throw new Error(
+            "Competition ID missing hai."
+        );
+
+    }
+
+
+    const competitionRef =
+        doc(
+            db,
+            COMPETITION_COLLECTION,
+            competitionId
+        );
+
+
+    const existingSnapshot =
+        await getDoc(
+            competitionRef
+        );
+
+
+    if (
+        !existingSnapshot.exists()
+    ) {
+
+        throw new Error(
+            "Update ke liye competition nahi mili."
+        );
+
+    }
+
+
+    const firebaseData =
+        getFirebaseCompetitionData(
+            data
+        );
+
+
+    firebaseData.updatedAt =
+        serverTimestamp();
+
+
+    await updateDoc(
+        competitionRef,
+        firebaseData
+    );
+
+
+    return competitionId;
+
+}
+
+
+// ======================================================
+// SAVE / UPDATE COMPETITION
 // ======================================================
 
 async function saveCompetition() {
 
-    if (
-        saveCompetitionBtn
-    ) {
+    if (saveCompetitionBtn) {
 
         saveCompetitionBtn.disabled =
             true;
@@ -1521,68 +1899,33 @@ async function saveCompetition() {
 
     try {
 
-        const name =
-            String(
-                competitionName?.value ||
-                ""
-            )
-                .trim();
+        // ==================================================
+        // BUILD DATA
+        // ==================================================
+
+        const data =
+            buildCompetitionData();
 
 
-        const date =
-            String(
-                competitionDate?.value ||
-                ""
-            )
-                .trim();
+        console.log(
+            "Competition Form Data:",
+            data
+        );
 
 
-        const endTime =
-            String(
-                competitionEndTime?.value ||
-                ""
-            )
-                .trim();
-
-
-        if (!name) {
-
-            throw new Error(
-                "Competition Name enter karein."
-            );
-
-        }
-
-
-        if (!date) {
-
-            throw new Error(
-                "Competition Date select karein."
-            );
-
-        }
-
-
-        if (!endTime) {
-
-            throw new Error(
-                "Competition End Time select karein."
-            );
-
-        }
-
-
-        const participants =
-            getParticipants();
-
+        // ==================================================
+        // VALIDATE
+        // ==================================================
 
         const validation =
-            validateParticipants(
-                participants
+            validateCompetition(
+                data
             );
 
 
-        if (!validation.valid) {
+        if (
+            !validation.valid
+        ) {
 
             throw new Error(
                 validation.message
@@ -1591,47 +1934,22 @@ async function saveCompetition() {
         }
 
 
-        const competitionData = {
-
-            name:
-                name,
-
-            date:
-                date,
-
-            endTime:
-                endTime,
-
-            participants:
-                participants,
-
-            status:
-                "active",
-
-            updatedAt:
-                serverTimestamp()
-
-        };
-
-
         // ==================================================
-        // UPDATE
+        // EDIT
         // ==================================================
 
-        if (
-            editingCompetitionId
-        ) {
+        if (editCompetitionId) {
 
-            await updateDoc(
+            const competitionId =
+                await updateCompetition(
+                    editCompetitionId,
+                    data
+                );
 
-                doc(
-                    db,
-                    COMPETITION_COLLECTION,
-                    editingCompetitionId
-                ),
 
-                competitionData
-
+            console.log(
+                "Competition Updated:",
+                competitionId
             );
 
 
@@ -1640,58 +1958,79 @@ async function saveCompetition() {
                 "success"
             );
 
+
+            // ==================================================
+            // Keep Edit Mode
+            // ==================================================
+
+            if (saveCompetitionBtn) {
+
+                saveCompetitionBtn.disabled =
+                    false;
+
+            }
+
+
+            return;
+
         }
+
 
         // ==================================================
         // CREATE
         // ==================================================
 
-        else {
-
-            competitionData.createdBy =
-                loggedInUser ||
-                "admin";
-
-
-            competitionData.createdRole =
-                currentUserRole ||
-                "admin";
-
-
-            competitionData.createdAt =
-                serverTimestamp();
-
-
-            const competitionRef =
-                await addDoc(
-
-                    collection(
-                        db,
-                        COMPETITION_COLLECTION
-                    ),
-
-                    competitionData
-
-                );
-
-
-            console.log(
-                "Competition ID:",
-                competitionRef.id
+        const competitionId =
+            await createCompetition(
+                data
             );
 
 
-            showMessage(
-                "Competition successfully save ho gaya.",
-                "success"
+        console.log(
+            "Competition Created:",
+            competitionId
+        );
+
+
+        // ==================================================
+        // PUBLIC LINK
+        // ==================================================
+
+        const publicLink =
+            new URL(
+                "competition.html",
+                window.location.href
             );
 
-        }
 
+        publicLink.searchParams.set(
+            "id",
+            competitionId
+        );
+
+
+        console.log(
+            "Competition Public Link:",
+            publicLink.href
+        );
+
+
+        // ==================================================
+        // SUCCESS
+        // ==================================================
+
+        showMessage(
+            "Competition successfully save ho gaya. Competition ID: " +
+            competitionId,
+            "success"
+        );
+
+
+        // ==================================================
+        // RESET
+        // ==================================================
 
         resetCompetitionForm();
-
-        await loadCompetitions();
 
     }
 
@@ -1713,15 +2052,37 @@ async function saveCompetition() {
 
     finally {
 
-        if (
-            saveCompetitionBtn
-        ) {
+        if (saveCompetitionBtn) {
 
             saveCompetitionBtn.disabled =
                 false;
 
 
-            updateSaveButton();
+            if (
+                editCompetitionId
+            ) {
+
+                saveCompetitionBtn.innerHTML = `
+
+                    <i class="fa-solid fa-pen-to-square"></i>
+
+                    Update Competition
+
+                `;
+
+            }
+
+            else {
+
+                saveCompetitionBtn.innerHTML = `
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Competition
+
+                `;
+
+            }
 
         }
 
@@ -1731,264 +2092,7 @@ async function saveCompetition() {
 
 
 // ======================================================
-// EDIT COMPETITION
-// ======================================================
-
-async function editCompetition(
-    competitionId
-) {
-
-    try {
-
-        const competitionRef =
-            doc(
-                db,
-                COMPETITION_COLLECTION,
-                competitionId
-            );
-
-
-        const snapshot =
-            await getDoc(
-                competitionRef
-            );
-
-
-        if (!snapshot.exists()) {
-
-            throw new Error(
-                "Competition nahi mila."
-            );
-
-        }
-
-
-        const data =
-            snapshot.data();
-
-
-        editingCompetitionId =
-            competitionId;
-
-
-        document.body.classList.add(
-            "edit-mode"
-        );
-
-
-        competitionName.value =
-            data.name || "";
-
-
-        competitionDate.value =
-            data.date || "";
-
-
-        competitionEndTime.value =
-            data.endTime || "";
-
-
-        participantContainer.innerHTML =
-            "";
-
-
-        const participants =
-            Array.isArray(
-                data.participants
-            )
-                ? data.participants
-                : [];
-
-
-        if (
-            participants.length
-        ) {
-
-            participants.forEach(
-                participant => {
-
-                    addParticipant(
-                        participant
-                    );
-
-                }
-            );
-
-        }
-
-        else {
-
-            addParticipant();
-
-        }
-
-
-        updateSaveButton();
-
-
-        window.scrollTo({
-
-            top:
-                0,
-
-            behavior:
-                "smooth"
-
-        });
-
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Edit Competition Error:",
-            error
-        );
-
-
-        showMessage(
-            error.message ||
-            "Competition edit nahi ho saka.",
-            "error"
-        );
-
-    }
-
-}
-
-
-// ======================================================
-// UPDATE BUTTON
-// ======================================================
-
-function updateSaveButton() {
-
-    if (!saveCompetitionBtn) {
-        return;
-    }
-
-
-    if (
-        editingCompetitionId
-    ) {
-
-        saveCompetitionBtn.innerHTML = `
-
-            <i class="fa-solid fa-pen-to-square"></i>
-
-            Update Competition
-
-        `;
-
-    }
-
-    else {
-
-        saveCompetitionBtn.innerHTML = `
-
-            <i class="fa-solid fa-floppy-disk"></i>
-
-            Save Competition
-
-        `;
-
-    }
-
-}
-
-
-// ======================================================
-// DELETE
-// ======================================================
-
-async function deleteCompetition(
-    competitionId
-) {
-
-    const competition =
-        allCompetitions.find(
-            item =>
-                item.id ===
-                competitionId
-        );
-
-
-    if (!competition) {
-
-        return;
-
-    }
-
-
-    const confirmed =
-        window.confirm(
-
-            `Kya aap "${competition.name}" competition delete karna chahte hain?`
-
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    try {
-
-        await deleteDoc(
-
-            doc(
-                db,
-                COMPETITION_COLLECTION,
-                competitionId
-            )
-
-        );
-
-
-        showMessage(
-            "Competition delete ho gaya.",
-            "success"
-        );
-
-
-        if (
-            editingCompetitionId ===
-            competitionId
-        ) {
-
-            resetCompetitionForm();
-
-        }
-
-
-        await loadCompetitions();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Delete Competition Error:",
-            error
-        );
-
-
-        showMessage(
-            "Competition delete nahi ho saka.",
-            "error"
-        );
-
-    }
-
-}
-
-
-// ======================================================
-// RESET
+// RESET FORM
 // ======================================================
 
 function resetCompetitionForm() {
@@ -2000,22 +2104,29 @@ function resetCompetitionForm() {
     }
 
 
-    editingCompetitionId =
-        null;
+    // ==================================================
+    // If Edit Mode
+    // ==================================================
 
+    if (editCompetitionId) {
 
-    document.body.classList.remove(
-        "edit-mode"
-    );
+        return;
+
+    }
 
 
     setDefaultDate();
 
 
-    initializeParticipants();
+    initializeRows();
 
 
-    updateSaveButton();
+    if (messageBox) {
+
+        messageBox.style.display =
+            "none";
+
+    }
 
 }
 
@@ -2024,13 +2135,11 @@ function resetCompetitionForm() {
 // FORM SUBMIT
 // ======================================================
 
-if (
-    competitionForm
-) {
+if (competitionForm) {
 
     competitionForm.addEventListener(
         "submit",
-        event => {
+        function (event) {
 
             event.preventDefault();
 
@@ -2043,38 +2152,43 @@ if (
 
 
 // ======================================================
-// ADD PARTICIPANT
+// RESET BUTTON
 // ======================================================
 
-if (
-    addParticipantBtn
-) {
-
-    addParticipantBtn.addEventListener(
-        "click",
-        () => {
-
-            addParticipant();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// RESET
-// ======================================================
-
-if (
-    resetCompetitionBtn
-) {
+if (resetCompetitionBtn) {
 
     resetCompetitionBtn.addEventListener(
         "click",
-        () => {
+        function () {
 
-            resetCompetitionForm();
+            // Native form reset pehle hone dein.
+
+            setTimeout(
+                function () {
+
+                    if (
+                        editCompetitionId
+                    ) {
+
+                        // Edit mode mein current
+                        // competition ko reload karenge.
+
+                        loadCompetitionForEdit(
+                            editCompetitionId
+                        );
+
+                        return;
+
+                    }
+
+
+                    setDefaultDate();
+
+                    initializeRows();
+
+                },
+                0
+            );
 
         }
     );
@@ -2086,13 +2200,11 @@ if (
 // LOGOUT
 // ======================================================
 
-if (
-    logoutBtn
-) {
+if (logoutBtn) {
 
     logoutBtn.addEventListener(
         "click",
-        event => {
+        function (event) {
 
             event.preventDefault();
 
@@ -2125,20 +2237,38 @@ if (
 // START
 // ======================================================
 
-async function initialize() {
+async function startCompetitionEntry() {
 
     setDefaultDate();
 
-    initializeParticipants();
 
     await loadEmployees();
 
-    await loadCompetitions();
+
+    // ==================================================
+    // CHECK EDIT MODE
+    // ==================================================
+
+    const competitionId =
+        getEditCompetitionId();
+
+
+    if (competitionId) {
+
+        await loadCompetitionForEdit(
+            competitionId
+        );
+
+    }
 
 }
 
 
-initialize();
+// ======================================================
+// START APP
+// ======================================================
+
+startCompetitionEntry();
 
 
 // ======================================================
