@@ -13,12 +13,12 @@
 // 4. Competition End Time
 // 5. Side A Team Name
 // 6. Side B Team Name
-// 7. Side A Total Unit
-// 8. Side B Total Unit
+// 7. Side A Total Amount
+// 8. Side B Total Amount
 //
 // IMPORTANT:
 //
-// 9. Amount public page par show nahi hoga.
+// 9. Amount public page par show hoga.
 // 10. Competition Date back date ho sakti hai.
 // 11. Back-date competition public page par show hogi.
 // 12. End Time sirf collection calculation ke liye use hoga.
@@ -536,13 +536,6 @@ function getCreatedTime(
 
 // ======================================================
 // GET COMPETITION END TIMESTAMP
-//
-// IMPORTANT:
-//
-// Ye sirf collection cutoff ke liye hai.
-//
-// Public visibility ke liye
-// iska use nahi hoga.
 // ======================================================
 
 function getCompetitionEndTimestamp(
@@ -1221,11 +1214,8 @@ function getLatestEntries() {
 // ======================================================
 // CALCULATE SIDE UNIT
 //
-// Competition date ke teachers ki
-// collection calculate hogi.
-//
-// End Time ke baad create hui entry
-// competition total mein include nahi hogi.
+// Existing calculation logic SAME.
+// Ye function Unit return karta hai.
 //
 // ======================================================
 
@@ -1337,12 +1327,6 @@ function calculateSideUnit(
 
             // ==================================================
             // END TIME CHECK
-            //
-            // End Time ke baad ki entry
-            // total mein nahi aayegi.
-            //
-            // Competition public page par
-            // phir bhi visible rahegi.
             // ==================================================
 
             const createdTime =
@@ -1378,6 +1362,8 @@ function calculateSideUnit(
 
     // ==================================================
     // AMOUNT -> UNIT
+    //
+    // Existing calculation maintained.
     // ==================================================
 
     return (
@@ -1390,6 +1376,10 @@ function calculateSideUnit(
 
 // ======================================================
 // CREATE SIDE HTML
+//
+// IMPORTANT:
+// Sirf display mein Unit ko Amount kiya gaya hai.
+// Calculation SAME hai.
 // ======================================================
 
 function createSideHTML(
@@ -1428,15 +1418,16 @@ function createSideHTML(
 
                 <div class="team-total-label">
 
-                    Total Unit
+                    Total Amount
 
                 </div>
 
 
                 <div class="team-total-unit">
 
-                    ${formatUnit(
-                        totalUnit
+                    ₹${formatUnit(
+                        totalUnit *
+                        UNIT_AMOUNT
                     )}
 
                 </div>
@@ -1462,10 +1453,6 @@ function createSideHTML(
 // Format:
 //
 // (Winning Team Name) Teachers
-//
-// Example:
-//
-// Hyderabad Region Teachers
 //
 // ======================================================
 
@@ -1526,8 +1513,6 @@ function createWinnerAppreciation(
 
     // ==================================================
     // TIE
-    //
-    // Tie mein winner appreciation nahi.
     // ==================================================
 
     if (
@@ -1553,9 +1538,6 @@ function createWinnerAppreciation(
 
     // ==================================================
     // WINNING TEAM NAME
-    //
-    // Individual teachers nahi.
-    // Sirf Team Name use hoga.
     // ==================================================
 
     const winningTeamName =
@@ -1810,16 +1792,6 @@ function createCompetitionCard(
 
 // ======================================================
 // PUBLIC VISIBILITY
-//
-// Admin Hide/Show Public ke liye
-//
-// HIDE conditions:
-//
-// hidePublic === true
-// publicVisible === false
-// isPublic === false
-// publicStatus === "hidden"
-//
 // ======================================================
 
 function isCompetitionHiddenFromPublic(
@@ -1929,16 +1901,6 @@ function isCompetitionHiddenFromPublic(
 
 // ======================================================
 // CHECK PUBLIC COMPETITION
-//
-// IMPORTANT:
-//
-// Date old/new hone se koi farq nahi.
-//
-// End Time cross hone se bhi hide nahi.
-//
-// Sirf Admin Hide Public karega
-// to public page se hide hoga.
-//
 // ======================================================
 
 function isPublicCompetition(
@@ -2014,9 +1976,7 @@ function isPublicCompetition(
 
 
     // ==================================================
-    // IMPORTANT
-    //
-    // Expiry check intentionally nahi hai.
+    // EXPIRY CHECK INTENTIONALLY NAHI
     // ==================================================
 
     return true;
@@ -2246,11 +2206,6 @@ function showError(
 
 // ======================================================
 // GET URL ID
-//
-// Example:
-//
-// competition.html?id=ABC123
-//
 // ======================================================
 
 function getCompetitionIdFromURL() {
@@ -2666,8 +2621,6 @@ async function loadCompetitionPage() {
 
         // ==================================================
         // SINGLE COMPETITION
-        //
-        // competition.html?id=XXXX
         // ==================================================
 
         if (
@@ -2721,12 +2674,6 @@ async function loadCompetitionPage() {
 
         // ==================================================
         // ALL PUBLIC COMPETITIONS
-        //
-        // Back date bhi show hogi.
-        //
-        // End time cross hone se hide nahi hogi.
-        //
-        // Admin Hide Public karega tab hide hogi.
         // ==================================================
 
         const publicCompetitions =
