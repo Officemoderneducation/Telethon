@@ -38,12 +38,15 @@
 
 import { db } from "./firebase-config.js";
 
+
 import {
     collection,
     getDocs,
     query,
     orderBy
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 // ======================================================
@@ -53,11 +56,14 @@ import {
 const COMPETITION_COLLECTION =
     "competitions";
 
+
 const EMPLOYEES_COLLECTION =
     "employees";
 
+
 const DAILY_ENTRY_COLLECTION =
     "daily_entry";
+
 
 const TEACHER_ENTRIES_COLLECTION =
     "teacher_entries";
@@ -80,20 +86,24 @@ const loadingBox =
         "loadingBox"
     );
 
+
 const errorBox =
     document.getElementById(
         "errorBox"
     );
+
 
 const errorMessage =
     document.getElementById(
         "errorMessage"
     );
 
+
 const emptyBox =
     document.getElementById(
         "emptyBox"
     );
+
 
 const competitionList =
     document.getElementById(
@@ -530,10 +540,10 @@ function getCreatedTime(
 //
 // IMPORTANT:
 //
-// Ye sirf entry cutoff ke liye hai.
+// Ye sirf collection cutoff ke liye hai.
 //
 // Public visibility ke liye
-// is function ka use nahi hoga.
+// iska use nahi hota.
 //
 // ======================================================
 
@@ -614,8 +624,10 @@ function formatCompetitionDate(
     const year =
         Number(parts[0]);
 
+
     const month =
         Number(parts[1]);
+
 
     const day =
         Number(parts[2]);
@@ -687,6 +699,7 @@ function formatEndTime(
 
     const hour =
         Number(parts[0]);
+
 
     const minute =
         Number(parts[1]);
@@ -973,10 +986,6 @@ function employeeMatchesRule(
         );
 
 
-    // ==================================================
-    // REGION + STATE
-    // ==================================================
-
     if (
         ruleRegion &&
         ruleState
@@ -995,10 +1004,6 @@ function employeeMatchesRule(
     }
 
 
-    // ==================================================
-    // REGION ONLY
-    // ==================================================
-
     if (
         ruleRegion
     ) {
@@ -1012,10 +1017,6 @@ function employeeMatchesRule(
 
     }
 
-
-    // ==================================================
-    // STATE ONLY
-    // ==================================================
 
     if (
         ruleState
@@ -1213,13 +1214,10 @@ function getLatestEntries() {
 // ======================================================
 // CALCULATE SIDE UNIT
 //
-// Competition date ke teachers ki
-// collection calculate hogi.
-//
 // IMPORTANT:
 //
-// End Time ke baad create hui entry
-// competition total mein include nahi hogi.
+// End Time sirf cutoff hai.
+// Public visibility ka isse koi relation nahi.
 //
 // ======================================================
 
@@ -1294,10 +1292,6 @@ function calculateSideUnit(
                 );
 
 
-            // ==================================================
-            // TEACHER CHECK
-            // ==================================================
-
             if (
                 !teacherSet.has(
                     employeeCode
@@ -1308,10 +1302,6 @@ function calculateSideUnit(
 
             }
 
-
-            // ==================================================
-            // DATE CHECK
-            // ==================================================
 
             const entryDate =
                 getEntryDate(
@@ -1330,16 +1320,14 @@ function calculateSideUnit(
 
 
             // ==================================================
-            // END TIME CHECK
+            // END TIME CUTOFF
+            //
+            // End Time ke baad ki entry
+            // total mein include nahi hogi.
             //
             // IMPORTANT:
             //
-            // End Time ke baad ki entry
-            // total mein nahi aayegi.
-            //
-            // Lekin competition public page par
-            // phir bhi visible rahegi agar
-            // Admin ne Hide Public nahi kiya.
+            // Ye competition ko hide nahi karta.
             //
             // ==================================================
 
@@ -1361,10 +1349,6 @@ function calculateSideUnit(
             }
 
 
-            // ==================================================
-            // ADD AMOUNT
-            // ==================================================
-
             totalAmount +=
                 getEntryAmount(
                     entry
@@ -1373,10 +1357,6 @@ function calculateSideUnit(
         }
     );
 
-
-    // ==================================================
-    // AMOUNT -> UNIT
-    // ==================================================
 
     return (
         totalAmount /
@@ -1505,10 +1485,6 @@ function createCompetitionCard(
 
     card.innerHTML = `
 
-        <!-- ==========================================
-             COMPETITION NAME
-        =========================================== -->
-
         <div class="competition-name">
 
             ${escapeHTML(
@@ -1518,10 +1494,6 @@ function createCompetitionCard(
         </div>
 
 
-        <!-- ==========================================
-             DATE
-        =========================================== -->
-
         <div class="competition-date">
 
             ${escapeHTML(
@@ -1530,10 +1502,6 @@ function createCompetitionCard(
 
         </div>
 
-
-        <!-- ==========================================
-             END TIME
-        =========================================== -->
 
         <div class="competition-end">
 
@@ -1549,10 +1517,6 @@ function createCompetitionCard(
 
         </div>
 
-
-        <!-- ==========================================
-             MATCH
-        =========================================== -->
 
         <div class="competition-match">
 
@@ -1585,33 +1549,20 @@ function createCompetitionCard(
 // ======================================================
 // PUBLIC VISIBILITY
 //
-// IMPORTANT:
+// ONLY ADMIN HIDE/SHOW DECIDES PUBLIC VISIBILITY.
 //
-// Admin Hide/Show Public ke liye
-// multiple possible field names support.
-//
-// HIDE conditions:
+// Supported:
 //
 // hidePublic === true
-// OR
 // publicVisible === false
-// OR
 // isPublic === false
-// OR
-// publicStatus === "hidden"
-//
-// Agar inmein se koi bhi condition nahi hai,
-// competition PUBLIC rahegi.
+// publicStatus === hidden/hide
 //
 // ======================================================
 
 function isCompetitionHiddenFromPublic(
     competition
 ) {
-
-    // ==================================================
-    // EXPLICIT HIDE
-    // ==================================================
 
     if (
         competition?.hidePublic === true
@@ -1621,10 +1572,6 @@ function isCompetitionHiddenFromPublic(
 
     }
 
-
-    // ==================================================
-    // STRING TRUE SUPPORT
-    // ==================================================
 
     if (
         normalize(
@@ -1636,10 +1583,6 @@ function isCompetitionHiddenFromPublic(
 
     }
 
-
-    // ==================================================
-    // PUBLIC VISIBLE FALSE
-    // ==================================================
 
     if (
         competition?.publicVisible === false
@@ -1661,10 +1604,6 @@ function isCompetitionHiddenFromPublic(
     }
 
 
-    // ==================================================
-    // IS PUBLIC FALSE
-    // ==================================================
-
     if (
         competition?.isPublic === false
     ) {
@@ -1684,10 +1623,6 @@ function isCompetitionHiddenFromPublic(
 
     }
 
-
-    // ==================================================
-    // PUBLIC STATUS
-    // ==================================================
 
     const publicStatus =
         normalize(
@@ -1715,12 +1650,13 @@ function isCompetitionHiddenFromPublic(
 //
 // IMPORTANT:
 //
-// Date old/new hone se koi farq nahi.
+// NO EXPIRY CHECK.
 //
-// End Time cross hone se bhi hide nahi.
+// Back date = SHOW
+// Current date = SHOW
+// End time crossed = SHOW
 //
-// Sirf Admin Hide Public karega
-// to public page se hide hoga.
+// Only Admin Hide Public = HIDE
 //
 // ======================================================
 
@@ -1763,10 +1699,6 @@ function isPublicCompetition(
 
     // ==================================================
     // STATUS
-    //
-    // Deleted / inactive ko hide rakhenge.
-    //
-    // Active status normal visible hai.
     // ==================================================
 
     const status =
@@ -1786,7 +1718,7 @@ function isPublicCompetition(
 
 
     // ==================================================
-    // ADMIN PUBLIC HIDE
+    // ADMIN HIDE PUBLIC
     // ==================================================
 
     if (
@@ -1803,14 +1735,12 @@ function isPublicCompetition(
     // ==================================================
     // IMPORTANT
     //
-    // Expiry check YAHAN NAHI HAI.
+    // YAHAN KOI DATE CHECK NAHI HAI.
     //
-    // Isliye:
+    // YAHAN KOI END TIME CHECK NAHI HAI.
     //
-    // 28 August competition
-    // 29 August ko bhi show hogi.
-    //
-    // Jab tak Admin Hide Public nahi karta.
+    // Isliye competition automatically
+    // expire/hide nahi hogi.
     //
     // ==================================================
 
@@ -2041,11 +1971,6 @@ function showError(
 
 // ======================================================
 // GET URL ID
-//
-// Example:
-//
-// competition.html?id=ABC123
-//
 // ======================================================
 
 function getCompetitionIdFromURL() {
@@ -2463,7 +2388,6 @@ async function loadCompetitionPage() {
         // SINGLE COMPETITION
         //
         // competition.html?id=XXXX
-        //
         // ==================================================
 
         if (
@@ -2490,7 +2414,9 @@ async function loadCompetitionPage() {
 
 
             // ==================================================
-            // PUBLIC HIDE CHECK
+            // ONLY ADMIN HIDE CHECK
+            //
+            // NO EXPIRY CHECK
             // ==================================================
 
             if (
@@ -2510,6 +2436,7 @@ async function loadCompetitionPage() {
                 competition
             ]);
 
+
             return;
 
         }
@@ -2518,12 +2445,9 @@ async function loadCompetitionPage() {
         // ==================================================
         // ALL PUBLIC COMPETITIONS
         //
-        // Back date bhi show hogi.
-        //
-        // End time cross hone se hide nahi hogi.
-        //
-        // Admin Hide Public karega tab hide hogi.
-        //
+        // Back date SHOW
+        // End time cross SHOW
+        // Admin Hide = HIDE
         // ==================================================
 
         const publicCompetitions =
