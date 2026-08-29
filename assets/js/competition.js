@@ -5,9 +5,7 @@
 // File:
 // assets/js/competition.js
 //
-// IMPORTANT:
-//
-// Public Page:
+// PUBLIC LOGIC:
 //
 // 1. Academic Department Competition
 // 2. Competition Name
@@ -17,17 +15,23 @@
 // 6. Side B Team Name
 // 7. Side A Total Unit
 // 8. Side B Total Unit
-// 9. Amount public page par show nahi hoga
-// 10. End Time ke baad ki entry include nahi hogi
-// 11. End Time ke baad competition public list se hide hoga
-// 12. Individual public URL support
 //
 // IMPORTANT:
 //
-// Competition Participants section REMOVE hai.
+// 9. Amount public page par show nahi hoga.
+// 10. Competition Date back date ho sakti hai.
+// 11. Back-date competition public page par show hogi.
+// 12. End Time sirf collection calculation ke liye use hoga.
+// 13. End Time cross hone se competition automatically hide NAHI hoga.
+// 14. Admin ka Hide/Show Public control final visibility decide karega.
+// 15. Individual public URL support.
 //
-// competition-entry.html / competition-entry.js
-// ko change karne ki zarurat nahi hai.
+// FIREBASE COLLECTIONS:
+//
+// competitions
+// employees
+// daily_entry
+// teacher_entries
 //
 // ======================================================
 
@@ -76,24 +80,20 @@ const loadingBox =
         "loadingBox"
     );
 
-
 const errorBox =
     document.getElementById(
         "errorBox"
     );
-
 
 const errorMessage =
     document.getElementById(
         "errorMessage"
     );
 
-
 const emptyBox =
     document.getElementById(
         "emptyBox"
     );
-
 
 const competitionList =
     document.getElementById(
@@ -527,6 +527,14 @@ function getCreatedTime(
 
 // ======================================================
 // GET COMPETITION END TIMESTAMP
+//
+// IMPORTANT:
+//
+// Ye sirf entry cutoff ke liye hai.
+//
+// Public visibility ke liye
+// is function ka use nahi hoga.
+//
 // ======================================================
 
 function getCompetitionEndTimestamp(
@@ -573,33 +581,6 @@ function getCompetitionEndTimestamp(
 
 
 // ======================================================
-// CHECK EXPIRED
-// ======================================================
-
-function isCompetitionExpired(
-    competition
-) {
-
-    const endTimestamp =
-        getCompetitionEndTimestamp(
-            competition
-        );
-
-
-    if (!endTimestamp) {
-
-        return false;
-
-    }
-
-
-    return Date.now() >
-        endTimestamp;
-
-}
-
-
-// ======================================================
 // FORMAT DATE
 // ======================================================
 
@@ -633,10 +614,8 @@ function formatCompetitionDate(
     const year =
         Number(parts[0]);
 
-
     const month =
         Number(parts[1]);
-
 
     const day =
         Number(parts[2]);
@@ -709,7 +688,6 @@ function formatEndTime(
     const hour =
         Number(parts[0]);
 
-
     const minute =
         Number(parts[1]);
 
@@ -752,25 +730,6 @@ function formatEndTime(
 
 // ======================================================
 // GET SIDE DATA
-//
-// Firebase:
-//
-// sideA: [
-//     {
-//         region: "Kolkata",
-//         state: "",
-//         teamName: "Chand Sir"
-//     }
-// ]
-//
-// sideB: [
-//     {
-//         region: "Gujarat",
-//         state: "",
-//         teamName: "Aasim Sir"
-//     }
-// ]
-//
 // ======================================================
 
 function getSideData(
@@ -817,10 +776,6 @@ function getAdminTeamName(
     side
 ) {
 
-    // ==================================================
-    // DIRECT TEAM NAME
-    // ==================================================
-
     const directNames = [
 
         competition?.[
@@ -861,10 +816,6 @@ function getAdminTeamName(
 
     }
 
-
-    // ==================================================
-    // SIDE ARRAY
-    // ==================================================
 
     const sideData =
         getSideData(
@@ -937,10 +888,6 @@ function getAdminTeamName(
 
 // ======================================================
 // GET PARTICIPANT RULES
-//
-// Region / State competition-entry se
-// liya jayega.
-//
 // ======================================================
 
 function getParticipantRules(
@@ -1169,7 +1116,6 @@ function getSideParticipants(
 //
 // Same Teacher + Same Date
 // = Latest Entry
-//
 // ======================================================
 
 function getLatestEntries() {
@@ -1270,8 +1216,10 @@ function getLatestEntries() {
 // Competition date ke teachers ki
 // collection calculate hogi.
 //
-// End Time ke baad ki entry
-// include nahi hogi.
+// IMPORTANT:
+//
+// End Time ke baad create hui entry
+// competition total mein include nahi hogi.
 //
 // ======================================================
 
@@ -1384,8 +1332,15 @@ function calculateSideUnit(
             // ==================================================
             // END TIME CHECK
             //
+            // IMPORTANT:
+            //
             // End Time ke baad ki entry
-            // competition total mein nahi aayegi.
+            // total mein nahi aayegi.
+            //
+            // Lekin competition public page par
+            // phir bhi visible rahegi agar
+            // Admin ne Hide Public nahi kiya.
+            //
             // ==================================================
 
             const createdTime =
@@ -1433,14 +1388,6 @@ function calculateSideUnit(
 
 // ======================================================
 // CREATE SIDE HTML
-//
-// Public page par:
-//
-// Team Name
-// Total Unit
-//
-// Amount nahi.
-//
 // ======================================================
 
 function createSideHTML(
@@ -1503,17 +1450,6 @@ function createSideHTML(
 
 // ======================================================
 // CREATE COMPETITION CARD
-//
-// IMPORTANT:
-//
-// Academic Department Competition
-// YAHAN NAHI HAI.
-//
-// Page header mein already 1 baar hai.
-//
-// Competition Participants bhi
-// yahan nahi hai.
-//
 // ======================================================
 
 function createCompetitionCard(
@@ -1534,10 +1470,6 @@ function createCompetitionCard(
         competition.id;
 
 
-    // ==================================================
-    // COMPETITION NAME
-    // ==================================================
-
     const competitionName =
         String(
             competition.name ||
@@ -1545,29 +1477,17 @@ function createCompetitionCard(
         ).trim();
 
 
-    // ==================================================
-    // DATE
-    // ==================================================
-
     const date =
         formatCompetitionDate(
             competition.date
         );
 
 
-    // ==================================================
-    // END TIME
-    // ==================================================
-
     const endTime =
         formatEndTime(
             competition.endTime
         );
 
-
-    // ==================================================
-    // SIDE A
-    // ==================================================
 
     const sideA =
         createSideHTML(
@@ -1576,26 +1496,12 @@ function createCompetitionCard(
         );
 
 
-    // ==================================================
-    // SIDE B
-    // ==================================================
-
     const sideB =
         createSideHTML(
             competition,
             "sideB"
         );
 
-
-    // ==================================================
-    // CARD HTML
-    //
-    // NOTE:
-    //
-    // .competition-title intentionally
-    // removed from this card.
-    //
-    // ==================================================
 
     card.innerHTML = `
 
@@ -1645,7 +1551,7 @@ function createCompetitionCard(
 
 
         <!-- ==========================================
-             COMPETITION MATCH
+             MATCH
         =========================================== -->
 
         <div class="competition-match">
@@ -1677,6 +1583,259 @@ function createCompetitionCard(
 
 
 // ======================================================
+// PUBLIC VISIBILITY
+//
+// IMPORTANT:
+//
+// Admin Hide/Show Public ke liye
+// multiple possible field names support.
+//
+// HIDE conditions:
+//
+// hidePublic === true
+// OR
+// publicVisible === false
+// OR
+// isPublic === false
+// OR
+// publicStatus === "hidden"
+//
+// Agar inmein se koi bhi condition nahi hai,
+// competition PUBLIC rahegi.
+//
+// ======================================================
+
+function isCompetitionHiddenFromPublic(
+    competition
+) {
+
+    // ==================================================
+    // EXPLICIT HIDE
+    // ==================================================
+
+    if (
+        competition?.hidePublic === true
+    ) {
+
+        return true;
+
+    }
+
+
+    // ==================================================
+    // STRING TRUE SUPPORT
+    // ==================================================
+
+    if (
+        normalize(
+            competition?.hidePublic
+        ) === "true"
+    ) {
+
+        return true;
+
+    }
+
+
+    // ==================================================
+    // PUBLIC VISIBLE FALSE
+    // ==================================================
+
+    if (
+        competition?.publicVisible === false
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        normalize(
+            competition?.publicVisible
+        ) === "false"
+    ) {
+
+        return true;
+
+    }
+
+
+    // ==================================================
+    // IS PUBLIC FALSE
+    // ==================================================
+
+    if (
+        competition?.isPublic === false
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        normalize(
+            competition?.isPublic
+        ) === "false"
+    ) {
+
+        return true;
+
+    }
+
+
+    // ==================================================
+    // PUBLIC STATUS
+    // ==================================================
+
+    const publicStatus =
+        normalize(
+            competition?.publicStatus
+        );
+
+
+    if (
+        publicStatus === "hidden" ||
+        publicStatus === "hide"
+    ) {
+
+        return true;
+
+    }
+
+
+    return false;
+
+}
+
+
+// ======================================================
+// CHECK PUBLIC COMPETITION
+//
+// IMPORTANT:
+//
+// Date old/new hone se koi farq nahi.
+//
+// End Time cross hone se bhi hide nahi.
+//
+// Sirf Admin Hide Public karega
+// to public page se hide hoga.
+//
+// ======================================================
+
+function isPublicCompetition(
+    competition
+) {
+
+    if (!competition) {
+
+        return false;
+
+    }
+
+
+    // ==================================================
+    // DATE REQUIRED
+    // ==================================================
+
+    if (
+        !competition.date
+    ) {
+
+        return false;
+
+    }
+
+
+    // ==================================================
+    // END TIME REQUIRED
+    // ==================================================
+
+    if (
+        !competition.endTime
+    ) {
+
+        return false;
+
+    }
+
+
+    // ==================================================
+    // STATUS
+    //
+    // Deleted / inactive ko hide rakhenge.
+    //
+    // Active status normal visible hai.
+    // ==================================================
+
+    const status =
+        normalize(
+            competition.status
+        );
+
+
+    if (
+        status === "deleted" ||
+        status === "inactive"
+    ) {
+
+        return false;
+
+    }
+
+
+    // ==================================================
+    // ADMIN PUBLIC HIDE
+    // ==================================================
+
+    if (
+        isCompetitionHiddenFromPublic(
+            competition
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    // ==================================================
+    // IMPORTANT
+    //
+    // Expiry check YAHAN NAHI HAI.
+    //
+    // Isliye:
+    //
+    // 28 August competition
+    // 29 August ko bhi show hogi.
+    //
+    // Jab tak Admin Hide Public nahi karta.
+    //
+    // ==================================================
+
+    return true;
+
+}
+
+
+// ======================================================
+// GET PUBLIC COMPETITIONS
+// ======================================================
+
+function getPublicCompetitions() {
+
+    return allCompetitions.filter(
+        competition =>
+            isPublicCompetition(
+                competition
+            )
+    );
+
+}
+
+
+// ======================================================
 // DISPLAY COMPETITIONS
 // ======================================================
 
@@ -1695,6 +1854,9 @@ function displayCompetitions(
         "";
 
 
+    hideLoading();
+
+
     if (
         competitions.length === 0
     ) {
@@ -1706,12 +1868,17 @@ function displayCompetitions(
     }
 
 
-    hideLoading();
-
-
     if (emptyBox) {
 
         emptyBox.style.display =
+            "none";
+
+    }
+
+
+    if (errorBox) {
+
+        errorBox.style.display =
             "none";
 
     }
@@ -1854,6 +2021,14 @@ function showError(
     }
 
 
+    if (competitionList) {
+
+        competitionList.innerHTML =
+            "";
+
+    }
+
+
     if (errorMessage) {
 
         errorMessage.textContent =
@@ -1909,84 +2084,6 @@ function findCompetitionById(
 
 
 // ======================================================
-// GET ACTIVE COMPETITIONS
-// ======================================================
-
-function getActiveCompetitions() {
-
-    return allCompetitions.filter(
-        competition => {
-
-            // ==================================================
-            // DATE REQUIRED
-            // ==================================================
-
-            if (
-                !competition.date
-            ) {
-
-                return false;
-
-            }
-
-
-            // ==================================================
-            // END TIME REQUIRED
-            // ==================================================
-
-            if (
-                !competition.endTime
-            ) {
-
-                return false;
-
-            }
-
-
-            // ==================================================
-            // EXPIRED
-            // ==================================================
-
-            if (
-                isCompetitionExpired(
-                    competition
-                )
-            ) {
-
-                return false;
-
-            }
-
-
-            // ==================================================
-            // STATUS
-            // ==================================================
-
-            const status =
-                normalize(
-                    competition.status
-                );
-
-
-            if (
-                status === "deleted" ||
-                status === "inactive"
-            ) {
-
-                return false;
-
-            }
-
-
-            return true;
-
-        }
-    );
-
-}
-
-
-// ======================================================
 // LOAD EMPLOYEES
 // ======================================================
 
@@ -2005,14 +2102,14 @@ async function loadEmployees() {
 
 
     snapshot.forEach(
-        doc => {
+        employeeDoc => {
 
             allEmployees.push({
 
                 id:
-                    doc.id,
+                    employeeDoc.id,
 
-                ...doc.data()
+                ...employeeDoc.data()
 
             });
 
@@ -2059,14 +2156,14 @@ async function loadCompetitions() {
 
 
         snapshot.forEach(
-            doc => {
+            competitionDoc => {
 
                 allCompetitions.push({
 
                     id:
-                        doc.id,
+                        competitionDoc.id,
 
-                    ...doc.data()
+                    ...competitionDoc.data()
 
                 });
 
@@ -2096,14 +2193,14 @@ async function loadCompetitions() {
 
 
         snapshot.forEach(
-            doc => {
+            competitionDoc => {
 
                 allCompetitions.push({
 
                     id:
-                        doc.id,
+                        competitionDoc.id,
 
-                    ...doc.data()
+                    ...competitionDoc.data()
 
                 });
 
@@ -2149,17 +2246,17 @@ async function loadDailyEntries() {
 
 
         snapshot.forEach(
-            doc => {
+            entryDoc => {
 
                 allEntries.push({
 
                     id:
-                        doc.id,
+                        entryDoc.id,
 
                     source:
                         "daily_entry",
 
-                    ...doc.data()
+                    ...entryDoc.data()
 
                 });
 
@@ -2186,17 +2283,17 @@ async function loadDailyEntries() {
 
 
         snapshot.forEach(
-            doc => {
+            entryDoc => {
 
                 allEntries.push({
 
                     id:
-                        doc.id,
+                        entryDoc.id,
 
                     source:
                         "daily_entry",
 
-                    ...doc.data()
+                    ...entryDoc.data()
 
                 });
 
@@ -2236,17 +2333,17 @@ async function loadTeacherEntries() {
 
 
         snapshot.forEach(
-            doc => {
+            entryDoc => {
 
                 allEntries.push({
 
                     id:
-                        doc.id,
+                        entryDoc.id,
 
                     source:
                         "teacher_entries",
 
-                    ...doc.data()
+                    ...entryDoc.data()
 
                 });
 
@@ -2275,17 +2372,17 @@ async function loadTeacherEntries() {
 
 
             snapshot.forEach(
-                doc => {
+                entryDoc => {
 
                     allEntries.push({
 
                         id:
-                            doc.id,
+                            entryDoc.id,
 
                         source:
                             "teacher_entries",
 
-                        ...doc.data()
+                        ...entryDoc.data()
 
                     });
 
@@ -2304,129 +2401,6 @@ async function loadTeacherEntries() {
         }
 
     }
-
-}
-
-
-// ======================================================
-// SCHEDULE EXPIRY
-//
-// End Time ke baad competition
-// automatically hide ho jayega.
-//
-// ======================================================
-
-function scheduleCompetitionExpiry() {
-
-    const active =
-        getActiveCompetitions();
-
-
-    if (
-        active.length === 0
-    ) {
-
-        return;
-
-    }
-
-
-    let nearest =
-        Infinity;
-
-
-    active.forEach(
-        competition => {
-
-            const timestamp =
-                getCompetitionEndTimestamp(
-                    competition
-                );
-
-
-            if (
-                timestamp &&
-                timestamp < nearest
-            ) {
-
-                nearest =
-                    timestamp;
-
-            }
-
-        }
-    );
-
-
-    if (
-        nearest === Infinity
-    ) {
-
-        return;
-
-    }
-
-
-    const delay =
-        Math.max(
-            1000,
-            nearest -
-                Date.now() +
-                1000
-        );
-
-
-    setTimeout(
-        function () {
-
-            const competitionId =
-                getCompetitionIdFromURL();
-
-
-            // ==================================================
-            // SINGLE COMPETITION
-            // ==================================================
-
-            if (
-                competitionId
-            ) {
-
-                const competition =
-                    findCompetitionById(
-                        competitionId
-                    );
-
-
-                if (
-                    !competition ||
-                    isCompetitionExpired(
-                        competition
-                    )
-                ) {
-
-                    showEmpty();
-
-                    return;
-
-                }
-
-            }
-
-
-            // ==================================================
-            // ALL COMPETITIONS
-            // ==================================================
-
-            displayCompetitions(
-                getActiveCompetitions()
-            );
-
-
-            scheduleCompetitionExpiry();
-
-        },
-        delay
-    );
 
 }
 
@@ -2487,6 +2461,9 @@ async function loadCompetitionPage() {
 
         // ==================================================
         // SINGLE COMPETITION
+        //
+        // competition.html?id=XXXX
+        //
         // ==================================================
 
         if (
@@ -2513,11 +2490,11 @@ async function loadCompetitionPage() {
 
 
             // ==================================================
-            // EXPIRED
+            // PUBLIC HIDE CHECK
             // ==================================================
 
             if (
-                isCompetitionExpired(
+                !isPublicCompetition(
                     competition
                 )
             ) {
@@ -2533,28 +2510,29 @@ async function loadCompetitionPage() {
                 competition
             ]);
 
-
-            scheduleCompetitionExpiry();
-
             return;
 
         }
 
 
         // ==================================================
-        // ALL ACTIVE COMPETITIONS
+        // ALL PUBLIC COMPETITIONS
+        //
+        // Back date bhi show hogi.
+        //
+        // End time cross hone se hide nahi hogi.
+        //
+        // Admin Hide Public karega tab hide hogi.
+        //
         // ==================================================
 
-        const active =
-            getActiveCompetitions();
+        const publicCompetitions =
+            getPublicCompetitions();
 
 
         displayCompetitions(
-            active
+            publicCompetitions
         );
-
-
-        scheduleCompetitionExpiry();
 
     }
 
