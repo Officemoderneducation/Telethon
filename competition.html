@@ -111,6 +111,9 @@
 
             justify-content:
                 space-between;
+
+            gap:
+                20px;
         }
 
 
@@ -236,7 +239,7 @@
                 100%;
 
             max-width:
-                1000px;
+                1050px;
 
             margin:
                 0 auto;
@@ -256,7 +259,7 @@
                 center;
 
             margin-bottom:
-                30px;
+                28px;
         }
 
 
@@ -273,6 +276,19 @@
 
             color:
                 #111827;
+        }
+
+
+        .page-title p {
+
+            margin-top:
+                8px;
+
+            color:
+                #6b7280;
+
+            font-size:
+                14px;
         }
 
 
@@ -330,6 +346,68 @@
                     rotate(360deg);
             }
 
+        }
+
+
+        /* ==================================================
+           ERROR
+        ================================================== */
+
+        .error-box {
+
+            display:
+                none;
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid #fecaca;
+
+            border-radius:
+                18px;
+
+            padding:
+                45px 20px;
+
+            text-align:
+                center;
+
+            color:
+                #991b1b;
+        }
+
+
+        .error-box i {
+
+            display:
+                block;
+
+            font-size:
+                38px;
+
+            margin-bottom:
+                14px;
+        }
+
+
+        .error-box h3 {
+
+            font-size:
+                19px;
+
+            margin-bottom:
+                8px;
+        }
+
+
+        .error-box p {
+
+            font-size:
+                14px;
+
+            color:
+                #7f1d1d;
         }
 
 
@@ -395,65 +473,9 @@
 
             font-size:
                 14px;
-        }
 
-
-        /* ==================================================
-           ERROR
-        ================================================== */
-
-        .error-box {
-
-            display:
-                none;
-
-            background:
-                #ffffff;
-
-            border:
-                1px solid #fecaca;
-
-            border-radius:
-                18px;
-
-            padding:
-                40px 20px;
-
-            text-align:
-                center;
-
-            color:
-                #991b1b;
-        }
-
-
-        .error-box i {
-
-            display:
-                block;
-
-            font-size:
-                35px;
-
-            margin-bottom:
-                12px;
-        }
-
-
-        .error-box h3 {
-
-            font-size:
-                18px;
-
-            margin-bottom:
-                7px;
-        }
-
-
-        .error-box p {
-
-            font-size:
-                14px;
+            line-height:
+                1.6;
         }
 
 
@@ -464,13 +486,10 @@
         #competitionList {
 
             display:
-                grid;
+                none;
 
-            grid-template-columns:
-                1fr;
-
-            gap:
-                25px;
+            width:
+                100%;
         }
 
 
@@ -490,22 +509,19 @@
                 1px solid #e5e7eb;
 
             border-radius:
-                20px;
+                22px;
 
             padding:
-                45px 50px;
+                38px;
 
             box-shadow:
-                0 10px 30px
+                0 12px 35px
                 rgba(
                     0,
                     0,
                     0,
-                    0.06
+                    0.07
                 );
-
-            text-align:
-                center;
         }
 
 
@@ -515,75 +531,123 @@
 
         .competition-name {
 
+            text-align:
+                center;
+
             font-size:
-                32px;
+                29px;
 
             font-weight:
                 800;
 
             line-height:
-                1.3;
+                1.35;
 
             color:
                 #111827;
 
-            margin-bottom:
-                18px;
-
             word-break:
                 break-word;
+
+            margin-bottom:
+                12px;
         }
 
 
         /* ==================================================
-           END TIME AREA
+           DATE
+        ================================================== */
+
+        .competition-date {
+
+            text-align:
+                center;
+
+            color:
+                #6b7280;
+
+            font-size:
+                14px;
+
+            font-weight:
+                600;
+
+            margin-bottom:
+                22px;
+        }
+
+
+        .competition-date i {
+
+            margin-right:
+                6px;
+
+            color:
+                #4f46e5;
+        }
+
+
+        /* ==================================================
+           END TIME
         ================================================== */
 
         .competition-end {
 
-            display:
-                flex;
+            width:
+                fit-content;
 
-            flex-direction:
-                column;
+            min-width:
+                190px;
 
-            align-items:
+            margin:
+                0 auto 35px;
+
+            padding:
+                13px 22px;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                13px;
+
+            background:
+                #f9fafb;
+
+            text-align:
                 center;
-
-            justify-content:
-                center;
-
-            gap:
-                5px;
-
-            margin-bottom:
-                42px;
         }
 
 
         .competition-end-label {
 
-            font-size:
-                13px;
-
-            font-weight:
-                600;
+            display:
+                block;
 
             color:
                 #6b7280;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
 
             text-transform:
                 uppercase;
 
             letter-spacing:
-                0.5px;
+                0.6px;
+
+            margin-bottom:
+                4px;
         }
 
 
         .competition-end-time {
 
             font-size:
-                23px;
+                22px;
 
             font-weight:
                 800;
@@ -594,7 +658,7 @@
 
 
         /* ==================================================
-           MATCH
+           SIDES
         ================================================== */
 
         .competition-match {
@@ -603,35 +667,82 @@
                 grid;
 
             grid-template-columns:
-                minmax(
-                    0,
-                    1fr
-                )
-                75px
-                minmax(
-                    0,
-                    1fr
-                );
-
-            align-items:
-                center;
+                minmax(0, 1fr)
+                85px
+                minmax(0, 1fr);
 
             gap:
-                25px;
+                20px;
+
+            align-items:
+                stretch;
         }
 
 
         /* ==================================================
-           TEAM / REGION
+           SIDE CARD
         ================================================== */
 
         .competition-side {
 
-            min-height:
-                105px;
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                17px;
+
+            background:
+                #ffffff;
+
+            overflow:
+                hidden;
+
+            min-width:
+                0;
+        }
+
+
+        .side-header {
 
             padding:
-                22px 25px;
+                14px 18px;
+
+            background:
+                #f9fafb;
+
+            border-bottom:
+                1px solid #e5e7eb;
+
+            text-align:
+                center;
+        }
+
+
+        .side-title {
+
+            font-size:
+                17px;
+
+            font-weight:
+                800;
+
+            color:
+                #111827;
+        }
+
+
+        /* ==================================================
+           PARTICIPANT LIST
+        ================================================== */
+
+        .side-body {
+
+            padding:
+                16px;
+        }
+
+
+        .participant-item {
 
             display:
                 flex;
@@ -640,34 +751,159 @@
                 center;
 
             justify-content:
-                center;
+                space-between;
+
+            gap:
+                15px;
+
+            padding:
+                15px 16px;
+
+            margin-bottom:
+                10px;
 
             border:
                 1px solid #e5e7eb;
 
             border-radius:
-                15px;
+                11px;
 
             background:
                 #f9fafb;
+        }
 
-            color:
-                #111827;
+
+        .participant-item:last-child {
+
+            margin-bottom:
+                0;
+        }
+
+
+        .participant-name {
+
+            min-width:
+                0;
 
             font-size:
-                20px;
+                15px;
 
             font-weight:
                 700;
 
-            line-height:
-                1.45;
+            color:
+                #111827;
 
-            text-align:
-                center;
+            line-height:
+                1.4;
 
             word-break:
                 break-word;
+        }
+
+
+        .participant-type {
+
+            flex:
+                0 0 auto;
+
+            padding:
+                5px 8px;
+
+            border-radius:
+                6px;
+
+            background:
+                #eef2ff;
+
+            color:
+                #4f46e5;
+
+            font-size:
+                10px;
+
+            font-weight:
+                700;
+        }
+
+
+        /* ==================================================
+           TOTAL
+        ================================================== */
+
+        .side-total {
+
+            margin-top:
+                15px;
+
+            padding:
+                18px;
+
+            border-radius:
+                13px;
+
+            background:
+                #111827;
+
+            color:
+                #ffffff;
+
+            text-align:
+                center;
+        }
+
+
+        .side-total-label {
+
+            display:
+                block;
+
+            font-size:
+                11px;
+
+            font-weight:
+                600;
+
+            opacity:
+                0.75;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                0.5px;
+
+            margin-bottom:
+                5px;
+        }
+
+
+        .side-total-value {
+
+            display:
+                block;
+
+            font-size:
+                28px;
+
+            font-weight:
+                800;
+
+            line-height:
+                1.2;
+        }
+
+
+        .side-total-unit {
+
+            font-size:
+                12px;
+
+            opacity:
+                0.8;
+
+            margin-left:
+                3px;
         }
 
 
@@ -675,7 +911,7 @@
            VS
         ================================================== */
 
-        .vs-area {
+        .vs-container {
 
             display:
                 flex;
@@ -691,19 +927,10 @@
         .vs-circle {
 
             width:
-                62px;
+                68px;
 
             height:
-                62px;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
+                68px;
 
             border-radius:
                 50%;
@@ -714,14 +941,23 @@
             color:
                 #ffffff;
 
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
             font-size:
-                17px;
+                18px;
 
             font-weight:
                 800;
 
             box-shadow:
-                0 6px 16px
+                0 7px 18px
                 rgba(
                     0,
                     0,
@@ -732,18 +968,47 @@
 
 
         /* ==================================================
-           MULTIPLE CARD
+           NO DATA
         ================================================== */
 
-        .competition-card + .competition-card {
+        .no-data {
 
-            margin-top:
-                0;
+            padding:
+                20px 10px;
+
+            text-align:
+                center;
+
+            color:
+                #9ca3af;
+
+            font-size:
+                13px;
         }
 
 
         /* ==================================================
-           TABLET
+           LAST UPDATED
+        ================================================== */
+
+        .competition-footer {
+
+            text-align:
+                center;
+
+            margin-top:
+                24px;
+
+            color:
+                #9ca3af;
+
+            font-size:
+                11px;
+        }
+
+
+        /* ==================================================
+           RESPONSIVE
         ================================================== */
 
         @media (
@@ -753,21 +1018,14 @@
             .main-container {
 
                 padding:
-                    35px 15px 50px;
+                    32px 15px 50px;
             }
 
 
             .competition-card {
 
                 padding:
-                    35px 25px;
-            }
-
-
-            .competition-name {
-
-                font-size:
-                    27px;
+                    28px 22px;
             }
 
 
@@ -781,20 +1039,10 @@
             }
 
 
-            .competition-side {
-
-                min-height:
-                    85px;
-
-                font-size:
-                    19px;
-            }
-
-
-            .vs-area {
+            .vs-container {
 
                 padding:
-                    3px 0;
+                    2px 0;
             }
 
 
@@ -813,10 +1061,6 @@
         }
 
 
-        /* ==================================================
-           MOBILE
-        ================================================== */
-
         @media (
             max-width: 600px
         ) {
@@ -825,6 +1069,13 @@
 
                 padding:
                     14px 15px;
+            }
+
+
+            .header-inner {
+
+                gap:
+                    10px;
             }
 
 
@@ -868,14 +1119,14 @@
             .main-container {
 
                 padding:
-                    28px 12px 40px;
+                    26px 12px 40px;
             }
 
 
             .page-title {
 
                 margin-bottom:
-                    22px;
+                    20px;
             }
 
 
@@ -886,13 +1137,20 @@
             }
 
 
+            .page-title p {
+
+                font-size:
+                    12px;
+            }
+
+
             .competition-card {
 
                 padding:
-                    30px 16px;
+                    24px 14px;
 
                 border-radius:
-                    16px;
+                    17px;
             }
 
 
@@ -900,67 +1158,71 @@
 
                 font-size:
                     23px;
+            }
 
-                margin-bottom:
-                    15px;
+
+            .competition-date {
+
+                font-size:
+                    12px;
             }
 
 
             .competition-end {
 
+                min-width:
+                    170px;
+
                 margin-bottom:
-                    30px;
-            }
-
-
-            .competition-end-label {
-
-                font-size:
-                    11px;
+                    25px;
             }
 
 
             .competition-end-time {
 
                 font-size:
-                    21px;
+                    20px;
             }
 
 
-            .competition-side {
-
-                min-height:
-                    78px;
+            .side-body {
 
                 padding:
-                    15px;
-
-                font-size:
-                    17px;
-
-                border-radius:
                     12px;
             }
 
 
-            .vs-circle {
+            .participant-item {
 
-                width:
-                    48px;
+                padding:
+                    13px;
 
-                height:
-                    48px;
+                flex-direction:
+                    column;
+
+                align-items:
+                    stretch;
+
+                text-align:
+                    center;
+            }
+
+
+            .participant-type {
+
+                align-self:
+                    center;
+            }
+
+
+            .side-total-value {
 
                 font-size:
-                    14px;
+                    24px;
             }
 
         }
 
-
-        /* ==================================================
-           SMALL MOBILE
-        ================================================== */
 
         @media (
             max-width: 380px
@@ -980,17 +1242,10 @@
             }
 
 
-            .competition-end-time {
+            .competition-card {
 
-                font-size:
-                    19px;
-            }
-
-
-            .competition-side {
-
-                font-size:
-                    16px;
+                padding:
+                    20px 10px;
             }
 
         }
@@ -1011,8 +1266,6 @@
 
         <div class="header-inner">
 
-
-            <!-- BRAND -->
 
             <div class="brand">
 
@@ -1037,8 +1290,6 @@
 
             </div>
 
-
-            <!-- PUBLIC BADGE -->
 
             <div class="public-badge">
 
@@ -1071,6 +1322,10 @@
             <h1>
                 Academic Department Competition
             </h1>
+
+            <p>
+                Live Competition
+            </p>
 
         </div>
 
@@ -1130,11 +1385,12 @@
             <i class="fa-solid fa-trophy"></i>
 
             <h3>
-                No Competition
+                Competition Not Available
             </h3>
 
             <p>
-                Abhi koi competition available nahi hai.
+                Yeh competition available nahi hai ya iska
+                end time complete ho chuka hai.
             </p>
 
         </div>
@@ -1142,7 +1398,7 @@
 
 
         <!-- ==================================================
-             COMPETITION LIST
+             COMPETITION
         ================================================== -->
 
         <div
