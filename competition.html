@@ -26,6 +26,27 @@
 
 
     <!-- ==================================================
+         GOOGLE FONT
+    =================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ==================================================
          CSS
     =================================================== -->
 
@@ -51,18 +72,30 @@
             min-height: 100vh;
 
             font-family:
+                "Inter",
                 Arial,
                 Helvetica,
                 sans-serif;
 
+            color: #172033;
+
             background:
+                radial-gradient(
+                    circle at 10% 0%,
+                    rgba(37, 99, 235, 0.13),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 90% 10%,
+                    rgba(124, 58, 237, 0.12),
+                    transparent 30%
+                ),
                 linear-gradient(
                     135deg,
-                    #eef4ff,
-                    #f8fbff
+                    #f5f8ff 0%,
+                    #eef3fb 50%,
+                    #f8fafc 100%
                 );
-
-            color: #1f2937;
 
         }
 
@@ -75,11 +108,12 @@
 
             width: 100%;
 
-            max-width: 1200px;
+            max-width: 1240px;
 
             margin: 0 auto;
 
-            padding: 35px 20px 50px;
+            padding:
+                42px 24px 60px;
 
         }
 
@@ -90,31 +124,122 @@
 
         .page-header {
 
+            position: relative;
+
             text-align: center;
 
-            margin-bottom: 30px;
+            margin-bottom: 34px;
+
+        }
+
+
+        .page-header::before {
+
+            content: "";
+
+            display: block;
+
+            width: 72px;
+
+            height: 5px;
+
+            margin:
+                0 auto 18px;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #1d4ed8,
+                    #7c3aed
+                );
 
         }
 
 
         .page-header h1 {
 
-            font-size: 30px;
+            font-size: 32px;
 
-            font-weight: 800;
+            line-height: 1.25;
 
-            color: #172554;
+            font-weight: 900;
 
-            margin-bottom: 8px;
+            letter-spacing: -0.7px;
+
+            color: #101a33;
+
+            margin-bottom: 9px;
 
         }
 
 
         .page-header p {
 
-            font-size: 15px;
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            padding:
+                7px 14px;
+
+            border-radius: 50px;
+
+            background: rgba(
+                255,
+                255,
+                255,
+                0.75
+            );
+
+            border: 1px solid #dbe3f0;
+
+            box-shadow:
+                0 5px 15px rgba(
+                    15,
+                    23,
+                    42,
+                    0.05
+                );
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.4px;
+
+            text-transform: uppercase;
 
             color: #64748b;
+
+        }
+
+
+        .page-header p::before {
+
+            content: "";
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(
+                    34,
+                    197,
+                    94,
+                    0.12
+                );
 
         }
 
@@ -125,20 +250,58 @@
 
         .loading-box {
 
+            max-width: 620px;
+
+            margin: 30px auto;
+
+            padding: 50px 25px;
+
             text-align: center;
 
-            padding: 50px 20px;
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.90
+                );
 
-            color: #475569;
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 22px;
+
+            box-shadow:
+                0 18px 45px rgba(
+                    15,
+                    23,
+                    42,
+                    0.08
+                );
+
+            color: #64748b;
 
         }
 
 
         .loading-box i {
 
-            font-size: 30px;
+            display: block;
 
-            margin-bottom: 12px;
+            font-size: 32px;
+
+            margin-bottom: 15px;
+
+            color: #2563eb;
+
+        }
+
+
+        .loading-box p {
+
+            font-size: 14px;
+
+            font-weight: 600;
 
         }
 
@@ -151,21 +314,46 @@
 
             display: none;
 
-            max-width: 700px;
+            max-width: 720px;
 
-            margin: 20px auto;
+            margin: 25px auto;
 
-            padding: 18px 20px;
+            padding: 18px 22px;
 
-            border-radius: 12px;
+            border-radius: 16px;
 
-            background: #fef2f2;
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff5f5,
+                    #fef2f2
+                );
 
-            border: 1px solid #fecaca;
+            border:
+                1px solid #fecaca;
 
             color: #991b1b;
 
             text-align: center;
+
+            box-shadow:
+                0 10px 30px rgba(
+                    127,
+                    29,
+                    29,
+                    0.06
+                );
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+        }
+
+
+        .error-box i {
+
+            margin-right: 8px;
 
         }
 
@@ -178,20 +366,29 @@
 
             display: none;
 
-            max-width: 700px;
+            max-width: 720px;
 
-            margin: 30px auto;
+            margin: 35px auto;
 
-            padding: 40px 20px;
+            padding: 55px 25px;
 
             text-align: center;
 
-            background: #ffffff;
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.92
+                );
 
-            border-radius: 18px;
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 24px;
 
             box-shadow:
-                0 10px 30px rgba(
+                0 18px 45px rgba(
                     15,
                     23,
                     42,
@@ -203,11 +400,30 @@
 
         .empty-box i {
 
-            font-size: 42px;
+            display: inline-flex;
 
-            color: #94a3b8;
+            align-items: center;
 
-            margin-bottom: 15px;
+            justify-content: center;
+
+            width: 78px;
+
+            height: 78px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eff6ff,
+                    #eef2ff
+                );
+
+            color: #64748b;
+
+            font-size: 34px;
+
+            margin-bottom: 20px;
 
         }
 
@@ -216,12 +432,18 @@
 
             font-size: 22px;
 
-            margin-bottom: 8px;
+            font-weight: 800;
+
+            color: #1e293b;
+
+            margin-bottom: 9px;
 
         }
 
 
         .empty-box p {
+
+            font-size: 14px;
 
             color: #64748b;
 
@@ -238,7 +460,7 @@
 
             flex-direction: column;
 
-            gap: 28px;
+            gap: 32px;
 
         }
 
@@ -249,23 +471,60 @@
 
         .competition-card {
 
+            position: relative;
+
             width: 100%;
 
-            background: #ffffff;
+            overflow: hidden;
 
-            border-radius: 24px;
+            padding: 0 30px 32px;
 
-            padding: 30px;
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.96
+                );
+
+            border:
+                1px solid #dce4ef;
+
+            border-radius: 28px;
 
             box-shadow:
-                0 15px 40px rgba(
+                0 22px 55px rgba(
                     15,
                     23,
                     42,
                     0.10
                 );
 
-            border: 1px solid #e2e8f0;
+        }
+
+
+        /* ==================================================
+           TOP CARD LINE
+        ================================================== */
+
+        .competition-card::before {
+
+            content: "";
+
+            display: block;
+
+            height: 7px;
+
+            margin:
+                0 -30px 28px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #1d4ed8,
+                    #4f46e5,
+                    #7c3aed
+                );
 
         }
 
@@ -278,13 +537,17 @@
 
             text-align: center;
 
-            font-size: 24px;
+            font-size: 27px;
 
-            font-weight: 800;
+            line-height: 1.3;
 
-            color: #0f172a;
+            font-weight: 900;
 
-            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+
+            color: #111827;
+
+            margin-bottom: 10px;
 
         }
 
@@ -295,15 +558,35 @@
 
         .competition-date {
 
-            text-align: center;
+            display: flex;
 
-            font-size: 17px;
+            align-items: center;
 
-            font-weight: 600;
+            justify-content: center;
+
+            gap: 7px;
+
+            font-size: 15px;
+
+            font-weight: 700;
 
             color: #475569;
 
-            margin-bottom: 8px;
+            margin-bottom: 11px;
+
+        }
+
+
+        .competition-date::before {
+
+            content: "\f133";
+
+            font-family:
+                "Font Awesome 6 Free";
+
+            font-weight: 900;
+
+            color: #2563eb;
 
         }
 
@@ -314,24 +597,60 @@
 
         .competition-end {
 
-            text-align: center;
+            display: flex;
 
-            font-size: 15px;
+            align-items: center;
 
-            color: #64748b;
+            justify-content: center;
 
-            margin-bottom: 30px;
+            gap: 7px;
+
+            width: fit-content;
+
+            margin:
+                0 auto 32px;
+
+            padding:
+                8px 15px;
+
+            border-radius: 50px;
+
+            background:
+                #fff7ed;
+
+            border:
+                1px solid #fed7aa;
+
+            color: #9a3412;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+        }
+
+
+        .competition-end::before {
+
+            content: "\f017";
+
+            font-family:
+                "Font Awesome 6 Free";
+
+            font-weight: 900;
+
+            color: #ea580c;
 
         }
 
 
         .competition-end strong {
 
-            color: #b91c1c;
+            color: #c2410c;
 
-            font-size: 16px;
+            font-size: 14px;
 
-            margin-left: 5px;
+            margin-left: 2px;
 
         }
 
@@ -342,16 +661,18 @@
 
         .competition-match {
 
+            position: relative;
+
             display: grid;
 
             grid-template-columns:
                 minmax(0, 1fr)
-                90px
+                92px
                 minmax(0, 1fr);
 
             align-items: stretch;
 
-            gap: 18px;
+            gap: 20px;
 
         }
 
@@ -362,7 +683,9 @@
 
         .competition-side {
 
-            min-height: 190px;
+            position: relative;
+
+            min-height: 215px;
 
             display: flex;
 
@@ -372,17 +695,59 @@
 
             text-align: center;
 
-            padding: 28px 20px;
+            padding:
+                28px 24px 25px;
 
-            border-radius: 20px;
+            border-radius: 22px;
 
-            border: 2px solid #dbeafe;
+            border:
+                1px solid #d8e2f0;
 
             background:
                 linear-gradient(
                     145deg,
-                    #f8fbff,
-                    #eef6ff
+                    #f8fbff 0%,
+                    #eef5ff 100%
+                );
+
+            box-shadow:
+                inset 0 1px 0
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.90
+                );
+
+        }
+
+
+        /* ==================================================
+           SIDE LEFT
+        ================================================== */
+
+        .competition-side:first-child {
+
+            border-top:
+                4px solid #2563eb;
+
+        }
+
+
+        /* ==================================================
+           SIDE RIGHT
+        ================================================== */
+
+        .competition-side:last-child {
+
+            border-top:
+                4px solid #7c3aed;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #faf8ff 0%,
+                    #f2efff 100%
                 );
 
         }
@@ -394,7 +759,7 @@
 
         .team-name {
 
-            min-height: 55px;
+            min-height: 65px;
 
             display: flex;
 
@@ -404,7 +769,9 @@
 
             font-size: 24px;
 
-            font-weight: 800;
+            line-height: 1.3;
+
+            font-weight: 900;
 
             color: #1e3a8a;
 
@@ -413,37 +780,80 @@
         }
 
 
+        .competition-side:last-child
+        .team-name {
+
+            color: #5b21b6;
+
+        }
+
+
         /* ==================================================
-           TOTAL
+           TEAM TOTAL
         ================================================== */
 
         .team-total {
 
-            margin-top: 25px;
+            position: relative;
+
+            margin-top: 24px;
+
+            padding-top: 19px;
+
+            border-top:
+                1px dashed #cbd5e1;
 
         }
 
 
         .team-total-label {
 
-            font-size: 15px;
+            display: flex;
 
-            font-weight: 700;
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 6px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.6px;
+
+            text-transform: uppercase;
 
             color: #64748b;
 
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+
+        }
+
+
+        .team-total-label::before {
+
+            content: "\f155";
+
+            font-family:
+                "Font Awesome 6 Free";
+
+            font-weight: 900;
+
+            color: #64748b;
 
         }
 
 
         .team-total-unit {
 
-            font-size: 34px;
+            font-size: 38px;
 
             line-height: 1;
 
             font-weight: 900;
+
+            letter-spacing: -1px;
 
             color: #0f172a;
 
@@ -465,11 +875,17 @@
         }
 
 
+        /* ==================================================
+           VS CIRCLE
+        ================================================== */
+
         .vs-circle {
 
-            width: 68px;
+            position: relative;
 
-            height: 68px;
+            width: 70px;
+
+            height: 70px;
 
             border-radius: 50%;
 
@@ -479,74 +895,261 @@
 
             justify-content: center;
 
-            background: #172554;
+            background:
+                linear-gradient(
+                    135deg,
+                    #172554,
+                    #3730a3
+                );
 
             color: #ffffff;
 
-            font-size: 18px;
+            font-size: 17px;
 
             font-weight: 900;
 
+            letter-spacing: 0.5px;
+
             box-shadow:
-                0 8px 20px rgba(
-                    23,
-                    37,
-                    84,
-                    0.25
+                0 12px 28px rgba(
+                    30,
+                    41,
+                    94,
+                    0.28
                 );
+
+            z-index: 2;
+
+        }
+
+
+        .vs-circle::before {
+
+            content: "";
+
+            position: absolute;
+
+            inset: -7px;
+
+            border-radius: 50%;
+
+            border:
+                1px solid #c7d2fe;
+
+            z-index: -1;
 
         }
 
 
         /* ==================================================
-           MOBILE
+           WINNER APPRECIATION
+        ================================================== */
+
+        .winner-appreciation {
+
+            position: relative;
+
+            margin-top: 30px;
+
+            padding:
+                26px 24px 25px;
+
+            text-align: center;
+
+            overflow: hidden;
+
+            border-radius: 22px;
+
+            border:
+                1px solid #f3d58a;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #fffaf0 0%,
+                    #fff7df 50%,
+                    #fffbeb 100%
+                );
+
+            box-shadow:
+                0 12px 30px rgba(
+                    146,
+                    101,
+                    12,
+                    0.09
+                );
+
+        }
+
+
+        .winner-appreciation::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            right: 0;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #f59e0b,
+                    #eab308,
+                    #f59e0b
+                );
+
+        }
+
+
+        .winner-appreciation-title {
+
+            font-size: 20px;
+
+            line-height: 1.35;
+
+            font-weight: 900;
+
+            color: #854d0e;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .winner-teacher-name {
+
+            display: inline-block;
+
+            max-width: 100%;
+
+            padding:
+                8px 17px;
+
+            border-radius: 50px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.80
+                );
+
+            border:
+                1px solid #f2cf76;
+
+            color: #92400e;
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .winner-appreciation-text {
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            color: #713f12;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .winner-appreciation-blessing {
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            color: #92400e;
+
+        }
+
+
+        /* ==================================================
+           DESKTOP VISUAL CONNECTOR
         ================================================== */
 
         @media (
-            max-width: 700px
+            min-width: 701px
+        ) {
+
+            .competition-match::before {
+
+                content: "";
+
+                position: absolute;
+
+                left: 25%;
+
+                right: 25%;
+
+                top: 50%;
+
+                height: 1px;
+
+                background:
+                    #dbe3f0;
+
+                z-index: 0;
+
+            }
+
+        }
+
+
+        /* ==================================================
+           TABLET
+        ================================================== */
+
+        @media (
+            max-width: 900px
         ) {
 
             .competition-page {
 
                 padding:
-                    20px 12px 35px;
+                    32px 18px 45px;
 
             }
 
 
             .competition-card {
 
-                padding: 20px 14px;
-
-                border-radius: 18px;
-
-            }
-
-
-            .page-header h1 {
-
-                font-size: 25px;
+                padding:
+                    0 22px 26px;
 
             }
 
 
-            .competition-name {
+            .competition-card::before {
 
-                font-size: 20px;
+                margin-left: -22px;
 
-            }
-
-
-            .competition-date {
-
-                font-size: 15px;
+                margin-right: -22px;
 
             }
 
 
             .competition-match {
 
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    minmax(0, 1fr)
+                    75px
+                    minmax(0, 1fr);
 
                 gap: 12px;
 
@@ -555,9 +1158,8 @@
 
             .competition-side {
 
-                min-height: 150px;
-
-                padding: 22px 15px;
+                padding:
+                    24px 15px 22px;
 
             }
 
@@ -571,23 +1173,358 @@
 
             .team-total-unit {
 
-                font-size: 30px;
+                font-size: 33px;
+
+            }
+
+        }
+
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (
+            max-width: 700px
+        ) {
+
+            body {
+
+                background:
+                    linear-gradient(
+                        160deg,
+                        #f5f8ff,
+                        #f8fafc
+                    );
 
             }
 
 
+            .competition-page {
+
+                padding:
+                    22px 12px 35px;
+
+            }
+
+
+            .page-header {
+
+                margin-bottom: 24px;
+
+            }
+
+
+            .page-header::before {
+
+                width: 55px;
+
+                height: 4px;
+
+                margin-bottom: 14px;
+
+            }
+
+
+            .page-header h1 {
+
+                font-size: 24px;
+
+                letter-spacing: -0.4px;
+
+            }
+
+
+            .page-header p {
+
+                font-size: 10px;
+
+                padding:
+                    6px 11px;
+
+            }
+
+
+            .competition-list {
+
+                gap: 22px;
+
+            }
+
+
+            .competition-card {
+
+                padding:
+                    0 14px 20px;
+
+                border-radius: 21px;
+
+            }
+
+
+            .competition-card::before {
+
+                height: 5px;
+
+                margin:
+                    0 -14px 22px;
+
+            }
+
+
+            .competition-name {
+
+                font-size: 21px;
+
+                line-height: 1.35;
+
+                margin-bottom: 9px;
+
+            }
+
+
+            .competition-date {
+
+                font-size: 13px;
+
+                margin-bottom: 10px;
+
+            }
+
+
+            .competition-end {
+
+                font-size: 11px;
+
+                margin-bottom: 22px;
+
+                padding:
+                    7px 12px;
+
+            }
+
+
+            .competition-end strong {
+
+                font-size: 12px;
+
+            }
+
+
+            /* ==========================================
+               MOBILE MATCH
+            ========================================== */
+
+            .competition-match {
+
+                grid-template-columns: 1fr;
+
+                gap: 0;
+
+            }
+
+
+            .competition-side {
+
+                min-height: 165px;
+
+                padding:
+                    23px 15px 21px;
+
+                border-radius: 18px;
+
+            }
+
+
+            .team-name {
+
+                min-height: 52px;
+
+                font-size: 21px;
+
+                line-height: 1.3;
+
+            }
+
+
+            .team-total {
+
+                margin-top: 17px;
+
+                padding-top: 15px;
+
+            }
+
+
+            .team-total-label {
+
+                font-size: 10px;
+
+                margin-bottom: 7px;
+
+            }
+
+
+            .team-total-unit {
+
+                font-size: 31px;
+
+            }
+
+
+            /* ==========================================
+               MOBILE VS
+            ========================================== */
+
             .vs-area {
 
-                height: 60px;
+                height: 66px;
 
             }
 
 
             .vs-circle {
 
-                width: 55px;
+                width: 52px;
 
-                height: 55px;
+                height: 52px;
+
+                font-size: 14px;
+
+            }
+
+
+            .vs-circle::before {
+
+                inset: -5px;
+
+            }
+
+
+            /* ==========================================
+               WINNER MOBILE
+            ========================================== */
+
+            .winner-appreciation {
+
+                margin-top: 20px;
+
+                padding:
+                    22px 14px;
+
+                border-radius: 18px;
+
+            }
+
+
+            .winner-appreciation-title {
+
+                font-size: 17px;
+
+                margin-bottom: 11px;
+
+            }
+
+
+            .winner-teacher-name {
+
+                font-size: 14px;
+
+                padding:
+                    7px 13px;
+
+                margin-bottom: 13px;
+
+            }
+
+
+            .winner-appreciation-text {
+
+                font-size: 13px;
+
+            }
+
+
+            .winner-appreciation-blessing {
+
+                font-size: 12px;
+
+            }
+
+
+            /* ==========================================
+               EMPTY MOBILE
+            ========================================== */
+
+            .empty-box {
+
+                padding:
+                    42px 18px;
+
+                border-radius: 20px;
+
+            }
+
+
+            .empty-box i {
+
+                width: 65px;
+
+                height: 65px;
+
+                font-size: 28px;
+
+            }
+
+
+            .empty-box h3 {
+
+                font-size: 20px;
+
+            }
+
+        }
+
+
+        /* ==================================================
+           VERY SMALL MOBILE
+        ================================================== */
+
+        @media (
+            max-width: 380px
+        ) {
+
+            .competition-page {
+
+                padding-left: 9px;
+
+                padding-right: 9px;
+
+            }
+
+
+            .competition-name {
+
+                font-size: 19px;
+
+            }
+
+
+            .team-name {
+
+                font-size: 19px;
+
+            }
+
+
+            .team-total-unit {
+
+                font-size: 28px;
+
+            }
+
+
+            .winner-appreciation-title {
 
                 font-size: 16px;
 
@@ -608,10 +1545,6 @@
 
         <!-- ==================================================
              PAGE HEADER
-
-             IMPORTANT:
-             Academic Department Competition
-             YAHAN SIRF 1 BAAR HAI.
         =================================================== -->
 
         <header class="page-header">
@@ -706,7 +1639,10 @@
 
     <!-- ==================================================
          JAVASCRIPT
-    ================================================== -->
+
+         IMPORTANT:
+         Existing competition.js mein koi change nahi.
+    =================================================== -->
 
     <script
         type="module"
