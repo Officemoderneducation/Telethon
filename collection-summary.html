@@ -55,7 +55,6 @@
     <div id="adminSidebar"></div>
 
 
-
     <!-- =========================================
          MAIN CONTENT
     ========================================== -->
@@ -82,7 +81,6 @@
             </div>
 
         </div>
-
 
 
         <!-- =====================================
@@ -113,7 +111,6 @@
                 </div>
 
 
-
                 <!-- STATE -->
 
                 <div class="filter-group">
@@ -131,7 +128,6 @@
                     </select>
 
                 </div>
-
 
 
                 <!-- CITY -->
@@ -153,7 +149,6 @@
                 </div>
 
 
-
                 <!-- EMPLOYEE -->
 
                 <div class="filter-group">
@@ -173,11 +168,9 @@
                 </div>
 
 
-
                 <!-- BUTTONS -->
 
                 <div class="filter-buttons">
-
 
                     <button
                         type="button"
@@ -192,7 +185,6 @@
                     </button>
 
 
-
                     <button
                         type="button"
                         id="resetFilter"
@@ -205,13 +197,11 @@
 
                     </button>
 
-
                 </div>
 
             </div>
 
         </div>
-
 
 
         <!-- =====================================
@@ -242,7 +232,6 @@
             </div>
 
         </div>
-
 
 
         <!-- =====================================
@@ -277,7 +266,6 @@
             </div>
 
 
-
             <!-- TOTAL COLLECTION -->
 
             <div class="summary-card collection-card">
@@ -301,7 +289,6 @@
                 </div>
 
             </div>
-
 
 
             <!-- REMAINING TARGET -->
@@ -329,8 +316,7 @@
             </div>
 
 
-
-            <!-- PERCENTAGE -->
+            <!-- ACHIEVEMENT -->
 
             <div class="summary-card percentage-card">
 
@@ -354,9 +340,7 @@
 
             </div>
 
-
         </div>
-
 
 
         <!-- =====================================
@@ -387,7 +371,6 @@
             </div>
 
 
-
             <div class="table-wrapper">
 
                 <table>
@@ -396,54 +379,31 @@
 
                         <tr>
 
-                            <th>
-                                #
-                            </th>
+                            <th>#</th>
 
-                            <th>
-                                Region
-                            </th>
+                            <th>Region</th>
 
-                            <th>
-                                State
-                            </th>
+                            <th>State</th>
 
-                            <th>
-                                City
-                            </th>
+                            <th>City</th>
 
-                            <th>
-                                Jamiatul Madina
-                            </th>
+                            <th>Jamiatul Madina</th>
 
-                            <th>
-                                Employee Code
-                            </th>
+                            <th>Employee Code</th>
 
-                            <th>
-                                Teacher Name
-                            </th>
+                            <th>Teacher Name</th>
 
-                            <th>
-                                Target
-                            </th>
+                            <th>Target</th>
 
-                            <th>
-                                Total Collection
-                            </th>
+                            <th>Total Collection</th>
 
-                            <th>
-                                Remaining Target
-                            </th>
+                            <th>Remaining Target</th>
 
-                            <th>
-                                Percentage
-                            </th>
+                            <th>Percentage</th>
 
                         </tr>
 
                     </thead>
-
 
 
                     <tbody id="summaryTableBody">
@@ -464,9 +424,7 @@
                     </tbody>
 
 
-
                     <tfoot id="summaryTableFoot">
-
                     </tfoot>
 
                 </table>
@@ -476,21 +434,19 @@
         </div>
 
 
-
         <!-- =====================================
-             FOOTER NOTE
+             FOOTER
         ====================================== -->
 
         <div class="footer-note">
 
-            Collection is calculated from both
-            daily_entry and teacher_entries.
+            Collection data is calculated from
+            Daily Report entries.
 
         </div>
 
 
     </div>
-
 
 
     <!-- =========================================
@@ -501,7 +457,7 @@
 
         fetch("components/admin-sidebar.html")
 
-            .then(function (response) {
+            .then((response) => {
 
                 if (!response.ok) {
 
@@ -511,29 +467,19 @@
 
                 }
 
-
                 return response.text();
 
             })
 
-            .then(function (data) {
+            .then((data) => {
 
-                const sidebarContainer =
-                    document.getElementById(
-                        "adminSidebar"
-                    );
-
-
-                if (sidebarContainer) {
-
-                    sidebarContainer.innerHTML =
-                        data;
-
-                }
+                document.getElementById(
+                    "adminSidebar"
+                ).innerHTML = data;
 
             })
 
-            .catch(function (error) {
+            .catch((error) => {
 
                 console.error(
                     "Admin Sidebar Error:",
@@ -543,7 +489,6 @@
             });
 
     </script>
-
 
 
     <!-- =========================================
