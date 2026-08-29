@@ -40,6 +40,14 @@ const resetFilters =
     document.getElementById("resetFilters");
 
 
+// ======================================
+// NEW - CSV DOWNLOAD BUTTON
+// ======================================
+
+const downloadCSV =
+    document.getElementById("downloadCSV");
+
+
 let employees = [];
 
 
@@ -1192,6 +1200,191 @@ if (resetFilters) {
             displayEmployees(
                 employees
             );
+
+        }
+    );
+
+}
+
+
+// ======================================
+// NEW - CSV HELPER
+// ======================================
+
+function csvEscape(value) {
+
+    const text =
+        String(
+            value ?? ""
+        );
+
+
+    return '"' +
+        text
+            .replace(
+                /"/g,
+                '""'
+            ) +
+        '"';
+
+}
+
+
+// ======================================
+// NEW - DOWNLOAD ALL TEACHERS CSV
+// ======================================
+
+function downloadTeachersCSV() {
+
+    if (!employees.length) {
+
+        alert(
+            "Download karne ke liye koi Teacher data nahi hai."
+        );
+
+        return;
+
+    }
+
+
+    // ==================================
+    // CSV HEADER
+    // ==================================
+
+    const rows = [];
+
+
+    rows.push([
+
+        "Employee Code",
+        "Teacher Name",
+        "Mobile",
+        "Region",
+        "State",
+        "City",
+        "Status"
+
+    ]);
+
+
+    // ==================================
+    // ALL TEACHERS DATA
+    // ==================================
+
+    employees.forEach(
+        (employee) => {
+
+            rows.push([
+
+                getEmployeeCode(employee),
+
+                getTeacherName(employee),
+
+                getMobile(employee),
+
+                getRegion(employee),
+
+                getState(employee),
+
+                getCity(employee),
+
+                getStatus(employee)
+
+            ]);
+
+        }
+    );
+
+
+    // ==================================
+    // CREATE CSV
+    // ==================================
+
+    const csvContent =
+
+        "\uFEFF" +
+
+        rows
+            .map(
+                row =>
+                    row
+                        .map(csvEscape)
+                        .join(",")
+            )
+            .join("\r\n");
+
+
+    // ==================================
+    // CREATE FILE
+    // ==================================
+
+    const blob =
+        new Blob(
+            [
+                csvContent
+            ],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    // ==================================
+    // DOWNLOAD
+    // ==================================
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        "Telethon_All_Teachers.csv";
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    document.body.removeChild(
+        link
+    );
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+// ======================================
+// CSV BUTTON EVENT
+// ======================================
+
+if (downloadCSV) {
+
+    downloadCSV.addEventListener(
+        "click",
+        function () {
+
+            downloadTeachersCSV();
 
         }
     );
