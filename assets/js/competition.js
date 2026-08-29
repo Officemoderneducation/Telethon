@@ -30,9 +30,10 @@
 //
 // 16. End Time ke baad winning team determine hogi.
 // 17. Jis side ke Total Unit zyada honge woh winner hogi.
-// 18. Winning side ke participating teacher names show honge.
-// 19. Tie hone par winner appreciation show nahi hoga.
-// 20. Competition End hone ke baad bhi competition visible rahegi.
+// 18. Winner appreciation mein individual teacher names nahi honge.
+// 19. Sirf "(Winning Team Name) Teachers" show hoga.
+// 20. Tie hone par winner appreciation show nahi hoga.
+// 21. Competition End hone ke baad bhi competition visible rahegi.
 //
 // FIREBASE COLLECTIONS:
 //
@@ -358,43 +359,6 @@ function getEmployeeState(
         employee.stateName ||
 
         employee.state_name ||
-
-        ""
-
-    ).trim();
-
-}
-
-
-// ======================================================
-// GET EMPLOYEE NAME
-//
-// Multiple possible field names supported.
-// ======================================================
-
-function getEmployeeName(
-    employee
-) {
-
-    return String(
-
-        employee.name ||
-
-        employee.teacherName ||
-
-        employee.teacher_name ||
-
-        employee.employeeName ||
-
-        employee.employee_name ||
-
-        employee.fullName ||
-
-        employee.full_name ||
-
-        employee.displayName ||
-
-        employee.display_name ||
 
         ""
 
@@ -1487,101 +1451,21 @@ function createSideHTML(
 
 
 // ======================================================
-// GET WINNING TEACHER NAMES
-//
-// End Time ke baad winning side ke
-// participating teachers ke names show honge.
-//
-// ======================================================
-
-function getWinningTeacherNames(
-    competition,
-    side
-) {
-
-    const participantCodes =
-        getSideParticipants(
-            competition,
-            side
-        );
-
-
-    if (
-        participantCodes.length === 0
-    ) {
-
-        return [];
-
-    }
-
-
-    const teacherSet =
-        new Set(
-            participantCodes.map(
-                code =>
-                    normalize(
-                        code
-                    )
-            )
-        );
-
-
-    const names = [];
-
-
-    allEmployees.forEach(
-        employee => {
-
-            const code =
-                normalize(
-                    getEmployeeCode(
-                        employee
-                    )
-                );
-
-
-            if (
-                !teacherSet.has(
-                    code
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            const name =
-                getEmployeeName(
-                    employee
-                );
-
-
-            if (name) {
-
-                names.push(
-                    name
-                );
-
-            }
-
-        }
-    );
-
-
-    return [
-        ...new Set(
-            names
-        )
-    ];
-
-}
-
-
-// ======================================================
 // CREATE WINNER APPRECIATION
 //
+// IMPORTANT:
+//
 // Sirf End Time ke baad show hoga.
+//
+// Individual teacher names SHOW NAHI honge.
+//
+// Format:
+//
+// (Winning Team Name) Teachers
+//
+// Example:
+//
+// Hyderabad Region Teachers
 //
 // ======================================================
 
@@ -1596,7 +1480,7 @@ function createWinnerAppreciation(
 
 
     // ==================================================
-    // End Time nahi hai
+    // END TIME NAHI HAI
     // ==================================================
 
     if (
@@ -1609,7 +1493,7 @@ function createWinnerAppreciation(
 
 
     // ==================================================
-    // Competition abhi active hai
+    // COMPETITION ABHI ACTIVE HAI
     // ==================================================
 
     if (
@@ -1643,7 +1527,7 @@ function createWinnerAppreciation(
     // ==================================================
     // TIE
     //
-    // Tie mein winner nahi.
+    // Tie mein winner appreciation nahi.
     // ==================================================
 
     if (
@@ -1668,30 +1552,40 @@ function createWinnerAppreciation(
 
 
     // ==================================================
-    // WINNING TEACHERS
+    // WINNING TEAM NAME
+    //
+    // Individual teachers nahi.
+    // Sirf Team Name use hoga.
     // ==================================================
 
-    const winningTeacherNames =
-        getWinningTeacherNames(
+    const winningTeamName =
+        getAdminTeamName(
             competition,
             winningSide
         );
 
 
-    const teacherText =
-        winningTeacherNames.length > 0
+    // ==================================================
+    // TEAM NAME NAHI MILA
+    // ==================================================
 
-            ? winningTeacherNames
-                .map(
-                    name =>
-                        escapeHTML(
-                            name
-                        )
-                )
-                .join(", ") +
-                " Teachers"
+    if (
+        !winningTeamName
+    ) {
 
-            : "";
+        return "";
+
+    }
+
+
+    // ==================================================
+    // WINNER TEXT
+    //
+    // "Teachers" FIXED TEXT hai.
+    // ==================================================
+
+    const winningTeamText =
+        `${winningTeamName} Teachers`;
 
 
     // ==================================================
@@ -1709,19 +1603,13 @@ function createWinnerAppreciation(
             </div>
 
 
-            ${
-                teacherText
-                    ? `
+            <div class="winner-teacher-name">
 
-                        <div class="winner-teacher-name">
+                ${escapeHTML(
+                    winningTeamText
+                )}
 
-                            ${teacherText}
-
-                        </div>
-
-                    `
-                    : ""
-            }
+            </div>
 
 
             <div class="winner-appreciation-text">
@@ -1822,8 +1710,6 @@ function createCompetitionCard(
 
     // ==================================================
     // WINNER APPRECIATION
-    //
-    // Sirf End Time ke baad.
     // ==================================================
 
     const winnerHTML =
@@ -1926,16 +1812,12 @@ function createCompetitionCard(
 // PUBLIC VISIBILITY
 //
 // Admin Hide/Show Public ke liye
-// multiple possible field names support.
 //
 // HIDE conditions:
 //
 // hidePublic === true
-// OR
 // publicVisible === false
-// OR
 // isPublic === false
-// OR
 // publicStatus === "hidden"
 //
 // ======================================================
@@ -2135,7 +2017,6 @@ function isPublicCompetition(
     // IMPORTANT
     //
     // Expiry check intentionally nahi hai.
-    //
     // ==================================================
 
     return true;
@@ -2787,7 +2668,6 @@ async function loadCompetitionPage() {
         // SINGLE COMPETITION
         //
         // competition.html?id=XXXX
-        //
         // ==================================================
 
         if (
@@ -2844,10 +2724,9 @@ async function loadCompetitionPage() {
         //
         // Back date bhi show hogi.
         //
-        // End Time cross hone se hide nahi hogi.
+        // End time cross hone se hide nahi hogi.
         //
         // Admin Hide Public karega tab hide hogi.
-        //
         // ==================================================
 
         const publicCompetitions =
