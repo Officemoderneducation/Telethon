@@ -24,7 +24,7 @@
 //
 // IMPORTANT:
 //
-// Competition Participants section REMOVE kiya gaya hai.
+// Competition Participants section REMOVE hai.
 //
 // competition-entry.html / competition-entry.js
 // ko change karne ki zarurat nahi hai.
@@ -417,11 +417,14 @@ function getEntryDate(
 
 
     for (
-        const value of values
+        const value
+        of values
     ) {
 
         if (!value) {
+
             continue;
+
         }
 
 
@@ -750,7 +753,7 @@ function formatEndTime(
 // ======================================================
 // GET SIDE DATA
 //
-// Supported Firebase:
+// Firebase:
 //
 // sideA: [
 //     {
@@ -807,22 +810,6 @@ function getSideData(
 
 // ======================================================
 // GET ADMIN TEAM NAME
-//
-// Admin ne competition-entry page par
-// jo team name type kiya tha,
-// wahi public page par show hoga.
-//
-// Supported fields:
-//
-// sideATeamName
-// sideA_teamName
-// sideAName
-// sideA_name
-// teamName
-// team_name
-// name
-// title
-//
 // ======================================================
 
 function getAdminTeamName(
@@ -892,7 +879,8 @@ function getAdminTeamName(
     ) {
 
         if (
-            typeof item === "string"
+            typeof item ===
+            "string"
         ) {
 
             const value =
@@ -910,7 +898,8 @@ function getAdminTeamName(
 
         if (
             item &&
-            typeof item === "object"
+            typeof item ===
+            "object"
         ) {
 
             const value =
@@ -952,10 +941,6 @@ function getAdminTeamName(
 // Region / State competition-entry se
 // liya jayega.
 //
-// IMPORTANT:
-//
-// Team Name ko participant rule nahi maana jayega.
-//
 // ======================================================
 
 function getParticipantRules(
@@ -975,7 +960,8 @@ function getParticipantRules(
 
             if (
                 !item ||
-                typeof item !== "object"
+                typeof item !==
+                    "object"
             ) {
 
                 return false;
@@ -984,13 +970,17 @@ function getParticipantRules(
 
 
             return (
+
                 String(
-                    item.region || ""
+                    item.region ||
+                    ""
                 ).trim() ||
 
                 String(
-                    item.state || ""
+                    item.state ||
+                    ""
                 ).trim()
+
             );
 
         }
@@ -1067,8 +1057,10 @@ function employeeMatchesRule(
     ) {
 
         return (
+
             employeeRegion ===
             ruleRegion
+
         );
 
     }
@@ -1083,8 +1075,10 @@ function employeeMatchesRule(
     ) {
 
         return (
+
             employeeState ===
             ruleState
+
         );
 
     }
@@ -1276,8 +1270,8 @@ function getLatestEntries() {
 // Competition date ke teachers ki
 // collection calculate hogi.
 //
-// End Time ke baad ki entries
-// include nahi hongi.
+// End Time ke baad ki entry
+// include nahi hogi.
 //
 // ======================================================
 
@@ -1390,8 +1384,8 @@ function calculateSideUnit(
             // ==================================================
             // END TIME CHECK
             //
-            // End Time ke baad ki entry exclude.
-            //
+            // End Time ke baad ki entry
+            // competition total mein nahi aayegi.
             // ==================================================
 
             const createdTime =
@@ -1440,14 +1434,12 @@ function calculateSideUnit(
 // ======================================================
 // CREATE SIDE HTML
 //
-// IMPORTANT:
-//
-// Public page par amount show nahi hoga.
-//
-// Sirf:
+// Public page par:
 //
 // Team Name
 // Total Unit
+//
+// Amount nahi.
 //
 // ======================================================
 
@@ -1514,8 +1506,13 @@ function createSideHTML(
 //
 // IMPORTANT:
 //
-// Competition Participants section
+// Academic Department Competition
 // YAHAN NAHI HAI.
+//
+// Page header mein already 1 baar hai.
+//
+// Competition Participants bhi
+// yahan nahi hai.
 //
 // ======================================================
 
@@ -1592,20 +1589,15 @@ function createCompetitionCard(
 
     // ==================================================
     // CARD HTML
+    //
+    // NOTE:
+    //
+    // .competition-title intentionally
+    // removed from this card.
+    //
     // ==================================================
 
     card.innerHTML = `
-
-        <!-- ==========================================
-             TITLE
-        =========================================== -->
-
-        <div class="competition-title">
-
-            Academic Department Competition
-
-        </div>
-
 
         <!-- ==========================================
              COMPETITION NAME
@@ -1909,7 +1901,8 @@ function findCompetitionById(
         competition =>
             String(
                 competition.id
-            ) === String(id)
+            ) ===
+            String(id)
     );
 
 }
@@ -1951,7 +1944,7 @@ function getActiveCompetitions() {
 
 
             // ==================================================
-            // EXPIRED CHECK
+            // EXPIRED
             // ==================================================
 
             if (
@@ -1966,7 +1959,7 @@ function getActiveCompetitions() {
 
 
             // ==================================================
-            // STATUS CHECK
+            // STATUS
             // ==================================================
 
             const status =
@@ -2318,8 +2311,8 @@ async function loadTeacherEntries() {
 // ======================================================
 // SCHEDULE EXPIRY
 //
-// End Time ke baad automatically
-// competition hide ho jayega.
+// End Time ke baad competition
+// automatically hide ho jayega.
 //
 // ======================================================
 
@@ -2485,7 +2478,7 @@ async function loadCompetitionPage() {
 
 
         // ==================================================
-        // GET URL ID
+        // URL ID
         // ==================================================
 
         const competitionId =
