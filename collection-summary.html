@@ -10,14 +10,12 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        Collection Summary | Telethon
-    </title>
+    <title>Collection Summary | Telethon</title>
 
 
-    <!-- ======================================
+    <!-- =========================================
          FONT AWESOME
-    ======================================= -->
+    ========================================== -->
 
     <link
         rel="stylesheet"
@@ -25,19 +23,9 @@
     >
 
 
-    <!-- ======================================
-         REGION SIDEBAR CSS
-    ======================================= -->
-
-    <link
-        rel="stylesheet"
-        href="components/region-sidebar.css"
-    >
-
-
-    <!-- ======================================
+    <!-- =========================================
          ADMIN SIDEBAR CSS
-    ======================================= -->
+    ========================================== -->
 
     <link
         rel="stylesheet"
@@ -45,995 +33,14 @@
     >
 
 
-    <style>
-
-        /* ======================================
-           RESET
-        ====================================== */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-
-        body {
-            min-height: 100vh;
-            background: #f4f6f9;
-            color: #1e293b;
-            overflow-x: hidden;
-        }
-
-
-        /* ======================================
-           SIDEBAR
-        ====================================== */
-
-        #sidebarContainer {
-
-            position: fixed;
-
-            left: 0;
-            top: 0;
-
-            width: 260px;
-            height: 100vh;
-
-            z-index: 99999;
-
-        }
-
-
-        /* ======================================
-           MAIN AREA
-        ====================================== */
-
-        .main-area {
-
-            margin-left: 260px;
-
-            width: calc(100% - 260px);
-
-            min-height: 100vh;
-
-        }
-
-
-        /* ======================================
-           TOPBAR
-        ====================================== */
-
-        .topbar-main {
-
-            height: 76px;
-
-            background: #ffffff;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            padding: 0 26px;
-
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
-
-        }
-
-
-        .topbar-title h2 {
-
-            font-size: 20px;
-
-            color: #0f172a;
-
-            margin-bottom: 3px;
-
-        }
-
-
-        .topbar-title p {
-
-            font-size: 12px;
-
-            color: #64748b;
-
-        }
-
-
-        .topbar-user {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-            font-size: 13px;
-
-            font-weight: 600;
-
-            color: #334155;
-
-        }
-
-
-        .topbar-user i {
-
-            font-size: 20px;
-
-            color: #2563eb;
-
-        }
-
-
-        /* ======================================
-           MOBILE MENU
-        ====================================== */
-
-        .mobile-menu-btn {
-
-            display: none;
-
-            position: fixed;
-
-            top: 12px;
-            left: 12px;
-
-            width: 42px;
-            height: 42px;
-
-            border: none;
-
-            border-radius: 8px;
-
-            background: #2563eb;
-
-            color: #ffffff;
-
-            cursor: pointer;
-
-            font-size: 18px;
-
-            z-index: 100001;
-
-        }
-
-
-        /* ======================================
-           MAIN
-        ====================================== */
-
-        .main {
-
-            padding: 22px;
-
-        }
-
-
-        /* ======================================
-           PAGE HEADER
-        ====================================== */
-
-        .page-header {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 22px;
-
-            margin-bottom: 20px;
-
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
-
-        }
-
-
-        .page-header h2 {
-
-            font-size: 24px;
-
-            color: #0f172a;
-
-            margin-bottom: 8px;
-
-        }
-
-
-        .page-header h2 i {
-
-            color: #2563eb;
-
-            margin-right: 8px;
-
-        }
-
-
-        .page-header p {
-
-            color: #64748b;
-
-            font-size: 14px;
-
-            line-height: 1.6;
-
-        }
-
-
-        /* ======================================
-           USER INFO
-        ====================================== */
-
-        .region-user-info {
-
-            background: #ecfdf5;
-
-            border: 1px solid #bbf7d0;
-
-            color: #166534;
-
-            padding: 14px 18px;
-
-            border-radius: 8px;
-
-            margin-bottom: 20px;
-
-            font-size: 14px;
-
-        }
-
-
-        /* ======================================
-           SUMMARY CARDS
-        ====================================== */
-
-        .summary-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 16px;
-
-            margin-bottom: 20px;
-
-        }
-
-
-        .summary-card {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 18px;
-
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
-
-        }
-
-
-        .summary-card-title {
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-            color: #64748b;
-
-            margin-bottom: 8px;
-
-        }
-
-
-        .summary-card-value {
-
-            font-size: 23px;
-
-            font-weight: 800;
-
-            color: #0f172a;
-
-        }
-
-
-        .summary-card-value i {
-
-            color: #2563eb;
-
-            margin-right: 7px;
-
-        }
-
-
-        /* ======================================
-           FILTER CONTAINER
-        ====================================== */
-
-        .filter-container {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 20px;
-
-            margin-bottom: 20px;
-
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
-
-        }
-
-
-        .filter-title {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 9px;
-
-            font-size: 17px;
-
-            font-weight: 700;
-
-            color: #0f172a;
-
-            margin-bottom: 18px;
-
-            padding-bottom: 14px;
-
-            border-bottom: 1px solid #e2e8f0;
-
-        }
-
-
-        .filter-title i {
-
-            color: #2563eb;
-
-        }
-
-
-        .filter-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 15px;
-
-        }
-
-
-        .filter-group {
-
-            display: flex;
-
-            flex-direction: column;
-
-        }
-
-
-        .filter-group label {
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-            color: #475569;
-
-            margin-bottom: 6px;
-
-        }
-
-
-        .filter-group label i {
-
-            color: #2563eb;
-
-            margin-right: 4px;
-
-        }
-
-
-        .filter-group input,
-        .filter-group select {
-
-            width: 100%;
-
-            height: 42px;
-
-            padding: 0 11px;
-
-            border: 1px solid #cbd5e1;
-
-            border-radius: 7px;
-
-            outline: none;
-
-            background: #ffffff;
-
-            color: #334155;
-
-            font-size: 13px;
-
-        }
-
-
-        .filter-group input:focus,
-        .filter-group select:focus {
-
-            border-color: #2563eb;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(37,99,235,0.10);
-
-        }
-
-
-        /* ======================================
-           QUICK DATES
-        ====================================== */
-
-        .quick-date-section {
-
-            margin-top: 17px;
-
-        }
-
-
-        .quick-date-title {
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-            color: #64748b;
-
-            margin-bottom: 8px;
-
-        }
-
-
-        .quick-date-buttons {
-
-            display: flex;
-
-            flex-wrap: wrap;
-
-            gap: 8px;
-
-        }
-
-
-        .quick-date-btn {
-
-            border: 1px solid #cbd5e1;
-
-            background: #ffffff;
-
-            color: #334155;
-
-            border-radius: 6px;
-
-            padding: 8px 13px;
-
-            cursor: pointer;
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-        }
-
-
-        .quick-date-btn:hover {
-
-            border-color: #2563eb;
-
-            color: #2563eb;
-
-        }
-
-
-        .quick-date-btn.active {
-
-            background: #2563eb;
-
-            border-color: #2563eb;
-
-            color: #ffffff;
-
-        }
-
-
-        /* ======================================
-           FILTER BUTTONS
-        ====================================== */
-
-        .filter-buttons {
-
-            display: flex;
-
-            gap: 9px;
-
-            margin-top: 18px;
-
-        }
-
-
-        .filter-btn {
-
-            border: none;
-
-            border-radius: 7px;
-
-            padding: 10px 17px;
-
-            font-size: 13px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-        }
-
-
-        .apply-btn {
-
-            background: #2563eb;
-
-            color: #ffffff;
-
-        }
-
-
-        .apply-btn:hover {
-
-            background: #1d4ed8;
-
-        }
-
-
-        .reset-btn {
-
-            background: #e2e8f0;
-
-            color: #334155;
-
-        }
-
-
-        .reset-btn:hover {
-
-            background: #cbd5e1;
-
-        }
-
-
-        /* ======================================
-           REPORT INFO
-        ====================================== */
-
-        .report-info {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            padding: 15px 18px;
-
-            margin-bottom: 20px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 15px;
-
-            flex-wrap: wrap;
-
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
-
-        }
-
-
-        .report-info-item {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 7px;
-
-            font-size: 13px;
-
-            color: #475569;
-
-        }
-
-
-        .report-info-item i {
-
-            color: #2563eb;
-
-        }
-
-
-        .report-info-item strong {
-
-            color: #0f172a;
-
-        }
-
-
-        /* ======================================
-           TABLE CONTAINER
-        ====================================== */
-
-        .table-container {
-
-            background: #ffffff;
-
-            border-radius: 12px;
-
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.06);
-
-            overflow: hidden;
-
-        }
-
-
-        .table-header {
-
-            padding: 18px 20px;
-
-            border-bottom: 1px solid #e2e8f0;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-        }
-
-
-        .table-header h3 {
-
-            font-size: 17px;
-
-            color: #0f172a;
-
-        }
-
-
-        .table-header h3 i {
-
-            color: #2563eb;
-
-            margin-right: 7px;
-
-        }
-
-
-        .table-wrapper {
-
-            width: 100%;
-
-            overflow-x: auto;
-
-        }
-
-
-        table {
-
-            width: 100%;
-
-            min-width: 850px;
-
-            border-collapse: collapse;
-
-        }
-
-
-        thead th {
-
-            background: #f8fafc;
-
-            color: #334155;
-
-            font-size: 12px;
-
-            font-weight: 800;
-
-            padding: 13px 12px;
-
-            border-bottom: 1px solid #cbd5e1;
-
-            border-right: 1px solid #e2e8f0;
-
-            white-space: nowrap;
-
-            text-align: left;
-
-        }
-
-
-        tbody td {
-
-            padding: 12px;
-
-            border-bottom: 1px solid #e2e8f0;
-
-            border-right: 1px solid #f1f5f9;
-
-            font-size: 13px;
-
-            color: #334155;
-
-            white-space: nowrap;
-
-        }
-
-
-        tbody tr:hover {
-
-            background: #f8fafc;
-
-        }
-
-
-        .jamiatul {
-
-            font-weight: 700;
-
-            color: #475569;
-
-        }
-
-
-        .teacher-name {
-
-            font-weight: 700;
-
-            color: #0f172a;
-
-        }
-
-
-        .date-amount {
-
-            text-align: right;
-
-            font-weight: 700;
-
-            color: #166534;
-
-        }
-
-
-        .no-entry {
-
-            text-align: center;
-
-            color: #94a3b8;
-
-        }
-
-
-        .total-collection {
-
-            text-align: right;
-
-            font-weight: 800;
-
-            color: #2563eb;
-
-            background: #eff6ff;
-
-        }
-
-
-        tfoot td {
-
-            padding: 14px 12px;
-
-            background: #f1f5f9;
-
-            border-top: 2px solid #cbd5e1;
-
-            border-right: 1px solid #e2e8f0;
-
-            font-size: 13px;
-
-            font-weight: 800;
-
-            white-space: nowrap;
-
-        }
-
-
-        .date-total {
-
-            text-align: right;
-
-            color: #166534;
-
-        }
-
-
-        .grand-total {
-
-            text-align: right;
-
-            color: #1d4ed8;
-
-            background: #dbeafe;
-
-            font-size: 14px !important;
-
-        }
-
-
-        .empty-cell,
-        .error-cell {
-
-            text-align: center !important;
-
-            padding: 30px !important;
-
-            color: #64748b !important;
-
-            font-weight: 600;
-
-        }
-
-
-        .error-cell {
-
-            color: #b91c1c !important;
-
-        }
-
-
-        /* ======================================
-           MOBILE
-        ====================================== */
-
-        @media (max-width: 1000px) {
-
-            .filter-grid {
-
-                grid-template-columns:
-                    repeat(2, 1fr);
-
-            }
-
-
-            .summary-grid {
-
-                grid-template-columns:
-                    repeat(3, 1fr);
-
-            }
-
-        }
-
-
-        @media (max-width: 800px) {
-
-            #sidebarContainer {
-
-                width: 260px;
-
-            }
-
-
-            .main-area {
-
-                margin-left: 0;
-
-                width: 100%;
-
-            }
-
-
-            .mobile-menu-btn {
-
-                display: block;
-
-            }
-
-
-            .topbar-main {
-
-                padding-left: 68px;
-
-            }
-
-        }
-
-
-        @media (max-width: 650px) {
-
-            .main {
-
-                padding: 12px;
-
-            }
-
-
-            .page-header,
-            .filter-container {
-
-                padding: 17px;
-
-            }
-
-
-            .summary-grid {
-
-                grid-template-columns: 1fr;
-
-            }
-
-
-            .filter-grid {
-
-                grid-template-columns: 1fr;
-
-            }
-
-
-            .filter-buttons {
-
-                flex-direction: column;
-
-            }
-
-
-            .filter-btn {
-
-                width: 100%;
-
-            }
-
-
-            .topbar-user {
-
-                display: none;
-
-            }
-
-
-            .report-info {
-
-                align-items: flex-start;
-
-                flex-direction: column;
-
-            }
-
-        }
-
-    </style>
+    <!-- =========================================
+         COLLECTION SUMMARY CSS
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="assets/css/collection-summary.css"
+    >
 
 </head>
 
@@ -1041,194 +48,46 @@
 <body>
 
 
-<!-- ======================================
-     SIDEBAR
-====================================== -->
+    <!-- =========================================
+         ADMIN SIDEBAR
+    ========================================== -->
 
-<div id="sidebarContainer"></div>
-
-
-<!-- ======================================
-     MOBILE MENU
-====================================== -->
-
-<button
-    type="button"
-    id="mobileMenuBtn"
-    class="mobile-menu-btn"
->
-
-    <i class="fa-solid fa-bars"></i>
-
-</button>
+    <div id="adminSidebar"></div>
 
 
-<!-- ======================================
-     MAIN AREA
-====================================== -->
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
 
-<div class="main-area">
-
-
-    <!-- ==================================
-         TOPBAR
-    =================================== -->
-
-    <header class="topbar-main">
-
-        <div class="topbar-title">
-
-            <h2>
-                Collection Summary
-            </h2>
-
-            <p>
-                Teacher Wise Collection Summary
-            </p>
-
-        </div>
+    <div class="main-content">
 
 
-        <div class="topbar-user">
-
-            <i class="fa-solid fa-circle-user"></i>
-
-            <span id="regionUserInfoTop">
-                Loading...
-            </span>
-
-        </div>
-
-    </header>
-
-
-    <!-- ==================================
-         MAIN
-    =================================== -->
-
-    <main class="main">
-
-
-        <!-- ==================================
-             PAGE HEADER
-        =================================== -->
+        <!-- =====================================
+             HEADER
+        ====================================== -->
 
         <div class="page-header">
 
-            <h2>
+            <div>
 
-                <i class="fa-solid fa-chart-column"></i>
+                <h1>
+                    Collection Summary
+                </h1>
 
-                Collection Summary
+                <p>
+                    View collection summary by Region, State, City or Employee
+                </p>
 
-            </h2>
-
-
-            <p>
-
-                Teacher-wise collection summary.
-                Old <strong>daily_entry</strong> aur new
-                <strong>teacher_entries</strong> dono data
-                read-only mode me merge kiye jaate hain.
-
-                Same Teacher aur Same Date ki multiple
-                entries ka total SUM kiya jaata hai.
-
-            </p>
+            </div>
 
         </div>
 
 
-        <!-- ==================================
-             REGION USER INFO
-        =================================== -->
+        <!-- =====================================
+             FILTER CARD
+        ====================================== -->
 
-        <div
-            id="regionUserInfo"
-            class="region-user-info"
-        >
-
-            Loading Region User...
-
-        </div>
-
-
-        <!-- ==================================
-             SUMMARY CARDS
-        =================================== -->
-
-        <div class="summary-grid">
-
-
-            <div class="summary-card">
-
-                <div class="summary-card-title">
-                    <i class="fa-solid fa-users"></i>
-                    TOTAL TEACHERS
-                </div>
-
-                <div
-                    class="summary-card-value"
-                    id="totalTeachers"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <div class="summary-card-title">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    SELECTED DATE RANGE
-                </div>
-
-                <div
-                    class="summary-card-value"
-                    id="selectedDateRange"
-                >
-                    —
-                </div>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <div class="summary-card-title">
-                    <i class="fa-solid fa-indian-rupee-sign"></i>
-                    GRAND TOTAL
-                </div>
-
-                <div
-                    class="summary-card-value"
-                    id="grandTotal"
-                >
-                    ₹ 0
-                </div>
-
-            </div>
-
-
-        </div>
-
-
-        <!-- ==================================
-             FILTER
-        =================================== -->
-
-        <div class="filter-container">
-
-
-            <div class="filter-title">
-
-                <i class="fa-solid fa-filter"></i>
-
-                Collection Filters
-
-            </div>
-
+        <div class="filter-card">
 
             <div class="filter-grid">
 
@@ -1237,14 +96,9 @@
 
                 <div class="filter-group">
 
-                    <label for="regionFilter">
-
-                        <i class="fa-solid fa-location-dot"></i>
-
-                        Region
-
+                    <label>
+                        Filter By Region
                     </label>
-
 
                     <select id="regionFilter">
 
@@ -1261,14 +115,9 @@
 
                 <div class="filter-group">
 
-                    <label for="stateFilter">
-
-                        <i class="fa-solid fa-map"></i>
-
-                        State
-
+                    <label>
+                        Filter By State
                     </label>
-
 
                     <select id="stateFilter">
 
@@ -1285,14 +134,9 @@
 
                 <div class="filter-group">
 
-                    <label for="cityFilter">
-
-                        <i class="fa-solid fa-city"></i>
-
-                        City
-
+                    <label>
+                        Filter By City
                     </label>
-
 
                     <select id="cityFilter">
 
@@ -1305,23 +149,18 @@
                 </div>
 
 
-                <!-- JAMIATUL -->
+                <!-- EMPLOYEE -->
 
                 <div class="filter-group">
 
-                    <label for="jamiatulFilter">
-
-                        <i class="fa-solid fa-school"></i>
-
-                        Jamiatul Madina
-
+                    <label>
+                        Filter By Employee Code
                     </label>
 
-
-                    <select id="jamiatulFilter">
+                    <select id="employeeFilter">
 
                         <option value="">
-                            All Jamiatul Madina
+                            All Employees
                         </option>
 
                     </select>
@@ -1329,250 +168,239 @@
                 </div>
 
 
-                <!-- FROM DATE -->
+                <!-- BUTTONS -->
 
-                <div class="filter-group">
+                <div class="filter-buttons">
 
-                    <label for="fromDate">
-
-                        <i class="fa-solid fa-calendar-day"></i>
-
-                        From Date
-
-                    </label>
-
-
-                    <input
-                        type="date"
-                        id="fromDate"
+                    <button
+                        type="button"
+                        id="applyFilter"
+                        class="apply-btn"
                     >
-
-                </div>
-
-
-                <!-- TO DATE -->
-
-                <div class="filter-group">
-
-                    <label for="toDate">
-
-                        <i class="fa-solid fa-calendar-check"></i>
-
-                        To Date
-
-                    </label>
-
-
-                    <input
-                        type="date"
-                        id="toDate"
-                    >
-
-                </div>
-
-
-                <!-- SEARCH -->
-
-                <div class="filter-group">
-
-                    <label for="searchFilter">
 
                         <i class="fa-solid fa-magnifying-glass"></i>
 
-                        Search Teacher
+                        Apply Filter
 
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="searchFilter"
-                        placeholder="Teacher Name / Employee Code"
-                    >
-
-                </div>
-
-
-            </div>
-
-
-            <!-- ==================================
-                 QUICK DATE
-            =================================== -->
-
-            <div class="quick-date-section">
-
-                <div class="quick-date-title">
-
-                    Quick Date
-
-                </div>
-
-
-                <div class="quick-date-buttons">
-
-
-                    <button
-                        type="button"
-                        class="quick-date-btn"
-                        data-days="1"
-                    >
-                        Today
                     </button>
 
 
                     <button
                         type="button"
-                        class="quick-date-btn"
-                        data-days="7"
+                        id="resetFilter"
+                        class="reset-btn"
                     >
-                        7 Days
+
+                        <i class="fa-solid fa-rotate-right"></i>
+
+                        Reset
+
                     </button>
-
-
-                    <button
-                        type="button"
-                        class="quick-date-btn"
-                        data-days="15"
-                    >
-                        15 Days
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="quick-date-btn"
-                        data-days="30"
-                    >
-                        30 Days
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="quick-date-btn"
-                        data-days="90"
-                    >
-                        90 Days
-                    </button>
-
 
                 </div>
 
             </div>
-
-
-            <!-- ==================================
-                 BUTTONS
-            =================================== -->
-
-            <div class="filter-buttons">
-
-
-                <button
-                    type="button"
-                    id="applyFilter"
-                    class="filter-btn apply-btn"
-                >
-
-                    <i class="fa-solid fa-filter"></i>
-
-                    Apply Filter
-
-                </button>
-
-
-                <button
-                    type="button"
-                    id="resetFilter"
-                    class="filter-btn reset-btn"
-                >
-
-                    <i class="fa-solid fa-rotate-left"></i>
-
-                    Reset
-
-                </button>
-
-
-            </div>
-
 
         </div>
 
 
-        <!-- ==================================
-             REPORT INFO
-        =================================== -->
+        <!-- =====================================
+             SELECTED FILTER
+        ====================================== -->
 
-        <div class="report-info">
+        <div
+            class="selected-info"
+            id="selectedInfo"
+        >
 
+            <div class="success-icon">
 
-            <div class="report-info-item">
-
-                <i class="fa-solid fa-list"></i>
-
-                <span>
-                    Results:
-                </span>
-
-                <strong id="resultCount">
-                    0 Teacher(s)
-                </strong>
+                <i class="fa-solid fa-check"></i>
 
             </div>
 
-
-            <div class="report-info-item">
-
-                <i class="fa-solid fa-calendar-days"></i>
+            <div>
 
                 <span>
-                    Selected:
+                    You are viewing summary for:
                 </span>
 
-                <strong id="selectedDateRangeInfo">
-                    —
+                <strong id="selectedTitle">
+                    All Teachers
                 </strong>
 
             </div>
-
 
         </div>
 
 
-        <!-- ==================================
-             TABLE
-        =================================== -->
+        <!-- =====================================
+             SUMMARY CARDS
+        ====================================== -->
 
-        <div class="table-container">
+        <div class="summary-grid">
 
 
-            <div class="table-header">
+            <!-- TOTAL TARGET -->
 
-                <h3>
+            <div class="summary-card target-card">
 
-                    <i class="fa-solid fa-table"></i>
+                <div class="summary-icon">
 
-                    Teacher Collection Summary
+                    <i class="fa-solid fa-bullseye"></i>
 
-                </h3>
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Target
+                    </span>
+
+                    <strong id="totalTarget">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL COLLECTION -->
+
+            <div class="summary-card collection-card">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Collection
+                    </span>
+
+                    <strong id="totalCollection">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- REMAINING TARGET -->
+
+            <div class="summary-card remaining-card">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-chart-pie"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Remaining Target
+                    </span>
+
+                    <strong id="remainingTarget">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- PERCENTAGE -->
+
+            <div class="summary-card percentage-card">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-percent"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Achievement
+                    </span>
+
+                    <strong id="percentage">
+                        0%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             DETAILS TABLE
+        ====================================== -->
+
+        <div class="details-card">
+
+
+            <div class="details-header">
+
+                <div>
+
+                    <h2>
+
+                        <i class="fa-solid fa-list"></i>
+
+                        Details
+
+                    </h2>
+
+                    <p>
+                        Teacher target and collection details
+                    </p>
+
+                </div>
 
             </div>
 
 
             <div class="table-wrapper">
 
+                <table>
 
-                <table id="collectionSummaryTable">
-
-
-                    <thead id="reportTableHead">
+                    <thead>
 
                         <tr>
 
                             <th>
+                                #
+                            </th>
+
+                            <th>
+                                Region
+                            </th>
+
+                            <th>
+                                State
+                            </th>
+
+                            <th>
+                                City
+                            </th>
+
+                            <th>
                                 Jamiatul Madina
+                            </th>
+
+                            <th>
+                                Employee Code
                             </th>
 
                             <th>
@@ -1580,11 +408,19 @@
                             </th>
 
                             <th>
-                                Collection
+                                Target
                             </th>
 
                             <th>
-                                All-Time Total
+                                Total Collection
+                            </th>
+
+                            <th>
+                                Remaining Target
+                            </th>
+
+                            <th>
+                                Percentage
                             </th>
 
                         </tr>
@@ -1592,16 +428,16 @@
                     </thead>
 
 
-                    <tbody id="reportTableBody">
+                    <tbody id="summaryTableBody">
 
                         <tr>
 
                             <td
-                                colspan="20"
-                                class="empty-cell"
+                                colspan="11"
+                                class="loading"
                             >
 
-                                Loading...
+                                Loading data...
 
                             </td>
 
@@ -1610,286 +446,85 @@
                     </tbody>
 
 
-                    <tfoot id="reportTableFoot"></tfoot>
+                    <tfoot id="summaryTableFoot">
 
+                    </tfoot>
 
                 </table>
-
 
             </div>
 
         </div>
 
 
-    </main>
+        <!-- =====================================
+             FOOTER NOTE
+        ====================================== -->
+
+        <div class="footer-note">
+
+            Data is calculated based on selected filters.
+
+        </div>
 
 
-</div>
+    </div>
 
 
-<!-- ======================================
-     SIDEBAR LOADER
-====================================== -->
+    <!-- =========================================
+         ADMIN SIDEBAR LOADER
+    ========================================== -->
 
-<script>
+    <script>
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+        fetch("components/admin-sidebar.html")
 
-        const sidebarContainer =
-            document.getElementById(
-                "sidebarContainer"
-            );
-
-
-        if (!sidebarContainer) {
-
-            return;
-
-        }
-
-
-        const userRole =
-            (
-                localStorage.getItem(
-                    "userRole"
-                ) || ""
-            )
-            .trim()
-            .toLowerCase();
-
-
-        const adminLoggedIn =
-            localStorage.getItem(
-                "adminLoggedIn"
-            ) === "true";
-
-
-        const isAdminFlag =
-            localStorage.getItem(
-                "isAdmin"
-            ) === "true";
-
-
-        const isAdmin =
-            adminLoggedIn ||
-            isAdminFlag ||
-            userRole === "admin";
-
-
-        const sidebarFile =
-            isAdmin
-                ? "components/admin-sidebar.html"
-                : "components/region-sidebar.html";
-
-
-        fetch(sidebarFile)
-
-        .then(
-            function (response) {
+            .then(function(response) {
 
                 if (!response.ok) {
 
                     throw new Error(
-                        "Sidebar load failed."
+                        "Admin Sidebar not found"
                     );
 
                 }
 
-
                 return response.text();
 
-            }
-        )
+            })
 
-        .then(
-            function (data) {
+            .then(function(data) {
+
+                const sidebarContainer =
+                    document.getElementById(
+                        "adminSidebar"
+                    );
 
                 sidebarContainer.innerHTML =
                     data;
 
+            })
 
-                let currentPage =
-                    window.location.pathname
-                        .split("/")
-                        .pop()
-                        .toLowerCase();
-
-
-                if (!currentPage) {
-
-                    currentPage =
-                        "collection-summary.html";
-
-                }
-
-
-                /* ==============================
-                   ADMIN MENU
-                ============================== */
-
-                const adminLinks =
-                    sidebarContainer.querySelectorAll(
-                        ".admin-sidebar-menu a[data-page]"
-                    );
-
-
-                adminLinks.forEach(
-                    function (link) {
-
-                        const page =
-                            (
-                                link.getAttribute(
-                                    "data-page"
-                                ) || ""
-                            )
-                            .toLowerCase();
-
-
-                        link.classList.toggle(
-                            "active",
-                            page === currentPage
-                        );
-
-                    }
-                );
-
-
-                /* ==============================
-                   REGION MENU
-                ============================== */
-
-                const regionLinks =
-                    sidebarContainer.querySelectorAll(
-                        ".region-menu-link[data-page]"
-                    );
-
-
-                regionLinks.forEach(
-                    function (link) {
-
-                        const page =
-                            (
-                                link.getAttribute(
-                                    "data-page"
-                                ) || ""
-                            )
-                            .toLowerCase();
-
-
-                        link.classList.toggle(
-                            "active",
-                            page === currentPage
-                        );
-
-                    }
-                );
-
-
-                /* ==============================
-                   REGION USER NAME
-                ============================== */
-
-                const regionUserName =
-                    localStorage.getItem(
-                        "regionUserName"
-                    );
-
-
-                const sidebarUserName =
-                    sidebarContainer.querySelector(
-                        "#regionSidebarUserName"
-                    );
-
-
-                const topUserName =
-                    document.getElementById(
-                        "regionUserInfoTop"
-                    );
-
-
-                if (regionUserName) {
-
-                    if (sidebarUserName) {
-
-                        sidebarUserName.textContent =
-                            regionUserName;
-
-                    }
-
-
-                    if (topUserName) {
-
-                        topUserName.textContent =
-                            regionUserName;
-
-                    }
-
-                }
-
-
-                /* ==============================
-                   MOBILE MENU
-                ============================== */
-
-                const mobileMenuBtn =
-                    document.getElementById(
-                        "mobileMenuBtn"
-                    );
-
-
-                const sidebar =
-                    sidebarContainer.querySelector(
-                        ".region-sidebar, .admin-sidebar"
-                    );
-
-
-                if (
-                    mobileMenuBtn &&
-                    sidebar
-                ) {
-
-                    mobileMenuBtn.addEventListener(
-                        "click",
-                        function () {
-
-                            sidebar.classList.toggle(
-                                "open"
-                            );
-
-                        }
-                    );
-
-                }
-
-            }
-        )
-
-        .catch(
-            function (error) {
+            .catch(function(error) {
 
                 console.error(
+                    "Admin Sidebar Error:",
                     error
                 );
 
-            }
-        );
+            });
 
-    }
-);
-
-</script>
+    </script>
 
 
-<!-- ======================================
-     COLLECTION SUMMARY JS
-====================================== -->
+    <!-- =========================================
+         COLLECTION SUMMARY JS
+    ========================================== -->
 
-<script
-    type="module"
-    src="assets/js/collection-summary.js"
-></script>
+    <script
+        type="module"
+        src="assets/js/collection-summary.js"
+    ></script>
 
 
 </body>
