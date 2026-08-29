@@ -13,9 +13,9 @@
     <title>Competition Entry | Telethon</title>
 
 
-    <!-- ==================================================
+    <!-- =====================================================
          FONT AWESOME
-    =================================================== -->
+    ====================================================== -->
 
     <link
         rel="stylesheet"
@@ -23,9 +23,9 @@
     >
 
 
-    <!-- ==================================================
+    <!-- =====================================================
          GOOGLE FONT
-    =================================================== -->
+    ====================================================== -->
 
     <link
         rel="preconnect"
@@ -44,32 +44,20 @@
     >
 
 
-    <!-- ==================================================
-         FIREBASE
-    =================================================== -->
-
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
+    <!-- =====================================================
+         STYLE
+    ====================================================== -->
 
     <style>
 
-        /* ==================================================
+        /* =====================================================
            RESET
-        =================================================== */
+        ====================================================== */
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-
-        html {
-            scroll-behavior: smooth;
         }
 
 
@@ -82,15 +70,14 @@
 
 
         button,
-        input,
-        select {
+        input {
             font-family: inherit;
         }
 
 
-        /* ==================================================
+        /* =====================================================
            PAGE
-        =================================================== */
+        ====================================================== */
 
         .page-wrapper {
             width: 100%;
@@ -106,25 +93,19 @@
         }
 
 
-        /* ==================================================
+        /* =====================================================
            HEADER
-        =================================================== */
+        ====================================================== */
 
         .page-header {
             background: #ffffff;
             border-radius: 16px;
             padding: 22px 25px;
             margin-bottom: 22px;
-            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
+            box-shadow:
+                0 5px 20px rgba(15, 23, 42, 0.07);
 
-
-        .page-header-left {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -162,16 +143,18 @@
         }
 
 
-        /* ==================================================
+        /* =====================================================
            CARD
-        =================================================== */
+        ====================================================== */
 
         .card {
             background: #ffffff;
             border-radius: 16px;
             padding: 25px;
             margin-bottom: 22px;
-            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
+
+            box-shadow:
+                0 5px 20px rgba(15, 23, 42, 0.07);
         }
 
 
@@ -194,13 +177,13 @@
         }
 
 
-        /* ==================================================
-           FORM GRID
-        =================================================== */
+        /* =====================================================
+           FORM
+        ====================================================== */
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 18px;
         }
 
@@ -251,18 +234,26 @@
 
         .form-control:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
+
+            box-shadow:
+                0 0 0 3px rgba(99, 102, 241, 0.10);
         }
 
 
-        /* ==================================================
-           COMPETITION MATCH
-        =================================================== */
+        /* =====================================================
+           MATCH
+        ====================================================== */
 
         .match-wrapper {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 100px minmax(0, 1fr);
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                90px
+                minmax(0, 1fr);
+
             gap: 20px;
+
             align-items: stretch;
         }
 
@@ -270,7 +261,9 @@
         .side-card {
             border: 1px solid #e5e7eb;
             border-radius: 14px;
+
             padding: 20px;
+
             background: #fafbff;
         }
 
@@ -279,7 +272,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
 
             margin-bottom: 18px;
         }
@@ -297,6 +289,7 @@
             font-weight: 700;
 
             padding: 5px 9px;
+
             border-radius: 20px;
 
             background: #eef2ff;
@@ -304,9 +297,9 @@
         }
 
 
-        /* ==================================================
+        /* =====================================================
            VS
-        =================================================== */
+        ====================================================== */
 
         .vs-wrapper {
             display: flex;
@@ -316,8 +309,8 @@
 
 
         .vs-circle {
-            width: 72px;
-            height: 72px;
+            width: 70px;
+            height: 70px;
 
             border-radius: 50%;
 
@@ -328,16 +321,17 @@
             background: #111827;
             color: #ffffff;
 
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 800;
 
-            box-shadow: 0 8px 20px rgba(17, 24, 39, 0.20);
+            box-shadow:
+                0 8px 20px rgba(17, 24, 39, 0.20);
         }
 
 
-        /* ==================================================
-           SELECTION SECTION
-        =================================================== */
+        /* =====================================================
+           SELECTION
+        ====================================================== */
 
         .selection-section {
             margin-bottom: 20px;
@@ -358,7 +352,7 @@
         }
 
 
-        .selection-title span {
+        .selection-title span:first-child {
             font-size: 13px;
             font-weight: 700;
             color: #374151;
@@ -371,73 +365,9 @@
         }
 
 
-        .selection-box {
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-
-            background: #ffffff;
-
-            min-height: 105px;
-            max-height: 190px;
-
-            overflow-y: auto;
-
-            padding: 8px;
-        }
-
-
-        /* ==================================================
-           CHECKBOX ITEM
-        =================================================== */
-
-        .check-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-
-            padding: 9px 10px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-
-            transition: 0.15s;
-        }
-
-
-        .check-item:hover {
-            background: #f3f4f6;
-        }
-
-
-        .check-item input {
-            width: 16px;
-            height: 16px;
-
-            accent-color: #4f46e5;
-
-            cursor: pointer;
-        }
-
-
-        .check-item span {
-            font-size: 13px;
-            color: #374151;
-        }
-
-
-        .empty-message {
-            padding: 18px 10px;
-            text-align: center;
-
-            font-size: 12px;
-            color: #9ca3af;
-        }
-
-
-        /* ==================================================
+        /* =====================================================
            SEARCH
-        =================================================== */
+        ====================================================== */
 
         .search-box {
             position: relative;
@@ -479,14 +409,13 @@
         }
 
 
-        /* ==================================================
+        /* =====================================================
            SELECT ALL
-        =================================================== */
+        ====================================================== */
 
         .select-all-row {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
 
             margin-bottom: 8px;
         }
@@ -494,6 +423,7 @@
 
         .select-all-btn {
             border: none;
+
             background: transparent;
 
             color: #4f46e5;
@@ -510,13 +440,157 @@
         }
 
 
-        /* ==================================================
-           ACTIONS
-        =================================================== */
+        /* =====================================================
+           CHECKBOX LIST
+        ====================================================== */
+
+        .selection-box {
+            border: 1px solid #d1d5db;
+
+            border-radius: 10px;
+
+            background: #ffffff;
+
+            min-height: 105px;
+            max-height: 190px;
+
+            overflow-y: auto;
+
+            padding: 8px;
+        }
+
+
+        .check-item {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 9px 10px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+
+        .check-item:hover {
+            background: #f3f4f6;
+        }
+
+
+        .check-item input {
+            width: 16px;
+            height: 16px;
+
+            accent-color: #4f46e5;
+
+            cursor: pointer;
+        }
+
+
+        .check-item span {
+            font-size: 13px;
+            color: #374151;
+        }
+
+
+        .empty-message {
+            padding: 18px 10px;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            color: #9ca3af;
+        }
+
+
+        /* =====================================================
+           INFO
+        ====================================================== */
+
+        .info-box {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 10px;
+
+            padding: 13px 15px;
+
+            margin-top: 20px;
+
+            border-radius: 10px;
+
+            background: #eff6ff;
+
+            border: 1px solid #bfdbfe;
+
+            color: #1e40af;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+
+        .info-box i {
+            margin-top: 2px;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ====================================================== */
+
+        .message {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 12px 14px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        .message.error {
+            display: block;
+
+            background: #fef2f2;
+
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+        }
+
+
+        .message.success {
+            display: block;
+
+            background: #f0fdf4;
+
+            color: #15803d;
+
+            border: 1px solid #bbf7d0;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ====================================================== */
 
         .actions {
             display: flex;
+
             justify-content: flex-end;
+
             gap: 12px;
 
             margin-top: 25px;
@@ -535,11 +609,14 @@
             cursor: pointer;
 
             font-size: 13px;
+
             font-weight: 700;
 
             display: inline-flex;
+
             align-items: center;
             justify-content: center;
+
             gap: 8px;
 
             transition: 0.2s;
@@ -557,6 +634,12 @@
         }
 
 
+        .btn-primary:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+
         .btn-secondary {
             background: #f3f4f6;
             color: #374151;
@@ -568,89 +651,36 @@
         }
 
 
-        /* ==================================================
-           STATUS
-        =================================================== */
+        /* =====================================================
+           SAVED NOTICE
+        ====================================================== */
 
-        .message {
+        .saved-info {
             display: none;
 
-            margin-top: 15px;
+            margin-top: 20px;
 
-            padding: 12px 14px;
-
-            border-radius: 9px;
-
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-
-        .message.error {
-            display: block;
-
-            background: #fef2f2;
-            color: #b91c1c;
-
-            border: 1px solid #fecaca;
-        }
-
-
-        .message.success {
-            display: block;
-
-            background: #f0fdf4;
-            color: #15803d;
-
-            border: 1px solid #bbf7d0;
-        }
-
-
-        /* ==================================================
-           INFO
-        =================================================== */
-
-        .info-box {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-
-            padding: 13px 15px;
+            padding: 14px;
 
             border-radius: 10px;
 
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
+            background: #f0fdf4;
 
-            color: #1e40af;
+            border: 1px solid #bbf7d0;
 
-            font-size: 12px;
+            color: #166534;
+
+            font-size: 13px;
+
             line-height: 1.6;
-
-            margin-top: 20px;
         }
 
 
-        .info-box i {
-            margin-top: 2px;
-        }
-
-
-        /* ==================================================
-           MOBILE
-        =================================================== */
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
 
         @media (max-width: 900px) {
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-
-            .form-group.full {
-                grid-column: auto;
-            }
-
 
             .match-wrapper {
                 grid-template-columns: 1fr;
@@ -658,14 +688,15 @@
 
 
             .vs-wrapper {
-                height: 60px;
+                height: 55px;
             }
 
 
             .vs-circle {
                 width: 55px;
                 height: 55px;
-                font-size: 15px;
+
+                font-size: 14px;
             }
 
         }
@@ -693,6 +724,16 @@
             }
 
 
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+
             .actions {
                 flex-direction: column;
             }
@@ -717,38 +758,37 @@
         <div class="page-container">
 
 
-            <!-- ==================================================
-                 PAGE HEADER
-            =================================================== -->
+            <!-- =================================================
+                 HEADER
+            ================================================== -->
 
             <div class="page-header">
 
-                <div class="page-header-left">
+                <div class="header-icon">
 
-                    <div class="header-icon">
-                        <i class="fa-solid fa-trophy"></i>
-                    </div>
+                    <i class="fa-solid fa-trophy"></i>
 
-                    <div>
+                </div>
 
-                        <h1>
-                            Competition Entry
-                        </h1>
 
-                        <p>
-                            Create Region & State collection competition
-                        </p>
+                <div>
 
-                    </div>
+                    <h1>
+                        Competition Entry
+                    </h1>
+
+                    <p>
+                        Create Region & State Collection Competition
+                    </p>
 
                 </div>
 
             </div>
 
 
-            <!-- ==================================================
-                 BASIC INFORMATION
-            =================================================== -->
+            <!-- =================================================
+                 COMPETITION INFORMATION
+            ================================================== -->
 
             <div class="card">
 
@@ -775,6 +815,7 @@
 
                         </label>
 
+
                         <input
                             type="text"
                             id="competitionName"
@@ -797,6 +838,7 @@
 
                         </label>
 
+
                         <input
                             type="date"
                             id="competitionDate"
@@ -817,6 +859,7 @@
 
                         </label>
 
+
                         <input
                             type="time"
                             id="competitionEndTime"
@@ -831,9 +874,9 @@
             </div>
 
 
-            <!-- ==================================================
-                 COMPETITION SIDES
-            =================================================== -->
+            <!-- =================================================
+                 SIDES
+            ================================================== -->
 
             <div class="card">
 
@@ -849,9 +892,9 @@
                 <div class="match-wrapper">
 
 
-                    <!-- ==================================================
+                    <!-- =================================================
                          SIDE A
-                    =================================================== -->
+                    ================================================== -->
 
                     <div class="side-card">
 
@@ -869,9 +912,9 @@
                         </div>
 
 
-                        <!-- ==============================
+                        <!-- ===============================
                              SIDE A REGION
-                        =============================== -->
+                        ================================ -->
 
                         <div class="selection-section">
 
@@ -907,12 +950,10 @@
 
                             <div class="select-all-row">
 
-                                <span></span>
-
                                 <button
                                     type="button"
                                     class="select-all-btn"
-                                    onclick="toggleSelectAll('sideARegion')"
+                                    data-list="sideARegionList"
                                 >
                                     Select All
                                 </button>
@@ -934,9 +975,9 @@
                         </div>
 
 
-                        <!-- ==============================
+                        <!-- ===============================
                              SIDE A STATE
-                        =============================== -->
+                        ================================ -->
 
                         <div class="selection-section">
 
@@ -972,12 +1013,10 @@
 
                             <div class="select-all-row">
 
-                                <span></span>
-
                                 <button
                                     type="button"
                                     class="select-all-btn"
-                                    onclick="toggleSelectAll('sideAState')"
+                                    data-list="sideAStateList"
                                 >
                                     Select All
                                 </button>
@@ -1002,9 +1041,9 @@
                     </div>
 
 
-                    <!-- ==================================================
+                    <!-- =================================================
                          VS
-                    =================================================== -->
+                    ================================================== -->
 
                     <div class="vs-wrapper">
 
@@ -1015,9 +1054,9 @@
                     </div>
 
 
-                    <!-- ==================================================
+                    <!-- =================================================
                          SIDE B
-                    =================================================== -->
+                    ================================================== -->
 
                     <div class="side-card">
 
@@ -1035,9 +1074,9 @@
                         </div>
 
 
-                        <!-- ==============================
+                        <!-- ===============================
                              SIDE B REGION
-                        =============================== -->
+                        ================================ -->
 
                         <div class="selection-section">
 
@@ -1073,12 +1112,10 @@
 
                             <div class="select-all-row">
 
-                                <span></span>
-
                                 <button
                                     type="button"
                                     class="select-all-btn"
-                                    onclick="toggleSelectAll('sideBRegion')"
+                                    data-list="sideBRegionList"
                                 >
                                     Select All
                                 </button>
@@ -1100,9 +1137,9 @@
                         </div>
 
 
-                        <!-- ==============================
+                        <!-- ===============================
                              SIDE B STATE
-                        =============================== -->
+                        ================================ -->
 
                         <div class="selection-section">
 
@@ -1138,12 +1175,10 @@
 
                             <div class="select-all-row">
 
-                                <span></span>
-
                                 <button
                                     type="button"
                                     class="select-all-btn"
-                                    onclick="toggleSelectAll('sideBState')"
+                                    data-list="sideBStateList"
                                 >
                                     Select All
                                 </button>
@@ -1171,9 +1206,9 @@
                 </div>
 
 
-                <!-- ==================================================
+                <!-- =================================================
                      INFO
-                =================================================== -->
+                ================================================== -->
 
                 <div class="info-box">
 
@@ -1181,21 +1216,27 @@
 
                     <div>
 
-                        A competition can contain multiple Regions and
-                        multiple States on either side. For example:
-                        <strong>Kolkata Region + Bihar State VS Gujarat State</strong>.
+                        Multiple Regions and multiple States can be
+                        selected on either side.
 
-                        The final collection result will be calculated
-                        later from the selected date's Daily Report.
+                        Example:
+                        <strong>
+                            Kolkata Region + Bihar State VS Gujarat State
+                        </strong>
+
+                        <br>
+
+                        Competition result will use the selected
+                        date's Daily Report.
 
                     </div>
 
                 </div>
 
 
-                <!-- ==================================================
+                <!-- =================================================
                      MESSAGE
-                =================================================== -->
+                ================================================== -->
 
                 <div
                     id="formMessage"
@@ -1203,11 +1244,22 @@
                 ></div>
 
 
-                <!-- ==================================================
+                <!-- =================================================
+                     SAVED INFO
+                ================================================== -->
+
+                <div
+                    id="savedInfo"
+                    class="saved-info"
+                ></div>
+
+
+                <!-- =================================================
                      ACTIONS
-                =================================================== -->
+                ================================================== -->
 
                 <div class="actions">
+
 
                     <button
                         type="button"
@@ -1234,8 +1286,8 @@
 
                     </button>
 
-                </div>
 
+                </div>
 
             </div>
 
@@ -1245,58 +1297,102 @@
     </div>
 
 
-    <!-- ==================================================
-         FIREBASE CONFIG
+    <!-- =====================================================
+         FIREBASE / COMPETITION JAVASCRIPT
          
          IMPORTANT:
-         Apne existing Firebase config ko yahan rakhein.
-         Is code mein koi नया Firebase project/config
-         assume nahi kiya gaya hai.
-    =================================================== -->
+         Existing firebase-config.js is used.
+         No Firebase config is written here.
+    ====================================================== -->
 
-    <script>
+    <script type="module">
 
-        /*
-        ======================================================
-        IMPORTANT
+        /* =====================================================
+           FIREBASE IMPORT
+        ====================================================== */
 
-        Yahan apne existing firebase-config.js ka config
-        use karna hai.
-
-        Example:
-
-        const firebaseConfig = {
-            apiKey: "...",
-            authDomain: "...",
-            projectId: "...",
-            storageBucket: "...",
-            messagingSenderId: "...",
-            appId: "..."
-        };
-
-        firebase.initializeApp(firebaseConfig);
-
-        const db = firebase.firestore();
-
-        ======================================================
-        */
-
-    </script>
+        import { db } from "./assets/js/firebase-config.js";
 
 
-    <script>
+        import {
+            collection,
+            getDocs,
+            addDoc,
+            serverTimestamp
+        } from
+        "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-        /* ==================================================
-           GLOBAL DATA
-        =================================================== */
+
+        /* =====================================================
+           CONSTANTS
+        ====================================================== */
+
+        const EMPLOYEES_COLLECTION =
+            "employees";
+
+
+        const COMPETITIONS_COLLECTION =
+            "competitions";
+
+
+        /* =====================================================
+           DATA
+        ====================================================== */
 
         let regions = [];
+
         let states = [];
 
 
-        /* ==================================================
+        /* =====================================================
+           DOM
+        ====================================================== */
+
+        const competitionName =
+            document.getElementById(
+                "competitionName"
+            );
+
+
+        const competitionDate =
+            document.getElementById(
+                "competitionDate"
+            );
+
+
+        const competitionEndTime =
+            document.getElementById(
+                "competitionEndTime"
+            );
+
+
+        const saveButton =
+            document.getElementById(
+                "saveCompetitionBtn"
+            );
+
+
+        const resetButton =
+            document.getElementById(
+                "resetBtn"
+            );
+
+
+        const formMessage =
+            document.getElementById(
+                "formMessage"
+            );
+
+
+        const savedInfo =
+            document.getElementById(
+                "savedInfo"
+            );
+
+
+        /* =====================================================
            NORMALIZE
-        =================================================== */
+        ====================================================== */
 
         function normalize(value) {
 
@@ -1307,9 +1403,9 @@
         }
 
 
-        /* ==================================================
+        /* =====================================================
            ESCAPE HTML
-        =================================================== */
+        ====================================================== */
 
         function escapeHTML(value) {
 
@@ -1323,9 +1419,9 @@
         }
 
 
-        /* ==================================================
-           GET EMPLOYEE REGION
-        =================================================== */
+        /* =====================================================
+           EMPLOYEE REGION
+        ====================================================== */
 
         function getEmployeeRegion(employee) {
 
@@ -1340,9 +1436,9 @@
         }
 
 
-        /* ==================================================
-           GET EMPLOYEE STATE
-        =================================================== */
+        /* =====================================================
+           EMPLOYEE STATE
+        ====================================================== */
 
         function getEmployeeState(employee) {
 
@@ -1357,146 +1453,132 @@
         }
 
 
-        /* ==================================================
-           LOAD REGIONS & STATES
-        =================================================== */
+        /* =====================================================
+           LOAD REGION & STATE
+        ====================================================== */
 
         async function loadRegionsAndStates() {
 
             try {
 
-                /*
-                 * db must be initialized from the existing
-                 * Firebase config.
-                 */
-
-                if (
-                    typeof db === "undefined" ||
-                    !db
-                ) {
-
-                    console.warn(
-                        "Firebase db is not initialized."
-                    );
-
-                    showLoadingMessage(
-                        "sideARegionList",
-                        "Firebase configuration not connected yet."
-                    );
-
-                    showLoadingMessage(
-                        "sideAStateList",
-                        "Firebase configuration not connected yet."
-                    );
-
-                    showLoadingMessage(
-                        "sideBRegionList",
-                        "Firebase configuration not connected yet."
-                    );
-
-                    showLoadingMessage(
-                        "sideBStateList",
-                        "Firebase configuration not connected yet."
-                    );
-
-                    return;
-
-                }
-
-
                 const snapshot =
-                    await db
-                        .collection("employees")
-                        .get();
+                    await getDocs(
+                        collection(
+                            db,
+                            EMPLOYEES_COLLECTION
+                        )
+                    );
 
 
-                const regionMap = new Map();
-                const stateMap = new Map();
+                const regionMap =
+                    new Map();
 
 
-                snapshot.forEach(doc => {
-
-                    const employee = doc.data();
-
-
-                    const region =
-                        String(
-                            getEmployeeRegion(employee)
-                        ).trim();
+                const stateMap =
+                    new Map();
 
 
-                    const state =
-                        String(
-                            getEmployeeState(employee)
-                        ).trim();
+                snapshot.forEach(
+                    docSnapshot => {
+
+                        const employee =
+                            docSnapshot.data();
 
 
-                    if (region) {
+                        const region =
+                            String(
+                                getEmployeeRegion(
+                                    employee
+                                )
+                            ).trim();
 
-                        regionMap.set(
-                            normalize(region),
-                            region
-                        );
+
+                        const state =
+                            String(
+                                getEmployeeState(
+                                    employee
+                                )
+                            ).trim();
+
+
+                        if (region) {
+
+                            regionMap.set(
+                                normalize(region),
+                                region
+                            );
+
+                        }
+
+
+                        if (state) {
+
+                            stateMap.set(
+                                normalize(state),
+                                state
+                            );
+
+                        }
 
                     }
-
-
-                    if (state) {
-
-                        stateMap.set(
-                            normalize(state),
-                            state
-                        );
-
-                    }
-
-                });
+                );
 
 
                 regions =
-                    Array.from(regionMap.values())
-                        .sort(
-                            (a, b) =>
-                                a.localeCompare(b)
-                        );
+                    Array.from(
+                        regionMap.values()
+                    ).sort(
+                        (a, b) =>
+                            a.localeCompare(b)
+                    );
 
 
                 states =
-                    Array.from(stateMap.values())
-                        .sort(
-                            (a, b) =>
-                                a.localeCompare(b)
-                        );
+                    Array.from(
+                        stateMap.values()
+                    ).sort(
+                        (a, b) =>
+                            a.localeCompare(b)
+                    );
 
 
-                renderSelectionLists();
+                renderAllLists();
 
             }
 
             catch (error) {
 
                 console.error(
-                    "Error loading Regions/States:",
+                    "Region/State loading error:",
                     error
                 );
 
 
-                showLoadingMessage(
+                showFormMessage(
+                    "Unable to load Region/State data from Firebase.",
+                    "error"
+                );
+
+
+                showListMessage(
                     "sideARegionList",
                     "Unable to load regions."
                 );
 
-                showLoadingMessage(
+
+                showListMessage(
                     "sideAStateList",
                     "Unable to load states."
                 );
 
-                showLoadingMessage(
+
+                showListMessage(
                     "sideBRegionList",
                     "Unable to load regions."
                 );
 
-                showLoadingMessage(
+
+                showListMessage(
                     "sideBStateList",
                     "Unable to load states."
                 );
@@ -1506,25 +1588,27 @@
         }
 
 
-        /* ==================================================
-           SHOW MESSAGE IN LIST
-        =================================================== */
+        /* =====================================================
+           SHOW LIST MESSAGE
+        ====================================================== */
 
-        function showLoadingMessage(
-            elementId,
+        function showListMessage(
+            listId,
             message
         ) {
 
-            const element =
-                document.getElementById(elementId);
+            const list =
+                document.getElementById(
+                    listId
+                );
 
 
-            if (!element) {
+            if (!list) {
                 return;
             }
 
 
-            element.innerHTML = `
+            list.innerHTML = `
                 <div class="empty-message">
                     ${escapeHTML(message)}
                 </div>
@@ -1533,278 +1617,221 @@
         }
 
 
-        /* ==================================================
+        /* =====================================================
            CREATE CHECKBOX LIST
-        =================================================== */
+        ====================================================== */
 
         function createCheckboxList(
-            elementId,
-            items,
-            type
+            listId,
+            items
         ) {
 
-            const container =
-                document.getElementById(elementId);
+            const list =
+                document.getElementById(
+                    listId
+                );
 
 
-            if (!container) {
+            if (!list) {
                 return;
             }
 
 
             if (!items.length) {
 
-                container.innerHTML = `
-                    <div class="empty-message">
-                        No ${type} found.
-                    </div>
-                `;
+                showListMessage(
+                    listId,
+                    "No data found."
+                );
 
                 return;
 
             }
 
 
-            container.innerHTML =
-                items.map((item, index) => {
+            list.innerHTML =
+                items.map(
+                    item => {
 
-                    const safeValue =
-                        escapeHTML(item);
+                        const safeItem =
+                            escapeHTML(item);
 
 
-                    return `
-                        <label
-                            class="check-item"
-                            data-value="${safeValue}"
-                        >
-
-                            <input
-                                type="checkbox"
-                                name="${elementId}"
-                                value="${safeValue}"
-                                onchange="updateSelectionCount('${elementId}')"
+                        return `
+                            <label
+                                class="check-item"
+                                data-value="${safeItem}"
                             >
 
-                            <span>
-                                ${safeValue}
-                            </span>
+                                <input
+                                    type="checkbox"
+                                    value="${safeItem}"
+                                >
 
-                        </label>
-                    `;
+                                <span>
+                                    ${safeItem}
+                                </span>
 
-                }).join("");
+                            </label>
+                        `;
+
+                    }
+                ).join("");
 
 
-            updateSelectionCount(elementId);
+            updateSelectionCount(
+                listId
+            );
 
         }
 
 
-        /* ==================================================
+        /* =====================================================
            RENDER ALL LISTS
-        =================================================== */
+        ====================================================== */
 
-        function renderSelectionLists() {
+        function renderAllLists() {
 
             createCheckboxList(
                 "sideARegionList",
-                regions,
-                "regions"
+                regions
             );
 
 
             createCheckboxList(
                 "sideBRegionList",
-                regions,
-                "regions"
+                regions
             );
 
 
             createCheckboxList(
                 "sideAStateList",
-                states,
-                "states"
+                states
             );
 
 
             createCheckboxList(
                 "sideBStateList",
-                states,
-                "states"
+                states
             );
 
         }
 
 
-        /* ==================================================
-           UPDATE COUNT
-        =================================================== */
+        /* =====================================================
+           COUNT
+        ====================================================== */
 
         function updateSelectionCount(
-            elementId
+            listId
         ) {
 
-            const container =
-                document.getElementById(elementId);
+            const list =
+                document.getElementById(
+                    listId
+                );
 
 
-            if (!container) {
+            if (!list) {
                 return;
             }
 
 
-            const checked =
-                container.querySelectorAll(
+            const selected =
+                list.querySelectorAll(
                     'input[type="checkbox"]:checked'
                 ).length;
 
 
-            let countElementId = "";
+            let countId = "";
 
 
-            if (
-                elementId ===
-                "sideARegionList"
-            ) {
+            switch (listId) {
 
-                countElementId =
-                    "sideARegionCount";
+                case "sideARegionList":
 
-            }
+                    countId =
+                        "sideARegionCount";
 
-            else if (
-                elementId ===
-                "sideAStateList"
-            ) {
+                    break;
 
-                countElementId =
-                    "sideAStateCount";
 
-            }
+                case "sideAStateList":
 
-            else if (
-                elementId ===
-                "sideBRegionList"
-            ) {
+                    countId =
+                        "sideAStateCount";
 
-                countElementId =
-                    "sideBRegionCount";
+                    break;
 
-            }
 
-            else if (
-                elementId ===
-                "sideBStateList"
-            ) {
+                case "sideBRegionList":
 
-                countElementId =
-                    "sideBStateCount";
+                    countId =
+                        "sideBRegionCount";
+
+                    break;
+
+
+                case "sideBStateList":
+
+                    countId =
+                        "sideBStateCount";
+
+                    break;
 
             }
 
 
             const countElement =
                 document.getElementById(
-                    countElementId
+                    countId
                 );
 
 
             if (countElement) {
 
                 countElement.textContent =
-                    `${checked} selected`;
+                    `${selected} selected`;
 
             }
 
         }
 
 
-        /* ==================================================
-           SELECT ALL / UNSELECT ALL
-        =================================================== */
+        /* =====================================================
+           GET SELECTED
+        ====================================================== */
 
-        function toggleSelectAll(
-            type
+        function getSelectedValues(
+            listId
         ) {
 
-            let elementId = "";
-
-
-            if (type === "sideARegion") {
-
-                elementId =
-                    "sideARegionList";
-
-            }
-
-            else if (type === "sideAState") {
-
-                elementId =
-                    "sideAStateList";
-
-            }
-
-            else if (type === "sideBRegion") {
-
-                elementId =
-                    "sideBRegionList";
-
-            }
-
-            else if (type === "sideBState") {
-
-                elementId =
-                    "sideBStateList";
-
-            }
-
-
-            const container =
-                document.getElementById(elementId);
-
-
-            if (!container) {
-                return;
-            }
-
-
-            const checkboxes =
-                container.querySelectorAll(
-                    'input[type="checkbox"]'
+            const list =
+                document.getElementById(
+                    listId
                 );
 
 
-            if (!checkboxes.length) {
-                return;
+            if (!list) {
+                return [];
             }
 
 
-            const allChecked =
-                Array.from(checkboxes)
-                    .every(
-                        checkbox =>
-                            checkbox.checked
-                    );
-
-
-            checkboxes.forEach(
-                checkbox => {
-                    checkbox.checked =
-                        !allChecked;
-                }
-            );
-
-
-            updateSelectionCount(
-                elementId
+            return Array.from(
+                list.querySelectorAll(
+                    'input[type="checkbox"]:checked'
+                )
+            ).map(
+                checkbox =>
+                    checkbox.value
             );
 
         }
 
 
-        /* ==================================================
-           SEARCH FILTER
-        =================================================== */
+        /* =====================================================
+           SEARCH
+        ====================================================== */
 
         function setupSearch(
             inputId,
@@ -1812,11 +1839,15 @@
         ) {
 
             const input =
-                document.getElementById(inputId);
+                document.getElementById(
+                    inputId
+                );
 
 
             const list =
-                document.getElementById(listId);
+                document.getElementById(
+                    listId
+                );
 
 
             if (!input || !list) {
@@ -1826,7 +1857,7 @@
 
             input.addEventListener(
                 "input",
-                function () {
+                () => {
 
                     const search =
                         normalize(
@@ -1840,20 +1871,24 @@
                         );
 
 
-                    items.forEach(item => {
+                    items.forEach(
+                        item => {
 
-                        const value =
-                            normalize(
-                                item.dataset.value
-                            );
+                            const value =
+                                normalize(
+                                    item.dataset.value
+                                );
 
 
-                        item.style.display =
-                            value.includes(search)
+                            item.style.display =
+                                value.includes(
+                                    search
+                                )
                                 ? "flex"
                                 : "none";
 
-                    });
+                        }
+                    );
 
                 }
             );
@@ -1861,222 +1896,171 @@
         }
 
 
-        /* ==================================================
-           GET SELECTED VALUES
-        =================================================== */
+        /* =====================================================
+           SELECT ALL
+        ====================================================== */
 
-        function getSelectedValues(
-            listId
-        ) {
+        function setupSelectAllButtons() {
 
-            const container =
-                document.getElementById(
-                    listId
+            document
+                .querySelectorAll(
+                    ".select-all-btn"
+                )
+                .forEach(
+                    button => {
+
+                        button.addEventListener(
+                            "click",
+                            () => {
+
+                                const listId =
+                                    button.dataset.list;
+
+
+                                const list =
+                                    document.getElementById(
+                                        listId
+                                    );
+
+
+                                if (!list) {
+                                    return;
+                                }
+
+
+                                const checkboxes =
+                                    list.querySelectorAll(
+                                        'input[type="checkbox"]'
+                                    );
+
+
+                                if (!checkboxes.length) {
+                                    return;
+                                }
+
+
+                                const allSelected =
+                                    Array.from(
+                                        checkboxes
+                                    ).every(
+                                        checkbox =>
+                                            checkbox.checked
+                                    );
+
+
+                                checkboxes.forEach(
+                                    checkbox => {
+
+                                        checkbox.checked =
+                                            !allSelected;
+
+                                    }
+                                );
+
+
+                                updateSelectionCount(
+                                    listId
+                                );
+
+                            }
+                        );
+
+                    }
                 );
 
-
-            if (!container) {
-                return [];
-            }
+        }
 
 
-            return Array.from(
-                container.querySelectorAll(
-                    'input[type="checkbox"]:checked'
-                )
-            ).map(
-                checkbox =>
-                    checkbox.value
+        /* =====================================================
+           CHECKBOX CHANGE
+        ====================================================== */
+
+        function setupCheckboxEvents() {
+
+            document.addEventListener(
+                "change",
+                event => {
+
+                    if (
+                        event.target.matches(
+                            '.selection-box input[type="checkbox"]'
+                        )
+                    ) {
+
+                        const list =
+                            event.target.closest(
+                                ".selection-box"
+                            );
+
+
+                        if (list) {
+
+                            updateSelectionCount(
+                                list.id
+                            );
+
+                        }
+
+                    }
+
+                }
             );
 
         }
 
 
-        /* ==================================================
-           FORM MESSAGE
-        =================================================== */
+        /* =====================================================
+           MESSAGE
+        ====================================================== */
 
         function showFormMessage(
             message,
             type
         ) {
 
-            const element =
-                document.getElementById(
-                    "formMessage"
-                );
-
-
-            if (!element) {
+            if (!formMessage) {
                 return;
             }
 
 
-            element.textContent =
+            if (!message) {
+
+                formMessage.textContent = "";
+
+                formMessage.className =
+                    "message";
+
+                return;
+
+            }
+
+
+            formMessage.textContent =
                 message;
 
 
-            element.className =
+            formMessage.className =
                 `message ${type}`;
 
         }
 
 
-        /* ==================================================
-           VALIDATE FORM
-        =================================================== */
+        /* =====================================================
+           GET FORM DATA
+        ====================================================== */
 
-        function validateCompetition() {
-
-            const name =
-                document
-                    .getElementById(
-                        "competitionName"
-                    )
-                    .value
-                    .trim();
-
-
-            const date =
-                document
-                    .getElementById(
-                        "competitionDate"
-                    )
-                    .value;
-
-
-            const endTime =
-                document
-                    .getElementById(
-                        "competitionEndTime"
-                    )
-                    .value;
-
-
-            const sideARegions =
-                getSelectedValues(
-                    "sideARegionList"
-                );
-
-
-            const sideAStates =
-                getSelectedValues(
-                    "sideAStateList"
-                );
-
-
-            const sideBRegions =
-                getSelectedValues(
-                    "sideBRegionList"
-                );
-
-
-            const sideBStates =
-                getSelectedValues(
-                    "sideBStateList"
-                );
-
-
-            if (!name) {
-
-                showFormMessage(
-                    "Please enter Competition Name.",
-                    "error"
-                );
-
-                return false;
-
-            }
-
-
-            if (!date) {
-
-                showFormMessage(
-                    "Please select Competition Date.",
-                    "error"
-                );
-
-                return false;
-
-            }
-
-
-            if (!endTime) {
-
-                showFormMessage(
-                    "Please select Competition End Time.",
-                    "error"
-                );
-
-                return false;
-
-            }
-
-
-            if (
-                sideARegions.length === 0 &&
-                sideAStates.length === 0
-            ) {
-
-                showFormMessage(
-                    "Please select at least one Region or State for Side A.",
-                    "error"
-                );
-
-                return false;
-
-            }
-
-
-            if (
-                sideBRegions.length === 0 &&
-                sideBStates.length === 0
-            ) {
-
-                showFormMessage(
-                    "Please select at least one Region or State for Side B.",
-                    "error"
-                );
-
-                return false;
-
-            }
-
-
-            return true;
-
-        }
-
-
-        /* ==================================================
-           COLLECT FORM DATA
-        =================================================== */
-
-        function getCompetitionFormData() {
+        function getCompetitionData() {
 
             return {
 
                 name:
-                    document
-                        .getElementById(
-                            "competitionName"
-                        )
-                        .value
-                        .trim(),
+                    competitionName.value.trim(),
 
                 date:
-                    document
-                        .getElementById(
-                            "competitionDate"
-                        )
-                        .value,
+                    competitionDate.value,
 
                 endTime:
-                    document
-                        .getElementById(
-                            "competitionEndTime"
-                        )
-                        .value,
+                    competitionEndTime.value,
 
                 sideA: {
 
@@ -2111,31 +2095,270 @@
         }
 
 
-        /* ==================================================
-           RESET FORM
-        =================================================== */
+        /* =====================================================
+           VALIDATION
+        ====================================================== */
 
-        function resetCompetitionForm() {
+        function validateCompetition(
+            data
+        ) {
 
-            document
-                .getElementById(
-                    "competitionName"
+            if (!data.name) {
+
+                showFormMessage(
+                    "Please enter Competition Name.",
+                    "error"
+                );
+
+                competitionName.focus();
+
+                return false;
+
+            }
+
+
+            if (!data.date) {
+
+                showFormMessage(
+                    "Please select Competition Date.",
+                    "error"
+                );
+
+                competitionDate.focus();
+
+                return false;
+
+            }
+
+
+            if (!data.endTime) {
+
+                showFormMessage(
+                    "Please select Competition End Time.",
+                    "error"
+                );
+
+                competitionEndTime.focus();
+
+                return false;
+
+            }
+
+
+            const sideACount =
+                data.sideA.regions.length +
+                data.sideA.states.length;
+
+
+            const sideBCount =
+                data.sideB.regions.length +
+                data.sideB.states.length;
+
+
+            if (sideACount === 0) {
+
+                showFormMessage(
+                    "Please select at least one Region or State for Side A.",
+                    "error"
+                );
+
+                return false;
+
+            }
+
+
+            if (sideBCount === 0) {
+
+                showFormMessage(
+                    "Please select at least one Region or State for Side B.",
+                    "error"
+                );
+
+                return false;
+
+            }
+
+
+            return true;
+
+        }
+
+
+        /* =====================================================
+           SAVE COMPETITION
+        ====================================================== */
+
+        async function saveCompetition() {
+
+            const data =
+                getCompetitionData();
+
+
+            if (
+                !validateCompetition(
+                    data
                 )
-                .value = "";
+            ) {
+
+                return;
+
+            }
 
 
-            document
-                .getElementById(
-                    "competitionDate"
-                )
-                .value = "";
+            try {
+
+                saveButton.disabled = true;
 
 
-            document
-                .getElementById(
-                    "competitionEndTime"
-                )
-                .value = "";
+                saveButton.innerHTML = `
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Saving...
+                `;
+
+
+                showFormMessage(
+                    "",
+                    ""
+                );
+
+
+                const competitionDocument = {
+
+                    name:
+                        data.name,
+
+                    date:
+                        data.date,
+
+                    endTime:
+                        data.endTime,
+
+                    sideA: {
+
+                        regions:
+                            data.sideA.regions,
+
+                        states:
+                            data.sideA.states
+
+                    },
+
+                    sideB: {
+
+                        regions:
+                            data.sideB.regions,
+
+                        states:
+                            data.sideB.states
+
+                    },
+
+                    status:
+                        "active",
+
+                    createdAt:
+                        serverTimestamp(),
+
+                    updatedAt:
+                        serverTimestamp()
+
+                };
+
+
+                const docReference =
+                    await addDoc(
+                        collection(
+                            db,
+                            COMPETITIONS_COLLECTION
+                        ),
+                        competitionDocument
+                    );
+
+
+                showFormMessage(
+                    "Competition saved successfully.",
+                    "success"
+                );
+
+
+                savedInfo.style.display =
+                    "block";
+
+
+                savedInfo.innerHTML = `
+                    <strong>
+                        Competition Saved Successfully
+                    </strong>
+
+                    <br>
+
+                    Competition ID:
+                    ${escapeHTML(docReference.id)}
+
+                    <br>
+
+                    ${escapeHTML(data.name)}
+
+                    <br>
+
+                    Date:
+                    ${escapeHTML(data.date)}
+
+                    &nbsp; | &nbsp;
+
+                    End Time:
+                    ${escapeHTML(data.endTime)}
+                `;
+
+
+                /*
+                 * Form reset nahi kar rahe hain immediately,
+                 * taaki saved data user ko screen par dikhe.
+                 */
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Competition save error:",
+                    error
+                );
+
+
+                showFormMessage(
+                    "Competition save failed. Please try again.",
+                    "error"
+                );
+
+            }
+
+            finally {
+
+                saveButton.disabled = false;
+
+
+                saveButton.innerHTML = `
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Competition
+                `;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           RESET
+        ====================================================== */
+
+        function resetForm() {
+
+            competitionName.value = "";
+
+            competitionDate.value = "";
+
+            competitionEndTime.value = "";
 
 
             document
@@ -2144,7 +2367,10 @@
                 )
                 .forEach(
                     checkbox => {
-                        checkbox.checked = false;
+
+                        checkbox.checked =
+                            false;
+
                     }
                 );
 
@@ -2155,8 +2381,31 @@
                 "sideBRegionList",
                 "sideBStateList"
             ].forEach(
-                id => updateSelectionCount(id)
+                listId => {
+
+                    updateSelectionCount(
+                        listId
+                    );
+
+                }
             );
+
+
+            document
+                .querySelectorAll(
+                    ".search-input"
+                )
+                .forEach(
+                    input => {
+
+                        input.value = "";
+
+                        input.dispatchEvent(
+                            new Event("input")
+                        );
+
+                    }
+                );
 
 
             showFormMessage(
@@ -2165,130 +2414,78 @@
             );
 
 
-            const message =
-                document.getElementById(
-                    "formMessage"
-                );
+            savedInfo.style.display =
+                "none";
 
 
-            if (message) {
-
-                message.style.display =
-                    "none";
-
-            }
+            savedInfo.innerHTML = "";
 
         }
 
 
-        /* ==================================================
-           SAVE BUTTON
-           
-           TEMPORARY:
-           Actual Firebase save logic will be added after
-           the page structure is confirmed.
-        =================================================== */
+        /* =====================================================
+           EVENT LISTENERS
+        ====================================================== */
 
-        function handleSaveCompetition() {
-
-            if (
-                !validateCompetition()
-            ) {
-                return;
-            }
-
-
-            const data =
-                getCompetitionFormData();
-
-
-            console.log(
-                "Competition Data:",
-                data
-            );
-
-
-            showFormMessage(
-                "Competition data is ready. Firebase Save will be connected in the next step.",
-                "success"
-            );
-
-        }
-
-
-        /* ==================================================
-           INITIALIZE
-        =================================================== */
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
-
-
-                /* ==============================
-                   SEARCH
-                =============================== */
-
-                setupSearch(
-                    "sideARegionSearch",
-                    "sideARegionList"
-                );
-
-
-                setupSearch(
-                    "sideAStateSearch",
-                    "sideAStateList"
-                );
-
-
-                setupSearch(
-                    "sideBRegionSearch",
-                    "sideBRegionList"
-                );
-
-
-                setupSearch(
-                    "sideBStateSearch",
-                    "sideBStateList"
-                );
-
-
-                /* ==============================
-                   RESET
-                =============================== */
-
-                document
-                    .getElementById(
-                        "resetBtn"
-                    )
-                    .addEventListener(
-                        "click",
-                        resetCompetitionForm
-                    );
-
-
-                /* ==============================
-                   SAVE
-                =============================== */
-
-                document
-                    .getElementById(
-                        "saveCompetitionBtn"
-                    )
-                    .addEventListener(
-                        "click",
-                        handleSaveCompetition
-                    );
-
-
-                /* ==============================
-                   LOAD FIREBASE DATA
-                =============================== */
-
-                loadRegionsAndStates();
-
-            }
+        saveButton.addEventListener(
+            "click",
+            saveCompetition
         );
+
+
+        resetButton.addEventListener(
+            "click",
+            resetForm
+        );
+
+
+        /* =====================================================
+           SEARCH EVENTS
+        ====================================================== */
+
+        setupSearch(
+            "sideARegionSearch",
+            "sideARegionList"
+        );
+
+
+        setupSearch(
+            "sideAStateSearch",
+            "sideAStateList"
+        );
+
+
+        setupSearch(
+            "sideBRegionSearch",
+            "sideBRegionList"
+        );
+
+
+        setupSearch(
+            "sideBStateSearch",
+            "sideBStateList"
+        );
+
+
+        /* =====================================================
+           CHECKBOX EVENTS
+        ====================================================== */
+
+        setupCheckboxEvents();
+
+
+        /* =====================================================
+           SELECT ALL
+        ====================================================== */
+
+        setupSelectAllButtons();
+
+
+        /* =====================================================
+           INITIAL LOAD
+        ====================================================== */
+
+        loadRegionsAndStates();
 
     </script>
 
