@@ -26,6 +26,14 @@
 // 14. Admin ka Hide/Show Public control final visibility decide karega.
 // 15. Individual public URL support.
 //
+// WINNER APPRECIATION:
+//
+// 16. End Time ke baad winning team determine hogi.
+// 17. Jis side ke Total Unit zyada honge woh winner hogi.
+// 18. Winning side ke participating teacher names show honge.
+// 19. Tie hone par winner appreciation show nahi hoga.
+// 20. Competition End hone ke baad bhi competition visible rahegi.
+//
 // FIREBASE COLLECTIONS:
 //
 // competitions
@@ -38,15 +46,12 @@
 
 import { db } from "./firebase-config.js";
 
-
 import {
     collection,
     getDocs,
     query,
     orderBy
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 // ======================================================
@@ -56,14 +61,11 @@ from
 const COMPETITION_COLLECTION =
     "competitions";
 
-
 const EMPLOYEES_COLLECTION =
     "employees";
 
-
 const DAILY_ENTRY_COLLECTION =
     "daily_entry";
-
 
 const TEACHER_ENTRIES_COLLECTION =
     "teacher_entries";
@@ -86,24 +88,20 @@ const loadingBox =
         "loadingBox"
     );
 
-
 const errorBox =
     document.getElementById(
         "errorBox"
     );
-
 
 const errorMessage =
     document.getElementById(
         "errorMessage"
     );
 
-
 const emptyBox =
     document.getElementById(
         "emptyBox"
     );
-
 
 const competitionList =
     document.getElementById(
@@ -369,6 +367,43 @@ function getEmployeeState(
 
 
 // ======================================================
+// GET EMPLOYEE NAME
+//
+// Multiple possible field names supported.
+// ======================================================
+
+function getEmployeeName(
+    employee
+) {
+
+    return String(
+
+        employee.name ||
+
+        employee.teacherName ||
+
+        employee.teacher_name ||
+
+        employee.employeeName ||
+
+        employee.employee_name ||
+
+        employee.fullName ||
+
+        employee.full_name ||
+
+        employee.displayName ||
+
+        employee.display_name ||
+
+        ""
+
+    ).trim();
+
+}
+
+
+// ======================================================
 // GET ENTRY AMOUNT
 // ======================================================
 
@@ -543,8 +578,7 @@ function getCreatedTime(
 // Ye sirf collection cutoff ke liye hai.
 //
 // Public visibility ke liye
-// iska use nahi hota.
-//
+// iska use nahi hoga.
 // ======================================================
 
 function getCompetitionEndTimestamp(
@@ -624,10 +658,8 @@ function formatCompetitionDate(
     const year =
         Number(parts[0]);
 
-
     const month =
         Number(parts[1]);
-
 
     const day =
         Number(parts[2]);
@@ -699,7 +731,6 @@ function formatEndTime(
 
     const hour =
         Number(parts[0]);
-
 
     const minute =
         Number(parts[1]);
@@ -986,6 +1017,10 @@ function employeeMatchesRule(
         );
 
 
+    // ==================================================
+    // REGION + STATE
+    // ==================================================
+
     if (
         ruleRegion &&
         ruleState
@@ -1004,6 +1039,10 @@ function employeeMatchesRule(
     }
 
 
+    // ==================================================
+    // REGION ONLY
+    // ==================================================
+
     if (
         ruleRegion
     ) {
@@ -1017,6 +1056,10 @@ function employeeMatchesRule(
 
     }
 
+
+    // ==================================================
+    // STATE ONLY
+    // ==================================================
 
     if (
         ruleState
@@ -1214,10 +1257,11 @@ function getLatestEntries() {
 // ======================================================
 // CALCULATE SIDE UNIT
 //
-// IMPORTANT:
+// Competition date ke teachers ki
+// collection calculate hogi.
 //
-// End Time sirf cutoff hai.
-// Public visibility ka isse koi relation nahi.
+// End Time ke baad create hui entry
+// competition total mein include nahi hogi.
 //
 // ======================================================
 
@@ -1292,6 +1336,10 @@ function calculateSideUnit(
                 );
 
 
+            // ==================================================
+            // TEACHER CHECK
+            // ==================================================
+
             if (
                 !teacherSet.has(
                     employeeCode
@@ -1302,6 +1350,10 @@ function calculateSideUnit(
 
             }
 
+
+            // ==================================================
+            // DATE CHECK
+            // ==================================================
 
             const entryDate =
                 getEntryDate(
@@ -1320,15 +1372,13 @@ function calculateSideUnit(
 
 
             // ==================================================
-            // END TIME CUTOFF
+            // END TIME CHECK
             //
             // End Time ke baad ki entry
-            // total mein include nahi hogi.
+            // total mein nahi aayegi.
             //
-            // IMPORTANT:
-            //
-            // Ye competition ko hide nahi karta.
-            //
+            // Competition public page par
+            // phir bhi visible rahegi.
             // ==================================================
 
             const createdTime =
@@ -1349,6 +1399,10 @@ function calculateSideUnit(
             }
 
 
+            // ==================================================
+            // ADD AMOUNT
+            // ==================================================
+
             totalAmount +=
                 getEntryAmount(
                     entry
@@ -1357,6 +1411,10 @@ function calculateSideUnit(
         }
     );
 
+
+    // ==================================================
+    // AMOUNT -> UNIT
+    // ==================================================
 
     return (
         totalAmount /
@@ -1429,6 +1487,265 @@ function createSideHTML(
 
 
 // ======================================================
+// GET WINNING TEACHER NAMES
+//
+// End Time ke baad winning side ke
+// participating teachers ke names show honge.
+//
+// ======================================================
+
+function getWinningTeacherNames(
+    competition,
+    side
+) {
+
+    const participantCodes =
+        getSideParticipants(
+            competition,
+            side
+        );
+
+
+    if (
+        participantCodes.length === 0
+    ) {
+
+        return [];
+
+    }
+
+
+    const teacherSet =
+        new Set(
+            participantCodes.map(
+                code =>
+                    normalize(
+                        code
+                    )
+            )
+        );
+
+
+    const names = [];
+
+
+    allEmployees.forEach(
+        employee => {
+
+            const code =
+                normalize(
+                    getEmployeeCode(
+                        employee
+                    )
+                );
+
+
+            if (
+                !teacherSet.has(
+                    code
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            const name =
+                getEmployeeName(
+                    employee
+                );
+
+
+            if (name) {
+
+                names.push(
+                    name
+                );
+
+            }
+
+        }
+    );
+
+
+    return [
+        ...new Set(
+            names
+        )
+    ];
+
+}
+
+
+// ======================================================
+// CREATE WINNER APPRECIATION
+//
+// Sirf End Time ke baad show hoga.
+//
+// ======================================================
+
+function createWinnerAppreciation(
+    competition
+) {
+
+    const endTimestamp =
+        getCompetitionEndTimestamp(
+            competition
+        );
+
+
+    // ==================================================
+    // End Time nahi hai
+    // ==================================================
+
+    if (
+        !endTimestamp
+    ) {
+
+        return "";
+
+    }
+
+
+    // ==================================================
+    // Competition abhi active hai
+    // ==================================================
+
+    if (
+        Date.now() <
+        endTimestamp
+    ) {
+
+        return "";
+
+    }
+
+
+    // ==================================================
+    // SIDE TOTAL
+    // ==================================================
+
+    const sideAUnit =
+        calculateSideUnit(
+            competition,
+            "sideA"
+        );
+
+
+    const sideBUnit =
+        calculateSideUnit(
+            competition,
+            "sideB"
+        );
+
+
+    // ==================================================
+    // TIE
+    //
+    // Tie mein winner nahi.
+    // ==================================================
+
+    if (
+        sideAUnit ===
+        sideBUnit
+    ) {
+
+        return "";
+
+    }
+
+
+    // ==================================================
+    // WINNING SIDE
+    // ==================================================
+
+    const winningSide =
+        sideAUnit >
+        sideBUnit
+            ? "sideA"
+            : "sideB";
+
+
+    // ==================================================
+    // WINNING TEACHERS
+    // ==================================================
+
+    const winningTeacherNames =
+        getWinningTeacherNames(
+            competition,
+            winningSide
+        );
+
+
+    const teacherText =
+        winningTeacherNames.length > 0
+
+            ? winningTeacherNames
+                .map(
+                    name =>
+                        escapeHTML(
+                            name
+                        )
+                )
+                .join(", ") +
+                " Teachers"
+
+            : "";
+
+
+    // ==================================================
+    // WINNER APPRECIATION HTML
+    // ==================================================
+
+    return `
+
+        <div class="winner-appreciation">
+
+            <div class="winner-appreciation-title">
+
+                🏆 Congratulations to the Winning Team! 🎉
+
+            </div>
+
+
+            ${
+                teacherText
+                    ? `
+
+                        <div class="winner-teacher-name">
+
+                            ${teacherText}
+
+                        </div>
+
+                    `
+                    : ""
+            }
+
+
+            <div class="winner-appreciation-text">
+
+                Excellent teamwork and outstanding effort!
+
+            </div>
+
+
+            <div class="winner-appreciation-blessing">
+
+                May Allah bless your efforts and give you
+                even greater success. 🤲✨
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+// ======================================================
 // CREATE COMPETITION CARD
 // ======================================================
 
@@ -1450,6 +1767,10 @@ function createCompetitionCard(
         competition.id;
 
 
+    // ==================================================
+    // COMPETITION NAME
+    // ==================================================
+
     const competitionName =
         String(
             competition.name ||
@@ -1457,17 +1778,29 @@ function createCompetitionCard(
         ).trim();
 
 
+    // ==================================================
+    // DATE
+    // ==================================================
+
     const date =
         formatCompetitionDate(
             competition.date
         );
 
 
+    // ==================================================
+    // END TIME
+    // ==================================================
+
     const endTime =
         formatEndTime(
             competition.endTime
         );
 
+
+    // ==================================================
+    // SIDE A
+    // ==================================================
 
     const sideA =
         createSideHTML(
@@ -1476,6 +1809,10 @@ function createCompetitionCard(
         );
 
 
+    // ==================================================
+    // SIDE B
+    // ==================================================
+
     const sideB =
         createSideHTML(
             competition,
@@ -1483,7 +1820,27 @@ function createCompetitionCard(
         );
 
 
+    // ==================================================
+    // WINNER APPRECIATION
+    //
+    // Sirf End Time ke baad.
+    // ==================================================
+
+    const winnerHTML =
+        createWinnerAppreciation(
+            competition
+        );
+
+
+    // ==================================================
+    // CARD HTML
+    // ==================================================
+
     card.innerHTML = `
+
+        <!-- ==========================================
+             COMPETITION NAME
+        =========================================== -->
 
         <div class="competition-name">
 
@@ -1494,6 +1851,10 @@ function createCompetitionCard(
         </div>
 
 
+        <!-- ==========================================
+             DATE
+        =========================================== -->
+
         <div class="competition-date">
 
             ${escapeHTML(
@@ -1502,6 +1863,10 @@ function createCompetitionCard(
 
         </div>
 
+
+        <!-- ==========================================
+             END TIME
+        =========================================== -->
 
         <div class="competition-end">
 
@@ -1517,6 +1882,10 @@ function createCompetitionCard(
 
         </div>
 
+
+        <!-- ==========================================
+             MATCH
+        =========================================== -->
 
         <div class="competition-match">
 
@@ -1538,6 +1907,13 @@ function createCompetitionCard(
 
         </div>
 
+
+        <!-- ==========================================
+             WINNER APPRECIATION
+        =========================================== -->
+
+        ${winnerHTML}
+
     `;
 
 
@@ -1549,20 +1925,28 @@ function createCompetitionCard(
 // ======================================================
 // PUBLIC VISIBILITY
 //
-// ONLY ADMIN HIDE/SHOW DECIDES PUBLIC VISIBILITY.
+// Admin Hide/Show Public ke liye
+// multiple possible field names support.
 //
-// Supported:
+// HIDE conditions:
 //
 // hidePublic === true
+// OR
 // publicVisible === false
+// OR
 // isPublic === false
-// publicStatus === hidden/hide
+// OR
+// publicStatus === "hidden"
 //
 // ======================================================
 
 function isCompetitionHiddenFromPublic(
     competition
 ) {
+
+    // ==================================================
+    // EXPLICIT HIDE
+    // ==================================================
 
     if (
         competition?.hidePublic === true
@@ -1572,6 +1956,10 @@ function isCompetitionHiddenFromPublic(
 
     }
 
+
+    // ==================================================
+    // STRING TRUE SUPPORT
+    // ==================================================
 
     if (
         normalize(
@@ -1583,6 +1971,10 @@ function isCompetitionHiddenFromPublic(
 
     }
 
+
+    // ==================================================
+    // PUBLIC VISIBLE FALSE
+    // ==================================================
 
     if (
         competition?.publicVisible === false
@@ -1604,6 +1996,10 @@ function isCompetitionHiddenFromPublic(
     }
 
 
+    // ==================================================
+    // IS PUBLIC FALSE
+    // ==================================================
+
     if (
         competition?.isPublic === false
     ) {
@@ -1623,6 +2019,10 @@ function isCompetitionHiddenFromPublic(
 
     }
 
+
+    // ==================================================
+    // PUBLIC STATUS
+    // ==================================================
 
     const publicStatus =
         normalize(
@@ -1650,13 +2050,12 @@ function isCompetitionHiddenFromPublic(
 //
 // IMPORTANT:
 //
-// NO EXPIRY CHECK.
+// Date old/new hone se koi farq nahi.
 //
-// Back date = SHOW
-// Current date = SHOW
-// End time crossed = SHOW
+// End Time cross hone se bhi hide nahi.
 //
-// Only Admin Hide Public = HIDE
+// Sirf Admin Hide Public karega
+// to public page se hide hoga.
 //
 // ======================================================
 
@@ -1718,7 +2117,7 @@ function isPublicCompetition(
 
 
     // ==================================================
-    // ADMIN HIDE PUBLIC
+    // ADMIN PUBLIC HIDE
     // ==================================================
 
     if (
@@ -1735,12 +2134,7 @@ function isPublicCompetition(
     // ==================================================
     // IMPORTANT
     //
-    // YAHAN KOI DATE CHECK NAHI HAI.
-    //
-    // YAHAN KOI END TIME CHECK NAHI HAI.
-    //
-    // Isliye competition automatically
-    // expire/hide nahi hogi.
+    // Expiry check intentionally nahi hai.
     //
     // ==================================================
 
@@ -1971,6 +2365,11 @@ function showError(
 
 // ======================================================
 // GET URL ID
+//
+// Example:
+//
+// competition.html?id=ABC123
+//
 // ======================================================
 
 function getCompetitionIdFromURL() {
@@ -2388,6 +2787,7 @@ async function loadCompetitionPage() {
         // SINGLE COMPETITION
         //
         // competition.html?id=XXXX
+        //
         // ==================================================
 
         if (
@@ -2414,9 +2814,7 @@ async function loadCompetitionPage() {
 
 
             // ==================================================
-            // ONLY ADMIN HIDE CHECK
-            //
-            // NO EXPIRY CHECK
+            // PUBLIC HIDE CHECK
             // ==================================================
 
             if (
@@ -2436,7 +2834,6 @@ async function loadCompetitionPage() {
                 competition
             ]);
 
-
             return;
 
         }
@@ -2445,9 +2842,12 @@ async function loadCompetitionPage() {
         // ==================================================
         // ALL PUBLIC COMPETITIONS
         //
-        // Back date SHOW
-        // End time cross SHOW
-        // Admin Hide = HIDE
+        // Back date bhi show hogi.
+        //
+        // End Time cross hone se hide nahi hogi.
+        //
+        // Admin Hide Public karega tab hide hogi.
+        //
         // ==================================================
 
         const publicCompetitions =
