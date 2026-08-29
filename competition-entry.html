@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Competition Entry | Telethon</title>
+
+
+    <!-- ==================================================
+         FONT AWESOME
+    =================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- ==================================================
+         GOOGLE FONT
+    =================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ==================================================
+         FIREBASE
+    =================================================== -->
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+
+    <style>
+
+        /* ==================================================
+           RESET
+        =================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            font-family: "Inter", Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+
+        button,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+
+        /* ==================================================
+           PAGE
+        =================================================== */
+
+        .page-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            padding: 25px;
+        }
+
+
+        .page-container {
+            width: 100%;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+
+        /* ==================================================
+           HEADER
+        =================================================== */
+
+        .page-header {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 22px 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+
+        .page-header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+        .header-icon {
+            width: 52px;
+            height: 52px;
+
+            border-radius: 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eef2ff;
+            color: #4f46e5;
+
+            font-size: 22px;
+        }
+
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+
+        .page-header p {
+            margin-top: 5px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+
+        /* ==================================================
+           CARD
+        =================================================== */
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
+        }
+
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 17px;
+            font-weight: 700;
+
+            color: #111827;
+
+            margin-bottom: 20px;
+        }
+
+
+        .card-title i {
+            color: #4f46e5;
+        }
+
+
+        /* ==================================================
+           FORM GRID
+        =================================================== */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 18px;
+        }
+
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+
+        .required {
+            color: #dc2626;
+        }
+
+
+        .form-control {
+            width: 100%;
+            height: 45px;
+
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+
+            padding: 0 13px;
+
+            outline: none;
+
+            font-size: 14px;
+            color: #111827;
+
+            background: #ffffff;
+
+            transition: 0.2s;
+        }
+
+
+        .form-control:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
+        }
+
+
+        /* ==================================================
+           COMPETITION MATCH
+        =================================================== */
+
+        .match-wrapper {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 100px minmax(0, 1fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+
+
+        .side-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 20px;
+            background: #fafbff;
+        }
+
+
+        .side-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .side-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+
+        .side-badge {
+            font-size: 11px;
+            font-weight: 700;
+
+            padding: 5px 9px;
+            border-radius: 20px;
+
+            background: #eef2ff;
+            color: #4338ca;
+        }
+
+
+        /* ==================================================
+           VS
+        =================================================== */
+
+        .vs-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .vs-circle {
+            width: 72px;
+            height: 72px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #111827;
+            color: #ffffff;
+
+            font-size: 18px;
+            font-weight: 800;
+
+            box-shadow: 0 8px 20px rgba(17, 24, 39, 0.20);
+        }
+
+
+        /* ==================================================
+           SELECTION SECTION
+        =================================================== */
+
+        .selection-section {
+            margin-bottom: 20px;
+        }
+
+
+        .selection-section:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .selection-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 9px;
+        }
+
+
+        .selection-title span {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+
+        .selection-count {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+
+        .selection-box {
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+
+            background: #ffffff;
+
+            min-height: 105px;
+            max-height: 190px;
+
+            overflow-y: auto;
+
+            padding: 8px;
+        }
+
+
+        /* ==================================================
+           CHECKBOX ITEM
+        =================================================== */
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 9px 10px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+
+        .check-item:hover {
+            background: #f3f4f6;
+        }
+
+
+        .check-item input {
+            width: 16px;
+            height: 16px;
+
+            accent-color: #4f46e5;
+
+            cursor: pointer;
+        }
+
+
+        .check-item span {
+            font-size: 13px;
+            color: #374151;
+        }
+
+
+        .empty-message {
+            padding: 18px 10px;
+            text-align: center;
+
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+
+        /* ==================================================
+           SEARCH
+        =================================================== */
+
+        .search-box {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+
+        .search-box i {
+            position: absolute;
+
+            left: 12px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #9ca3af;
+
+            font-size: 13px;
+        }
+
+
+        .search-input {
+            width: 100%;
+            height: 38px;
+
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+
+            padding: 0 10px 0 34px;
+
+            outline: none;
+
+            font-size: 12px;
+        }
+
+
+        .search-input:focus {
+            border-color: #6366f1;
+        }
+
+
+        /* ==================================================
+           SELECT ALL
+        =================================================== */
+
+        .select-all-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 8px;
+        }
+
+
+        .select-all-btn {
+            border: none;
+            background: transparent;
+
+            color: #4f46e5;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .select-all-btn:hover {
+            text-decoration: underline;
+        }
+
+
+        /* ==================================================
+           ACTIONS
+        =================================================== */
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+
+        .btn {
+            min-height: 44px;
+
+            padding: 0 20px;
+
+            border-radius: 9px;
+
+            border: none;
+
+            cursor: pointer;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            transition: 0.2s;
+        }
+
+
+        .btn-primary {
+            background: #4f46e5;
+            color: #ffffff;
+        }
+
+
+        .btn-primary:hover {
+            background: #4338ca;
+        }
+
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+
+        /* ==================================================
+           STATUS
+        =================================================== */
+
+        .message {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 12px 14px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+
+        .message.error {
+            display: block;
+
+            background: #fef2f2;
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+        }
+
+
+        .message.success {
+            display: block;
+
+            background: #f0fdf4;
+            color: #15803d;
+
+            border: 1px solid #bbf7d0;
+        }
+
+
+        /* ==================================================
+           INFO
+        =================================================== */
+
+        .info-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+
+            padding: 13px 15px;
+
+            border-radius: 10px;
+
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+
+            color: #1e40af;
+
+            font-size: 12px;
+            line-height: 1.6;
+
+            margin-top: 20px;
+        }
+
+
+        .info-box i {
+            margin-top: 2px;
+        }
+
+
+        /* ==================================================
+           MOBILE
+        =================================================== */
+
+        @media (max-width: 900px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+
+            .match-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+
+            .vs-wrapper {
+                height: 60px;
+            }
+
+
+            .vs-circle {
+                width: 55px;
+                height: 55px;
+                font-size: 15px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .page-wrapper {
+                padding: 12px;
+            }
+
+
+            .page-header {
+                padding: 17px;
+            }
+
+
+            .page-header h1 {
+                font-size: 19px;
+            }
+
+
+            .card {
+                padding: 17px;
+            }
+
+
+            .actions {
+                flex-direction: column;
+            }
+
+
+            .btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="page-wrapper">
+
+        <div class="page-container">
+
+
+            <!-- ==================================================
+                 PAGE HEADER
+            =================================================== -->
+
+            <div class="page-header">
+
+                <div class="page-header-left">
+
+                    <div class="header-icon">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+
+                    <div>
+
+                        <h1>
+                            Competition Entry
+                        </h1>
+
+                        <p>
+                            Create Region & State collection competition
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 BASIC INFORMATION
+            =================================================== -->
+
+            <div class="card">
+
+                <div class="card-title">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    Competition Information
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- Competition Name -->
+
+                    <div class="form-group full">
+
+                        <label class="form-label">
+
+                            Competition Name
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="competitionName"
+                            class="form-control"
+                            placeholder="Enter competition name"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <!-- Date -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            Competition Date
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="date"
+                            id="competitionDate"
+                            class="form-control"
+                        >
+
+                    </div>
+
+
+                    <!-- End Time -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            Competition End Time
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="time"
+                            id="competitionEndTime"
+                            class="form-control"
+                        >
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 COMPETITION SIDES
+            =================================================== -->
+
+            <div class="card">
+
+                <div class="card-title">
+
+                    <i class="fa-solid fa-scale-balanced"></i>
+
+                    Competition Sides
+
+                </div>
+
+
+                <div class="match-wrapper">
+
+
+                    <!-- ==================================================
+                         SIDE A
+                    =================================================== -->
+
+                    <div class="side-card">
+
+
+                        <div class="side-header">
+
+                            <div class="side-title">
+                                Side A
+                            </div>
+
+                            <div class="side-badge">
+                                Competitor 1
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==============================
+                             SIDE A REGION
+                        =============================== -->
+
+                        <div class="selection-section">
+
+                            <div class="selection-title">
+
+                                <span>
+                                    Region
+                                </span>
+
+                                <span
+                                    class="selection-count"
+                                    id="sideARegionCount"
+                                >
+                                    0 selected
+                                </span>
+
+                            </div>
+
+
+                            <div class="search-box">
+
+                                <i class="fa-solid fa-magnifying-glass"></i>
+
+                                <input
+                                    type="text"
+                                    id="sideARegionSearch"
+                                    class="search-input"
+                                    placeholder="Search region..."
+                                >
+
+                            </div>
+
+
+                            <div class="select-all-row">
+
+                                <span></span>
+
+                                <button
+                                    type="button"
+                                    class="select-all-btn"
+                                    onclick="toggleSelectAll('sideARegion')"
+                                >
+                                    Select All
+                                </button>
+
+                            </div>
+
+
+                            <div
+                                class="selection-box"
+                                id="sideARegionList"
+                            >
+
+                                <div class="empty-message">
+                                    Loading regions...
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==============================
+                             SIDE A STATE
+                        =============================== -->
+
+                        <div class="selection-section">
+
+                            <div class="selection-title">
+
+                                <span>
+                                    State
+                                </span>
+
+                                <span
+                                    class="selection-count"
+                                    id="sideAStateCount"
+                                >
+                                    0 selected
+                                </span>
+
+                            </div>
+
+
+                            <div class="search-box">
+
+                                <i class="fa-solid fa-magnifying-glass"></i>
+
+                                <input
+                                    type="text"
+                                    id="sideAStateSearch"
+                                    class="search-input"
+                                    placeholder="Search state..."
+                                >
+
+                            </div>
+
+
+                            <div class="select-all-row">
+
+                                <span></span>
+
+                                <button
+                                    type="button"
+                                    class="select-all-btn"
+                                    onclick="toggleSelectAll('sideAState')"
+                                >
+                                    Select All
+                                </button>
+
+                            </div>
+
+
+                            <div
+                                class="selection-box"
+                                id="sideAStateList"
+                            >
+
+                                <div class="empty-message">
+                                    Loading states...
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         VS
+                    =================================================== -->
+
+                    <div class="vs-wrapper">
+
+                        <div class="vs-circle">
+                            VS
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         SIDE B
+                    =================================================== -->
+
+                    <div class="side-card">
+
+
+                        <div class="side-header">
+
+                            <div class="side-title">
+                                Side B
+                            </div>
+
+                            <div class="side-badge">
+                                Competitor 2
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==============================
+                             SIDE B REGION
+                        =============================== -->
+
+                        <div class="selection-section">
+
+                            <div class="selection-title">
+
+                                <span>
+                                    Region
+                                </span>
+
+                                <span
+                                    class="selection-count"
+                                    id="sideBRegionCount"
+                                >
+                                    0 selected
+                                </span>
+
+                            </div>
+
+
+                            <div class="search-box">
+
+                                <i class="fa-solid fa-magnifying-glass"></i>
+
+                                <input
+                                    type="text"
+                                    id="sideBRegionSearch"
+                                    class="search-input"
+                                    placeholder="Search region..."
+                                >
+
+                            </div>
+
+
+                            <div class="select-all-row">
+
+                                <span></span>
+
+                                <button
+                                    type="button"
+                                    class="select-all-btn"
+                                    onclick="toggleSelectAll('sideBRegion')"
+                                >
+                                    Select All
+                                </button>
+
+                            </div>
+
+
+                            <div
+                                class="selection-box"
+                                id="sideBRegionList"
+                            >
+
+                                <div class="empty-message">
+                                    Loading regions...
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==============================
+                             SIDE B STATE
+                        =============================== -->
+
+                        <div class="selection-section">
+
+                            <div class="selection-title">
+
+                                <span>
+                                    State
+                                </span>
+
+                                <span
+                                    class="selection-count"
+                                    id="sideBStateCount"
+                                >
+                                    0 selected
+                                </span>
+
+                            </div>
+
+
+                            <div class="search-box">
+
+                                <i class="fa-solid fa-magnifying-glass"></i>
+
+                                <input
+                                    type="text"
+                                    id="sideBStateSearch"
+                                    class="search-input"
+                                    placeholder="Search state..."
+                                >
+
+                            </div>
+
+
+                            <div class="select-all-row">
+
+                                <span></span>
+
+                                <button
+                                    type="button"
+                                    class="select-all-btn"
+                                    onclick="toggleSelectAll('sideBState')"
+                                >
+                                    Select All
+                                </button>
+
+                            </div>
+
+
+                            <div
+                                class="selection-box"
+                                id="sideBStateList"
+                            >
+
+                                <div class="empty-message">
+                                    Loading states...
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ==================================================
+                     INFO
+                =================================================== -->
+
+                <div class="info-box">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    <div>
+
+                        A competition can contain multiple Regions and
+                        multiple States on either side. For example:
+                        <strong>Kolkata Region + Bihar State VS Gujarat State</strong>.
+
+                        The final collection result will be calculated
+                        later from the selected date's Daily Report.
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     MESSAGE
+                =================================================== -->
+
+                <div
+                    id="formMessage"
+                    class="message"
+                ></div>
+
+
+                <!-- ==================================================
+                     ACTIONS
+                =================================================== -->
+
+                <div class="actions">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="resetBtn"
+                    >
+
+                        <i class="fa-solid fa-rotate-left"></i>
+
+                        Reset
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="saveCompetitionBtn"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Save Competition
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         FIREBASE CONFIG
+         
+         IMPORTANT:
+         Apne existing Firebase config ko yahan rakhein.
+         Is code mein koi नया Firebase project/config
+         assume nahi kiya gaya hai.
+    =================================================== -->
+
+    <script>
+
+        /*
+        ======================================================
+        IMPORTANT
+
+        Yahan apne existing firebase-config.js ka config
+        use karna hai.
+
+        Example:
+
+        const firebaseConfig = {
+            apiKey: "...",
+            authDomain: "...",
+            projectId: "...",
+            storageBucket: "...",
+            messagingSenderId: "...",
+            appId: "..."
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.firestore();
+
+        ======================================================
+        */
+
+    </script>
+
+
+    <script>
+
+        /* ==================================================
+           GLOBAL DATA
+        =================================================== */
+
+        let regions = [];
+        let states = [];
+
+
+        /* ==================================================
+           NORMALIZE
+        =================================================== */
+
+        function normalize(value) {
+
+            return String(value ?? "")
+                .trim()
+                .toLowerCase();
+
+        }
+
+
+        /* ==================================================
+           ESCAPE HTML
+        =================================================== */
+
+        function escapeHTML(value) {
+
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /* ==================================================
+           GET EMPLOYEE REGION
+        =================================================== */
+
+        function getEmployeeRegion(employee) {
+
+            return (
+                employee.region ??
+                employee.Region ??
+                employee.regionName ??
+                employee.region_name ??
+                ""
+            );
+
+        }
+
+
+        /* ==================================================
+           GET EMPLOYEE STATE
+        =================================================== */
+
+        function getEmployeeState(employee) {
+
+            return (
+                employee.state ??
+                employee.State ??
+                employee.stateName ??
+                employee.state_name ??
+                ""
+            );
+
+        }
+
+
+        /* ==================================================
+           LOAD REGIONS & STATES
+        =================================================== */
+
+        async function loadRegionsAndStates() {
+
+            try {
+
+                /*
+                 * db must be initialized from the existing
+                 * Firebase config.
+                 */
+
+                if (
+                    typeof db === "undefined" ||
+                    !db
+                ) {
+
+                    console.warn(
+                        "Firebase db is not initialized."
+                    );
+
+                    showLoadingMessage(
+                        "sideARegionList",
+                        "Firebase configuration not connected yet."
+                    );
+
+                    showLoadingMessage(
+                        "sideAStateList",
+                        "Firebase configuration not connected yet."
+                    );
+
+                    showLoadingMessage(
+                        "sideBRegionList",
+                        "Firebase configuration not connected yet."
+                    );
+
+                    showLoadingMessage(
+                        "sideBStateList",
+                        "Firebase configuration not connected yet."
+                    );
+
+                    return;
+
+                }
+
+
+                const snapshot =
+                    await db
+                        .collection("employees")
+                        .get();
+
+
+                const regionMap = new Map();
+                const stateMap = new Map();
+
+
+                snapshot.forEach(doc => {
+
+                    const employee = doc.data();
+
+
+                    const region =
+                        String(
+                            getEmployeeRegion(employee)
+                        ).trim();
+
+
+                    const state =
+                        String(
+                            getEmployeeState(employee)
+                        ).trim();
+
+
+                    if (region) {
+
+                        regionMap.set(
+                            normalize(region),
+                            region
+                        );
+
+                    }
+
+
+                    if (state) {
+
+                        stateMap.set(
+                            normalize(state),
+                            state
+                        );
+
+                    }
+
+                });
+
+
+                regions =
+                    Array.from(regionMap.values())
+                        .sort(
+                            (a, b) =>
+                                a.localeCompare(b)
+                        );
+
+
+                states =
+                    Array.from(stateMap.values())
+                        .sort(
+                            (a, b) =>
+                                a.localeCompare(b)
+                        );
+
+
+                renderSelectionLists();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Error loading Regions/States:",
+                    error
+                );
+
+
+                showLoadingMessage(
+                    "sideARegionList",
+                    "Unable to load regions."
+                );
+
+                showLoadingMessage(
+                    "sideAStateList",
+                    "Unable to load states."
+                );
+
+                showLoadingMessage(
+                    "sideBRegionList",
+                    "Unable to load regions."
+                );
+
+                showLoadingMessage(
+                    "sideBStateList",
+                    "Unable to load states."
+                );
+
+            }
+
+        }
+
+
+        /* ==================================================
+           SHOW MESSAGE IN LIST
+        =================================================== */
+
+        function showLoadingMessage(
+            elementId,
+            message
+        ) {
+
+            const element =
+                document.getElementById(elementId);
+
+
+            if (!element) {
+                return;
+            }
+
+
+            element.innerHTML = `
+                <div class="empty-message">
+                    ${escapeHTML(message)}
+                </div>
+            `;
+
+        }
+
+
+        /* ==================================================
+           CREATE CHECKBOX LIST
+        =================================================== */
+
+        function createCheckboxList(
+            elementId,
+            items,
+            type
+        ) {
+
+            const container =
+                document.getElementById(elementId);
+
+
+            if (!container) {
+                return;
+            }
+
+
+            if (!items.length) {
+
+                container.innerHTML = `
+                    <div class="empty-message">
+                        No ${type} found.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            container.innerHTML =
+                items.map((item, index) => {
+
+                    const safeValue =
+                        escapeHTML(item);
+
+
+                    return `
+                        <label
+                            class="check-item"
+                            data-value="${safeValue}"
+                        >
+
+                            <input
+                                type="checkbox"
+                                name="${elementId}"
+                                value="${safeValue}"
+                                onchange="updateSelectionCount('${elementId}')"
+                            >
+
+                            <span>
+                                ${safeValue}
+                            </span>
+
+                        </label>
+                    `;
+
+                }).join("");
+
+
+            updateSelectionCount(elementId);
+
+        }
+
+
+        /* ==================================================
+           RENDER ALL LISTS
+        =================================================== */
+
+        function renderSelectionLists() {
+
+            createCheckboxList(
+                "sideARegionList",
+                regions,
+                "regions"
+            );
+
+
+            createCheckboxList(
+                "sideBRegionList",
+                regions,
+                "regions"
+            );
+
+
+            createCheckboxList(
+                "sideAStateList",
+                states,
+                "states"
+            );
+
+
+            createCheckboxList(
+                "sideBStateList",
+                states,
+                "states"
+            );
+
+        }
+
+
+        /* ==================================================
+           UPDATE COUNT
+        =================================================== */
+
+        function updateSelectionCount(
+            elementId
+        ) {
+
+            const container =
+                document.getElementById(elementId);
+
+
+            if (!container) {
+                return;
+            }
+
+
+            const checked =
+                container.querySelectorAll(
+                    'input[type="checkbox"]:checked'
+                ).length;
+
+
+            let countElementId = "";
+
+
+            if (
+                elementId ===
+                "sideARegionList"
+            ) {
+
+                countElementId =
+                    "sideARegionCount";
+
+            }
+
+            else if (
+                elementId ===
+                "sideAStateList"
+            ) {
+
+                countElementId =
+                    "sideAStateCount";
+
+            }
+
+            else if (
+                elementId ===
+                "sideBRegionList"
+            ) {
+
+                countElementId =
+                    "sideBRegionCount";
+
+            }
+
+            else if (
+                elementId ===
+                "sideBStateList"
+            ) {
+
+                countElementId =
+                    "sideBStateCount";
+
+            }
+
+
+            const countElement =
+                document.getElementById(
+                    countElementId
+                );
+
+
+            if (countElement) {
+
+                countElement.textContent =
+                    `${checked} selected`;
+
+            }
+
+        }
+
+
+        /* ==================================================
+           SELECT ALL / UNSELECT ALL
+        =================================================== */
+
+        function toggleSelectAll(
+            type
+        ) {
+
+            let elementId = "";
+
+
+            if (type === "sideARegion") {
+
+                elementId =
+                    "sideARegionList";
+
+            }
+
+            else if (type === "sideAState") {
+
+                elementId =
+                    "sideAStateList";
+
+            }
+
+            else if (type === "sideBRegion") {
+
+                elementId =
+                    "sideBRegionList";
+
+            }
+
+            else if (type === "sideBState") {
+
+                elementId =
+                    "sideBStateList";
+
+            }
+
+
+            const container =
+                document.getElementById(elementId);
+
+
+            if (!container) {
+                return;
+            }
+
+
+            const checkboxes =
+                container.querySelectorAll(
+                    'input[type="checkbox"]'
+                );
+
+
+            if (!checkboxes.length) {
+                return;
+            }
+
+
+            const allChecked =
+                Array.from(checkboxes)
+                    .every(
+                        checkbox =>
+                            checkbox.checked
+                    );
+
+
+            checkboxes.forEach(
+                checkbox => {
+                    checkbox.checked =
+                        !allChecked;
+                }
+            );
+
+
+            updateSelectionCount(
+                elementId
+            );
+
+        }
+
+
+        /* ==================================================
+           SEARCH FILTER
+        =================================================== */
+
+        function setupSearch(
+            inputId,
+            listId
+        ) {
+
+            const input =
+                document.getElementById(inputId);
+
+
+            const list =
+                document.getElementById(listId);
+
+
+            if (!input || !list) {
+                return;
+            }
+
+
+            input.addEventListener(
+                "input",
+                function () {
+
+                    const search =
+                        normalize(
+                            input.value
+                        );
+
+
+                    const items =
+                        list.querySelectorAll(
+                            ".check-item"
+                        );
+
+
+                    items.forEach(item => {
+
+                        const value =
+                            normalize(
+                                item.dataset.value
+                            );
+
+
+                        item.style.display =
+                            value.includes(search)
+                                ? "flex"
+                                : "none";
+
+                    });
+
+                }
+            );
+
+        }
+
+
+        /* ==================================================
+           GET SELECTED VALUES
+        =================================================== */
+
+        function getSelectedValues(
+            listId
+        ) {
+
+            const container =
+                document.getElementById(
+                    listId
+                );
+
+
+            if (!container) {
+                return [];
+            }
+
+
+            return Array.from(
+                container.querySelectorAll(
+                    'input[type="checkbox"]:checked'
+                )
+            ).map(
+                checkbox =>
+                    checkbox.value
+            );
+
+        }
+
+
+        /* ==================================================
+           FORM MESSAGE
+        =================================================== */
+
+        function showFormMessage(
+            message,
+            type
+        ) {
+
+            const element =
+                document.getElementById(
+                    "formMessage"
+                );
+
+
+            if (!element) {
+                return;
+            }
+
+
+            element.textContent =
+                message;
+
+
+            element.className =
+                `message ${type}`;
+
+        }
+
+
+        /* ==================================================
+           VALIDATE FORM
+        =================================================== */
+
+        function validateCompetition() {
+
+            const name =
+                document
+                    .getElementById(
+                        "competitionName"
+                    )
+                    .value
+                    .trim();
+
+
+            const date =
+                document
+                    .getElementById(
+                        "competitionDate"
+                    )
+                    .value;
+
+
+            const endTime =
+                document
+                    .getElementById(
+                        "competitionEndTime"
+                    )
+                    .value;
+
+
+            const sideARegions =
+                getSelectedValues(
+                    "sideARegionList"
+                );
+
+
+            const sideAStates =
+                getSelectedValues(
+                    "sideAStateList"
+                );
+
+
+            const sideBRegions =
+                getSelectedValues(
+                    "sideBRegionList"
+                );
+
+
+            const sideBStates =
+                getSelectedValues(
+                    "sideBStateList"
+                );
+
+
+            if (!name) {
+
+                showFormMessage(
+                    "Please enter Competition Name.",
+                    "error"
+                );
+
+                return false;
+
+            }
+
+
+            if (!date) {
+
+                showFormMessage(
+                    "Please select Competition Date.",
+                    "error"
+                );
+
+                return false;
+
+            }
+
+
+            if (!endTime) {
+
+                showFormMessage(
+                    "Please select Competition End Time.",
+                    "error"
+                );
+
+                return false;
+
+            }
+
+
+            if (
+                sideARegions.length === 0 &&
+                sideAStates.length === 0
+            ) {
+
+                showFormMessage(
+                    "Please select at least one Region or State for Side A.",
+                    "error"
+                );
+
+                return false;
+
+            }
+
+
+            if (
+                sideBRegions.length === 0 &&
+                sideBStates.length === 0
+            ) {
+
+                showFormMessage(
+                    "Please select at least one Region or State for Side B.",
+                    "error"
+                );
+
+                return false;
+
+            }
+
+
+            return true;
+
+        }
+
+
+        /* ==================================================
+           COLLECT FORM DATA
+        =================================================== */
+
+        function getCompetitionFormData() {
+
+            return {
+
+                name:
+                    document
+                        .getElementById(
+                            "competitionName"
+                        )
+                        .value
+                        .trim(),
+
+                date:
+                    document
+                        .getElementById(
+                            "competitionDate"
+                        )
+                        .value,
+
+                endTime:
+                    document
+                        .getElementById(
+                            "competitionEndTime"
+                        )
+                        .value,
+
+                sideA: {
+
+                    regions:
+                        getSelectedValues(
+                            "sideARegionList"
+                        ),
+
+                    states:
+                        getSelectedValues(
+                            "sideAStateList"
+                        )
+
+                },
+
+                sideB: {
+
+                    regions:
+                        getSelectedValues(
+                            "sideBRegionList"
+                        ),
+
+                    states:
+                        getSelectedValues(
+                            "sideBStateList"
+                        )
+
+                }
+
+            };
+
+        }
+
+
+        /* ==================================================
+           RESET FORM
+        =================================================== */
+
+        function resetCompetitionForm() {
+
+            document
+                .getElementById(
+                    "competitionName"
+                )
+                .value = "";
+
+
+            document
+                .getElementById(
+                    "competitionDate"
+                )
+                .value = "";
+
+
+            document
+                .getElementById(
+                    "competitionEndTime"
+                )
+                .value = "";
+
+
+            document
+                .querySelectorAll(
+                    '.selection-box input[type="checkbox"]'
+                )
+                .forEach(
+                    checkbox => {
+                        checkbox.checked = false;
+                    }
+                );
+
+
+            [
+                "sideARegionList",
+                "sideAStateList",
+                "sideBRegionList",
+                "sideBStateList"
+            ].forEach(
+                id => updateSelectionCount(id)
+            );
+
+
+            showFormMessage(
+                "",
+                ""
+            );
+
+
+            const message =
+                document.getElementById(
+                    "formMessage"
+                );
+
+
+            if (message) {
+
+                message.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        /* ==================================================
+           SAVE BUTTON
+           
+           TEMPORARY:
+           Actual Firebase save logic will be added after
+           the page structure is confirmed.
+        =================================================== */
+
+        function handleSaveCompetition() {
+
+            if (
+                !validateCompetition()
+            ) {
+                return;
+            }
+
+
+            const data =
+                getCompetitionFormData();
+
+
+            console.log(
+                "Competition Data:",
+                data
+            );
+
+
+            showFormMessage(
+                "Competition data is ready. Firebase Save will be connected in the next step.",
+                "success"
+            );
+
+        }
+
+
+        /* ==================================================
+           INITIALIZE
+        =================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+
+                /* ==============================
+                   SEARCH
+                =============================== */
+
+                setupSearch(
+                    "sideARegionSearch",
+                    "sideARegionList"
+                );
+
+
+                setupSearch(
+                    "sideAStateSearch",
+                    "sideAStateList"
+                );
+
+
+                setupSearch(
+                    "sideBRegionSearch",
+                    "sideBRegionList"
+                );
+
+
+                setupSearch(
+                    "sideBStateSearch",
+                    "sideBStateList"
+                );
+
+
+                /* ==============================
+                   RESET
+                =============================== */
+
+                document
+                    .getElementById(
+                        "resetBtn"
+                    )
+                    .addEventListener(
+                        "click",
+                        resetCompetitionForm
+                    );
+
+
+                /* ==============================
+                   SAVE
+                =============================== */
+
+                document
+                    .getElementById(
+                        "saveCompetitionBtn"
+                    )
+                    .addEventListener(
+                        "click",
+                        handleSaveCompetition
+                    );
+
+
+                /* ==============================
+                   LOAD FIREBASE DATA
+                =============================== */
+
+                loadRegionsAndStates();
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
