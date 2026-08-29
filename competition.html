@@ -11,7 +11,7 @@
     >
 
     <title>
-        Telethon - Competition
+        Telethon - Academic Department Competition
     </title>
 
 
@@ -22,6 +22,16 @@
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- ==================================================
+         GOOGLE FONT
+    ================================================== -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
     >
 
 
@@ -49,6 +59,7 @@
         body {
 
             font-family:
+                "Inter",
                 Arial,
                 Helvetica,
                 sans-serif;
@@ -57,7 +68,7 @@
                 #f4f6f9;
 
             color:
-                #1f2937;
+                #111827;
 
             min-height:
                 100vh;
@@ -70,6 +81,9 @@
 
         .competition-header {
 
+            width:
+                100%;
+
             background:
                 #ffffff;
 
@@ -77,23 +91,14 @@
                 1px solid #e5e7eb;
 
             padding:
-                18px 25px;
-
-            position:
-                sticky;
-
-            top:
-                0;
-
-            z-index:
-                100;
+                17px 25px;
         }
 
 
         .header-inner {
 
             max-width:
-                1250px;
+                1200px;
 
             margin:
                 0 auto;
@@ -106,9 +111,6 @@
 
             justify-content:
                 space-between;
-
-            gap:
-                15px;
         }
 
 
@@ -125,26 +127,17 @@
                 center;
 
             gap:
-                12px;
+                11px;
         }
 
 
         .brand-icon {
 
             width:
-                45px;
+                43px;
 
             height:
-                45px;
-
-            border-radius:
-                11px;
-
-            background:
-                #eef2ff;
-
-            color:
-                #4f46e5;
+                43px;
 
             display:
                 flex;
@@ -155,28 +148,40 @@
             justify-content:
                 center;
 
+            border-radius:
+                11px;
+
+            background:
+                #eef2ff;
+
+            color:
+                #4f46e5;
+
             font-size:
-                21px;
+                19px;
         }
 
 
-        .brand h1 {
+        .brand-name {
 
             font-size:
-                22px;
+                21px;
+
+            font-weight:
+                800;
 
             color:
                 #111827;
-
-            margin-bottom:
-                3px;
         }
 
 
-        .brand p {
+        .brand-subtitle {
+
+            margin-top:
+                3px;
 
             font-size:
-                13px;
+                12px;
 
             color:
                 #6b7280;
@@ -196,10 +201,10 @@
                 center;
 
             gap:
-                7px;
+                6px;
 
             padding:
-                9px 13px;
+                8px 12px;
 
             border-radius:
                 20px;
@@ -207,17 +212,17 @@
             background:
                 #ecfdf5;
 
-            color:
-                #047857;
-
             border:
                 1px solid #a7f3d0;
 
+            color:
+                #047857;
+
             font-size:
-                13px;
+                12px;
 
             font-weight:
-                600;
+                700;
         }
 
 
@@ -231,13 +236,13 @@
                 100%;
 
             max-width:
-                1250px;
+                1000px;
 
             margin:
                 0 auto;
 
             padding:
-                35px 20px 50px;
+                40px 20px 60px;
         }
 
 
@@ -255,7 +260,7 @@
         }
 
 
-        .page-title h2 {
+        .page-title h1 {
 
             font-size:
                 30px;
@@ -284,10 +289,10 @@
                 1px solid #e5e7eb;
 
             border-radius:
-                16px;
+                18px;
 
             padding:
-                50px 20px;
+                55px 20px;
 
             text-align:
                 center;
@@ -298,6 +303,9 @@
 
 
         .loading-box i {
+
+            display:
+                block;
 
             font-size:
                 30px;
@@ -313,13 +321,11 @@
         @keyframes spin {
 
             from {
-
                 transform:
                     rotate(0deg);
             }
 
             to {
-
                 transform:
                     rotate(360deg);
             }
@@ -343,10 +349,10 @@
                 1px solid #e5e7eb;
 
             border-radius:
-                16px;
+                18px;
 
             padding:
-                55px 20px;
+                60px 20px;
 
             text-align:
                 center;
@@ -359,7 +365,7 @@
                 block;
 
             font-size:
-                42px;
+                45px;
 
             color:
                 #9ca3af;
@@ -408,10 +414,10 @@
                 1px solid #fecaca;
 
             border-radius:
-                16px;
+                18px;
 
             padding:
-                35px 20px;
+                40px 20px;
 
             text-align:
                 center;
@@ -423,6 +429,9 @@
 
         .error-box i {
 
+            display:
+                block;
+
             font-size:
                 35px;
 
@@ -432,6 +441,9 @@
 
 
         .error-box h3 {
+
+            font-size:
+                18px;
 
             margin-bottom:
                 7px;
@@ -478,13 +490,13 @@
                 1px solid #e5e7eb;
 
             border-radius:
-                18px;
+                20px;
 
             padding:
-                42px 45px;
+                45px 50px;
 
             box-shadow:
-                0 8px 25px
+                0 10px 30px
                 rgba(
                     0,
                     0,
@@ -504,19 +516,19 @@
         .competition-name {
 
             font-size:
-                30px;
-
-            line-height:
-                1.35;
+                32px;
 
             font-weight:
                 800;
+
+            line-height:
+                1.3;
 
             color:
                 #111827;
 
             margin-bottom:
-                14px;
+                18px;
 
             word-break:
                 break-word;
@@ -524,13 +536,16 @@
 
 
         /* ==================================================
-           COMPETITION END
+           END TIME AREA
         ================================================== */
 
         .competition-end {
 
             display:
                 flex;
+
+            flex-direction:
+                column;
 
             align-items:
                 center;
@@ -539,30 +554,39 @@
                 center;
 
             gap:
-                6px;
-
-            font-size:
-                16px;
-
-            color:
-                #6b7280;
+                5px;
 
             margin-bottom:
-                40px;
+                42px;
         }
 
 
         .competition-end-label {
 
+            font-size:
+                13px;
+
             font-weight:
-                500;
+                600;
+
+            color:
+                #6b7280;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                0.5px;
         }
 
 
         .competition-end-time {
 
+            font-size:
+                23px;
+
             font-weight:
-                700;
+                800;
 
             color:
                 #111827;
@@ -570,7 +594,7 @@
 
 
         /* ==================================================
-           VS SECTION
+           MATCH
         ================================================== */
 
         .competition-match {
@@ -583,7 +607,7 @@
                     0,
                     1fr
                 )
-                80px
+                75px
                 minmax(
                     0,
                     1fr
@@ -598,13 +622,16 @@
 
 
         /* ==================================================
-           COMPETITION SIDE
+           TEAM / REGION
         ================================================== */
 
         .competition-side {
 
             min-height:
                 105px;
+
+            padding:
+                22px 25px;
 
             display:
                 flex;
@@ -615,23 +642,20 @@
             justify-content:
                 center;
 
-            padding:
-                20px 25px;
-
-            background:
-                #f9fafb;
-
             border:
                 1px solid #e5e7eb;
 
             border-radius:
-                14px;
+                15px;
+
+            background:
+                #f9fafb;
 
             color:
                 #111827;
 
             font-size:
-                21px;
+                20px;
 
             font-weight:
                 700;
@@ -672,15 +696,6 @@
             height:
                 62px;
 
-            border-radius:
-                50%;
-
-            background:
-                #111827;
-
-            color:
-                #ffffff;
-
             display:
                 flex;
 
@@ -690,6 +705,15 @@
             justify-content:
                 center;
 
+            border-radius:
+                50%;
+
+            background:
+                #111827;
+
+            color:
+                #ffffff;
+
             font-size:
                 17px;
 
@@ -697,24 +721,24 @@
                 800;
 
             box-shadow:
-                0 5px 15px
+                0 6px 16px
                 rgba(
                     0,
                     0,
                     0,
-                    0.15
+                    0.16
                 );
         }
 
 
         /* ==================================================
-           MULTIPLE COMPETITIONS
+           MULTIPLE CARD
         ================================================== */
 
-        .competition-number {
+        .competition-card + .competition-card {
 
-            display:
-                none;
+            margin-top:
+                0;
         }
 
 
@@ -729,28 +753,21 @@
             .main-container {
 
                 padding:
-                    28px 15px 40px;
-            }
-
-
-            .page-title h2 {
-
-                font-size:
-                    26px;
+                    35px 15px 50px;
             }
 
 
             .competition-card {
 
                 padding:
-                    32px 25px;
+                    35px 25px;
             }
 
 
             .competition-name {
 
                 font-size:
-                    26px;
+                    27px;
             }
 
 
@@ -764,10 +781,20 @@
             }
 
 
+            .competition-side {
+
+                min-height:
+                    85px;
+
+                font-size:
+                    19px;
+            }
+
+
             .vs-area {
 
                 padding:
-                    2px 0;
+                    3px 0;
             }
 
 
@@ -781,19 +808,6 @@
 
                 font-size:
                     15px;
-            }
-
-
-            .competition-side {
-
-                min-height:
-                    85px;
-
-                font-size:
-                    19px;
-
-                padding:
-                    18px;
             }
 
         }
@@ -814,37 +828,30 @@
             }
 
 
-            .brand {
-
-                gap:
-                    9px;
-            }
-
-
             .brand-icon {
 
                 width:
-                    40px;
+                    39px;
 
                 height:
-                    40px;
+                    39px;
+
+                font-size:
+                    17px;
+            }
+
+
+            .brand-name {
 
                 font-size:
                     18px;
             }
 
 
-            .brand h1 {
+            .brand-subtitle {
 
                 font-size:
-                    18px;
-            }
-
-
-            .brand p {
-
-                font-size:
-                    11px;
+                    10px;
             }
 
 
@@ -854,14 +861,14 @@
                     7px 9px;
 
                 font-size:
-                    11px;
+                    10px;
             }
 
 
             .main-container {
 
                 padding:
-                    25px 12px 35px;
+                    28px 12px 40px;
             }
 
 
@@ -872,7 +879,7 @@
             }
 
 
-            .page-title h2 {
+            .page-title h1 {
 
                 font-size:
                     23px;
@@ -882,10 +889,10 @@
             .competition-card {
 
                 padding:
-                    28px 16px;
+                    30px 16px;
 
                 border-radius:
-                    15px;
+                    16px;
             }
 
 
@@ -895,17 +902,28 @@
                     23px;
 
                 margin-bottom:
-                    12px;
+                    15px;
             }
 
 
             .competition-end {
 
-                font-size:
-                    14px;
-
                 margin-bottom:
-                    28px;
+                    30px;
+            }
+
+
+            .competition-end-label {
+
+                font-size:
+                    11px;
+            }
+
+
+            .competition-end-time {
+
+                font-size:
+                    21px;
             }
 
 
@@ -914,11 +932,14 @@
                 min-height:
                     78px;
 
+                padding:
+                    15px;
+
                 font-size:
                     17px;
 
-                padding:
-                    15px;
+                border-radius:
+                    12px;
             }
 
 
@@ -945,6 +966,13 @@
             max-width: 380px
         ) {
 
+            .page-title h1 {
+
+                font-size:
+                    21px;
+            }
+
+
             .competition-name {
 
                 font-size:
@@ -952,13 +980,10 @@
             }
 
 
-            .competition-end {
+            .competition-end-time {
 
-                flex-direction:
-                    column;
-
-                gap:
-                    3px;
+                font-size:
+                    19px;
             }
 
 
@@ -1000,20 +1025,20 @@
 
                 <div>
 
-                    <h1>
+                    <div class="brand-name">
                         Telethon
-                    </h1>
+                    </div>
 
-                    <p>
-                        Competition
-                    </p>
+                    <div class="brand-subtitle">
+                        Academic Department Competition
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- PUBLIC -->
+            <!-- PUBLIC BADGE -->
 
             <div class="public-badge">
 
@@ -1043,9 +1068,9 @@
 
         <div class="page-title">
 
-            <h2>
+            <h1>
                 Academic Department Competition
-            </h2>
+            </h1>
 
         </div>
 
@@ -1130,7 +1155,7 @@
 
 
     <!-- ==================================================
-         COMPETITION JAVASCRIPT
+         JAVASCRIPT
     ================================================== -->
 
     <script
