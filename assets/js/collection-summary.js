@@ -1,95 +1,123 @@
-// ==========================================
-// TELETHON - COLLECTION SUMMARY
+// ======================================================
+// TELETHON
+// COLLECTION SUMMARY
 //
-// DATA SOURCES:
-//
-// OLD ENTRIES:
+// DATA SOURCE:
+// employees
 // daily_entry
 //
-// NEW ENTRIES:
-// teacher_entries
-//
 // IMPORTANT:
+// Collection Summary uses the SAME collection logic
+// as Daily Report.
 //
-// 1. Both collections are READ ONLY.
-// 2. Both collections are merged.
-// 3. Same Teacher + Same Date = SUM.
-// 4. Collection Summary = All-Time Collection.
-// 5. Filters only change visible Teachers.
-// ==========================================
+// SAME EMPLOYEE + SAME DATE
+// ONLY THE LATEST ENTRY WILL COUNT
+// ======================================================
 
 
 import { db } from "./firebase-config.js";
 
+
 import {
+
     collection,
     getDocs
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-// ==========================================
+
+
+// ======================================================
+// COLLECTION NAMES
+// ======================================================
+
+const EMPLOYEES_COLLECTION =
+    "employees";
+
+
+const DAILY_ENTRY_COLLECTION =
+    "daily_entry";
+
+
+
+
+// ======================================================
 // HTML ELEMENTS
-// ==========================================
+// ======================================================
 
 const regionFilter =
     document.getElementById(
         "regionFilter"
     );
 
+
 const stateFilter =
     document.getElementById(
         "stateFilter"
     );
+
 
 const cityFilter =
     document.getElementById(
         "cityFilter"
     );
 
+
 const employeeFilter =
     document.getElementById(
         "employeeFilter"
     );
+
 
 const applyFilter =
     document.getElementById(
         "applyFilter"
     );
 
+
 const resetFilter =
     document.getElementById(
         "resetFilter"
     );
+
 
 const selectedTitle =
     document.getElementById(
         "selectedTitle"
     );
 
+
 const totalTargetEl =
     document.getElementById(
         "totalTarget"
     );
+
 
 const totalCollectionEl =
     document.getElementById(
         "totalCollection"
     );
 
+
 const remainingTargetEl =
     document.getElementById(
         "remainingTarget"
     );
+
 
 const percentageEl =
     document.getElementById(
         "percentage"
     );
 
+
 const tableBody =
     document.getElementById(
         "summaryTableBody"
     );
+
 
 const tableFoot =
     document.getElementById(
@@ -97,51 +125,73 @@ const tableFoot =
     );
 
 
-// ==========================================
+
+
+// ======================================================
 // DATA
-// ==========================================
+// ======================================================
 
 let employees = [];
 
+
 let dailyEntries = [];
 
-let teacherEntries = [];
-
-let allEntries = [];
 
 
-// ==========================================
+
+// ======================================================
 // NORMALIZE
-// ==========================================
+// ======================================================
 
 function normalize(value) {
 
     return String(
         value ?? ""
     )
-        .trim()
-        .toLowerCase();
+    .trim()
+    .toLowerCase();
 
 }
 
 
-// ==========================================
+
+
+// ======================================================
 // NUMBER VALUE
-// ==========================================
+// ======================================================
 
 function numberValue(value) {
 
-    const cleaned =
-        String(
-            value ?? ""
-        )
-            .replace(/₹/g, "")
-            .replace(/,/g, "")
-            .trim();
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return 0;
+
+    }
+
+
+    if (
+        typeof value === "number"
+    ) {
+
+        return Number.isFinite(value)
+            ? value
+            : 0;
+
+    }
+
+
+    let cleanedValue =
+        String(value)
+        .replace(/[₹,\s]/g, "")
+        .trim();
 
 
     const number =
-        Number(cleaned);
+        Number(cleanedValue);
 
 
     return Number.isFinite(number)
@@ -151,44 +201,13 @@ function numberValue(value) {
 }
 
 
-// ==========================================
-// ESCAPE HTML
-// ==========================================
-
-function escapeHtml(value) {
-
-    return String(
-        value ?? ""
-    )
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
 
 
-// ==========================================
-// FORMAT MONEY
-// ==========================================
-
-function formatMoney(amount) {
-
-    return (
-        "₹ " +
-        numberValue(amount)
-            .toLocaleString(
-                "en-IN"
-            )
-    );
-
-}
-
-
-// ==========================================
+// ======================================================
 // GET EMPLOYEE CODE
-// ==========================================
+//
+// Supports different Firebase field names
+// ======================================================
 
 function getEmployeeCode(employee) {
 
@@ -214,14 +233,21 @@ function getEmployeeCode(employee) {
 
         ""
 
-    ).trim();
+    )
+    .trim();
 
 }
 
 
-// ==========================================
+
+
+// ======================================================
 // GET ENTRY EMPLOYEE CODE
-// ==========================================
+//
+// IMPORTANT:
+// Daily Report and Collection Summary use
+// the same Employee Code matching logic.
+// ======================================================
 
 function getEntryEmployeeCode(entry) {
 
@@ -243,42 +269,157 @@ function getEntryEmployeeCode(entry) {
 
         entry.user_code ||
 
-        entry.emp_id ||
-
-        entry.employee ||
-
-        entry.teacherCode ||
-
-        entry.teacher_code ||
+        entry.emp_code ||
 
         ""
 
-    ).trim();
+    )
+    .trim();
 
 }
 
 
-// ==========================================
-// GET ENTRY AMOUNT
-// ==========================================
 
-function getEntryAmount(entry) {
+
+// ======================================================
+// GET TEACHER NAME
+// ======================================================
+
+function getTeacherName(employee) {
+
+    return String(
+
+        employee.teacherName ||
+
+        employee.teacher_name ||
+
+        employee.name ||
+
+        employee.employeeName ||
+
+        employee.fullName ||
+
+        "-"
+
+    )
+    .trim();
+
+}
+
+
+
+
+// ======================================================
+// GET REGION
+// ======================================================
+
+function getEmployeeRegion(employee) {
+
+    return String(
+
+        employee.region ||
+
+        employee.Region ||
+
+        "-"
+
+    )
+    .trim();
+
+}
+
+
+
+
+// ======================================================
+// GET STATE
+// ======================================================
+
+function getEmployeeState(employee) {
+
+    return String(
+
+        employee.state ||
+
+        employee.State ||
+
+        "-"
+
+    )
+    .trim();
+
+}
+
+
+
+
+// ======================================================
+// GET CITY
+// ======================================================
+
+function getEmployeeCity(employee) {
+
+    return String(
+
+        employee.city ||
+
+        employee.City ||
+
+        "-"
+
+    )
+    .trim();
+
+}
+
+
+
+
+// ======================================================
+// GET JAMIATUL MADINA
+// ======================================================
+
+function getEmployeeJamiatulMadina(
+    employee
+) {
+
+    return String(
+
+        employee.jamiatulMadina ||
+
+        employee.jamiatul_madina ||
+
+        employee.jamiatuMadina ||
+
+        employee.jamiatulMadinah ||
+
+        employee.jamiatul ||
+
+        "-"
+
+    )
+    .trim();
+
+}
+
+
+
+
+// ======================================================
+// GET EMPLOYEE TARGET
+// ======================================================
+
+function getEmployeeTarget(employee) {
 
     return numberValue(
 
-        entry.amount ||
+        employee.targetAmount ??
 
-        entry.collection ||
+        employee.target ??
 
-        entry.collectionAmount ||
+        employee.target_amount ??
 
-        entry.totalCollection ||
-
-        entry.total_collection ||
-
-        entry.collectedAmount ||
-
-        entry.collected_amount ||
+        employee.Target ??
 
         0
 
@@ -287,255 +428,134 @@ function getEntryAmount(entry) {
 }
 
 
-// ==========================================
+
+
+// ======================================================
+// GET ENTRY AMOUNT
+//
+// Supports Daily Report style field names
+// ======================================================
+
+function getEntryAmount(entry) {
+
+    return numberValue(
+
+        entry.amount ??
+
+        entry.collection ??
+
+        entry.collectionAmount ??
+
+        entry.totalCollection ??
+
+        entry.total_collection ??
+
+        entry.collection_amount ??
+
+        0
+
+    );
+
+}
+
+
+
+
+// ======================================================
 // GET ENTRY DATE
-// ==========================================
+// ======================================================
 
 function getEntryDate(entry) {
 
-    return (
+    return String(
 
         entry.date ||
 
         entry.entryDate ||
 
+        entry.entry_date ||
+
         entry.collectionDate ||
 
         entry.collection_date ||
 
-        entry.createdDate ||
-
-        entry.created_date ||
-
         ""
 
-    );
+    )
+    .trim();
 
 }
 
 
-// ==========================================
-// FORMAT DATE FOR INPUT
-// ==========================================
-
-function formatDateForInput(date) {
-
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
 
 
-    return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day
-    );
+// ======================================================
+// GET CREATED TIME
+//
+// Used to identify latest entry.
+// ======================================================
 
-}
+function getCreatedTime(entry) {
 
+    if (!entry.createdAt) {
 
-// ==========================================
-// NORMALIZE DATE
-// ==========================================
-
-function normalizeDate(value) {
-
-    if (!value) {
-
-        return "";
+        return 0;
 
     }
 
-
-    // Firestore Timestamp
 
     if (
 
-        typeof value === "object" &&
-
-        typeof value.toDate === "function"
+        typeof entry.createdAt.toMillis ===
+        "function"
 
     ) {
 
-        return formatDateForInput(
-            value.toDate()
-        );
+        return entry.createdAt.toMillis();
 
     }
 
-
-    // Firestore Timestamp Object
 
     if (
 
-        typeof value === "object" &&
-
-        value.seconds !== undefined
+        entry.createdAt.seconds !==
+        undefined
 
     ) {
-
-        return formatDateForInput(
-
-            new Date(
-                Number(
-                    value.seconds
-                ) * 1000
-            )
-
-        );
-
-    }
-
-
-    const stringValue =
-        String(value)
-            .trim();
-
-
-    // YYYY-MM-DD
-
-    if (
-        /^\d{4}-\d{2}-\d{2}$/
-            .test(stringValue)
-    ) {
-
-        return stringValue;
-
-    }
-
-
-    // DD-MM-YYYY
-
-    let match =
-        stringValue.match(
-            /^(\d{2})-(\d{2})-(\d{4})$/
-        );
-
-
-    if (match) {
 
         return (
-            match[3] +
-            "-" +
-            match[2] +
-            "-" +
-            match[1]
+
+            Number(
+                entry.createdAt.seconds
+            ) * 1000
+
         );
 
     }
 
 
-    // DD/MM/YYYY
-
-    match =
-        stringValue.match(
-            /^(\d{2})\/(\d{2})\/(\d{4})$/
-        );
-
-
-    if (match) {
-
-        return (
-            match[3] +
-            "-" +
-            match[2] +
-            "-" +
-            match[1]
-        );
-
-    }
-
-
-    // Fallback
-
-    const parsed =
+    const date =
         new Date(
-            stringValue
+            entry.createdAt
         );
 
 
-    if (
-        !Number.isNaN(
-            parsed.getTime()
-        )
-    ) {
-
-        return formatDateForInput(
-            parsed
-        );
-
-    }
+    const time =
+        date.getTime();
 
 
-    return "";
+    return Number.isFinite(time)
+        ? time
+        : 0;
 
 }
 
 
-// ==========================================
-// LOAD ONE COLLECTION
-// ==========================================
-
-async function loadCollectionData(
-    collectionName
-) {
-
-    const snapshot =
-        await getDocs(
-            collection(
-                db,
-                collectionName
-            )
-        );
 
 
-    const result = [];
-
-
-    snapshot.forEach(
-        (docSnap) => {
-
-            result.push({
-
-                id:
-                    docSnap.id,
-
-                ...docSnap.data(),
-
-                _source:
-                    collectionName
-
-            });
-
-        }
-    );
-
-
-    return result;
-
-}
-
-
-// ==========================================
+// ======================================================
 // LOAD ALL DATA
-// ==========================================
+// ======================================================
 
 async function loadData() {
 
@@ -563,16 +583,18 @@ async function loadData() {
         }
 
 
-        // ==================================
+        // ==============================================
         // LOAD EMPLOYEES
-        // ==================================
+        // ==============================================
 
         const employeeSnapshot =
             await getDocs(
+
                 collection(
                     db,
-                    "employees"
+                    EMPLOYEES_COLLECTION
                 )
+
             );
 
 
@@ -591,84 +613,51 @@ async function loadData() {
                     id:
                         docSnap.id,
 
+
                     employeeCode:
                         getEmployeeCode({
+
                             ...data,
+
                             id:
                                 docSnap.id
+
                         }),
 
+
                     teacherName:
+                        getTeacherName(
+                            data
+                        ),
 
-                        data.teacherName ||
-
-                        data.teacher_name ||
-
-                        data.name ||
-
-                        data.fullName ||
-
-                        "-",
 
                     region:
+                        getEmployeeRegion(
+                            data
+                        ),
 
-                        data.region ||
-
-                        data.regionName ||
-
-                        data.region_name ||
-
-                        "-",
 
                     state:
+                        getEmployeeState(
+                            data
+                        ),
 
-                        data.state ||
-
-                        data.stateName ||
-
-                        data.state_name ||
-
-                        "-",
 
                     city:
+                        getEmployeeCity(
+                            data
+                        ),
 
-                        data.city ||
-
-                        data.cityName ||
-
-                        data.city_name ||
-
-                        "-",
 
                     jamiatulMadina:
+                        getEmployeeJamiatulMadina(
+                            data
+                        ),
 
-                        data.jamiatulMadina ||
-
-                        data.jamiatul_madina ||
-
-                        data.jamiatuMadina ||
-
-                        data.jamiatulMadinah ||
-
-                        data.jamiatul ||
-
-                        data.madina ||
-
-                        "-",
 
                     target:
-                        numberValue(
-
-                            data.targetAmount ??
-
-                            data.target ??
-
-                            data.target_amount ??
-
-                            data.Target ??
-
-                            0
-
+                        getEmployeeTarget(
+                            data
                         )
 
                 });
@@ -677,88 +666,135 @@ async function loadData() {
         );
 
 
-        // ==================================
-        // LOAD OLD ENTRIES
+        // ==============================================
+        // LOAD DAILY ENTRIES
         //
-        // daily_entry
-        // ==================================
+        // SAME SOURCE AS DAILY REPORT
+        // ==============================================
 
-        dailyEntries =
-            await loadCollectionData(
-                "daily_entry"
+        const entrySnapshot =
+            await getDocs(
+
+                collection(
+                    db,
+                    DAILY_ENTRY_COLLECTION
+                )
+
             );
 
 
-        // ==================================
-        // LOAD NEW ENTRIES
-        //
-        // teacher_entries
-        // ==================================
-
-        teacherEntries =
-            await loadCollectionData(
-                "teacher_entries"
-            );
+        dailyEntries = [];
 
 
-        // ==================================
-        // MERGE BOTH COLLECTIONS
-        // ==================================
+        entrySnapshot.forEach(
+            (docSnap) => {
 
-        allEntries = [
+                const data =
+                    docSnap.data();
 
-            ...dailyEntries,
 
-            ...teacherEntries
+                dailyEntries.push({
 
-        ];
+                    id:
+                        docSnap.id,
+
+
+                    employeeCode:
+                        getEntryEmployeeCode(
+                            data
+                        ),
+
+
+                    date:
+                        getEntryDate(
+                            data
+                        ),
+
+
+                    amount:
+                        getEntryAmount(
+                            data
+                        ),
+
+
+                    createdAt:
+                        data.createdAt ||
+
+                        data.updatedAt ||
+
+                        data.timestamp ||
+
+                        null,
+
+
+                    rawData:
+                        data
+
+                });
+
+            }
+        );
 
 
         console.log(
             "Employees:",
-            employees.length
+            employees
         );
 
 
         console.log(
-            "daily_entry:",
-            dailyEntries.length
+            "All Daily Entries:",
+            dailyEntries
         );
+
+
+        // ==============================================
+        // IMPORTANT
+        //
+        // SAME EMPLOYEE + SAME DATE
+        // ONLY LATEST ENTRY WILL COUNT
+        // ==============================================
+
+        dailyEntries =
+            getLatestEntries(
+                dailyEntries
+            );
 
 
         console.log(
-            "teacher_entries:",
-            teacherEntries.length
+            "Latest Daily Entries:",
+            dailyEntries
         );
 
 
-        console.log(
-            "Combined Entries:",
-            allEntries.length
-        );
-
-
-        // ==================================
-        // LOAD DROPDOWNS
-        // ==================================
+        // ==============================================
+        // LOAD FILTERS
+        // ==============================================
 
         loadRegionDropdown();
 
-        updateStateDropdown();
 
-        updateCityDropdown();
-
-        updateEmployeeDropdown();
+        loadEmployeeDropdown();
 
 
-        // ==================================
+        updateStateDropdown(
+            false
+        );
+
+
+        updateCityDropdown(
+            false
+        );
+
+
+        // ==============================================
         // INITIAL SUMMARY
-        // ==================================
+        // ==============================================
 
         applyCurrentFilter();
 
-    }
 
+    }
     catch (error) {
 
         console.error(
@@ -782,6 +818,7 @@ async function loadData() {
                         Data load nahi ho paaya.
 
                         <br>
+
                         <br>
 
                         ${escapeHtml(
@@ -801,9 +838,134 @@ async function loadData() {
 }
 
 
-// ==========================================
+
+
+// ======================================================
+// GET LATEST ENTRY
+//
+// SAME EMPLOYEE + SAME DATE
+//
+// Daily Report logic:
+// only latest entry counts.
+// ======================================================
+
+function getLatestEntries(entries) {
+
+    const latestMap =
+        new Map();
+
+
+    entries.forEach(
+        (entry) => {
+
+            const employeeCode =
+                normalize(
+                    entry.employeeCode
+                );
+
+
+            const date =
+                String(
+                    entry.date || ""
+                ).trim();
+
+
+            // Invalid entry ignore
+
+            if (
+
+                !employeeCode ||
+
+                !date
+
+            ) {
+
+                return;
+
+            }
+
+
+            // ==========================================
+            // UNIQUE KEY
+            // ==========================================
+
+            const key =
+                employeeCode +
+                "_" +
+                date;
+
+
+            const existing =
+                latestMap.get(
+                    key
+                );
+
+
+            // ==========================================
+            // FIRST ENTRY
+            // ==========================================
+
+            if (!existing) {
+
+                latestMap.set(
+                    key,
+                    entry
+                );
+
+
+                return;
+
+            }
+
+
+            // ==========================================
+            // COMPARE CREATED TIME
+            // ==========================================
+
+            const currentTime =
+                getCreatedTime(
+                    entry
+                );
+
+
+            const existingTime =
+                getCreatedTime(
+                    existing
+                );
+
+
+            // Latest entry replace
+
+            if (
+
+                currentTime >=
+                existingTime
+
+            ) {
+
+                latestMap.set(
+                    key,
+                    entry
+                );
+
+            }
+
+        }
+    );
+
+
+    return Array.from(
+        latestMap.values()
+    );
+
+}
+
+
+
+
+// ======================================================
 // LOAD REGION DROPDOWN
-// ==========================================
+// ======================================================
 
 function loadRegionDropdown() {
 
@@ -839,119 +1001,60 @@ function loadRegionDropdown() {
 
 
     regions
-        .sort()
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        )
         .forEach(
             (region) => {
 
-                regionFilter.innerHTML += `
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-                    <option
-                        value="${escapeHtml(
-                            region
-                        )}"
-                    >
 
-                        ${escapeHtml(
-                            region
-                        )}
+                option.value =
+                    region;
 
-                    </option>
 
-                `;
+                option.textContent =
+                    region;
+
+
+                regionFilter.appendChild(
+                    option
+                );
 
             }
         );
 
 
-    regionFilter.value =
-        currentValue;
+    if (
+
+        regions.includes(
+            currentValue
+        )
+
+    ) {
+
+        regionFilter.value =
+            currentValue;
+
+    }
 
 }
 
 
-// ==========================================
-// GET EMPLOYEES FOR LOCATION FILTERS
-// ==========================================
-
-function getLocationFilteredEmployees() {
-
-    let filtered =
-        employees.slice();
 
 
-    const selectedRegion =
-        normalize(
-            regionFilter?.value
-        );
-
-
-    const selectedState =
-        normalize(
-            stateFilter?.value
-        );
-
-
-    const selectedCity =
-        normalize(
-            cityFilter?.value
-        );
-
-
-    if (selectedRegion) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-
-                    normalize(
-                        employee.region
-                    ) ===
-                    selectedRegion
-            );
-
-    }
-
-
-    if (selectedState) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-
-                    normalize(
-                        employee.state
-                    ) ===
-                    selectedState
-            );
-
-    }
-
-
-    if (selectedCity) {
-
-        filtered =
-            filtered.filter(
-                employee =>
-
-                    normalize(
-                        employee.city
-                    ) ===
-                    selectedCity
-            );
-
-    }
-
-
-    return filtered;
-
-}
-
-
-// ==========================================
+// ======================================================
 // UPDATE STATE DROPDOWN
-// ==========================================
+// ======================================================
 
-function updateStateDropdown() {
+function updateStateDropdown(
+    resetValue = true
+) {
 
     if (!stateFilter) {
 
@@ -960,30 +1063,30 @@ function updateStateDropdown() {
     }
 
 
-    const previousValue =
+    const currentValue =
         stateFilter.value;
 
 
     const selectedRegion =
-        normalize(
-            regionFilter?.value
-        );
+        regionFilter
+            ? regionFilter.value
+            : "";
 
 
-    let filtered =
+    let filteredEmployees =
         employees.slice();
 
 
     if (selectedRegion) {
 
-        filtered =
-            filtered.filter(
+        filteredEmployees =
+            filteredEmployees.filter(
+
                 employee =>
 
-                    normalize(
-                        employee.region
-                    ) ===
+                    employee.region ===
                     selectedRegion
+
             );
 
     }
@@ -992,7 +1095,7 @@ function updateStateDropdown() {
     const states =
         uniqueValues(
 
-            filtered.map(
+            filteredEmployees.map(
                 employee =>
                     employee.state
             )
@@ -1010,52 +1113,70 @@ function updateStateDropdown() {
 
 
     states
-        .sort()
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        )
         .forEach(
             (state) => {
 
-                stateFilter.innerHTML += `
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-                    <option
-                        value="${escapeHtml(
-                            state
-                        )}"
-                    >
 
-                        ${escapeHtml(
-                            state
-                        )}
+                option.value =
+                    state;
 
-                    </option>
 
-                `;
+                option.textContent =
+                    state;
+
+
+                stateFilter.appendChild(
+                    option
+                );
 
             }
         );
 
 
-    const stateExists =
-        states.some(
-            state =>
+    if (
 
-                normalize(state) ===
-                normalize(previousValue)
-        );
+        !resetValue &&
+
+        states.includes(
+            currentValue
+        )
+
+    ) {
+
+        stateFilter.value =
+            currentValue;
+
+    }
 
 
-    stateFilter.value =
-        stateExists
-            ? previousValue
-            : "";
+    if (resetValue) {
+
+        stateFilter.value =
+            "";
+
+    }
 
 }
 
 
-// ==========================================
-// UPDATE CITY DROPDOWN
-// ==========================================
 
-function updateCityDropdown() {
+
+// ======================================================
+// UPDATE CITY DROPDOWN
+// ======================================================
+
+function updateCityDropdown(
+    resetValue = true
+) {
 
     if (!cityFilter) {
 
@@ -1064,36 +1185,36 @@ function updateCityDropdown() {
     }
 
 
-    const previousValue =
+    const currentValue =
         cityFilter.value;
 
 
     const selectedRegion =
-        normalize(
-            regionFilter?.value
-        );
+        regionFilter
+            ? regionFilter.value
+            : "";
 
 
     const selectedState =
-        normalize(
-            stateFilter?.value
-        );
+        stateFilter
+            ? stateFilter.value
+            : "";
 
 
-    let filtered =
+    let filteredEmployees =
         employees.slice();
 
 
     if (selectedRegion) {
 
-        filtered =
-            filtered.filter(
+        filteredEmployees =
+            filteredEmployees.filter(
+
                 employee =>
 
-                    normalize(
-                        employee.region
-                    ) ===
+                    employee.region ===
                     selectedRegion
+
             );
 
     }
@@ -1101,14 +1222,14 @@ function updateCityDropdown() {
 
     if (selectedState) {
 
-        filtered =
-            filtered.filter(
+        filteredEmployees =
+            filteredEmployees.filter(
+
                 employee =>
 
-                    normalize(
-                        employee.state
-                    ) ===
+                    employee.state ===
                     selectedState
+
             );
 
     }
@@ -1117,7 +1238,7 @@ function updateCityDropdown() {
     const cities =
         uniqueValues(
 
-            filtered.map(
+            filteredEmployees.map(
                 employee =>
                     employee.city
             )
@@ -1135,66 +1256,74 @@ function updateCityDropdown() {
 
 
     cities
-        .sort()
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        )
         .forEach(
             (city) => {
 
-                cityFilter.innerHTML += `
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-                    <option
-                        value="${escapeHtml(
-                            city
-                        )}"
-                    >
 
-                        ${escapeHtml(
-                            city
-                        )}
+                option.value =
+                    city;
 
-                    </option>
 
-                `;
+                option.textContent =
+                    city;
+
+
+                cityFilter.appendChild(
+                    option
+                );
 
             }
         );
 
 
-    const cityExists =
-        cities.some(
-            city =>
+    if (
 
-                normalize(city) ===
-                normalize(previousValue)
-        );
+        !resetValue &&
+
+        cities.includes(
+            currentValue
+        )
+
+    ) {
+
+        cityFilter.value =
+            currentValue;
+
+    }
 
 
-    cityFilter.value =
-        cityExists
-            ? previousValue
-            : "";
+    if (resetValue) {
+
+        cityFilter.value =
+            "";
+
+    }
 
 }
 
 
-// ==========================================
-// UPDATE EMPLOYEE DROPDOWN
-// ==========================================
 
-function updateEmployeeDropdown() {
+
+// ======================================================
+// LOAD EMPLOYEE DROPDOWN
+// ======================================================
+
+function loadEmployeeDropdown() {
 
     if (!employeeFilter) {
 
         return;
 
     }
-
-
-    const previousValue =
-        employeeFilter.value;
-
-
-    const filteredEmployees =
-        getLocationFilteredEmployees();
 
 
     employeeFilter.innerHTML = `
@@ -1206,253 +1335,293 @@ function updateEmployeeDropdown() {
     `;
 
 
-    filteredEmployees
+    employees
         .slice()
         .sort(
             (a, b) =>
 
                 String(
                     a.employeeCode
-                )
-                    .localeCompare(
-                        String(
-                            b.employeeCode
-                        )
+                ).localeCompare(
+
+                    String(
+                        b.employeeCode
                     )
+
+                )
+
         )
         .forEach(
             (employee) => {
 
-                employeeFilter.innerHTML += `
+                if (
+                    !employee.employeeCode
+                ) {
 
-                    <option
-                        value="${escapeHtml(
-                            employee.employeeCode
-                        )}"
-                    >
+                    return;
 
-                        ${escapeHtml(
-                            employee.employeeCode
-                        )}
+                }
 
-                        -
 
-                        ${escapeHtml(
-                            employee.teacherName
-                        )}
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-                    </option>
 
-                `;
+                option.value =
+                    employee.employeeCode;
+
+
+                option.textContent =
+                    employee.employeeCode +
+                    " - " +
+                    employee.teacherName;
+
+
+                employeeFilter.appendChild(
+                    option
+                );
 
             }
         );
 
-
-    const employeeExists =
-        filteredEmployees.some(
-            employee =>
-
-                normalize(
-                    employee.employeeCode
-                ) ===
-                normalize(
-                    previousValue
-                )
-        );
-
-
-    employeeFilter.value =
-        employeeExists
-            ? previousValue
-            : "";
-
 }
 
 
-// ==========================================
-// BUILD DAILY COLLECTION MAP
-//
-// SAME TEACHER + SAME DATE = SUM
-//
-// daily_entry +
-// teacher_entries
-// ==========================================
-
-function buildDailyCollectionMap() {
-
-    const map =
-        new Map();
 
 
-    allEntries.forEach(
-        (entry) => {
+// ======================================================
+// REGION CHANGE
+// ======================================================
 
-            const employeeCode =
-                normalize(
-                    getEntryEmployeeCode(
-                        entry
-                    )
-                );
+if (regionFilter) {
 
+    regionFilter.addEventListener(
+        "change",
+        () => {
 
-            const date =
-                normalizeDate(
-                    getEntryDate(
-                        entry
-                    )
-                );
+            updateStateDropdown(
+                true
+            );
 
 
-            // Invalid entries ignore
+            updateCityDropdown(
+                true
+            );
 
-            if (
-                !employeeCode ||
-                !date
-            ) {
 
-                return;
+            if (employeeFilter) {
+
+                employeeFilter.value =
+                    "";
 
             }
-
-
-            const key =
-                employeeCode +
-                "|" +
-                date;
-
-
-            const amount =
-                getEntryAmount(
-                    entry
-                );
-
-
-            const currentAmount =
-                map.get(
-                    key
-                ) || 0;
-
-
-            map.set(
-                key,
-
-                currentAmount +
-                amount
-            );
 
         }
     );
 
-
-    return map;
-
 }
 
 
-// ==========================================
-// BUILD TEACHER COLLECTION MAP
-//
-// All dates combined
-// ==========================================
-
-function buildTeacherCollectionMap() {
-
-    const teacherMap =
-        new Map();
 
 
-    const dailyMap =
-        buildDailyCollectionMap();
+// ======================================================
+// STATE CHANGE
+// ======================================================
+
+if (stateFilter) {
+
+    stateFilter.addEventListener(
+        "change",
+        () => {
+
+            updateCityDropdown(
+                true
+            );
 
 
-    dailyMap.forEach(
-        (amount, key) => {
+            if (employeeFilter) {
 
-            const separatorIndex =
-                key.indexOf(
-                    "|"
-                );
-
-
-            if (
-                separatorIndex === -1
-            ) {
-
-                return;
+                employeeFilter.value =
+                    "";
 
             }
-
-
-            const employeeCode =
-                key.substring(
-                    0,
-                    separatorIndex
-                );
-
-
-            const currentAmount =
-                teacherMap.get(
-                    employeeCode
-                ) || 0;
-
-
-            teacherMap.set(
-
-                employeeCode,
-
-                currentAmount +
-                numberValue(amount)
-
-            );
 
         }
     );
 
+}
 
-    console.log(
-        "Teacher Collection Map:",
-        teacherMap
+
+
+
+// ======================================================
+// CITY CHANGE
+// ======================================================
+
+if (cityFilter) {
+
+    cityFilter.addEventListener(
+        "change",
+        () => {
+
+            if (employeeFilter) {
+
+                employeeFilter.value =
+                    "";
+
+            }
+
+        }
     );
-
-
-    return teacherMap;
 
 }
 
 
-// ==========================================
+
+
+// ======================================================
+// APPLY FILTER
+// ======================================================
+
+if (applyFilter) {
+
+    applyFilter.addEventListener(
+        "click",
+        () => {
+
+            applyCurrentFilter();
+
+        }
+    );
+
+}
+
+
+
+
+// ======================================================
 // APPLY CURRENT FILTER
-// ==========================================
+// ======================================================
 
 function applyCurrentFilter() {
 
     let filteredEmployees =
-        getLocationFilteredEmployees();
+        employees.slice();
 
 
-    const selectedEmployee =
-        normalize(
-            employeeFilter?.value
-        );
+    // ==============================================
+    // REGION
+    // ==============================================
 
+    if (
 
-    if (selectedEmployee) {
+        regionFilter &&
+        regionFilter.value
+
+    ) {
 
         filteredEmployees =
             filteredEmployees.filter(
+
                 employee =>
 
-                    normalize(
-                        employee.employeeCode
-                    ) ===
-                    selectedEmployee
+                    employee.region ===
+                    regionFilter.value
+
             );
 
     }
 
 
+    // ==============================================
+    // STATE
+    // ==============================================
+
+    if (
+
+        stateFilter &&
+        stateFilter.value
+
+    ) {
+
+        filteredEmployees =
+            filteredEmployees.filter(
+
+                employee =>
+
+                    employee.state ===
+                    stateFilter.value
+
+            );
+
+    }
+
+
+    // ==============================================
+    // CITY
+    // ==============================================
+
+    if (
+
+        cityFilter &&
+        cityFilter.value
+
+    ) {
+
+        filteredEmployees =
+            filteredEmployees.filter(
+
+                employee =>
+
+                    employee.city ===
+                    cityFilter.value
+
+            );
+
+    }
+
+
+    // ==============================================
+    // EMPLOYEE
+    // ==============================================
+
+    if (
+
+        employeeFilter &&
+        employeeFilter.value
+
+    ) {
+
+        filteredEmployees =
+            filteredEmployees.filter(
+
+                employee =>
+
+                    normalize(
+                        employee.employeeCode
+                    ) ===
+
+                    normalize(
+                        employeeFilter.value
+                    )
+
+            );
+
+    }
+
+
+    // ==============================================
+    // UPDATE TITLE
+    // ==============================================
+
     updateSelectedTitle();
+
+
+    // ==============================================
+    // DISPLAY SUMMARY
+    // ==============================================
 
     displaySummary(
         filteredEmployees
@@ -1461,9 +1630,57 @@ function applyCurrentFilter() {
 }
 
 
-// ==========================================
+
+
+// ======================================================
+// RESET FILTER
+// ======================================================
+
+if (resetFilter) {
+
+    resetFilter.addEventListener(
+        "click",
+        () => {
+
+            if (regionFilter) {
+
+                regionFilter.value =
+                    "";
+
+            }
+
+
+            updateStateDropdown(
+                true
+            );
+
+
+            updateCityDropdown(
+                true
+            );
+
+
+            if (employeeFilter) {
+
+                employeeFilter.value =
+                    "";
+
+            }
+
+
+            applyCurrentFilter();
+
+        }
+    );
+
+}
+
+
+
+
+// ======================================================
 // UPDATE SELECTED TITLE
-// ==========================================
+// ======================================================
 
 function updateSelectedTitle() {
 
@@ -1472,12 +1689,15 @@ function updateSelectedTitle() {
 
 
     if (
+
         employeeFilter &&
         employeeFilter.value
+
     ) {
 
         const employee =
             employees.find(
+
                 item =>
 
                     normalize(
@@ -1487,6 +1707,7 @@ function updateSelectedTitle() {
                     normalize(
                         employeeFilter.value
                     )
+
             );
 
 
@@ -1499,9 +1720,12 @@ function updateSelectedTitle() {
 
     }
 
+
     else if (
+
         cityFilter &&
         cityFilter.value
+
     ) {
 
         title =
@@ -1509,9 +1733,12 @@ function updateSelectedTitle() {
 
     }
 
+
     else if (
+
         stateFilter &&
         stateFilter.value
+
     ) {
 
         title =
@@ -1519,9 +1746,12 @@ function updateSelectedTitle() {
 
     }
 
+
     else if (
+
         regionFilter &&
         regionFilter.value
+
     ) {
 
         title =
@@ -1540,57 +1770,95 @@ function updateSelectedTitle() {
 }
 
 
-// ==========================================
+
+
+// ======================================================
+// GET EMPLOYEE COLLECTION
+//
+// Uses latest Daily Report entries.
+// ======================================================
+
+function getEmployeeCollection(
+    employeeCode
+) {
+
+    const normalizedCode =
+        normalize(
+            employeeCode
+        );
+
+
+    if (!normalizedCode) {
+
+        return 0;
+
+    }
+
+
+    return dailyEntries
+        .filter(
+
+            entry =>
+
+                normalize(
+                    entry.employeeCode
+                ) ===
+                normalizedCode
+
+        )
+        .reduce(
+
+            (total, entry) =>
+
+                total +
+                numberValue(
+                    entry.amount
+                ),
+
+            0
+
+        );
+
+}
+
+
+
+
+// ======================================================
 // DISPLAY SUMMARY
-// ==========================================
+// ======================================================
 
 function displaySummary(list) {
 
-    let totalTarget =
-        0;
-
-    let totalCollection =
-        0;
+    let totalTarget = 0;
 
 
-    // ==================================
-    // COLLECTION MAP
-    // ==================================
-
-    const teacherCollectionMap =
-        buildTeacherCollectionMap();
+    let totalCollection = 0;
 
 
-    const rows =
-        [];
+    const rows = [];
 
 
     list.forEach(
         (employee) => {
 
-            const employeeCode =
-                normalize(
-                    employee.employeeCode
-                );
-
-
-            // ==================================
-            // GET ALL-TIME COLLECTION
-            // ==================================
-
-            const employeeCollection =
-                numberValue(
-
-                    teacherCollectionMap.get(
-                        employeeCode
-                    ) || 0
-
-                );
-
-
             const target =
                 numberValue(
                     employee.target
+                );
+
+
+            // ==========================================
+            // COLLECTION
+            //
+            // IMPORTANT:
+            // Uses same latest entry logic
+            // as Daily Report.
+            // ==========================================
+
+            const employeeCollection =
+                getEmployeeCollection(
+                    employee.employeeCode
                 );
 
 
@@ -1609,12 +1877,9 @@ function displaySummary(list) {
                 0;
 
 
-            if (
-                target > 0
-            ) {
+            if (target > 0) {
 
                 percentage =
-
                     (
                         employeeCollection /
                         target
@@ -1635,11 +1900,14 @@ function displaySummary(list) {
 
                 ...employee,
 
+
                 collection:
                     employeeCollection,
 
+
                 remaining:
                     remaining,
+
 
                 percentage:
                     percentage
@@ -1650,9 +1918,9 @@ function displaySummary(list) {
     );
 
 
-    // ==================================
+    // ==============================================
     // TOTAL REMAINING
-    // ==================================
+    // ==============================================
 
     const totalRemaining =
         Math.max(
@@ -1665,20 +1933,17 @@ function displaySummary(list) {
         );
 
 
-    // ==================================
+    // ==============================================
     // TOTAL PERCENTAGE
-    // ==================================
+    // ==============================================
 
     let totalPercentage =
         0;
 
 
-    if (
-        totalTarget > 0
-    ) {
+    if (totalTarget > 0) {
 
         totalPercentage =
-
             (
                 totalCollection /
                 totalTarget
@@ -1687,9 +1952,9 @@ function displaySummary(list) {
     }
 
 
-    // ==================================
-    // SUMMARY CARDS
-    // ==================================
+    // ==============================================
+    // UPDATE CARDS
+    // ==============================================
 
     if (totalTargetEl) {
 
@@ -1729,9 +1994,9 @@ function displaySummary(list) {
     }
 
 
-    // ==================================
-    // TABLE
-    // ==================================
+    // ==============================================
+    // DISPLAY TABLE
+    // ==============================================
 
     displayTable(
 
@@ -1750,30 +2015,38 @@ function displaySummary(list) {
 }
 
 
-// ==========================================
+
+
+// ======================================================
 // DISPLAY TABLE
-// ==========================================
+// ======================================================
 
 function displayTable(
+
     rows,
+
     totalTarget,
+
     totalCollection,
+
     totalRemaining,
+
     totalPercentage
+
 ) {
 
-    if (
-        !tableBody
-    ) {
+    if (!tableBody) {
 
         return;
 
     }
 
 
-    if (
-        !rows.length
-    ) {
+    // ==============================================
+    // NO DATA
+    // ==============================================
+
+    if (!rows.length) {
 
         tableBody.innerHTML = `
 
@@ -1784,8 +2057,8 @@ function displayTable(
                     class="no-data"
                 >
 
-                    Is filter ke liye koi
-                    Teacher nahi mila.
+                    Is filter ke liye
+                    koi Teacher nahi mila.
 
                 </td>
 
@@ -1814,14 +2087,33 @@ function displayTable(
     rows.forEach(
         (employee, index) => {
 
-            const percentageClass =
+            let percentageClass =
+                "";
 
-                employee.percentage >= 70
-                    ? ""
 
-                    : employee.percentage >= 40
-                        ? "medium"
-                        : "low";
+            if (
+
+                employee.percentage <
+                40
+
+            ) {
+
+                percentageClass =
+                    "low";
+
+            }
+
+            else if (
+
+                employee.percentage <
+                70
+
+            ) {
+
+                percentageClass =
+                    "medium";
+
+            }
 
 
             html += `
@@ -1829,70 +2121,90 @@ function displayTable(
                 <tr>
 
                     <td>
+
                         ${index + 1}
+
                     </td>
 
 
                     <td>
+
                         ${escapeHtml(
                             employee.region
                         )}
+
                     </td>
 
 
                     <td>
+
                         ${escapeHtml(
                             employee.state
                         )}
+
                     </td>
 
 
                     <td>
+
                         ${escapeHtml(
                             employee.city
                         )}
+
                     </td>
 
 
                     <td>
+
                         ${escapeHtml(
                             employee.jamiatulMadina
                         )}
+
                     </td>
 
 
                     <td class="employee-code">
+
                         ${escapeHtml(
                             employee.employeeCode
                         )}
+
                     </td>
 
 
                     <td>
+
                         ${escapeHtml(
                             employee.teacherName
                         )}
+
                     </td>
 
 
                     <td class="target-amount">
+
                         ${formatMoney(
                             employee.target
                         )}
+
                     </td>
 
 
                     <td class="collection-amount">
+
                         ${formatMoney(
                             employee.collection
                         )}
+
                     </td>
 
 
                     <td class="remaining-amount">
+
                         ${formatMoney(
                             employee.remaining
                         )}
+
                     </td>
 
 
@@ -1920,9 +2232,9 @@ function displayTable(
         html;
 
 
-    // ==================================
+    // ==============================================
     // TOTAL ROW
-    // ==================================
+    // ==============================================
 
     if (tableFoot) {
 
@@ -1939,28 +2251,36 @@ function displayTable(
 
 
                 <td>
+
                     ${formatMoney(
                         totalTarget
                     )}
+
                 </td>
 
 
                 <td>
+
                     ${formatMoney(
                         totalCollection
                     )}
+
                 </td>
 
 
                 <td>
+
                     ${formatMoney(
                         totalRemaining
                     )}
+
                 </td>
 
 
                 <td>
+
                     ${totalPercentage.toFixed(2)}%
+
                 </td>
 
             </tr>
@@ -1972,9 +2292,28 @@ function displayTable(
 }
 
 
-// ==========================================
+
+
+// ======================================================
+// MONEY FORMAT
+// ======================================================
+
+function formatMoney(amount) {
+
+    return `₹ ${numberValue(
+        amount
+    ).toLocaleString(
+        "en-IN"
+    )}`;
+
+}
+
+
+
+
+// ======================================================
 // UNIQUE VALUES
-// ==========================================
+// ======================================================
 
 function uniqueValues(array) {
 
@@ -1983,14 +2322,12 @@ function uniqueValues(array) {
         ...new Set(
 
             array.filter(
+
                 value =>
 
                     value &&
 
-                    String(
-                        value
-                    ).trim() !==
-                    "-"
+                    value !== "-"
 
             )
 
@@ -2001,190 +2338,50 @@ function uniqueValues(array) {
 }
 
 
-// ==========================================
-// REGION CHANGE
-// ==========================================
-
-if (regionFilter) {
-
-    regionFilter.addEventListener(
-        "change",
-        function () {
-
-            if (stateFilter) {
-
-                stateFilter.value =
-                    "";
-
-            }
 
 
-            if (cityFilter) {
+// ======================================================
+// HTML ESCAPE
+// ======================================================
 
-                cityFilter.value =
-                    "";
+function escapeHtml(value) {
 
-            }
+    return String(
+        value ?? ""
+    )
 
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
 
-            if (employeeFilter) {
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
 
-                employeeFilter.value =
-                    "";
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
 
-            }
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
 
-
-            updateStateDropdown();
-
-            updateCityDropdown();
-
-            updateEmployeeDropdown();
-
-        }
+    .replaceAll(
+        "'",
+        "&#039;"
     );
 
 }
 
 
-// ==========================================
-// STATE CHANGE
-// ==========================================
-
-if (stateFilter) {
-
-    stateFilter.addEventListener(
-        "change",
-        function () {
-
-            if (cityFilter) {
-
-                cityFilter.value =
-                    "";
-
-            }
 
 
-            if (employeeFilter) {
-
-                employeeFilter.value =
-                    "";
-
-            }
-
-
-            updateCityDropdown();
-
-            updateEmployeeDropdown();
-
-        }
-    );
-
-}
-
-
-// ==========================================
-// CITY CHANGE
-// ==========================================
-
-if (cityFilter) {
-
-    cityFilter.addEventListener(
-        "change",
-        function () {
-
-            if (employeeFilter) {
-
-                employeeFilter.value =
-                    "";
-
-            }
-
-
-            updateEmployeeDropdown();
-
-        }
-    );
-
-}
-
-
-// ==========================================
-// APPLY FILTER
-// ==========================================
-
-if (applyFilter) {
-
-    applyFilter.addEventListener(
-        "click",
-        function () {
-
-            applyCurrentFilter();
-
-        }
-    );
-
-}
-
-
-// ==========================================
-// RESET FILTER
-// ==========================================
-
-if (resetFilter) {
-
-    resetFilter.addEventListener(
-        "click",
-        function () {
-
-            if (regionFilter) {
-
-                regionFilter.value =
-                    "";
-
-            }
-
-
-            if (stateFilter) {
-
-                stateFilter.value =
-                    "";
-
-            }
-
-
-            if (cityFilter) {
-
-                cityFilter.value =
-                    "";
-
-            }
-
-
-            if (employeeFilter) {
-
-                employeeFilter.value =
-                    "";
-
-            }
-
-
-            updateStateDropdown();
-
-            updateCityDropdown();
-
-            updateEmployeeDropdown();
-
-            applyCurrentFilter();
-
-        }
-    );
-
-}
-
-
-// ==========================================
+// ======================================================
 // START
-// ==========================================
+// ======================================================
 
 loadData();
