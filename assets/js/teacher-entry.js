@@ -6,25 +6,22 @@
 // Existing / Old Entries are NOT changed.
 // Every new entry is saved as a NEW document.
 // Same Teacher + Same Date multiple entries are allowed.
-//
-// Example:
-//
-// T001 | 29 August | ₹500
-// T001 | 29 August | ₹1000
-// T001 | 29 August | ₹700
-//
-// Later Daily Report can calculate:
-// ₹500 + ₹1000 + ₹700 = ₹2200
 // ======================================================
 
 
 import { db } from "./firebase-config.js";
 
+
 import {
+
     collection,
+
     getDocs,
+
     addDoc,
+
     serverTimestamp
+
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -37,6 +34,7 @@ from
 
 const EMPLOYEES_COLLECTION =
     "employees";
+
 
 const DAILY_ENTRY_COLLECTION =
     "daily_entry";
@@ -52,45 +50,54 @@ const teacherEntryForm =
         "teacherEntryForm"
     );
 
+
 const teacherSelect =
     document.getElementById(
         "teacherSelect"
     );
+
 
 const employeeCodeInput =
     document.getElementById(
         "employeeCode"
     );
 
+
 const teacherNameInput =
     document.getElementById(
         "teacherName"
     );
+
 
 const entryDateInput =
     document.getElementById(
         "entryDate"
     );
 
+
 const collectionAmountInput =
     document.getElementById(
         "collectionAmount"
     );
+
 
 const saveEntryBtn =
     document.getElementById(
         "saveEntryBtn"
     );
 
+
 const resetEntryBtn =
     document.getElementById(
         "resetEntryBtn"
     );
 
+
 const formMessage =
     document.getElementById(
         "formMessage"
     );
+
 
 const regionUserInfo =
     document.getElementById(
@@ -105,6 +112,7 @@ const regionUserInfo =
 
 let allEmployees = [];
 
+
 let allowedEmployees = [];
 
 
@@ -115,9 +123,58 @@ let allowedEmployees = [];
 
 function normalize(value) {
 
-    return String(value || "")
-        .trim()
-        .toLowerCase();
+    return String(
+        value || ""
+    )
+    .trim()
+    .toLowerCase();
+
+}
+
+
+
+// ======================================================
+// UNIQUE NORMALIZED VALUES
+// ======================================================
+
+function getNormalizedValues(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return [];
+
+    }
+
+
+    if (
+        Array.isArray(value)
+    ) {
+
+        return value
+            .flatMap(
+                function (item) {
+
+                    return getNormalizedValues(
+                        item
+                    );
+
+                }
+            )
+            .filter(Boolean);
+
+    }
+
+
+    const normalized =
+        normalize(value);
+
+
+    return normalized
+        ? [normalized]
+        : [];
 
 }
 
@@ -130,8 +187,11 @@ function normalize(value) {
 function getEmployeeCode(employee) {
 
     if (!employee) {
+
         return "";
+
     }
+
 
     return String(
 
@@ -153,7 +213,8 @@ function getEmployeeCode(employee) {
 
         ""
 
-    ).trim();
+    )
+    .trim();
 
 }
 
@@ -166,8 +227,11 @@ function getEmployeeCode(employee) {
 function getTeacherName(employee) {
 
     if (!employee) {
+
         return "";
+
     }
+
 
     return String(
 
@@ -185,21 +249,25 @@ function getTeacherName(employee) {
 
         ""
 
-    ).trim();
+    )
+    .trim();
 
 }
 
 
 
 // ======================================================
-// GET REGION
+// GET EMPLOYEE REGION
 // ======================================================
 
 function getEmployeeRegion(employee) {
 
     if (!employee) {
+
         return "";
+
     }
+
 
     return String(
 
@@ -211,23 +279,29 @@ function getEmployeeRegion(employee) {
 
         employee.regionName ||
 
+        employee.region_name ||
+
         ""
 
-    ).trim();
+    )
+    .trim();
 
 }
 
 
 
 // ======================================================
-// GET STATE
+// GET EMPLOYEE STATE
 // ======================================================
 
 function getEmployeeState(employee) {
 
     if (!employee) {
+
         return "";
+
     }
+
 
     return String(
 
@@ -239,23 +313,29 @@ function getEmployeeState(employee) {
 
         employee.stateName ||
 
+        employee.state_name ||
+
         ""
 
-    ).trim();
+    )
+    .trim();
 
 }
 
 
 
 // ======================================================
-// GET JAMIATUL MADINA
+// GET JAMIATUL
 // ======================================================
 
 function getEmployeeJamiatul(employee) {
 
     if (!employee) {
+
         return "";
+
     }
+
 
     return String(
 
@@ -271,7 +351,8 @@ function getEmployeeJamiatul(employee) {
 
         ""
 
-    ).trim();
+    )
+    .trim();
 
 }
 
@@ -286,24 +367,30 @@ function getTodayDate() {
     const today =
         new Date();
 
+
     const year =
         today.getFullYear();
+
 
     const month =
         String(
             today.getMonth() + 1
-        ).padStart(
+        )
+        .padStart(
             2,
             "0"
         );
 
+
     const day =
         String(
             today.getDate()
-        ).padStart(
+        )
+        .padStart(
             2,
             "0"
         );
+
 
     return (
         year +
@@ -327,15 +414,20 @@ function showMessage(
 ) {
 
     if (!formMessage) {
+
         return;
+
     }
+
 
     formMessage.textContent =
         message;
 
+
     formMessage.className =
         "message " +
         type;
+
 
     setTimeout(
         function () {
@@ -343,695 +435,13 @@ function showMessage(
             formMessage.className =
                 "message";
 
+
             formMessage.textContent =
                 "";
 
         },
         5000
     );
-
-}
-
-
-
-// ======================================================
-// GET REGION USER ACCESS
-// ======================================================
-
-function getRegionUserAccess() {
-
-    const savedAccess =
-        localStorage.getItem(
-            "regionUserAccess"
-        );
-
-    if (!savedAccess) {
-
-        console.warn(
-            "regionUserAccess not found in localStorage."
-        );
-
-        return null;
-
-    }
-
-    try {
-
-        return JSON.parse(
-            savedAccess
-        );
-
-    }
-    catch (error) {
-
-        console.error(
-            "Region access parse error:",
-            error
-        );
-
-        return savedAccess;
-
-    }
-
-}
-
-
-
-// ======================================================
-// GET REGION USER CODE
-// ======================================================
-
-function getLoggedInRegionUserCode() {
-
-    return normalize(
-        localStorage.getItem(
-            "loggedInEmpCode"
-        )
-    );
-
-}
-
-
-
-// ======================================================
-// GET REGION USER NAME
-// ======================================================
-
-function getLoggedInRegionUserName() {
-
-    return (
-        localStorage.getItem(
-            "regionUserName"
-        ) ||
-        "Region User"
-    );
-
-}
-
-
-
-// ======================================================
-// ARRAY VALUE HELPER
-// ======================================================
-
-function valueMatches(
-    value,
-    employeeValue
-) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return false;
-
-    }
-
-    const normalizedEmployeeValue =
-        normalize(
-            employeeValue
-        );
-
-    if (
-        Array.isArray(value)
-    ) {
-
-        return value.some(
-            function (item) {
-
-                return (
-                    normalize(item) ===
-                    normalizedEmployeeValue
-                );
-
-            }
-        );
-
-    }
-
-    return (
-        normalize(value) ===
-        normalizedEmployeeValue
-    );
-
-}
-
-
-
-// ======================================================
-// CHECK ONE ACCESS RULE
-// ======================================================
-
-function checkAccessRule(
-    employee,
-    rule
-) {
-
-    if (!rule) {
-        return false;
-    }
-
-
-    const employeeRegion =
-        normalize(
-            getEmployeeRegion(
-                employee
-            )
-        );
-
-    const employeeState =
-        normalize(
-            getEmployeeState(
-                employee
-            )
-        );
-
-
-    // ==================================================
-    // STRING RULE
-    // ==================================================
-
-    if (
-        typeof rule ===
-        "string"
-    ) {
-
-        const ruleValue =
-            normalize(rule);
-
-        return (
-            ruleValue ===
-            employeeRegion ||
-
-            ruleValue ===
-            employeeState
-        );
-
-    }
-
-
-    // ==================================================
-    // OBJECT RULE
-    // ==================================================
-
-    if (
-        typeof rule !==
-        "object"
-    ) {
-
-        return false;
-
-    }
-
-
-    // --------------------------------------------------
-    // REGION
-    // --------------------------------------------------
-
-    const ruleRegion =
-        normalize(
-
-            rule.region ||
-
-            rule.Region ||
-
-            rule.regionName ||
-
-            rule.region_name ||
-
-            ""
-
-        );
-
-
-    // --------------------------------------------------
-    // STATE
-    // --------------------------------------------------
-
-    let ruleStates =
-
-        rule.states ||
-
-        rule.state ||
-
-        rule.States ||
-
-        rule.State ||
-
-        rule.stateName ||
-
-        rule.state_name ||
-
-        [];
-
-
-    if (
-        !Array.isArray(
-            ruleStates
-        )
-    ) {
-
-        ruleStates =
-            [ruleStates];
-
-    }
-
-
-    ruleStates =
-        ruleStates
-            .filter(
-                function (value) {
-                    return (
-                        value !==
-                        null &&
-                        value !==
-                        undefined &&
-                        String(value)
-                            .trim() !== ""
-                    );
-                }
-            )
-            .map(
-                normalize
-            );
-
-
-    // --------------------------------------------------
-    // REGION CHECK
-    // --------------------------------------------------
-
-    if (ruleRegion) {
-
-        if (
-            employeeRegion &&
-            ruleRegion !==
-            employeeRegion
-        ) {
-
-            return false;
-
-        }
-
-    }
-
-
-    // --------------------------------------------------
-    // STATE CHECK
-    // --------------------------------------------------
-
-    if (
-        ruleStates.length > 0
-    ) {
-
-        if (
-            employeeState &&
-            !ruleStates.includes(
-                employeeState
-            )
-        ) {
-
-            return false;
-
-        }
-
-    }
-
-
-    // --------------------------------------------------
-    // EMPLOYEE CODE CHECK
-    // --------------------------------------------------
-
-    const ruleEmployeeCodes =
-
-        rule.employeeCodes ||
-
-        rule.employee_codes ||
-
-        rule.empCodes ||
-
-        rule.emp_codes ||
-
-        rule.teacherCodes ||
-
-        rule.teacher_codes ||
-
-        [];
-
-
-    if (
-        Array.isArray(
-            ruleEmployeeCodes
-        ) &&
-        ruleEmployeeCodes.length > 0
-    ) {
-
-        const employeeCode =
-            normalize(
-                getEmployeeCode(
-                    employee
-                )
-            );
-
-        return ruleEmployeeCodes
-            .map(normalize)
-            .includes(
-                employeeCode
-            );
-
-    }
-
-
-    // --------------------------------------------------
-    // DEFAULT
-    // --------------------------------------------------
-
-    return true;
-
-}
-
-
-
-// ======================================================
-// CHECK EMPLOYEE ACCESS
-// ======================================================
-
-function employeeMatchesRegionAccess(
-    employee
-) {
-
-    const access =
-        getRegionUserAccess();
-
-
-    // ==================================================
-    // IMPORTANT
-    //
-    // If no access information exists,
-    // do NOT hide all Teachers.
-    //
-    // This allows the new Teacher Entry page
-    // to still load Teachers.
-    // ==================================================
-
-    if (!access) {
-
-        console.warn(
-            "No regionUserAccess found. Showing all Teachers."
-        );
-
-        return true;
-
-    }
-
-
-    // ==================================================
-    // ACCESS ARRAY
-    // ==================================================
-
-    if (
-        Array.isArray(
-            access
-        )
-    ) {
-
-        if (
-            access.length === 0
-        ) {
-
-            return true;
-
-        }
-
-        return access.some(
-            function (rule) {
-
-                return checkAccessRule(
-                    employee,
-                    rule
-                );
-
-            }
-        );
-
-    }
-
-
-    // ==================================================
-    // ACCESS OBJECT
-    // ==================================================
-
-    if (
-        typeof access ===
-        "object"
-    ) {
-
-        // ------------------------------------------------
-        // Direct employee list
-        // ------------------------------------------------
-
-        const employeeCodes =
-
-            access.employeeCodes ||
-
-            access.employee_codes ||
-
-            access.empCodes ||
-
-            access.emp_codes ||
-
-            access.teacherCodes ||
-
-            access.teacher_codes ||
-
-            [];
-
-
-        if (
-            Array.isArray(
-                employeeCodes
-            ) &&
-            employeeCodes.length > 0
-        ) {
-
-            const currentCode =
-                normalize(
-                    getEmployeeCode(
-                        employee
-                    )
-                );
-
-            return employeeCodes
-                .map(normalize)
-                .includes(
-                    currentCode
-                );
-
-        }
-
-
-        // ------------------------------------------------
-        // Region
-        // ------------------------------------------------
-
-        const accessRegion =
-            normalize(
-
-                access.region ||
-
-                access.Region ||
-
-                access.regionName ||
-
-                access.region_name ||
-
-                ""
-
-            );
-
-
-        // ------------------------------------------------
-        // States
-        // ------------------------------------------------
-
-        let accessStates =
-
-            access.states ||
-
-            access.state ||
-
-            access.States ||
-
-            access.State ||
-
-            access.stateName ||
-
-            access.state_name ||
-
-            [];
-
-
-        if (
-            !Array.isArray(
-                accessStates
-            )
-        ) {
-
-            accessStates =
-                [accessStates];
-
-        }
-
-
-        accessStates =
-            accessStates
-                .filter(
-                    function (value) {
-
-                        return (
-                            value !==
-                            null &&
-                            value !==
-                            undefined &&
-                            String(value)
-                                .trim() !== ""
-                        );
-
-                    }
-                )
-                .map(
-                    normalize
-                );
-
-
-        const employeeRegion =
-            normalize(
-                getEmployeeRegion(
-                    employee
-                )
-            );
-
-        const employeeState =
-            normalize(
-                getEmployeeState(
-                    employee
-                )
-            );
-
-
-        // ------------------------------------------------
-        // REGION CHECK
-        // ------------------------------------------------
-
-        if (
-            accessRegion &&
-            employeeRegion &&
-            accessRegion !==
-            employeeRegion
-        ) {
-
-            return false;
-
-        }
-
-
-        // ------------------------------------------------
-        // STATE CHECK
-        // ------------------------------------------------
-
-        if (
-            accessStates.length > 0
-        ) {
-
-            if (
-                employeeState &&
-                !accessStates.includes(
-                    employeeState
-                )
-            ) {
-
-                return false;
-
-            }
-
-        }
-
-
-        return true;
-
-    }
-
-
-    // ==================================================
-    // ACCESS STRING
-    // ==================================================
-
-    if (
-        typeof access ===
-        "string"
-    ) {
-
-        const accessValue =
-            normalize(access);
-
-        const employeeRegion =
-            normalize(
-                getEmployeeRegion(
-                    employee
-                )
-            );
-
-        const employeeState =
-            normalize(
-                getEmployeeState(
-                    employee
-                )
-            );
-
-        return (
-            accessValue ===
-            employeeRegion ||
-
-            accessValue ===
-            employeeState
-        );
-
-    }
-
-
-    return true;
-
-}
-
-
-
-// ======================================================
-// LOAD REGION USER INFO
-// ======================================================
-
-function loadRegionUserInfo() {
-
-    const userName =
-        getLoggedInRegionUserName();
-
-
-    if (regionUserInfo) {
-
-        regionUserInfo.innerHTML = `
-
-            <strong>
-                <i class="fa-solid fa-circle-user"></i>
-                ${escapeHTML(userName)}
-            </strong>
-
-            <br>
-
-            Aap sirf apne assigned Teachers
-            ki Collection Entry kar sakte hain.
-
-        `;
-
-    }
 
 }
 
@@ -1066,6 +476,601 @@ function escapeHTML(value) {
         /'/g,
         "&#039;"
     );
+
+}
+
+
+
+// ======================================================
+// GET REGION USER ACCESS
+// ======================================================
+
+function getRegionUserAccess() {
+
+    const savedAccess =
+        localStorage.getItem(
+            "regionUserAccess"
+        );
+
+
+    if (!savedAccess) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        return JSON.parse(
+            savedAccess
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Region access parse error:",
+            error
+        );
+
+
+        return savedAccess;
+
+    }
+
+}
+
+
+
+// ======================================================
+// GET ALL ACCESS RULES
+// ======================================================
+
+function getAccessRules(access) {
+
+    if (!access) {
+
+        return [];
+
+    }
+
+
+    if (
+        Array.isArray(access)
+    ) {
+
+        return access;
+
+    }
+
+
+    if (
+        typeof access ===
+        "object"
+    ) {
+
+        /*
+        Support possible nested
+        access structures.
+        */
+
+        if (
+            Array.isArray(
+                access.access
+            )
+        ) {
+
+            return access.access;
+
+        }
+
+
+        if (
+            Array.isArray(
+                access.accessRules
+            )
+        ) {
+
+            return access.accessRules;
+
+        }
+
+
+        if (
+            Array.isArray(
+                access.rules
+            )
+        ) {
+
+            return access.rules;
+
+        }
+
+
+        return [
+            access
+        ];
+
+    }
+
+
+    return [
+        access
+    ];
+
+}
+
+
+
+// ======================================================
+// EXTRACT ACCESS DATA
+//
+// IMPORTANT:
+//
+// Region and State are collected separately.
+//
+// Example:
+//
+// {
+//     region: "Kolkata Region",
+//     states: ["Bihar"]
+// }
+//
+// Means:
+//
+// Kolkata Region
+// OR
+// Bihar
+// ======================================================
+
+function extractAccessData(access) {
+
+    const rules =
+        getAccessRules(
+            access
+        );
+
+
+    const regions =
+        new Set();
+
+
+    const states =
+        new Set();
+
+
+    const employeeCodes =
+        new Set();
+
+
+    let hasAnyValidAccess =
+        false;
+
+
+    rules.forEach(
+        function (rule) {
+
+            // ==========================================
+            // STRING ACCESS
+            // ==========================================
+
+            if (
+                typeof rule ===
+                "string"
+            ) {
+
+                const value =
+                    normalize(
+                        rule
+                    );
+
+
+                if (value) {
+
+                    /*
+                    String access can represent
+                    a Region or State.
+
+                    It will be checked against
+                    both employee Region and State.
+                    */
+
+                    regions.add(
+                        value
+                    );
+
+
+                    states.add(
+                        value
+                    );
+
+
+                    hasAnyValidAccess =
+                        true;
+
+                }
+
+
+                return;
+
+            }
+
+
+            // ==========================================
+            // OBJECT ACCESS
+            // ==========================================
+
+            if (
+                !rule ||
+                typeof rule !==
+                "object"
+            ) {
+
+                return;
+
+            }
+
+
+            // ==========================================
+            // REGION VALUES
+            // ==========================================
+
+            const regionValues =
+
+                getNormalizedValues(
+                    rule.regions
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.region
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.Region
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.regionName
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.region_name
+                    )
+                );
+
+
+            regionValues.forEach(
+                function (value) {
+
+                    if (value) {
+
+                        regions.add(
+                            value
+                        );
+
+
+                        hasAnyValidAccess =
+                            true;
+
+                    }
+
+                }
+            );
+
+
+            // ==========================================
+            // STATE VALUES
+            // ==========================================
+
+            const stateValues =
+
+                getNormalizedValues(
+                    rule.states
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.state
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.State
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.States
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.stateName
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.state_name
+                    )
+                );
+
+
+            stateValues.forEach(
+                function (value) {
+
+                    if (value) {
+
+                        states.add(
+                            value
+                        );
+
+
+                        hasAnyValidAccess =
+                            true;
+
+                    }
+
+                }
+            );
+
+
+            // ==========================================
+            // EMPLOYEE CODE VALUES
+            // ==========================================
+
+            const employeeCodeValues =
+
+                getNormalizedValues(
+                    rule.employeeCodes
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.employee_codes
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.empCodes
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.emp_codes
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.teacherCodes
+                    )
+                )
+                .concat(
+                    getNormalizedValues(
+                        rule.teacher_codes
+                    )
+                );
+
+
+            employeeCodeValues.forEach(
+                function (value) {
+
+                    if (value) {
+
+                        employeeCodes.add(
+                            value
+                        );
+
+
+                        hasAnyValidAccess =
+                            true;
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    return {
+
+        regions,
+
+        states,
+
+        employeeCodes,
+
+        hasAnyValidAccess
+
+    };
+
+}
+
+
+
+// ======================================================
+// CHECK EMPLOYEE ACCESS
+//
+// IMPORTANT:
+//
+// REGION OR STATE OR EMPLOYEE CODE
+//
+// If ANY assigned access matches,
+// Teacher is allowed.
+// ======================================================
+
+function employeeMatchesRegionAccess(
+    employee
+) {
+
+    const access =
+        getRegionUserAccess();
+
+
+    // ==============================================
+    // NO ACCESS DATA
+    // ==============================================
+
+    if (!access) {
+
+        console.warn(
+            "regionUserAccess not found."
+        );
+
+
+        /*
+        Existing behavior:
+        if access information is unavailable,
+        do not hide all Teachers.
+        */
+
+        return true;
+
+    }
+
+
+    const accessData =
+        extractAccessData(
+            access
+        );
+
+
+    // ==============================================
+    // NO VALID ACCESS FOUND
+    // ==============================================
+
+    if (
+        !accessData.hasAnyValidAccess
+    ) {
+
+        console.warn(
+            "No valid access rule found."
+        );
+
+
+        return true;
+
+    }
+
+
+    const employeeRegion =
+        normalize(
+            getEmployeeRegion(
+                employee
+            )
+        );
+
+
+    const employeeState =
+        normalize(
+            getEmployeeState(
+                employee
+            )
+        );
+
+
+    const employeeCode =
+        normalize(
+            getEmployeeCode(
+                employee
+            )
+        );
+
+
+    // ==============================================
+    // REGION MATCH
+    // ==============================================
+
+    if (
+        employeeRegion &&
+        accessData.regions.has(
+            employeeRegion
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    // ==============================================
+    // STATE MATCH
+    // ==============================================
+
+    if (
+        employeeState &&
+        accessData.states.has(
+            employeeState
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    // ==============================================
+    // EMPLOYEE CODE MATCH
+    // ==============================================
+
+    if (
+        employeeCode &&
+        accessData.employeeCodes.has(
+            employeeCode
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    // ==============================================
+    // NO MATCH
+    // ==============================================
+
+    return false;
+
+}
+
+
+
+// ======================================================
+// LOAD REGION USER INFO
+// ======================================================
+
+function loadRegionUserInfo() {
+
+    const userName =
+        localStorage.getItem(
+            "regionUserName"
+        ) ||
+        "Region User";
+
+
+    if (regionUserInfo) {
+
+        regionUserInfo.innerHTML = `
+
+            <strong>
+
+                <i class="fa-solid fa-circle-user"></i>
+
+                ${escapeHTML(userName)}
+
+            </strong>
+
+            <br>
+
+            Aap sirf apne assigned Teachers
+            ki Collection Entry kar sakte hain.
+
+        `;
+
+    }
 
 }
 
@@ -1129,9 +1134,9 @@ async function loadEmployees() {
             );
 
 
-        // ==================================================
-        // REMOVE RECORDS WITHOUT EMPLOYEE CODE
-        // ==================================================
+        // ==============================================
+        // VALID EMPLOYEES
+        // ==============================================
 
         const employeesWithCode =
             allEmployees.filter(
@@ -1153,9 +1158,49 @@ async function loadEmployees() {
         );
 
 
-        // ==================================================
-        // FILTER BY REGION USER ACCESS
-        // ==================================================
+        // ==============================================
+        // SHOW CURRENT ACCESS
+        // ==============================================
+
+        const access =
+            getRegionUserAccess();
+
+
+        const accessData =
+            extractAccessData(
+                access
+            );
+
+
+        console.log(
+            "Allowed Regions:",
+            Array.from(
+                accessData.regions
+            )
+        );
+
+
+        console.log(
+            "Allowed States:",
+            Array.from(
+                accessData.states
+            )
+        );
+
+
+        console.log(
+            "Allowed Employee Codes:",
+            Array.from(
+                accessData.employeeCodes
+            )
+        );
+
+
+        // ==============================================
+        // FILTER TEACHERS
+        //
+        // REGION OR STATE OR EMPLOYEE CODE
+        // ==============================================
 
         allowedEmployees =
             employeesWithCode.filter(
@@ -1175,18 +1220,15 @@ async function loadEmployees() {
         );
 
 
-        // ==================================================
-        // DEBUG
-        // ==================================================
+        // ==============================================
+        // DEBUG TABLE
+        // ==============================================
 
         console.table(
             allowedEmployees.map(
                 function (employee) {
 
                     return {
-
-                        ID:
-                            employee.id,
 
                         Code:
                             getEmployeeCode(
@@ -1206,11 +1248,6 @@ async function loadEmployees() {
                         State:
                             getEmployeeState(
                                 employee
-                            ),
-
-                        Jamiatul:
-                            getEmployeeJamiatul(
-                                employee
                             )
 
                     };
@@ -1220,9 +1257,9 @@ async function loadEmployees() {
         );
 
 
-        // ==================================================
-        // SORT
-        // ==================================================
+        // ==============================================
+        // SORT BY EMPLOYEE CODE
+        // ==============================================
 
         allowedEmployees.sort(
             function (a, b) {
@@ -1236,8 +1273,13 @@ async function loadEmployees() {
                     ),
                     undefined,
                     {
-                        numeric: true,
-                        sensitivity: "base"
+
+                        numeric:
+                            true,
+
+                        sensitivity:
+                            "base"
+
                     }
                 );
 
@@ -1245,9 +1287,9 @@ async function loadEmployees() {
         );
 
 
-        // ==================================================
-        // POPULATE
-        // ==================================================
+        // ==============================================
+        // POPULATE SELECT
+        // ==============================================
 
         populateTeacherSelect();
 
@@ -1293,10 +1335,6 @@ function populateTeacherSelect() {
 
     if (!teacherSelect) {
 
-        console.error(
-            "teacherSelect element not found."
-        );
-
         return;
 
     }
@@ -1324,11 +1362,6 @@ function populateTeacherSelect() {
         `;
 
 
-        console.warn(
-            "No Teacher Available."
-        );
-
-
         return;
 
     }
@@ -1341,6 +1374,7 @@ function populateTeacherSelect() {
                 getEmployeeCode(
                     employee
                 );
+
 
             const name =
                 getTeacherName(
@@ -1414,12 +1448,14 @@ if (teacherSelect) {
 
                 }
 
+
                 if (teacherNameInput) {
 
                     teacherNameInput.value =
                         "";
 
                 }
+
 
                 return;
 
@@ -1496,6 +1532,7 @@ if (teacherEntryForm) {
                     "error"
                 );
 
+
                 return;
 
             }
@@ -1507,6 +1544,7 @@ if (teacherEntryForm) {
                     "Please select Entry Date.",
                     "error"
                 );
+
 
                 return;
 
@@ -1522,6 +1560,7 @@ if (teacherEntryForm) {
                     "Please enter a valid Collection Amount.",
                     "error"
                 );
+
 
                 return;
 
@@ -1547,6 +1586,7 @@ if (teacherEntryForm) {
                     "Selected Teacher nahi mila.",
                     "error"
                 );
+
 
                 return;
 
@@ -1603,13 +1643,10 @@ if (teacherEntryForm) {
 
 
                 // ======================================
-                // NEW ENTRY
+                // SAVE NEW ENTRY
                 //
-                // IMPORTANT:
-                // addDoc() creates a NEW document.
-                //
-                // Existing entries are NOT updated.
-                // Existing entries are NOT deleted.
+                // Every save creates NEW document.
+                // Old entries are NOT changed.
                 // ======================================
 
                 await addDoc(
@@ -1743,6 +1780,7 @@ if (teacherEntryForm) {
                     collectionAmountInput.value =
                         "";
 
+
                     collectionAmountInput.focus();
 
                 }
@@ -1830,6 +1868,7 @@ if (resetEntryBtn) {
                 formMessage.className =
                     "message";
 
+
                 formMessage.textContent =
                     "";
 
@@ -1852,9 +1891,11 @@ async function initializeTeacherEntry() {
         "=========================================="
     );
 
+
     console.log(
         "TELETHON - TEACHER ENTRY INITIALIZED"
     );
+
 
     console.log(
         "=========================================="
@@ -1862,7 +1903,7 @@ async function initializeTeacherEntry() {
 
 
     // ==============================================
-    // SET TODAY
+    // SET TODAY DATE
     // ==============================================
 
     if (entryDateInput) {
