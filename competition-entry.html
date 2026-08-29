@@ -11,7 +11,7 @@
     >
 
     <title>
-        Telethon - Academic Department Competition
+        Telethon - Competition Entry
     </title>
 
 
@@ -35,7 +35,15 @@
     >
 
 
+    <!-- ==================================================
+         STYLE
+    ================================================== -->
+
     <style>
+
+        /* ==================================================
+           RESET
+        ================================================== */
 
         * {
             box-sizing: border-box;
@@ -43,6 +51,10 @@
             padding: 0;
         }
 
+
+        /* ==================================================
+           BODY
+        ================================================== */
 
         body {
 
@@ -117,10 +129,10 @@
         .page-title-icon {
 
             width:
-                44px;
+                45px;
 
             height:
-                44px;
+                45px;
 
             border-radius:
                 11px;
@@ -168,6 +180,10 @@
         }
 
 
+        /* ==================================================
+           HEADER ACTIONS
+        ================================================== */
+
         .header-actions {
 
             display:
@@ -177,17 +193,11 @@
                 center;
 
             gap:
-                8px;
+                9px;
         }
 
 
         .header-btn {
-
-            height:
-                40px;
-
-            padding:
-                0 13px;
 
             border:
                 1px solid #e5e7eb;
@@ -198,11 +208,26 @@
             color:
                 #374151;
 
+            min-height:
+                40px;
+
+            padding:
+                0 13px;
+
             border-radius:
                 8px;
 
             text-decoration:
                 none;
+
+            cursor:
+                pointer;
+
+            font-size:
+                13px;
+
+            font-weight:
+                600;
 
             display:
                 inline-flex;
@@ -215,15 +240,6 @@
 
             gap:
                 7px;
-
-            cursor:
-                pointer;
-
-            font-size:
-                13px;
-
-            font-weight:
-                600;
         }
 
 
@@ -248,7 +264,7 @@
         .main-container {
 
             max-width:
-                1150px;
+                1200px;
 
             margin:
                 30px auto;
@@ -259,7 +275,7 @@
 
 
         /* ==================================================
-           INFO
+           INFO CARD
         ================================================== */
 
         .info-card {
@@ -285,6 +301,9 @@
 
             font-size:
                 17px;
+
+            font-weight:
+                700;
 
             margin-bottom:
                 7px;
@@ -316,7 +335,7 @@
                 13px;
 
             line-height:
-                1.6;
+                1.7;
         }
 
 
@@ -339,7 +358,7 @@
                 25px;
 
             box-shadow:
-                0 5px 20px
+                0 5px 18px
                 rgba(
                     0,
                     0,
@@ -350,7 +369,7 @@
 
 
         /* ==================================================
-           SECTION
+           SECTION TITLE
         ================================================== */
 
         .section-title {
@@ -364,21 +383,27 @@
             justify-content:
                 space-between;
 
-            border-bottom:
-                1px solid #e5e7eb;
+            gap:
+                10px;
+
+            margin:
+                5px 0 17px;
 
             padding-bottom:
                 12px;
 
-            margin-bottom:
-                18px;
+            border-bottom:
+                1px solid #e5e7eb;
         }
 
 
         .section-title h2 {
 
             font-size:
-                17px;
+                18px;
+
+            font-weight:
+                700;
 
             display:
                 flex;
@@ -450,14 +475,20 @@
         }
 
 
-        .form-group input,
-        .form-group select {
+        .required {
+
+            color:
+                #dc2626;
+        }
+
+
+        .form-group input {
 
             width:
                 100%;
 
             height:
-                44px;
+                45px;
 
             border:
                 1px solid #d1d5db;
@@ -468,22 +499,21 @@
             padding:
                 0 12px;
 
-            background:
-                #ffffff;
+            font-size:
+                14px;
 
-            color:
-                #111827;
+            font-family:
+                inherit;
 
             outline:
                 none;
 
-            font-size:
-                14px;
+            background:
+                #ffffff;
         }
 
 
-        .form-group input:focus,
-        .form-group select:focus {
+        .form-group input:focus {
 
             border-color:
                 #6366f1;
@@ -500,10 +530,215 @@
 
 
         /* ==================================================
-           PARTICIPANT HEADER
+           SIDES AREA
         ================================================== */
 
-        .participant-heading {
+        .competition-wrapper {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                minmax(
+                    0,
+                    1fr
+                )
+                90px
+                minmax(
+                    0,
+                    1fr
+                );
+
+            gap:
+                18px;
+
+            align-items:
+                stretch;
+        }
+
+
+        /* ==================================================
+           SIDE CARD
+        ================================================== */
+
+        .side-card {
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                13px;
+
+            overflow:
+                hidden;
+
+            background:
+                #ffffff;
+        }
+
+
+        /* ==================================================
+           SIDE HEADER
+        ================================================== */
+
+        .side-header {
+
+            padding:
+                14px 16px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                10px;
+
+            background:
+                #f9fafb;
+
+            border-bottom:
+                1px solid #e5e7eb;
+        }
+
+
+        .side-header h3 {
+
+            font-size:
+                16px;
+
+            font-weight:
+                800;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                8px;
+        }
+
+
+        .side-a-title {
+
+            color:
+                #2563eb;
+        }
+
+
+        .side-b-title {
+
+            color:
+                #dc2626;
+        }
+
+
+        /* ==================================================
+           ADD BUTTON
+        ================================================== */
+
+        .add-row-btn {
+
+            border:
+                none;
+
+            background:
+                #eef2ff;
+
+            color:
+                #4f46e5;
+
+            min-height:
+                34px;
+
+            padding:
+                0 10px;
+
+            border-radius:
+                7px;
+
+            cursor:
+                pointer;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            gap:
+                5px;
+        }
+
+
+        .add-row-btn:hover {
+
+            background:
+                #e0e7ff;
+        }
+
+
+        /* ==================================================
+           SIDE BODY
+        ================================================== */
+
+        .side-body {
+
+            padding:
+                15px;
+        }
+
+
+        /* ==================================================
+           SIDE ROW
+        ================================================== */
+
+        .competition-side-row {
+
+            padding:
+                13px;
+
+            margin-bottom:
+                12px;
+
+            background:
+                #f9fafb;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                10px;
+        }
+
+
+        .competition-side-row:last-child {
+
+            margin-bottom:
+                0;
+        }
+
+
+        /* ==================================================
+           ROW TOP
+        ================================================== */
+
+        .side-row-top {
 
             display:
                 flex;
@@ -518,195 +753,43 @@
                 10px;
 
             margin-bottom:
-                15px;
+                11px;
         }
 
 
-        .participant-heading h3 {
+        .participant-number {
 
             font-size:
-                16px;
-        }
-
-
-        .add-participant-btn {
-
-            border:
-                none;
-
-            background:
-                #4f46e5;
-
-            color:
-                #ffffff;
-
-            border-radius:
-                8px;
-
-            height:
-                40px;
-
-            padding:
-                0 14px;
-
-            cursor:
-                pointer;
-
-            font-size:
-                13px;
+                12px;
 
             font-weight:
-                700;
-
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            gap:
-                7px;
-        }
-
-
-        .add-participant-btn:hover {
-
-            background:
-                #4338ca;
-        }
-
-
-        /* ==================================================
-           PARTICIPANT ROW
-        ================================================== */
-
-        .participant-row {
-
-            display:
-                grid;
-
-            grid-template-columns:
-                1.5fr
-                1fr
-                1fr
-                48px;
-
-            gap:
-                12px;
-
-            padding:
-                15px;
-
-            background:
-                #f9fafb;
-
-            border:
-                1px solid #e5e7eb;
-
-            border-radius:
-                10px;
-
-            margin-bottom:
-                12px;
-        }
-
-
-        .participant-field {
-
-            display:
-                flex;
-
-            flex-direction:
-                column;
-
-            gap:
-                6px;
-        }
-
-
-        .participant-field label {
-
-            font-size:
-                11px;
+                800;
 
             color:
                 #6b7280;
 
-            font-weight:
-                700;
-
             text-transform:
                 uppercase;
-
-            letter-spacing:
-                .3px;
-        }
-
-
-        .participant-field input,
-        .participant-field select {
-
-            width:
-                100%;
-
-            height:
-                42px;
-
-            border:
-                1px solid #d1d5db;
-
-            border-radius:
-                8px;
-
-            padding:
-                0 10px;
-
-            background:
-                #ffffff;
-
-            outline:
-                none;
-
-            font-size:
-                13px;
-        }
-
-
-        .participant-field input:focus,
-        .participant-field select:focus {
-
-            border-color:
-                #6366f1;
-        }
-
-
-        .participant-field select:disabled {
-
-            background:
-                #f3f4f6;
-
-            color:
-                #9ca3af;
         }
 
 
         /* ==================================================
-           REMOVE
+           REMOVE BUTTON
         ================================================== */
 
-        .remove-participant {
+        .remove-side-row {
 
             width:
-                42px;
+                32px;
 
             height:
-                42px;
+                32px;
 
             border:
                 none;
 
             border-radius:
-                8px;
+                7px;
 
             background:
                 #fee2e2;
@@ -716,9 +799,6 @@
 
             cursor:
                 pointer;
-
-            align-self:
-                end;
 
             display:
                 flex;
@@ -731,7 +811,7 @@
         }
 
 
-        .remove-participant:hover {
+        .remove-side-row:hover {
 
             background:
                 #fecaca;
@@ -739,38 +819,208 @@
 
 
         /* ==================================================
-           EMPTY PARTICIPANT
+           FIELD GRID
         ================================================== */
 
-        .participant-empty {
+        .side-field-grid {
 
-            text-align:
-                center;
+            display:
+                grid;
 
-            padding:
-                35px 20px;
+            grid-template-columns:
+                1fr
+                1fr;
 
-            border:
-                1px dashed #d1d5db;
-
-            border-radius:
+            gap:
                 10px;
-
-            color:
-                #6b7280;
-
-            margin-bottom:
-                15px;
         }
 
 
-        .participant-empty i {
+        .competition-field {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                6px;
+        }
+
+
+        .competition-field label {
 
             font-size:
-                30px;
+                11px;
 
-            margin-bottom:
-                8px;
+            font-weight:
+                700;
+
+            color:
+                #6b7280;
+        }
+
+
+        .competition-field select {
+
+            width:
+                100%;
+
+            height:
+                40px;
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius:
+                7px;
+
+            padding:
+                0 9px;
+
+            font-size:
+                13px;
+
+            font-family:
+                inherit;
+
+            background:
+                #ffffff;
+
+            color:
+                #111827;
+
+            outline:
+                none;
+        }
+
+
+        .competition-field select:focus {
+
+            border-color:
+                #6366f1;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(
+                    99,
+                    102,
+                    241,
+                    0.08
+                );
+        }
+
+
+        .competition-field select:disabled {
+
+            background:
+                #f3f4f6;
+
+            color:
+                #9ca3af;
+
+            cursor:
+                not-allowed;
+        }
+
+
+        /* ==================================================
+           VS
+        ================================================== */
+
+        .vs-container {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+        }
+
+
+        .vs-circle {
+
+            width:
+                68px;
+
+            height:
+                68px;
+
+            border-radius:
+                50%;
+
+            background:
+                #111827;
+
+            color:
+                #ffffff;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            font-size:
+                19px;
+
+            font-weight:
+                800;
+
+            box-shadow:
+                0 6px 16px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.15
+                );
+        }
+
+
+        /* ==================================================
+           NOTE
+        ================================================== */
+
+        .calculation-note {
+
+            margin-top:
+                22px;
+
+            padding:
+                13px 15px;
+
+            background:
+                #fffbeb;
+
+            border:
+                1px solid #fde68a;
+
+            border-radius:
+                9px;
+
+            color:
+                #92400e;
+
+            font-size:
+                12px;
+
+            line-height:
+                1.7;
+        }
+
+
+        .calculation-note strong {
+
+            font-weight:
+                800;
         }
 
 
@@ -797,6 +1047,9 @@
 
             font-weight:
                 600;
+
+            line-height:
+                1.5;
         }
 
 
@@ -842,7 +1095,7 @@
                 10px;
 
             margin-top:
-                25px;
+                24px;
 
             padding-top:
                 20px;
@@ -854,7 +1107,7 @@
 
         .btn {
 
-            height:
+            min-height:
                 44px;
 
             padding:
@@ -868,6 +1121,9 @@
 
             cursor:
                 pointer;
+
+            font-family:
+                inherit;
 
             font-size:
                 13px;
@@ -902,6 +1158,13 @@
         }
 
 
+        .btn-secondary:hover {
+
+            background:
+                #f9fafb;
+        }
+
+
         .btn-primary {
 
             background:
@@ -922,7 +1185,7 @@
         .btn-primary:disabled {
 
             opacity:
-                .7;
+                0.7;
 
             cursor:
                 not-allowed;
@@ -938,26 +1201,32 @@
             display:
                 none;
 
-            background:
-                #fef3c7;
+            align-items:
+                center;
 
-            color:
-                #92400e;
+            gap:
+                6px;
 
-            border:
-                1px solid #fde68a;
+            padding:
+                6px 10px;
 
             border-radius:
                 20px;
 
-            padding:
-                6px 10px;
+            background:
+                #fff7ed;
+
+            border:
+                1px solid #fed7aa;
+
+            color:
+                #c2410c;
 
             font-size:
                 11px;
 
             font-weight:
-                700;
+                800;
         }
 
 
@@ -975,14 +1244,58 @@
         }
 
 
+        body.edit-mode #saveCompetitionBtn:hover {
+
+            background:
+                #047857;
+        }
+
+
         /* ==================================================
-           EXISTING COMPETITIONS
+           LOADING OVERLAY
         ================================================== */
 
-        .competition-list-card {
+        .page-loading {
 
-            margin-top:
-                25px;
+            position:
+                fixed;
+
+            inset:
+                0;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.80
+                );
+
+            backdrop-filter:
+                blur(2px);
+
+            display:
+                none;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            z-index:
+                1000;
+        }
+
+
+        .page-loading.show {
+
+            display:
+                flex;
+        }
+
+
+        .page-loading-box {
 
             background:
                 #ffffff;
@@ -991,227 +1304,41 @@
                 1px solid #e5e7eb;
 
             border-radius:
-                16px;
+                12px;
 
             padding:
-                22px;
+                20px 25px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+            font-size:
+                14px;
+
+            font-weight:
+                600;
 
             box-shadow:
-                0 5px 20px
+                0 10px 30px
                 rgba(
                     0,
                     0,
                     0,
-                    .04
+                    0.10
                 );
         }
 
 
-        .competition-list-header {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-            margin-bottom:
-                15px;
-        }
-
-
-        .competition-list-header h2 {
-
-            font-size:
-                17px;
-        }
-
-
-        .competition-table-wrap {
-
-            overflow-x:
-                auto;
-        }
-
-
-        .competition-table {
-
-            width:
-                100%;
-
-            border-collapse:
-                collapse;
-
-            min-width:
-                700px;
-        }
-
-
-        .competition-table th {
-
-            text-align:
-                left;
-
-            padding:
-                12px;
-
-            background:
-                #f9fafb;
-
-            border-bottom:
-                1px solid #e5e7eb;
-
-            font-size:
-                12px;
-
-            color:
-                #6b7280;
-
-            white-space:
-                nowrap;
-        }
-
-
-        .competition-table td {
-
-            padding:
-                13px 12px;
-
-            border-bottom:
-                1px solid #f0f0f0;
-
-            font-size:
-                13px;
-
-            vertical-align:
-                middle;
-        }
-
-
-        .competition-table tr:last-child td {
-
-            border-bottom:
-                none;
-        }
-
-
-        .status-badge {
-
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            padding:
-                5px 9px;
-
-            border-radius:
-                20px;
-
-            font-size:
-                11px;
-
-            font-weight:
-                700;
-        }
-
-
-        .status-active {
-
-            background:
-                #dcfce7;
-
-            color:
-                #166534;
-        }
-
-
-        .status-ended {
-
-            background:
-                #f3f4f6;
-
-            color:
-                #6b7280;
-        }
-
-
-        .table-actions {
-
-            display:
-                flex;
-
-            gap:
-                6px;
-        }
-
-
-        .table-btn {
-
-            width:
-                34px;
-
-            height:
-                34px;
-
-            border:
-                1px solid #e5e7eb;
-
-            background:
-                #ffffff;
-
-            border-radius:
-                7px;
-
-            cursor:
-                pointer;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            color:
-                #374151;
-
-            text-decoration:
-                none;
-        }
-
-
-        .table-btn:hover {
-
-            background:
-                #f9fafb;
-        }
-
-
-        .table-btn.edit {
+        .page-loading-box i {
 
             color:
                 #4f46e5;
-        }
-
-
-        .table-btn.delete {
-
-            color:
-                #dc2626;
-        }
-
-
-        .table-btn.open {
-
-            color:
-                #059669;
         }
 
 
@@ -1220,7 +1347,7 @@
         ================================================== */
 
         @media (
-            max-width: 800px
+            max-width: 900px
         ) {
 
             .form-grid {
@@ -1230,28 +1357,30 @@
             }
 
 
-            .participant-row {
+            .competition-wrapper {
 
                 grid-template-columns:
-                    1fr 1fr;
-
+                    1fr;
             }
 
 
-            .participant-field:first-child {
+            .vs-container {
 
-                grid-column:
-                    1 / -1;
+                padding:
+                    8px 0;
             }
 
 
-            .remove-participant {
+            .vs-circle {
 
                 width:
-                    100%;
+                    54px;
 
-                grid-column:
-                    1 / -1;
+                height:
+                    54px;
+
+                font-size:
+                    16px;
             }
 
         }
@@ -1264,10 +1393,23 @@
             .page-header {
 
                 padding:
-                    13px 15px;
+                    13px 14px;
 
                 align-items:
                     flex-start;
+            }
+
+
+            .page-title-icon {
+
+                width:
+                    39px;
+
+                height:
+                    39px;
+
+                font-size:
+                    17px;
             }
 
 
@@ -1285,33 +1427,30 @@
             }
 
 
-            .page-title-icon {
-
-                width:
-                    39px;
-
-                height:
-                    39px;
-
-                font-size:
-                    17px;
-            }
-
-
             .header-actions {
 
-                flex-direction:
-                    column;
+                gap:
+                    5px;
             }
 
 
             .header-btn {
 
-                height:
-                    36px;
+                min-height:
+                    37px;
+
+                padding:
+                    0 9px;
 
                 font-size:
                     11px;
+            }
+
+
+            .header-btn i {
+
+                margin:
+                    0;
             }
 
 
@@ -1325,49 +1464,17 @@
             }
 
 
-            .form-card,
-            .competition-list-card {
+            .form-card {
 
                 padding:
                     15px;
             }
 
 
-            .participant-row {
+            .side-field-grid {
 
                 grid-template-columns:
                     1fr;
-            }
-
-
-            .participant-field:first-child {
-
-                grid-column:
-                    auto;
-            }
-
-
-            .remove-participant {
-
-                grid-column:
-                    auto;
-            }
-
-
-            .participant-heading {
-
-                align-items:
-                    flex-start;
-
-                flex-direction:
-                    column;
-            }
-
-
-            .add-participant-btn {
-
-                width:
-                    100%;
             }
 
 
@@ -1411,11 +1518,11 @@
             <div>
 
                 <h1>
-                    Academic Department Competition
+                    Competition Entry
                 </h1>
 
                 <p>
-                    Competition Entry & Management
+                    Academic Department Competition
                 </p>
 
             </div>
@@ -1425,12 +1532,27 @@
 
         <div class="header-actions">
 
+            <span
+                id="editBadge"
+                class="edit-badge"
+            >
+
+                <i class="fa-solid fa-pen"></i>
+
+                Edit Mode
+
+            </span>
+
+
             <a
                 href="dashboard.html"
                 class="header-btn"
             >
+
                 <i class="fa-solid fa-house"></i>
+
                 Dashboard
+
             </a>
 
 
@@ -1439,8 +1561,11 @@
                 class="header-btn logout-btn"
                 id="logoutBtn"
             >
+
                 <i class="fa-solid fa-right-from-bracket"></i>
+
                 Logout
+
             </button>
 
         </div>
@@ -1468,19 +1593,14 @@
 
                 Competition Setup
 
-                <span
-                    class="edit-badge"
-                >
-                    EDIT MODE
-                </span>
-
             </h2>
 
             <p>
 
                 Competition ka naam, date aur end time set karein.
-                Har participant/team ka naam manually type karein
-                aur uske Region / State ko select karein.
+                Side A aur Side B mein Region / State select karke
+                competition participants define karein. Ek side mein
+                multiple Region / State add kiye ja sakte hain.
 
             </p>
 
@@ -1489,7 +1609,7 @@
 
 
         <!-- ==================================================
-             FORM
+             FORM CARD
         ================================================== -->
 
         <div class="form-card">
@@ -1500,7 +1620,9 @@
             >
 
 
-                <!-- BASIC -->
+                <!-- ==========================================
+                     DETAILS
+                =========================================== -->
 
                 <div class="section-title">
 
@@ -1518,52 +1640,64 @@
                 <div class="form-grid">
 
 
+                    <!-- NAME -->
+
                     <div class="form-group">
 
                         <label for="competitionName">
 
                             Competition Name
+                            <span class="required">*</span>
 
                         </label>
 
                         <input
                             type="text"
                             id="competitionName"
-                            placeholder="Example: Academic Quiz Competition"
+                            name="competitionName"
+                            placeholder="Example: Monthly Collection Competition"
                             required
                         >
 
                     </div>
 
+
+                    <!-- DATE -->
 
                     <div class="form-group">
 
                         <label for="competitionDate">
 
                             Competition Date
+                            <span class="required">*</span>
 
                         </label>
 
                         <input
                             type="date"
                             id="competitionDate"
+                            name="competitionDate"
                             required
                         >
 
                     </div>
 
 
+                    <!-- END TIME -->
+
                     <div class="form-group">
 
                         <label for="competitionEndTime">
 
                             Competition End Time
+                            <span class="required">*</span>
 
                         </label>
 
                         <input
                             type="time"
                             id="competitionEndTime"
+                            name="competitionEndTime"
                             required
                         >
 
@@ -1573,7 +1707,9 @@
 
 
 
-                <!-- PARTICIPANTS -->
+                <!-- ==================================================
+                     COMPETITION SIDES
+                =================================================== -->
 
                 <div class="section-title">
 
@@ -1581,42 +1717,144 @@
 
                         <i class="fa-solid fa-users"></i>
 
-                        Competition Participants
+                        Competition Sides
 
                     </h2>
 
                 </div>
 
 
-                <div class="participant-heading">
-
-                    <h3>
-                        Name + Region / State
-                    </h3>
+                <div class="competition-wrapper">
 
 
-                    <button
-                        type="button"
-                        class="add-participant-btn"
-                        id="addParticipantBtn"
-                    >
+                    <!-- ==================================================
+                         SIDE A
+                    =================================================== -->
 
-                        <i class="fa-solid fa-plus"></i>
+                    <div class="side-card">
 
-                        Add Participant
+                        <div class="side-header">
 
-                    </button>
+                            <h3 class="side-a-title">
+
+                                <i class="fa-solid fa-flag"></i>
+
+                                Side A
+
+                            </h3>
+
+
+                            <button
+                                type="button"
+                                class="add-row-btn"
+                                id="addSideARow"
+                            >
+
+                                <i class="fa-solid fa-plus"></i>
+
+                                Add
+
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="side-body"
+                            id="sideAContainer"
+                        ></div>
+
+                    </div>
+
+
+
+                    <!-- ==================================================
+                         VS
+                    =================================================== -->
+
+                    <div class="vs-container">
+
+                        <div class="vs-circle">
+
+                            VS
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ==================================================
+                         SIDE B
+                    =================================================== -->
+
+                    <div class="side-card">
+
+                        <div class="side-header">
+
+                            <h3 class="side-b-title">
+
+                                <i class="fa-solid fa-flag"></i>
+
+                                Side B
+
+                            </h3>
+
+
+                            <button
+                                type="button"
+                                class="add-row-btn"
+                                id="addSideBRow"
+                            >
+
+                                <i class="fa-solid fa-plus"></i>
+
+                                Add
+
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="side-body"
+                            id="sideBContainer"
+                        ></div>
+
+                    </div>
 
                 </div>
 
 
-                <div
-                    id="participantContainer"
-                ></div>
+
+                <!-- ==================================================
+                     NOTE
+                =================================================== -->
+
+                <div class="calculation-note">
+
+                    <strong>
+                        Important:
+                    </strong>
+
+                    Yahan collection / amount / unit enter nahi kiya
+                    jayega. Competition ke participants sirf Region /
+                    State ke through select honge.
+
+                    <br>
+
+                    Competition Date aur End Time future calculation
+                    mein cut-off ke liye use honge. End Time ke baad ki
+                    Daily Collection entry is competition mein count
+                    nahi hogi.
+
+                </div>
 
 
 
-                <!-- MESSAGE -->
+                <!-- ==================================================
+                     MESSAGE
+                =================================================== -->
 
                 <div
                     id="competitionMessage"
@@ -1625,13 +1863,15 @@
 
 
 
-                <!-- ACTIONS -->
+                <!-- ==================================================
+                     ACTIONS
+                ================================================== -->
 
                 <div class="form-actions">
 
 
                     <button
-                        type="button"
+                        type="reset"
                         class="btn btn-secondary"
                         id="resetCompetitionBtn"
                     >
@@ -1657,81 +1897,35 @@
 
                 </div>
 
+
             </form>
 
         </div>
 
+    </main>
 
 
-        <!-- ==================================================
-             EXISTING COMPETITIONS
-        ================================================== -->
 
-        <div class="competition-list-card">
+    <!-- ==================================================
+         PAGE LOADING
+    ================================================== -->
 
-            <div class="competition-list-header">
+    <div
+        id="pageLoading"
+        class="page-loading"
+    >
 
-                <h2>
+        <div class="page-loading-box">
 
-                    <i class="fa-solid fa-list"></i>
+            <i class="fa-solid fa-spinner fa-spin"></i>
 
-                    Existing Competitions
-
-                </h2>
-
-            </div>
-
-
-            <div class="competition-table-wrap">
-
-                <table class="competition-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Competition
-                            </th>
-
-                            <th>
-                                Date
-                            </th>
-
-                            <th>
-                                End Time
-                            </th>
-
-                            <th>
-                                Participants
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th>
-                                Actions
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody
-                        id="competitionTableBody"
-                    >
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            <span>
+                Loading Competition...
+            </span>
 
         </div>
 
-    </main>
+    </div>
 
 
 
