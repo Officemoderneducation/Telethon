@@ -17,7 +17,7 @@
 
     <!-- ==================================================
          FONT AWESOME
-    =================================================== -->
+    ================================================== -->
 
     <link
         rel="stylesheet"
@@ -27,9 +27,13 @@
 
     <!-- ==================================================
          STYLE
-    =================================================== -->
+    ================================================== -->
 
     <style>
+
+        /* ==================================================
+           RESET
+        ================================================== */
 
         * {
             box-sizing: border-box;
@@ -37,6 +41,10 @@
             padding: 0;
         }
 
+
+        /* ==================================================
+           BODY
+        ================================================== */
 
         body {
 
@@ -58,7 +66,7 @@
 
         /* ==================================================
            HEADER
-        =================================================== */
+        ================================================== */
 
         .competition-header {
 
@@ -103,6 +111,10 @@
                 15px;
         }
 
+
+        /* ==================================================
+           BRAND
+        ================================================== */
 
         .brand {
 
@@ -171,6 +183,10 @@
         }
 
 
+        /* ==================================================
+           PUBLIC BADGE
+        ================================================== */
+
         .public-badge {
 
             display:
@@ -207,9 +223,12 @@
 
         /* ==================================================
            MAIN
-        =================================================== */
+        ================================================== */
 
         .main-container {
+
+            width:
+                100%;
 
             max-width:
                 1250px;
@@ -218,53 +237,43 @@
                 0 auto;
 
             padding:
-                30px 20px 50px;
+                35px 20px 50px;
         }
 
 
         /* ==================================================
-           PAGE INTRO
-        =================================================== */
+           PAGE TITLE
+        ================================================== */
 
-        .page-intro {
+        .page-title {
 
             text-align:
                 center;
 
             margin-bottom:
-                28px;
+                30px;
         }
 
 
-        .page-intro h2 {
+        .page-title h2 {
 
             font-size:
-                28px;
+                30px;
+
+            line-height:
+                1.3;
+
+            font-weight:
+                800;
 
             color:
                 #111827;
-
-            margin-bottom:
-                8px;
-        }
-
-
-        .page-intro p {
-
-            color:
-                #6b7280;
-
-            font-size:
-                14px;
-
-            line-height:
-                1.6;
         }
 
 
         /* ==================================================
            LOADING
-        =================================================== */
+        ================================================== */
 
         .loading-box {
 
@@ -275,10 +284,10 @@
                 1px solid #e5e7eb;
 
             border-radius:
-                14px;
+                16px;
 
             padding:
-                45px 20px;
+                50px 20px;
 
             text-align:
                 center;
@@ -304,11 +313,13 @@
         @keyframes spin {
 
             from {
+
                 transform:
                     rotate(0deg);
             }
 
             to {
+
                 transform:
                     rotate(360deg);
             }
@@ -318,9 +329,12 @@
 
         /* ==================================================
            EMPTY
-        =================================================== */
+        ================================================== */
 
         .empty-box {
+
+            display:
+                none;
 
             background:
                 #ffffff;
@@ -329,23 +343,23 @@
                 1px solid #e5e7eb;
 
             border-radius:
-                14px;
+                16px;
 
             padding:
-                50px 20px;
+                55px 20px;
 
             text-align:
                 center;
-
-            display:
-                none;
         }
 
 
         .empty-box i {
 
+            display:
+                block;
+
             font-size:
-                40px;
+                42px;
 
             color:
                 #9ca3af;
@@ -358,7 +372,10 @@
         .empty-box h3 {
 
             font-size:
-                18px;
+                19px;
+
+            color:
+                #111827;
 
             margin-bottom:
                 7px;
@@ -377,9 +394,12 @@
 
         /* ==================================================
            ERROR
-        =================================================== */
+        ================================================== */
 
         .error-box {
+
+            display:
+                none;
 
             background:
                 #ffffff;
@@ -388,35 +408,46 @@
                 1px solid #fecaca;
 
             border-radius:
-                14px;
+                16px;
 
             padding:
-                30px 20px;
+                35px 20px;
 
             text-align:
                 center;
 
             color:
                 #991b1b;
-
-            display:
-                none;
         }
 
 
         .error-box i {
 
             font-size:
-                32px;
+                35px;
 
             margin-bottom:
-                10px;
+                12px;
+        }
+
+
+        .error-box h3 {
+
+            margin-bottom:
+                7px;
+        }
+
+
+        .error-box p {
+
+            font-size:
+                14px;
         }
 
 
         /* ==================================================
-           COMPETITIONS
-        =================================================== */
+           COMPETITION LIST
+        ================================================== */
 
         #competitionList {
 
@@ -433,9 +464,12 @@
 
         /* ==================================================
            COMPETITION CARD
-        =================================================== */
+        ================================================== */
 
         .competition-card {
+
+            width:
+                100%;
 
             background:
                 #ffffff;
@@ -444,36 +478,56 @@
                 1px solid #e5e7eb;
 
             border-radius:
-                16px;
+                18px;
 
-            overflow:
-                hidden;
+            padding:
+                42px 45px;
 
             box-shadow:
-                0 5px 18px
+                0 8px 25px
                 rgba(
                     0,
                     0,
                     0,
-                    0.05
+                    0.06
                 );
+
+            text-align:
+                center;
         }
 
 
         /* ==================================================
-           CARD HEADER
-        =================================================== */
+           COMPETITION NAME
+        ================================================== */
 
-        .competition-card-header {
+        .competition-name {
 
-            padding:
-                18px 22px;
+            font-size:
+                30px;
 
-            background:
-                #f9fafb;
+            line-height:
+                1.35;
 
-            border-bottom:
-                1px solid #e5e7eb;
+            font-weight:
+                800;
+
+            color:
+                #111827;
+
+            margin-bottom:
+                14px;
+
+            word-break:
+                break-word;
+        }
+
+
+        /* ==================================================
+           COMPETITION END
+        ================================================== */
+
+        .competition-end {
 
             display:
                 flex;
@@ -482,163 +536,44 @@
                 center;
 
             justify-content:
-                space-between;
+                center;
 
             gap:
-                15px;
-        }
-
-
-        .competition-title-area {
-
-            min-width:
-                0;
-        }
-
-
-        .competition-title {
+                6px;
 
             font-size:
-                20px;
+                16px;
+
+            color:
+                #6b7280;
+
+            margin-bottom:
+                40px;
+        }
+
+
+        .competition-end-label {
+
+            font-weight:
+                500;
+        }
+
+
+        .competition-end-time {
 
             font-weight:
                 700;
 
             color:
                 #111827;
-
-            margin-bottom:
-                7px;
-
-            word-break:
-                break-word;
-        }
-
-
-        .competition-meta {
-
-            display:
-                flex;
-
-            flex-wrap:
-                wrap;
-
-            gap:
-                8px;
-        }
-
-
-        .meta-item {
-
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            gap:
-                6px;
-
-            padding:
-                6px 9px;
-
-            border-radius:
-                7px;
-
-            background:
-                #ffffff;
-
-            border:
-                1px solid #e5e7eb;
-
-            color:
-                #4b5563;
-
-            font-size:
-                12px;
-
-            font-weight:
-                600;
-        }
-
-
-        .meta-item i {
-
-            color:
-                #4f46e5;
         }
 
 
         /* ==================================================
-           STATUS
-        =================================================== */
+           VS SECTION
+        ================================================== */
 
-        .competition-status {
-
-            flex-shrink:
-                0;
-
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            gap:
-                6px;
-
-            padding:
-                8px 12px;
-
-            border-radius:
-                20px;
-
-            font-size:
-                12px;
-
-            font-weight:
-                700;
-        }
-
-
-        .status-live {
-
-            background:
-                #dcfce7;
-
-            color:
-                #166534;
-
-            border:
-                1px solid #bbf7d0;
-        }
-
-
-        .status-ended {
-
-            background:
-                #f3f4f6;
-
-            color:
-                #4b5563;
-
-            border:
-                1px solid #d1d5db;
-        }
-
-
-        /* ==================================================
-           VS AREA
-        =================================================== */
-
-        .competition-content {
-
-            padding:
-                25px;
-        }
-
-
-        .vs-wrapper {
+        .competition-match {
 
             display:
                 grid;
@@ -648,7 +583,7 @@
                     0,
                     1fr
                 )
-                90px
+                80px
                 minmax(
                     0,
                     1fr
@@ -658,34 +593,18 @@
                 center;
 
             gap:
-                18px;
+                25px;
         }
 
 
         /* ==================================================
-           SIDE
-        =================================================== */
+           COMPETITION SIDE
+        ================================================== */
 
         .competition-side {
 
-            border:
-                1px solid #e5e7eb;
-
-            border-radius:
-                13px;
-
-            overflow:
-                hidden;
-
-            background:
-                #ffffff;
-        }
-
-
-        .side-heading {
-
-            padding:
-                13px 16px;
+            min-height:
+                105px;
 
             display:
                 flex;
@@ -694,158 +613,43 @@
                 center;
 
             justify-content:
-                space-between;
-
-            gap:
-                10px;
-
-            font-weight:
-                700;
-
-            font-size:
-                15px;
-        }
-
-
-        .side-a-heading {
-
-            background:
-                #eff6ff;
-
-            color:
-                #1d4ed8;
-
-            border-bottom:
-                1px solid #dbeafe;
-        }
-
-
-        .side-b-heading {
-
-            background:
-                #fef2f2;
-
-            color:
-                #b91c1c;
-
-            border-bottom:
-                1px solid #fee2e2;
-        }
-
-
-        /* ==================================================
-           SIDE ITEMS
-        =================================================== */
-
-        .side-items {
+                center;
 
             padding:
-                13px;
-        }
+                20px 25px;
 
-
-        .side-item {
-
-            padding:
-                11px 12px;
+            background:
+                #f9fafb;
 
             border:
                 1px solid #e5e7eb;
 
             border-radius:
-                8px;
-
-            margin-bottom:
-                9px;
-
-            background:
-                #fafafa;
-
-            font-size:
-                13px;
-
-            line-height:
-                1.5;
-        }
-
-
-        .side-item:last-child {
-
-            margin-bottom:
-                0;
-        }
-
-
-        .side-item-region {
-
-            font-weight:
-                700;
+                14px;
 
             color:
                 #111827;
-        }
-
-
-        .side-item-state {
-
-            color:
-                #6b7280;
-
-            margin-top:
-                2px;
-        }
-
-
-        .side-item-type {
-
-            display:
-                inline-block;
-
-            margin-top:
-                5px;
 
             font-size:
-                10px;
-
-            padding:
-                3px 6px;
-
-            border-radius:
-                5px;
-
-            background:
-                #f3f4f6;
-
-            color:
-                #6b7280;
+                21px;
 
             font-weight:
                 700;
 
-            text-transform:
-                uppercase;
-        }
-
-
-        .no-side-data {
-
-            padding:
-                20px 10px;
+            line-height:
+                1.45;
 
             text-align:
                 center;
 
-            color:
-                #9ca3af;
-
-            font-size:
-                13px;
+            word-break:
+                break-word;
         }
 
 
         /* ==================================================
            VS
-        =================================================== */
+        ================================================== */
 
         .vs-area {
 
@@ -863,10 +667,10 @@
         .vs-circle {
 
             width:
-                68px;
+                62px;
 
             height:
-                68px;
+                62px;
 
             border-radius:
                 50%;
@@ -887,311 +691,117 @@
                 center;
 
             font-size:
-                19px;
+                17px;
 
             font-weight:
                 800;
 
             box-shadow:
-                0 6px 16px
+                0 5px 15px
                 rgba(
                     0,
                     0,
                     0,
-                    0.16
+                    0.15
                 );
         }
 
 
         /* ==================================================
-           RESULT
-        =================================================== */
+           MULTIPLE COMPETITIONS
+        ================================================== */
 
-        .result-area {
-
-            margin-top:
-                20px;
-
-            border-top:
-                1px solid #e5e7eb;
-
-            padding-top:
-                20px;
-        }
-
-
-        .result-label {
-
-            text-align:
-                center;
-
-            color:
-                #6b7280;
-
-            font-size:
-                12px;
-
-            font-weight:
-                700;
-
-            text-transform:
-                uppercase;
-
-            letter-spacing:
-                0.5px;
-
-            margin-bottom:
-                12px;
-        }
-
-
-        .result-grid {
+        .competition-number {
 
             display:
-                grid;
-
-            grid-template-columns:
-                1fr
-                100px
-                1fr;
-
-            align-items:
-                center;
-
-            gap:
-                15px;
-        }
-
-
-        .result-side {
-
-            padding:
-                15px;
-
-            border-radius:
-                11px;
-
-            text-align:
-                center;
-        }
-
-
-        .result-side-a {
-
-            background:
-                #eff6ff;
-
-            border:
-                1px solid #dbeafe;
-        }
-
-
-        .result-side-b {
-
-            background:
-                #fef2f2;
-
-            border:
-                1px solid #fee2e2;
-        }
-
-
-        .result-side-name {
-
-            font-size:
-                13px;
-
-            font-weight:
-                700;
-
-            margin-bottom:
-                5px;
-        }
-
-
-        .result-side-a .result-side-name {
-
-            color:
-                #1d4ed8;
-        }
-
-
-        .result-side-b .result-side-name {
-
-            color:
-                #b91c1c;
-        }
-
-
-        .unit-value {
-
-            font-size:
-                27px;
-
-            font-weight:
-                800;
-
-            color:
-                #111827;
-        }
-
-
-        .unit-label {
-
-            font-size:
-                11px;
-
-            color:
-                #6b7280;
-
-            font-weight:
-                700;
-
-        }
-
-
-        .result-vs {
-
-            text-align:
-                center;
-
-            font-size:
-                13px;
-
-            color:
-                #9ca3af;
-
-            font-weight:
-                800;
+                none;
         }
 
 
         /* ==================================================
-           WINNER
-        =================================================== */
-
-        .winner-box {
-
-            margin-top:
-                15px;
-
-            text-align:
-                center;
-
-            padding:
-                11px;
-
-            border-radius:
-                9px;
-
-            background:
-                #fffbeb;
-
-            border:
-                1px solid #fde68a;
-
-            color:
-                #92400e;
-
-            font-size:
-                13px;
-
-            font-weight:
-                700;
-        }
-
-
-        .winner-box i {
-
-            margin-right:
-                5px;
-        }
-
-
-        /* ==================================================
-           CARD FOOTER
-        =================================================== */
-
-        .competition-card-footer {
-
-            padding:
-                12px 22px;
-
-            background:
-                #fafafa;
-
-            border-top:
-                1px solid #e5e7eb;
-
-            color:
-                #6b7280;
-
-            font-size:
-                12px;
-
-            text-align:
-                center;
-        }
-
-
-        /* ==================================================
-           RESPONSIVE
-        =================================================== */
+           TABLET
+        ================================================== */
 
         @media (
             max-width: 800px
         ) {
 
-            .competition-card-header {
+            .main-container {
 
-                align-items:
-                    flex-start;
-
-                flex-direction:
-                    column;
-
+                padding:
+                    28px 15px 40px;
             }
 
 
-            .competition-status {
+            .page-title h2 {
 
-                align-self:
-                    flex-start;
-
+                font-size:
+                    26px;
             }
 
 
-            .vs-wrapper {
+            .competition-card {
+
+                padding:
+                    32px 25px;
+            }
+
+
+            .competition-name {
+
+                font-size:
+                    26px;
+            }
+
+
+            .competition-match {
 
                 grid-template-columns:
                     1fr;
 
+                gap:
+                    15px;
             }
 
 
             .vs-area {
 
                 padding:
-                    5px 0;
-
+                    2px 0;
             }
 
 
             .vs-circle {
 
                 width:
-                    55px;
+                    52px;
 
                 height:
-                    55px;
+                    52px;
 
                 font-size:
-                    16px;
+                    15px;
+            }
 
+
+            .competition-side {
+
+                min-height:
+                    85px;
+
+                font-size:
+                    19px;
+
+                padding:
+                    18px;
             }
 
         }
 
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
 
         @media (
             max-width: 600px
@@ -1201,15 +811,26 @@
 
                 padding:
                     14px 15px;
-
             }
 
 
-            .header-inner {
+            .brand {
 
-                align-items:
-                    flex-start;
+                gap:
+                    9px;
+            }
 
+
+            .brand-icon {
+
+                width:
+                    40px;
+
+                height:
+                    40px;
+
+                font-size:
+                    18px;
             }
 
 
@@ -1217,7 +838,6 @@
 
                 font-size:
                     18px;
-
             }
 
 
@@ -1225,74 +845,127 @@
 
                 font-size:
                     11px;
-
             }
 
 
             .public-badge {
 
-                font-size:
-                    11px;
-
                 padding:
                     7px 9px;
 
+                font-size:
+                    11px;
             }
 
 
             .main-container {
 
                 padding:
-                    22px 12px 40px;
-
+                    25px 12px 35px;
             }
 
 
-            .page-intro h2 {
+            .page-title {
+
+                margin-bottom:
+                    22px;
+            }
+
+
+            .page-title h2 {
+
+                font-size:
+                    23px;
+            }
+
+
+            .competition-card {
+
+                padding:
+                    28px 16px;
+
+                border-radius:
+                    15px;
+            }
+
+
+            .competition-name {
 
                 font-size:
                     23px;
 
+                margin-bottom:
+                    12px;
             }
 
 
-            .competition-content {
+            .competition-end {
 
-                padding:
-                    15px;
+                font-size:
+                    14px;
 
+                margin-bottom:
+                    28px;
             }
 
 
-            .competition-card-header {
+            .competition-side {
 
-                padding:
-                    15px;
-
-            }
-
-
-            .competition-title {
+                min-height:
+                    78px;
 
                 font-size:
                     17px;
 
+                padding:
+                    15px;
             }
 
 
-            .result-grid {
+            .vs-circle {
 
-                grid-template-columns:
-                    1fr;
+                width:
+                    48px;
 
+                height:
+                    48px;
+
+                font-size:
+                    14px;
+            }
+
+        }
+
+
+        /* ==================================================
+           SMALL MOBILE
+        ================================================== */
+
+        @media (
+            max-width: 380px
+        ) {
+
+            .competition-name {
+
+                font-size:
+                    21px;
             }
 
 
-            .result-vs {
+            .competition-end {
 
-                display:
-                    none;
+                flex-direction:
+                    column;
 
+                gap:
+                    3px;
+            }
+
+
+            .competition-side {
+
+                font-size:
+                    16px;
             }
 
         }
@@ -1306,12 +979,15 @@
 
 
     <!-- ==================================================
-         PUBLIC HEADER
-    =================================================== -->
+         HEADER
+    ================================================== -->
 
     <header class="competition-header">
 
         <div class="header-inner">
+
+
+            <!-- BRAND -->
 
             <div class="brand">
 
@@ -1320,6 +996,7 @@
                     <i class="fa-solid fa-trophy"></i>
 
                 </div>
+
 
                 <div>
 
@@ -1336,6 +1013,8 @@
             </div>
 
 
+            <!-- PUBLIC -->
+
             <div class="public-badge">
 
                 <i class="fa-solid fa-globe"></i>
@@ -1343,6 +1022,7 @@
                 Public
 
             </div>
+
 
         </div>
 
@@ -1352,32 +1032,28 @@
 
     <!-- ==================================================
          MAIN
-    =================================================== -->
+    ================================================== -->
 
     <main class="main-container">
 
 
         <!-- ==================================================
-             INTRO
-        =================================================== -->
+             PAGE TITLE
+        ================================================== -->
 
-        <section class="page-intro">
+        <div class="page-title">
 
             <h2>
-                Competition
+                Academic Department Competition
             </h2>
 
-            <p>
-                Region aur State wise collection competition
-            </p>
-
-        </section>
+        </div>
 
 
 
         <!-- ==================================================
              LOADING
-        =================================================== -->
+        ================================================== -->
 
         <div
             id="loadingBox"
@@ -1386,9 +1062,9 @@
 
             <i class="fa-solid fa-spinner"></i>
 
-            <div>
-                Loading Competitions...
-            </div>
+            <p>
+                Loading Competition...
+            </p>
 
         </div>
 
@@ -1396,7 +1072,7 @@
 
         <!-- ==================================================
              ERROR
-        =================================================== -->
+        ================================================== -->
 
         <div
             id="errorBox"
@@ -1419,7 +1095,7 @@
 
         <!-- ==================================================
              EMPTY
-        =================================================== -->
+        ================================================== -->
 
         <div
             id="emptyBox"
@@ -1442,7 +1118,7 @@
 
         <!-- ==================================================
              COMPETITION LIST
-        =================================================== -->
+        ================================================== -->
 
         <div
             id="competitionList"
@@ -1454,8 +1130,8 @@
 
 
     <!-- ==================================================
-         JAVASCRIPT
-    =================================================== -->
+         COMPETITION JAVASCRIPT
+    ================================================== -->
 
     <script
         type="module"
