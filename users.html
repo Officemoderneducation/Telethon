@@ -164,6 +164,24 @@
 
 
         /* ======================================
+           HEADER RIGHT SIDE
+        ======================================= */
+
+        .header-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            width: 100%;
+        }
+
+
+        /* ======================================
            SEARCH
         ======================================= */
 
@@ -193,6 +211,56 @@
 
             box-shadow:
                 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+
+        /* ======================================
+           CSV DOWNLOAD BUTTON
+        ======================================= */
+
+        .csv-download-btn {
+
+            height: 40px;
+
+            padding: 0 15px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #198754;
+
+            color: #ffffff;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            white-space: nowrap;
+
+            transition: 0.2s;
+        }
+
+
+        .csv-download-btn:hover {
+
+            background: #157347;
+        }
+
+
+        .csv-download-btn:active {
+
+            transform: scale(0.98);
         }
 
 
@@ -621,7 +689,21 @@
             }
 
 
+            .header-actions {
+
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+
             .search-box {
+
+                width: 100%;
+            }
+
+
+            .csv-download-btn {
 
                 width: 100%;
             }
@@ -713,15 +795,35 @@
                 </h3>
 
 
-                <!-- LIVE SEARCH -->
+                <div class="header-actions">
 
-                <input
-                    type="text"
-                    id="searchUser"
-                    class="search-box"
-                    placeholder="Search Teacher..."
-                    autocomplete="off"
-                >
+
+                    <!-- CSV DOWNLOAD -->
+
+                    <button
+                        type="button"
+                        id="downloadCSV"
+                        class="csv-download-btn"
+                    >
+
+                        <i class="fa-solid fa-file-csv"></i>
+
+                        Download CSV
+
+                    </button>
+
+
+                    <!-- LIVE SEARCH -->
+
+                    <input
+                        type="text"
+                        id="searchUser"
+                        class="search-box"
+                        placeholder="Search Teacher..."
+                        autocomplete="off"
+                    >
+
+                </div>
 
             </div>
 
