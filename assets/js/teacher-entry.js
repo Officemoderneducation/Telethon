@@ -6,48 +6,32 @@
 // Existing / Old Entries are NOT changed.
 // Every new entry is saved as a NEW document.
 // Same Teacher + Same Date multiple entries are allowed.
-//
-// Example:
-//
-// T001 | 29 August | ₹500
-// T001 | 29 August | ₹1000
-// T001 | 29 August | ₹700
-//
-// Later Daily Report can calculate:
-// ₹500 + ₹1000 + ₹700 = ₹2200
 // ======================================================
 
 
+// ======================================================
+// FIREBASE
+// ======================================================
+
 import { db } from "./firebase-config.js";
 
-
 import {
-
     collection,
-
     getDocs,
-
     addDoc,
-
     serverTimestamp
-
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
-
 
 
 // ======================================================
 // COLLECTIONS
 // ======================================================
 
-const EMPLOYEES_COLLECTION =
-    "employees";
+const EMPLOYEES_COLLECTION = "employees";
 
-
-const DAILY_ENTRY_COLLECTION =
-    "daily_entry";
-
+const DAILY_ENTRY_COLLECTION = "daily_entry";
 
 
 // ======================================================
@@ -55,64 +39,34 @@ const DAILY_ENTRY_COLLECTION =
 // ======================================================
 
 const teacherEntryForm =
-    document.getElementById(
-        "teacherEntryForm"
-    );
-
+    document.getElementById("teacherEntryForm");
 
 const teacherSelect =
-    document.getElementById(
-        "teacherSelect"
-    );
-
+    document.getElementById("teacherSelect");
 
 const employeeCodeInput =
-    document.getElementById(
-        "employeeCode"
-    );
-
+    document.getElementById("employeeCode");
 
 const teacherNameInput =
-    document.getElementById(
-        "teacherName"
-    );
-
+    document.getElementById("teacherName");
 
 const entryDateInput =
-    document.getElementById(
-        "entryDate"
-    );
-
+    document.getElementById("entryDate");
 
 const collectionAmountInput =
-    document.getElementById(
-        "collectionAmount"
-    );
-
+    document.getElementById("collectionAmount");
 
 const saveEntryBtn =
-    document.getElementById(
-        "saveEntryBtn"
-    );
-
+    document.getElementById("saveEntryBtn");
 
 const resetEntryBtn =
-    document.getElementById(
-        "resetEntryBtn"
-    );
-
+    document.getElementById("resetEntryBtn");
 
 const formMessage =
-    document.getElementById(
-        "formMessage"
-    );
-
+    document.getElementById("formMessage");
 
 const regionUserInfo =
-    document.getElementById(
-        "regionUserInfo"
-    );
-
+    document.getElementById("regionUserInfo");
 
 
 // ======================================================
@@ -121,25 +75,62 @@ const regionUserInfo =
 
 let allEmployees = [];
 
-
 let allowedEmployees = [];
 
 
-
 // ======================================================
-// HELPER - NORMALIZE
+// NORMALIZE
 // ======================================================
 
 function normalize(value) {
 
-    return String(
-        value || ""
-    )
-    .trim()
-    .toLowerCase();
+    return String(value || "")
+        .trim()
+        .toLowerCase();
 
 }
 
+
+// ======================================================
+// ARRAY HELPER
+// ======================================================
+
+function makeArray(value) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return [];
+
+    }
+
+
+    if (Array.isArray(value)) {
+
+        return value
+            .map(function (item) {
+
+                return String(item || "").trim();
+
+            })
+            .filter(Boolean);
+
+    }
+
+
+    return String(value)
+        .split(",")
+        .map(function (item) {
+
+            return item.trim();
+
+        })
+        .filter(Boolean);
+
+}
 
 
 // ======================================================
@@ -168,11 +159,9 @@ function getEmployeeCode(employee) {
 
         ""
 
-    )
-    .trim();
+    ).trim();
 
 }
-
 
 
 // ======================================================
@@ -195,15 +184,13 @@ function getTeacherName(employee) {
 
         ""
 
-    )
-    .trim();
+    ).trim();
 
 }
 
 
-
 // ======================================================
-// GET REGION
+// GET EMPLOYEE REGION
 // ======================================================
 
 function getEmployeeRegion(employee) {
@@ -214,17 +201,19 @@ function getEmployeeRegion(employee) {
 
         employee.Region ||
 
+        employee.regionName ||
+
+        employee.region_name ||
+
         ""
 
-    )
-    .trim();
+    ).trim();
 
 }
 
 
-
 // ======================================================
-// GET STATE
+// GET EMPLOYEE STATE
 // ======================================================
 
 function getEmployeeState(employee) {
@@ -235,13 +224,15 @@ function getEmployeeState(employee) {
 
         employee.State ||
 
+        employee.stateName ||
+
+        employee.state_name ||
+
         ""
 
-    )
-    .trim();
+    ).trim();
 
 }
-
 
 
 // ======================================================
@@ -254,19 +245,17 @@ function getEmployeeJamiatul(employee) {
 
         employee.jamiatulMadina ||
 
-        employee.jamiatul ||
-
         employee.jamiatul_madina ||
+
+        employee.jamiatul ||
 
         employee.madrasa ||
 
         ""
 
-    )
-    .trim();
+    ).trim();
 
 }
-
 
 
 // ======================================================
@@ -275,8 +264,7 @@ function getEmployeeJamiatul(employee) {
 
 function getTodayDate() {
 
-    const today =
-        new Date();
+    const today = new Date();
 
 
     const year =
@@ -286,21 +274,13 @@ function getTodayDate() {
     const month =
         String(
             today.getMonth() + 1
-        )
-        .padStart(
-            2,
-            "0"
-        );
+        ).padStart(2, "0");
 
 
     const day =
         String(
             today.getDate()
-        )
-        .padStart(
-            2,
-            "0"
-        );
+        ).padStart(2, "0");
 
 
     return (
@@ -312,7 +292,6 @@ function getTodayDate() {
     );
 
 }
-
 
 
 // ======================================================
@@ -336,8 +315,7 @@ function showMessage(
 
 
     formMessage.className =
-        "message " +
-        type;
+        "message " + type;
 
 
     setTimeout(
@@ -357,7 +335,6 @@ function showMessage(
 }
 
 
-
 // ======================================================
 // GET REGION USER ACCESS
 // ======================================================
@@ -371,6 +348,10 @@ function getRegionUserAccess() {
 
 
     if (!savedAccess) {
+
+        console.warn(
+            "regionUserAccess not found in localStorage."
+        );
 
         return null;
 
@@ -386,11 +367,10 @@ function getRegionUserAccess() {
     }
     catch (error) {
 
-        console.error(
-            "Region access parse error:",
-            error
+        console.warn(
+            "regionUserAccess is not JSON:",
+            savedAccess
         );
-
 
         return savedAccess;
 
@@ -399,32 +379,89 @@ function getRegionUserAccess() {
 }
 
 
-
 // ======================================================
-// CHECK EMPLOYEE ACCESS
+// GET ACCESS RULES
+//
+// Supports:
+// Array
+// Object
+// String
 // ======================================================
 
-function employeeMatchesRegionAccess(
-    employee
-) {
-
-    const access =
-        getRegionUserAccess();
-
-
-    /*
-    If access information is unavailable,
-    we do not block the page here.
-    Existing Region User access data structures
-    can be connected later if required.
-    */
+function getAccessRules(access) {
 
     if (!access) {
 
-        return true;
+        return [];
 
     }
 
+
+    if (Array.isArray(access)) {
+
+        return access;
+
+    }
+
+
+    if (
+        typeof access === "object"
+    ) {
+
+        // Existing system may store rules
+        // inside accessRules / access
+
+        if (
+            Array.isArray(
+                access.accessRules
+            )
+        ) {
+
+            return access.accessRules;
+
+        }
+
+
+        if (
+            Array.isArray(
+                access.rules
+            )
+        ) {
+
+            return access.rules;
+
+        }
+
+
+        if (
+            Array.isArray(
+                access.access
+            )
+        ) {
+
+            return access.access;
+
+        }
+
+
+        return [access];
+
+    }
+
+
+    return [access];
+
+}
+
+
+// ======================================================
+// CHECK SINGLE ACCESS RULE
+// ======================================================
+
+function employeeMatchesSingleRule(
+    employee,
+    rule
+) {
 
     const employeeRegion =
         normalize(
@@ -443,162 +480,116 @@ function employeeMatchesRegionAccess(
 
 
     // ==============================================
-    // ACCESS AS ARRAY
+    // STRING RULE
     // ==============================================
 
     if (
-        Array.isArray(
-            access
-        )
+        typeof rule === "string"
     ) {
 
-        return access.some(
-            function (rule) {
-
-                if (
-                    typeof rule ===
-                    "string"
-                ) {
-
-                    return (
-                        employeeRegion ===
-                        normalize(rule)
-                    );
-
-                }
+        const ruleValue =
+            normalize(rule);
 
 
-                if (
-                    typeof rule ===
-                    "object"
-                ) {
+        // Region match
 
-                    const ruleRegion =
-                        normalize(
-                            rule.region ||
-                            rule.Region ||
-                            ""
-                        );
+        if (
+            ruleValue ===
+            employeeRegion
+        ) {
 
+            return true;
 
-                    const ruleState =
-                        normalize(
-                            rule.state ||
-                            rule.State ||
-                            ""
-                        );
+        }
 
 
-                    if (
-                        ruleRegion &&
-                        ruleRegion !==
-                        employeeRegion
-                    ) {
+        // State match
 
-                        return false;
+        if (
+            ruleValue ===
+            employeeState
+        ) {
 
-                    }
+            return true;
 
-
-                    if (
-                        ruleState &&
-                        ruleState !==
-                        employeeState
-                    ) {
-
-                        return false;
-
-                    }
+        }
 
 
-                    return true;
-
-                }
-
-
-                return false;
-
-            }
-        );
+        return false;
 
     }
 
 
     // ==============================================
-    // ACCESS AS OBJECT
+    // INVALID RULE
     // ==============================================
 
     if (
-        typeof access ===
-        "object"
+        !rule ||
+        typeof rule !== "object"
     ) {
 
-        const accessRegion =
-            normalize(
-                access.region ||
-                access.Region ||
-                ""
-            );
+        return false;
+
+    }
 
 
-        let accessStates =
-            access.states ||
-            access.state ||
-            access.States ||
-            [];
+    // ==============================================
+    // GET RULE REGION
+    // ==============================================
+
+    const ruleRegion =
+        normalize(
+
+            rule.region ||
+
+            rule.Region ||
+
+            rule.regionName ||
+
+            rule.region_name ||
+
+            ""
+
+        );
 
 
-        if (
-            !Array.isArray(
-                accessStates
-            )
-        ) {
+    // ==============================================
+    // GET RULE STATES
+    // ==============================================
 
-            accessStates =
-                [accessStates];
+    let ruleStates =
 
-        }
+        rule.states ||
 
+        rule.States ||
 
-        accessStates =
-            accessStates.map(
-                normalize
-            );
+        rule.state ||
 
+        rule.State ||
 
-        // REGION CHECK
+        rule.stateName ||
 
-        if (
-            accessRegion &&
-            employeeRegion &&
-            accessRegion !==
-            employeeRegion
-        ) {
+        rule.state_name ||
 
-            return false;
-
-        }
+        [];
 
 
-        // STATE CHECK
+    ruleStates =
+        makeArray(ruleStates)
+            .map(normalize)
+            .filter(Boolean);
 
-        if (
-            accessStates.length > 0 &&
-            employeeState
-        ) {
 
-            if (
-                !accessStates.includes(
-                    employeeState
-                )
-            ) {
+    // ==============================================
+    // FULL ACCESS
+    // No region + no state restriction
+    // ==============================================
 
-                return false;
-
-            }
-
-        }
-
+    if (
+        !ruleRegion &&
+        ruleStates.length === 0
+    ) {
 
         return true;
 
@@ -606,18 +597,60 @@ function employeeMatchesRegionAccess(
 
 
     // ==============================================
-    // ACCESS AS STRING
+    // REGION CHECK
     // ==============================================
 
     if (
-        typeof access ===
-        "string"
+        ruleRegion
     ) {
 
-        return (
-            employeeRegion ===
-            normalize(access)
-        );
+        if (
+            !employeeRegion
+        ) {
+
+            return false;
+
+        }
+
+
+        if (
+            ruleRegion !==
+            employeeRegion
+        ) {
+
+            return false;
+
+        }
+
+    }
+
+
+    // ==============================================
+    // STATE CHECK
+    // ==============================================
+
+    if (
+        ruleStates.length > 0
+    ) {
+
+        if (
+            !employeeState
+        ) {
+
+            return false;
+
+        }
+
+
+        if (
+            !ruleStates.includes(
+                employeeState
+            )
+        ) {
+
+            return false;
+
+        }
 
     }
 
@@ -626,6 +659,65 @@ function employeeMatchesRegionAccess(
 
 }
 
+
+// ======================================================
+// CHECK EMPLOYEE ACCESS
+// ======================================================
+
+function employeeMatchesRegionAccess(
+    employee
+) {
+
+    const access =
+        getRegionUserAccess();
+
+
+    // ==============================================
+    // NO ACCESS DATA
+    //
+    // For safety we allow all teachers here.
+    // This prevents an empty dropdown because of
+    // missing localStorage data.
+    // ==============================================
+
+    if (!access) {
+
+        return true;
+
+    }
+
+
+    const rules =
+        getAccessRules(
+            access
+        );
+
+
+    if (
+        rules.length === 0
+    ) {
+
+        return true;
+
+    }
+
+
+    // ==============================================
+    // ANY RULE MATCH
+    // ==============================================
+
+    return rules.some(
+        function (rule) {
+
+            return employeeMatchesSingleRule(
+                employee,
+                rule
+            );
+
+        }
+    );
+
+}
 
 
 // ======================================================
@@ -646,8 +738,11 @@ function loadRegionUserInfo() {
         regionUserInfo.innerHTML = `
 
             <strong>
+
                 <i class="fa-solid fa-circle-user"></i>
+
                 ${userName}
+
             </strong>
 
             <br>
@@ -660,7 +755,6 @@ function loadRegionUserInfo() {
     }
 
 }
-
 
 
 // ======================================================
@@ -683,6 +777,10 @@ async function loadEmployees() {
 
         }
 
+
+        // ==============================================
+        // LOAD EMPLOYEES
+        // ==============================================
 
         const snapshot =
             await getDocs(
@@ -710,6 +808,12 @@ async function loadEmployees() {
             );
 
 
+        console.log(
+            "Total Employees:",
+            allEmployees.length
+        );
+
+
         // ==============================================
         // FILTER EMPLOYEES
         // ==============================================
@@ -723,6 +827,8 @@ async function loadEmployees() {
                             employee
                         );
 
+
+                    // Employee code required
 
                     if (!code) {
 
@@ -739,28 +845,39 @@ async function loadEmployees() {
             );
 
 
+        console.log(
+            "Allowed Teachers:",
+            allowedEmployees.length
+        );
+
+
+        console.log(
+            "Region User Access:",
+            getRegionUserAccess()
+        );
+
+
         // ==============================================
-        // SORT BY EMPLOYEE CODE
+        // SORT
         // ==============================================
 
         allowedEmployees.sort(
             function (a, b) {
 
-                return getEmployeeCode(
-                    a
-                )
-                .localeCompare(
-                    getEmployeeCode(
-                        b
-                    )
-                );
+                return getEmployeeCode(a)
+                    .localeCompare(
+                        getEmployeeCode(b)
+                    );
 
             }
         );
 
 
-        populateTeacherSelect();
+        // ==============================================
+        // POPULATE SELECT
+        // ==============================================
 
+        populateTeacherSelect();
 
     }
     catch (error) {
@@ -794,7 +911,6 @@ async function loadEmployees() {
 }
 
 
-
 // ======================================================
 // POPULATE TEACHER SELECT
 // ======================================================
@@ -817,6 +933,10 @@ function populateTeacherSelect() {
     `;
 
 
+    // ==============================================
+    // NO TEACHER
+    // ==============================================
+
     if (
         allowedEmployees.length === 0
     ) {
@@ -834,6 +954,10 @@ function populateTeacherSelect() {
 
     }
 
+
+    // ==============================================
+    // ADD TEACHERS
+    // ==============================================
 
     allowedEmployees.forEach(
         function (employee) {
@@ -861,9 +985,9 @@ function populateTeacherSelect() {
 
 
             option.textContent =
-                code +
-                " - " +
-                name;
+                name
+                    ? code + " - " + name
+                    : code;
 
 
             teacherSelect.appendChild(
@@ -874,7 +998,6 @@ function populateTeacherSelect() {
     );
 
 }
-
 
 
 // ======================================================
@@ -904,14 +1027,26 @@ if (teacherSelect) {
                 );
 
 
+            // ==========================================
+            // CLEAR
+            // ==========================================
+
             if (!employee) {
 
-                employeeCodeInput.value =
-                    "";
+                if (employeeCodeInput) {
+
+                    employeeCodeInput.value =
+                        "";
+
+                }
 
 
-                teacherNameInput.value =
-                    "";
+                if (teacherNameInput) {
+
+                    teacherNameInput.value =
+                        "";
+
+                }
 
 
                 return;
@@ -919,22 +1054,33 @@ if (teacherSelect) {
             }
 
 
-            employeeCodeInput.value =
-                getEmployeeCode(
-                    employee
-                );
+            // ==========================================
+            // SET TEACHER DATA
+            // ==========================================
+
+            if (employeeCodeInput) {
+
+                employeeCodeInput.value =
+                    getEmployeeCode(
+                        employee
+                    );
+
+            }
 
 
-            teacherNameInput.value =
-                getTeacherName(
-                    employee
-                );
+            if (teacherNameInput) {
+
+                teacherNameInput.value =
+                    getTeacherName(
+                        employee
+                    );
+
+            }
 
         }
     );
 
 }
-
 
 
 // ======================================================
@@ -951,16 +1097,22 @@ if (teacherEntryForm) {
 
 
             const selectedTeacherId =
-                teacherSelect.value;
+                teacherSelect
+                    ? teacherSelect.value
+                    : "";
 
 
             const entryDate =
-                entryDateInput.value;
+                entryDateInput
+                    ? entryDateInput.value
+                    : "";
 
 
             const amount =
                 Number(
-                    collectionAmountInput.value
+                    collectionAmountInput
+                        ? collectionAmountInput.value
+                        : 0
                 );
 
 
@@ -975,7 +1127,6 @@ if (teacherEntryForm) {
                     "error"
                 );
 
-
                 return;
 
             }
@@ -987,7 +1138,6 @@ if (teacherEntryForm) {
                     "Please select Entry Date.",
                     "error"
                 );
-
 
                 return;
 
@@ -1004,11 +1154,14 @@ if (teacherEntryForm) {
                     "error"
                 );
 
-
                 return;
 
             }
 
+
+            // ==========================================
+            // FIND TEACHER
+            // ==========================================
 
             const employee =
                 allowedEmployees.find(
@@ -1030,14 +1183,15 @@ if (teacherEntryForm) {
                     "error"
                 );
 
-
                 return;
 
             }
 
 
             const originalButtonHTML =
-                saveEntryBtn.innerHTML;
+                saveEntryBtn
+                    ? saveEntryBtn.innerHTML
+                    : "";
 
 
             try {
@@ -1046,19 +1200,21 @@ if (teacherEntryForm) {
                 // LOADING
                 // ======================================
 
-                saveEntryBtn.disabled =
-                    true;
+                if (saveEntryBtn) {
+
+                    saveEntryBtn.disabled =
+                        true;
 
 
-                saveEntryBtn.innerHTML = `
+                    saveEntryBtn.innerHTML = `
 
-                    <i
-                        class="fa-solid fa-spinner fa-spin"
-                    ></i>
+                        <i class="fa-solid fa-spinner fa-spin"></i>
 
-                    Saving...
+                        Saving...
 
-                `;
+                    `;
+
+                }
 
 
                 // ======================================
@@ -1082,11 +1238,9 @@ if (teacherEntryForm) {
                 // ======================================
                 // NEW ENTRY
                 //
-                // IMPORTANT:
-                // addDoc creates NEW document every time.
+                // Every submit creates a NEW document.
                 //
-                // Existing entries are NOT updated.
-                // Existing entries are NOT deleted.
+                // Old entries remain unchanged.
                 // ======================================
 
                 await addDoc(
@@ -1098,7 +1252,7 @@ if (teacherEntryForm) {
                     {
 
                         // ==================================
-                        // TEACHER DATA
+                        // TEACHER
                         // ==================================
 
                         employeeId:
@@ -1130,7 +1284,7 @@ if (teacherEntryForm) {
 
 
                         // ==================================
-                        // LOCATION DATA
+                        // LOCATION
                         // ==================================
 
                         region:
@@ -1152,7 +1306,7 @@ if (teacherEntryForm) {
 
 
                         // ==================================
-                        // ENTRY DATA
+                        // ENTRY
                         // ==================================
 
                         date:
@@ -1172,7 +1326,7 @@ if (teacherEntryForm) {
 
 
                         // ==================================
-                        // NEW SYSTEM MARKER
+                        // NEW SYSTEM
                         // ==================================
 
                         entrySource:
@@ -1217,12 +1371,15 @@ if (teacherEntryForm) {
                 );
 
 
-                collectionAmountInput.value =
-                    "";
+                if (collectionAmountInput) {
+
+                    collectionAmountInput.value =
+                        "";
 
 
-                collectionAmountInput.focus();
+                    collectionAmountInput.focus();
 
+                }
 
             }
             catch (error) {
@@ -1241,12 +1398,16 @@ if (teacherEntryForm) {
             }
             finally {
 
-                saveEntryBtn.disabled =
-                    false;
+                if (saveEntryBtn) {
+
+                    saveEntryBtn.disabled =
+                        false;
 
 
-                saveEntryBtn.innerHTML =
-                    originalButtonHTML;
+                    saveEntryBtn.innerHTML =
+                        originalButtonHTML;
+
+                }
 
             }
 
@@ -1254,7 +1415,6 @@ if (teacherEntryForm) {
     );
 
 }
-
 
 
 // ======================================================
@@ -1267,33 +1427,52 @@ if (resetEntryBtn) {
         "click",
         function () {
 
-            teacherEntryForm.reset();
+            if (teacherEntryForm) {
+
+                teacherEntryForm.reset();
+
+            }
 
 
-            employeeCodeInput.value =
-                "";
+            if (employeeCodeInput) {
+
+                employeeCodeInput.value =
+                    "";
+
+            }
 
 
-            teacherNameInput.value =
-                "";
+            if (teacherNameInput) {
+
+                teacherNameInput.value =
+                    "";
+
+            }
 
 
-            entryDateInput.value =
-                getTodayDate();
+            if (entryDateInput) {
+
+                entryDateInput.value =
+                    getTodayDate();
+
+            }
 
 
-            formMessage.className =
-                "message";
+            if (formMessage) {
+
+                formMessage.className =
+                    "message";
 
 
-            formMessage.textContent =
-                "";
+                formMessage.textContent =
+                    "";
+
+            }
 
         }
     );
 
 }
-
 
 
 // ======================================================
@@ -1305,7 +1484,7 @@ document.addEventListener(
     async function () {
 
         // ==============================================
-        // SET TODAY
+        // SET TODAY DATE
         // ==============================================
 
         if (entryDateInput) {
@@ -1317,7 +1496,7 @@ document.addEventListener(
 
 
         // ==============================================
-        // REGION USER INFO
+        // LOAD REGION USER INFO
         // ==============================================
 
         loadRegionUserInfo();
