@@ -21,19 +21,23 @@
 //
 // 1. Bihar State ke saare Teachers
 // 2. Kolkata Region ke saare Teachers
-// 3. Delhi Region ke saare Teachers automatically nahi
+// 3. Delhi Region ke baaki Teachers automatically nahi
+//
+// IMPORTANT:
+//
+// NO ACCESS = NO TEACHER
+//
+// Empty Access = NO TEACHER
 // ======================================================
 
 
 import { db } from "./firebase-config.js";
 
 import {
-
     collection,
     getDocs,
     addDoc,
     serverTimestamp
-
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -824,6 +828,14 @@ function checkAccessRule(
 
 // ======================================================
 // CHECK EMPLOYEE ACCESS
+//
+// IMPORTANT:
+//
+// NO ACCESS = NO TEACHER
+//
+// Empty Access Array = NO TEACHER
+//
+// Invalid Access = NO TEACHER
 // ======================================================
 
 function employeeMatchesRegionAccess(
@@ -838,17 +850,21 @@ function employeeMatchesRegionAccess(
     // ==================================================
     // NO ACCESS FOUND
     //
-    // Current behavior:
-    // Show all teachers so page does not become empty.
+    // IMPORTANT:
+    //
+    // NEVER return true here.
+    //
+    // Previously "return true" caused
+    // ALL Teachers to appear.
     // ==================================================
 
     if (!access) {
 
         console.warn(
-            "No regionUserAccess found."
+            "No regionUserAccess found. Teacher access denied."
         );
 
-        return true;
+        return false;
 
     }
 
@@ -856,23 +872,6 @@ function employeeMatchesRegionAccess(
 
     // ==================================================
     // ACCESS ARRAY
-    //
-    // IMPORTANT:
-    //
-    // Every rule works independently.
-    //
-    // Example:
-    //
-    // [
-    //   { region: "Delhi", state: "Bihar" },
-    //   { region: "Kolkata", state: "" }
-    // ]
-    //
-    // RESULT:
-    //
-    // Bihar State
-    // OR
-    // Kolkata Region
     // ==================================================
 
     if (
@@ -881,14 +880,29 @@ function employeeMatchesRegionAccess(
         )
     ) {
 
+        // ==============================================
+        // EMPTY ACCESS
+        //
+        // Empty means NO ACCESS.
+        // ==============================================
+
         if (
             access.length === 0
         ) {
 
-            return true;
+            console.warn(
+                "regionUserAccess is empty. Teacher access denied."
+            );
+
+            return false;
 
         }
 
+
+
+        // ==============================================
+        // ANY ONE RULE MATCH
+        // ==============================================
 
         return access.some(
             function (rule) {
@@ -941,7 +955,13 @@ function employeeMatchesRegionAccess(
 
 
 
-    return true;
+    // ==================================================
+    // INVALID ACCESS
+    //
+    // NEVER ALLOW BY DEFAULT
+    // ==================================================
+
+    return false;
 
 }
 
@@ -1008,7 +1028,15 @@ async function loadEmployees() {
 
 
         console.log(
+            "=========================================="
+        );
+
+        console.log(
             "Loading employees collection..."
+        );
+
+        console.log(
+            "=========================================="
         );
 
 
@@ -1079,7 +1107,24 @@ async function loadEmployees() {
 
 
         // ==================================================
+        // GET USER ACCESS
+        // ==================================================
+
+        const currentAccess =
+            getRegionUserAccess();
+
+
+        console.log(
+            "Current Region User Access:",
+            currentAccess
+        );
+
+
+
+        // ==================================================
         // REGION / STATE ACCESS FILTER
+        //
+        // ONLY ALLOWED TEACHERS
         // ==================================================
 
         allowedEmployees =
@@ -1103,15 +1148,53 @@ async function loadEmployees() {
 
 
         // ==================================================
-        // DEBUG ACCESS
+        // DEBUG ALL TEACHERS
         // ==================================================
 
-        console.log(
-            "Region User Access:",
-            getRegionUserAccess()
+        console.table(
+
+            employeesWithCode.map(
+                function (employee) {
+
+                    return {
+
+                        Code:
+                            getEmployeeCode(
+                                employee
+                            ),
+
+                        Name:
+                            getTeacherName(
+                                employee
+                            ),
+
+                        Region:
+                            getEmployeeRegion(
+                                employee
+                            ),
+
+                        State:
+                            getEmployeeState(
+                                employee
+                            ),
+
+                        Access:
+                            employeeMatchesRegionAccess(
+                                employee
+                            )
+
+                    };
+
+                }
+            )
+
         );
 
 
+
+        // ==================================================
+        // DEBUG ALLOWED TEACHERS
+        // ==================================================
 
         console.table(
 
@@ -1243,6 +1326,10 @@ function populateTeacherSelect() {
 
 
 
+    // ==================================================
+    // NO ALLOWED TEACHER
+    // ==================================================
+
     if (
         allowedEmployees.length === 0
     ) {
@@ -1261,6 +1348,10 @@ function populateTeacherSelect() {
     }
 
 
+
+    // ==================================================
+    // ONLY ALLOWED TEACHERS
+    // ==================================================
 
     allowedEmployees.forEach(
         function (employee) {
@@ -1543,6 +1634,9 @@ if (teacherEntryForm) {
                 // SAVE NEW ENTRY
                 //
                 // addDoc always creates a NEW document.
+                //
+                // Same Teacher + Same Date
+                // multiple entries are allowed.
                 // ======================================
 
                 await addDoc(
