@@ -10,12 +10,14 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Competition Entry | Telethon</title>
+    <title>
+        Telethon - Competition Entry
+    </title>
 
 
-    <!-- =====================================================
+    <!-- ==================================================
          FONT AWESOME
-    ====================================================== -->
+    =================================================== -->
 
     <link
         rel="stylesheet"
@@ -23,724 +25,1170 @@
     >
 
 
-    <!-- =====================================================
-         GOOGLE FONT
-    ====================================================== -->
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-
-    <!-- =====================================================
-         STYLE
-    ====================================================== -->
+    <!-- ==================================================
+         BASIC STYLE
+    =================================================== -->
 
     <style>
 
-        /* =====================================================
-           RESET
-        ====================================================== */
-
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
 
         body {
-            font-family: "Inter", Arial, sans-serif;
-            background: #f4f7fb;
-            color: #1f2937;
-            min-height: 100vh;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #f4f6f9;
+
+            color:
+                #222;
         }
 
 
-        button,
-        input {
-            font-family: inherit;
-        }
-
-
-        /* =====================================================
-           PAGE
-        ====================================================== */
-
-        .page-wrapper {
-            width: 100%;
-            min-height: 100vh;
-            padding: 25px;
-        }
-
-
-        .page-container {
-            width: 100%;
-            max-width: 1250px;
-            margin: 0 auto;
-        }
-
-
-        /* =====================================================
+        /* ==================================================
            HEADER
-        ====================================================== */
+        =================================================== */
 
         .page-header {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 22px 25px;
-            margin-bottom: 22px;
+
+            background:
+                #ffffff;
+
+            border-bottom:
+                1px solid #e5e7eb;
+
+            padding:
+                18px 25px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                15px;
+
+            position:
+                sticky;
+
+            top:
+                0;
+
+            z-index:
+                100;
+        }
+
+
+        .page-title {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                12px;
+        }
+
+
+        .page-title-icon {
+
+            width:
+                44px;
+
+            height:
+                44px;
+
+            border-radius:
+                10px;
+
+            background:
+                #eef2ff;
+
+            color:
+                #4f46e5;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            font-size:
+                20px;
+        }
+
+
+        .page-title h1 {
+
+            font-size:
+                22px;
+
+            margin-bottom:
+                3px;
+        }
+
+
+        .page-title p {
+
+            color:
+                #6b7280;
+
+            font-size:
+                13px;
+        }
+
+
+        .header-actions {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+        }
+
+
+        .header-btn {
+
+            border:
+                1px solid #e5e7eb;
+
+            background:
+                #ffffff;
+
+            color:
+                #374151;
+
+            padding:
+                10px 14px;
+
+            border-radius:
+                8px;
+
+            text-decoration:
+                none;
+
+            cursor:
+                pointer;
+
+            font-size:
+                14px;
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                7px;
+        }
+
+
+        .header-btn:hover {
+
+            background:
+                #f9fafb;
+        }
+
+
+        .logout-btn {
+
+            color:
+                #dc2626;
+        }
+
+
+        /* ==================================================
+           MAIN
+        =================================================== */
+
+        .main-container {
+
+            max-width:
+                1200px;
+
+            margin:
+                30px auto;
+
+            padding:
+                0 20px 50px;
+        }
+
+
+        /* ==================================================
+           INFO CARD
+        =================================================== */
+
+        .info-card {
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                12px;
+
+            padding:
+                18px 20px;
+
+            margin-bottom:
+                20px;
+        }
+
+
+        .info-card h2 {
+
+            font-size:
+                17px;
+
+            margin-bottom:
+                7px;
+        }
+
+
+        .info-card p {
+
+            color:
+                #6b7280;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.6;
+        }
+
+
+        /* ==================================================
+           FORM CARD
+        =================================================== */
+
+        .form-card {
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                14px;
+
+            padding:
+                25px;
 
             box-shadow:
-                0 5px 20px rgba(15, 23, 42, 0.07);
-
-            display: flex;
-            align-items: center;
-            gap: 15px;
+                0 3px 12px rgba(
+                    0,
+                    0,
+                    0,
+                    0.04
+                );
         }
 
 
-        .header-icon {
-            width: 52px;
-            height: 52px;
-
-            border-radius: 13px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background: #eef2ff;
-            color: #4f46e5;
-
-            font-size: 22px;
-        }
-
-
-        .page-header h1 {
-            font-size: 24px;
-            font-weight: 800;
-            color: #111827;
-        }
-
-
-        .page-header p {
-            margin-top: 5px;
-            font-size: 13px;
-            color: #6b7280;
-        }
-
-
-        /* =====================================================
-           CARD
-        ====================================================== */
-
-        .card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 22px;
-
-            box-shadow:
-                0 5px 20px rgba(15, 23, 42, 0.07);
-        }
-
-
-        .card-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-
-            font-size: 17px;
-            font-weight: 700;
-
-            color: #111827;
-
-            margin-bottom: 20px;
-        }
-
-
-        .card-title i {
-            color: #4f46e5;
-        }
-
-
-        /* =====================================================
-           FORM
-        ====================================================== */
+        /* ==================================================
+           FORM GRID
+        =================================================== */
 
         .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap:
+                18px;
+
+            margin-bottom:
+                25px;
         }
 
 
         .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                7px;
         }
 
 
-        .form-group.full {
-            grid-column: 1 / -1;
+        .form-group label {
+
+            font-size:
+                14px;
+
+            font-weight:
+                600;
+
+            color:
+                #374151;
         }
 
 
-        .form-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
+        .form-group input,
+        .form-group select {
+
+            width:
+                100%;
+
+            height:
+                44px;
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius:
+                8px;
+
+            padding:
+                0 12px;
+
+            font-size:
+                14px;
+
+            outline:
+                none;
+
+            background:
+                #ffffff;
         }
 
 
-        .required {
-            color: #dc2626;
-        }
+        .form-group input:focus,
+        .form-group select:focus {
 
-
-        .form-control {
-            width: 100%;
-            height: 45px;
-
-            border: 1px solid #d1d5db;
-            border-radius: 9px;
-
-            padding: 0 13px;
-
-            outline: none;
-
-            font-size: 14px;
-            color: #111827;
-
-            background: #ffffff;
-
-            transition: 0.2s;
-        }
-
-
-        .form-control:focus {
-            border-color: #6366f1;
+            border-color:
+                #6366f1;
 
             box-shadow:
-                0 0 0 3px rgba(99, 102, 241, 0.10);
+                0 0 0 3px
+                rgba(
+                    99,
+                    102,
+                    241,
+                    0.10
+                );
         }
 
 
-        /* =====================================================
-           MATCH
-        ====================================================== */
+        /* ==================================================
+           COMPETITION TITLE
+        =================================================== */
 
-        .match-wrapper {
-            display: grid;
+        .section-title {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                10px;
+
+            margin:
+                10px 0 15px;
+
+            padding-bottom:
+                12px;
+
+            border-bottom:
+                1px solid #e5e7eb;
+        }
+
+
+        .section-title h2 {
+
+            font-size:
+                18px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                8px;
+        }
+
+
+        .section-title h2 i {
+
+            color:
+                #4f46e5;
+        }
+
+
+        /* ==================================================
+           COMPETITION AREA
+        =================================================== */
+
+        .competition-wrapper {
+
+            display:
+                grid;
 
             grid-template-columns:
-                minmax(0, 1fr)
+                minmax(
+                    0,
+                    1fr
+                )
                 90px
-                minmax(0, 1fr);
+                minmax(
+                    0,
+                    1fr
+                );
 
-            gap: 20px;
+            gap:
+                18px;
 
-            align-items: stretch;
+            align-items:
+                stretch;
         }
 
 
+        /* ==================================================
+           SIDE CARD
+        =================================================== */
+
         .side-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
 
-            padding: 20px;
+            border:
+                1px solid #e5e7eb;
 
-            background: #fafbff;
+            border-radius:
+                12px;
+
+            overflow:
+                hidden;
+
+            background:
+                #ffffff;
         }
 
 
         .side-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
 
-            margin-bottom: 18px;
+            padding:
+                15px 18px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            background:
+                #f9fafb;
+
+            border-bottom:
+                1px solid #e5e7eb;
         }
 
 
-        .side-title {
-            font-size: 16px;
-            font-weight: 800;
-            color: #111827;
+        .side-header h3 {
+
+            font-size:
+                16px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                8px;
         }
 
 
-        .side-badge {
-            font-size: 11px;
-            font-weight: 700;
+        .side-header h3 i {
 
-            padding: 5px 9px;
-
-            border-radius: 20px;
-
-            background: #eef2ff;
-            color: #4338ca;
+            font-size:
+                15px;
         }
 
 
-        /* =====================================================
+        .side-a-title {
+
+            color:
+                #2563eb;
+        }
+
+
+        .side-b-title {
+
+            color:
+                #dc2626;
+        }
+
+
+        /* ==================================================
+           ADD BUTTON
+        =================================================== */
+
+        .add-row-btn {
+
+            border:
+                none;
+
+            background:
+                #eef2ff;
+
+            color:
+                #4f46e5;
+
+            padding:
+                8px 11px;
+
+            border-radius:
+                7px;
+
+            cursor:
+                pointer;
+
+            font-size:
+                13px;
+
+            font-weight:
+                600;
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                6px;
+        }
+
+
+        .add-row-btn:hover {
+
+            background:
+                #e0e7ff;
+        }
+
+
+        /* ==================================================
+           SIDE CONTAINER
+        =================================================== */
+
+        .side-body {
+
+            padding:
+                15px;
+        }
+
+
+        .competition-side-row {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                minmax(
+                    0,
+                    1fr
+                )
+                minmax(
+                    0,
+                    1fr
+                )
+                42px;
+
+            gap:
+                10px;
+
+            align-items:
+                end;
+
+            padding:
+                13px;
+
+            margin-bottom:
+                12px;
+
+            background:
+                #f9fafb;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                9px;
+        }
+
+
+        .competition-side-row:last-child {
+
+            margin-bottom:
+                0;
+        }
+
+
+        .competition-field {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                6px;
+        }
+
+
+        .competition-field label {
+
+            font-size:
+                12px;
+
+            font-weight:
+                600;
+
+            color:
+                #6b7280;
+        }
+
+
+        .competition-field select {
+
+            height:
+                40px;
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius:
+                7px;
+
+            padding:
+                0 9px;
+
+            font-size:
+                13px;
+
+            background:
+                #ffffff;
+
+            outline:
+                none;
+
+            min-width:
+                0;
+        }
+
+
+        .competition-field select:focus {
+
+            border-color:
+                #6366f1;
+        }
+
+
+        .competition-field select:disabled {
+
+            background:
+                #f3f4f6;
+
+            color:
+                #9ca3af;
+
+            cursor:
+                not-allowed;
+        }
+
+
+        /* ==================================================
+           REMOVE BUTTON
+        =================================================== */
+
+        .remove-side-row {
+
+            width:
+                40px;
+
+            height:
+                40px;
+
+            border:
+                none;
+
+            border-radius:
+                7px;
+
+            background:
+                #fee2e2;
+
+            color:
+                #dc2626;
+
+            cursor:
+                pointer;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+        }
+
+
+        .remove-side-row:hover {
+
+            background:
+                #fecaca;
+        }
+
+
+        /* ==================================================
            VS
-        ====================================================== */
+        =================================================== */
 
-        .vs-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .vs-container {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
         }
 
 
         .vs-circle {
-            width: 70px;
-            height: 70px;
 
-            border-radius: 50%;
+            width:
+                70px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height:
+                70px;
 
-            background: #111827;
-            color: #ffffff;
+            border-radius:
+                50%;
 
-            font-size: 17px;
-            font-weight: 800;
+            background:
+                #111827;
+
+            color:
+                #ffffff;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            font-size:
+                20px;
+
+            font-weight:
+                800;
 
             box-shadow:
-                0 8px 20px rgba(17, 24, 39, 0.20);
+                0 5px 15px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.15
+                );
         }
 
 
-        /* =====================================================
-           SELECTION
-        ====================================================== */
-
-        .selection-section {
-            margin-bottom: 20px;
-        }
-
-
-        .selection-section:last-child {
-            margin-bottom: 0;
-        }
-
-
-        .selection-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            margin-bottom: 9px;
-        }
-
-
-        .selection-title span:first-child {
-            font-size: 13px;
-            font-weight: 700;
-            color: #374151;
-        }
-
-
-        .selection-count {
-            font-size: 11px;
-            color: #6b7280;
-        }
-
-
-        /* =====================================================
-           SEARCH
-        ====================================================== */
-
-        .search-box {
-            position: relative;
-            margin-bottom: 8px;
-        }
-
-
-        .search-box i {
-            position: absolute;
-
-            left: 12px;
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            color: #9ca3af;
-
-            font-size: 13px;
-        }
-
-
-        .search-input {
-            width: 100%;
-            height: 38px;
-
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-
-            padding: 0 10px 0 34px;
-
-            outline: none;
-
-            font-size: 12px;
-        }
-
-
-        .search-input:focus {
-            border-color: #6366f1;
-        }
-
-
-        /* =====================================================
-           SELECT ALL
-        ====================================================== */
-
-        .select-all-row {
-            display: flex;
-            justify-content: flex-end;
-
-            margin-bottom: 8px;
-        }
-
-
-        .select-all-btn {
-            border: none;
-
-            background: transparent;
-
-            color: #4f46e5;
-
-            font-size: 11px;
-            font-weight: 700;
-
-            cursor: pointer;
-        }
-
-
-        .select-all-btn:hover {
-            text-decoration: underline;
-        }
-
-
-        /* =====================================================
-           CHECKBOX LIST
-        ====================================================== */
-
-        .selection-box {
-            border: 1px solid #d1d5db;
-
-            border-radius: 10px;
-
-            background: #ffffff;
-
-            min-height: 105px;
-            max-height: 190px;
-
-            overflow-y: auto;
-
-            padding: 8px;
-        }
-
-
-        .check-item {
-            display: flex;
-            align-items: center;
-
-            gap: 10px;
-
-            padding: 9px 10px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-
-            transition: 0.15s;
-        }
-
-
-        .check-item:hover {
-            background: #f3f4f6;
-        }
-
-
-        .check-item input {
-            width: 16px;
-            height: 16px;
-
-            accent-color: #4f46e5;
-
-            cursor: pointer;
-        }
-
-
-        .check-item span {
-            font-size: 13px;
-            color: #374151;
-        }
-
-
-        .empty-message {
-            padding: 18px 10px;
-
-            text-align: center;
-
-            font-size: 12px;
-
-            color: #9ca3af;
-        }
-
-
-        /* =====================================================
-           INFO
-        ====================================================== */
-
-        .info-box {
-            display: flex;
-            align-items: flex-start;
-
-            gap: 10px;
-
-            padding: 13px 15px;
-
-            margin-top: 20px;
-
-            border-radius: 10px;
-
-            background: #eff6ff;
-
-            border: 1px solid #bfdbfe;
-
-            color: #1e40af;
-
-            font-size: 12px;
-
-            line-height: 1.6;
-        }
-
-
-        .info-box i {
-            margin-top: 2px;
-        }
-
-
-        /* =====================================================
+        /* ==================================================
            MESSAGE
-        ====================================================== */
+        =================================================== */
 
-        .message {
-            display: none;
+        .competition-message {
 
-            margin-top: 15px;
+            display:
+                none;
 
-            padding: 12px 14px;
+            padding:
+                12px 15px;
 
-            border-radius: 9px;
+            border-radius:
+                8px;
 
-            font-size: 13px;
+            margin-top:
+                20px;
 
-            font-weight: 600;
+            font-size:
+                14px;
+
+            font-weight:
+                600;
         }
 
 
-        .message.error {
-            display: block;
+        .competition-message.success {
 
-            background: #fef2f2;
+            background:
+                #dcfce7;
 
-            color: #b91c1c;
+            color:
+                #166534;
 
-            border: 1px solid #fecaca;
+            border:
+                1px solid #bbf7d0;
         }
 
 
-        .message.success {
-            display: block;
+        .competition-message.error {
 
-            background: #f0fdf4;
+            background:
+                #fee2e2;
 
-            color: #15803d;
+            color:
+                #991b1b;
 
-            border: 1px solid #bbf7d0;
+            border:
+                1px solid #fecaca;
         }
 
 
-        /* =====================================================
-           BUTTONS
-        ====================================================== */
+        /* ==================================================
+           BOTTOM ACTIONS
+        =================================================== */
 
-        .actions {
-            display: flex;
+        .form-actions {
 
-            justify-content: flex-end;
+            display:
+                flex;
 
-            gap: 12px;
+            justify-content:
+                flex-end;
 
-            margin-top: 25px;
+            gap:
+                10px;
+
+            margin-top:
+                25px;
+
+            padding-top:
+                20px;
+
+            border-top:
+                1px solid #e5e7eb;
         }
 
 
         .btn {
-            min-height: 44px;
 
-            padding: 0 20px;
+            height:
+                44px;
 
-            border-radius: 9px;
+            padding:
+                0 18px;
 
-            border: none;
+            border-radius:
+                8px;
 
-            cursor: pointer;
+            border:
+                1px solid transparent;
 
-            font-size: 13px;
+            cursor:
+                pointer;
 
-            font-weight: 700;
+            font-size:
+                14px;
 
-            display: inline-flex;
+            font-weight:
+                600;
 
-            align-items: center;
-            justify-content: center;
+            display:
+                inline-flex;
 
-            gap: 8px;
+            align-items:
+                center;
 
-            transition: 0.2s;
-        }
+            justify-content:
+                center;
 
-
-        .btn-primary {
-            background: #4f46e5;
-            color: #ffffff;
-        }
-
-
-        .btn-primary:hover {
-            background: #4338ca;
-        }
-
-
-        .btn-primary:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
+            gap:
+                8px;
         }
 
 
         .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
+
+            background:
+                #ffffff;
+
+            color:
+                #374151;
+
+            border-color:
+                #d1d5db;
         }
 
 
         .btn-secondary:hover {
-            background: #e5e7eb;
+
+            background:
+                #f9fafb;
         }
 
 
-        /* =====================================================
-           SAVED NOTICE
-        ====================================================== */
+        .btn-primary {
 
-        .saved-info {
-            display: none;
+            background:
+                #4f46e5;
 
-            margin-top: 20px;
-
-            padding: 14px;
-
-            border-radius: 10px;
-
-            background: #f0fdf4;
-
-            border: 1px solid #bbf7d0;
-
-            color: #166534;
-
-            font-size: 13px;
-
-            line-height: 1.6;
+            color:
+                #ffffff;
         }
 
 
-        /* =====================================================
+        .btn-primary:hover {
+
+            background:
+                #4338ca;
+        }
+
+
+        .btn-primary:disabled {
+
+            opacity:
+                0.7;
+
+            cursor:
+                not-allowed;
+        }
+
+
+        /* ==================================================
+           NOTE
+        =================================================== */
+
+        .calculation-note {
+
+            margin-top:
+                18px;
+
+            padding:
+                13px 15px;
+
+            background:
+                #fffbeb;
+
+            border:
+                1px solid #fde68a;
+
+            border-radius:
+                8px;
+
+            color:
+                #92400e;
+
+            font-size:
+                13px;
+
+            line-height:
+                1.6;
+        }
+
+
+        .calculation-note strong {
+
+            font-weight:
+                700;
+        }
+
+
+        /* ==================================================
            RESPONSIVE
-        ====================================================== */
+        =================================================== */
 
-        @media (max-width: 900px) {
+        @media (
+            max-width: 900px
+        ) {
 
-            .match-wrapper {
-                grid-template-columns: 1fr;
+            .form-grid {
+
+                grid-template-columns:
+                    1fr;
+
             }
 
 
-            .vs-wrapper {
-                height: 55px;
+            .competition-wrapper {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .vs-container {
+
+                padding:
+                    5px 0;
+
             }
 
 
             .vs-circle {
-                width: 55px;
-                height: 55px;
 
-                font-size: 14px;
+                width:
+                    55px;
+
+                height:
+                    55px;
+
+                font-size:
+                    17px;
+
             }
 
         }
 
 
-        @media (max-width: 600px) {
-
-            .page-wrapper {
-                padding: 12px;
-            }
-
+        @media (
+            max-width: 600px
+        ) {
 
             .page-header {
-                padding: 17px;
+
+                padding:
+                    14px 15px;
+
+                align-items:
+                    flex-start;
+
             }
 
 
-            .page-header h1 {
-                font-size: 19px;
+            .page-title h1 {
+
+                font-size:
+                    18px;
+
             }
 
 
-            .card {
-                padding: 17px;
+            .header-actions {
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    stretch;
+
             }
 
 
-            .form-grid {
-                grid-template-columns: 1fr;
+            .header-btn {
+
+                justify-content:
+                    center;
+
             }
 
 
-            .form-group.full {
-                grid-column: auto;
+            .main-container {
+
+                margin-top:
+                    20px;
+
+                padding:
+                    0 12px 35px;
+
             }
 
 
-            .actions {
-                flex-direction: column;
+            .form-card {
+
+                padding:
+                    15px;
+
+            }
+
+
+            .competition-side-row {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .remove-side-row {
+
+                width:
+                    100%;
+
+            }
+
+
+            .form-actions {
+
+                flex-direction:
+                    column;
+
             }
 
 
             .btn {
-                width: 100%;
+
+                width:
+                    100%;
+
             }
 
         }
@@ -753,50 +1201,120 @@
 <body>
 
 
-    <div class="page-wrapper">
+    <!-- ==================================================
+         HEADER
+    =================================================== -->
 
-        <div class="page-container">
+    <header class="page-header">
 
+        <div class="page-title">
 
-            <!-- =================================================
-                 HEADER
-            ================================================== -->
+            <div class="page-title-icon">
 
-            <div class="page-header">
-
-                <div class="header-icon">
-
-                    <i class="fa-solid fa-trophy"></i>
-
-                </div>
-
-
-                <div>
-
-                    <h1>
-                        Competition Entry
-                    </h1>
-
-                    <p>
-                        Create Region & State Collection Competition
-                    </p>
-
-                </div>
+                <i class="fa-solid fa-trophy"></i>
 
             </div>
 
+            <div>
 
-            <!-- =================================================
-                 COMPETITION INFORMATION
-            ================================================== -->
+                <h1>
+                    Competition Entry
+                </h1>
 
-            <div class="card">
+                <p>
+                    Create Region / State Competition
+                </p>
 
-                <div class="card-title">
+            </div>
 
-                    <i class="fa-solid fa-circle-info"></i>
+        </div>
 
-                    Competition Information
+
+        <div class="header-actions">
+
+            <a
+                href="dashboard.html"
+                class="header-btn"
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                Dashboard
+
+            </a>
+
+
+            <button
+                type="button"
+                class="header-btn logout-btn"
+                id="logoutBtn"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ==================================================
+         MAIN
+    =================================================== -->
+
+    <main class="main-container">
+
+
+        <!-- ==================================================
+             INFO
+        =================================================== -->
+
+        <div class="info-card">
+
+            <h2>
+                <i class="fa-solid fa-circle-info"></i>
+                Competition Setup
+            </h2>
+
+            <p>
+                Competition ka naam, date aur end time select karein.
+                Har side mein ek se zyada Region / State add kiye ja
+                sakte hain.
+            </p>
+
+        </div>
+
+
+
+        <!-- ==================================================
+             FORM
+        =================================================== -->
+
+        <div class="form-card">
+
+            <form
+                id="competitionForm"
+                autocomplete="off"
+            >
+
+
+                <!-- ==========================================
+                     BASIC INFORMATION
+                =========================================== -->
+
+                <div class="section-title">
+
+                    <h2>
+
+                        <i class="fa-solid fa-pen-to-square"></i>
+
+                        Competition Details
+
+                    </h2>
 
                 </div>
 
@@ -804,248 +1322,152 @@
                 <div class="form-grid">
 
 
-                    <!-- Competition Name -->
+                    <!-- ======================================
+                         NAME
+                    ======================================= -->
 
-                    <div class="form-group full">
+                    <div class="form-group">
 
-                        <label class="form-label">
+                        <label
+                            for="competitionName"
+                        >
 
                             Competition Name
-                            <span class="required">*</span>
 
                         </label>
-
 
                         <input
                             type="text"
                             id="competitionName"
-                            class="form-control"
-                            placeholder="Enter competition name"
-                            autocomplete="off"
+                            name="competitionName"
+                            placeholder="Example: Kolkata vs Gujarat"
+                            required
                         >
 
                     </div>
 
 
-                    <!-- Date -->
+                    <!-- ======================================
+                         DATE
+                    ======================================= -->
 
                     <div class="form-group">
 
-                        <label class="form-label">
+                        <label
+                            for="competitionDate"
+                        >
 
                             Competition Date
-                            <span class="required">*</span>
 
                         </label>
-
 
                         <input
                             type="date"
                             id="competitionDate"
-                            class="form-control"
+                            name="competitionDate"
+                            required
                         >
 
                     </div>
 
 
-                    <!-- End Time -->
+                    <!-- ======================================
+                         END TIME
+                    ======================================= -->
 
                     <div class="form-group">
 
-                        <label class="form-label">
+                        <label
+                            for="competitionEndTime"
+                        >
 
                             Competition End Time
-                            <span class="required">*</span>
 
                         </label>
-
 
                         <input
                             type="time"
                             id="competitionEndTime"
-                            class="form-control"
+                            name="competitionEndTime"
+                            required
                         >
 
                     </div>
 
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 SIDES
-            ================================================== -->
-
-            <div class="card">
-
-                <div class="card-title">
-
-                    <i class="fa-solid fa-scale-balanced"></i>
-
-                    Competition Sides
-
                 </div>
 
 
-                <div class="match-wrapper">
+
+                <!-- ==================================================
+                     SIDES
+                =================================================== -->
+
+                <div class="section-title">
+
+                    <h2>
+
+                        <i class="fa-solid fa-users"></i>
+
+                        Competition Sides
+
+                    </h2>
+
+                </div>
 
 
-                    <!-- =================================================
+                <div class="competition-wrapper">
+
+
+                    <!-- ==================================================
                          SIDE A
-                    ================================================== -->
+                    =================================================== -->
 
                     <div class="side-card">
 
-
                         <div class="side-header">
 
-                            <div class="side-title">
+                            <h3 class="side-a-title">
+
+                                <i class="fa-solid fa-flag"></i>
+
                                 Side A
-                            </div>
 
-                            <div class="side-badge">
-                                Competitor 1
-                            </div>
-
-                        </div>
+                            </h3>
 
 
-                        <!-- ===============================
-                             SIDE A REGION
-                        ================================ -->
-
-                        <div class="selection-section">
-
-                            <div class="selection-title">
-
-                                <span>
-                                    Region
-                                </span>
-
-                                <span
-                                    class="selection-count"
-                                    id="sideARegionCount"
-                                >
-                                    0 selected
-                                </span>
-
-                            </div>
-
-
-                            <div class="search-box">
-
-                                <i class="fa-solid fa-magnifying-glass"></i>
-
-                                <input
-                                    type="text"
-                                    id="sideARegionSearch"
-                                    class="search-input"
-                                    placeholder="Search region..."
-                                >
-
-                            </div>
-
-
-                            <div class="select-all-row">
-
-                                <button
-                                    type="button"
-                                    class="select-all-btn"
-                                    data-list="sideARegionList"
-                                >
-                                    Select All
-                                </button>
-
-                            </div>
-
-
-                            <div
-                                class="selection-box"
-                                id="sideARegionList"
+                            <button
+                                type="button"
+                                class="add-row-btn"
+                                id="addSideARow"
                             >
 
-                                <div class="empty-message">
-                                    Loading regions...
-                                </div>
+                                <i class="fa-solid fa-plus"></i>
 
-                            </div>
+                                Add
 
-                        </div>
-
-
-                        <!-- ===============================
-                             SIDE A STATE
-                        ================================ -->
-
-                        <div class="selection-section">
-
-                            <div class="selection-title">
-
-                                <span>
-                                    State
-                                </span>
-
-                                <span
-                                    class="selection-count"
-                                    id="sideAStateCount"
-                                >
-                                    0 selected
-                                </span>
-
-                            </div>
-
-
-                            <div class="search-box">
-
-                                <i class="fa-solid fa-magnifying-glass"></i>
-
-                                <input
-                                    type="text"
-                                    id="sideAStateSearch"
-                                    class="search-input"
-                                    placeholder="Search state..."
-                                >
-
-                            </div>
-
-
-                            <div class="select-all-row">
-
-                                <button
-                                    type="button"
-                                    class="select-all-btn"
-                                    data-list="sideAStateList"
-                                >
-                                    Select All
-                                </button>
-
-                            </div>
-
-
-                            <div
-                                class="selection-box"
-                                id="sideAStateList"
-                            >
-
-                                <div class="empty-message">
-                                    Loading states...
-                                </div>
-
-                            </div>
+                            </button>
 
                         </div>
 
+
+                        <div
+                            class="side-body"
+                            id="sideAContainer"
+                        >
+
+                            <!-- JavaScript rows add karega -->
+
+                        </div>
 
                     </div>
 
 
-                    <!-- =================================================
-                         VS
-                    ================================================== -->
 
-                    <div class="vs-wrapper">
+                    <!-- ==================================================
+                         VS
+                    =================================================== -->
+
+                    <div class="vs-container">
 
                         <div class="vs-circle">
                             VS
@@ -1054,217 +1476,98 @@
                     </div>
 
 
-                    <!-- =================================================
+
+                    <!-- ==================================================
                          SIDE B
-                    ================================================== -->
+                    =================================================== -->
 
                     <div class="side-card">
 
-
                         <div class="side-header">
 
-                            <div class="side-title">
+                            <h3 class="side-b-title">
+
+                                <i class="fa-solid fa-flag"></i>
+
                                 Side B
-                            </div>
 
-                            <div class="side-badge">
-                                Competitor 2
-                            </div>
-
-                        </div>
+                            </h3>
 
 
-                        <!-- ===============================
-                             SIDE B REGION
-                        ================================ -->
-
-                        <div class="selection-section">
-
-                            <div class="selection-title">
-
-                                <span>
-                                    Region
-                                </span>
-
-                                <span
-                                    class="selection-count"
-                                    id="sideBRegionCount"
-                                >
-                                    0 selected
-                                </span>
-
-                            </div>
-
-
-                            <div class="search-box">
-
-                                <i class="fa-solid fa-magnifying-glass"></i>
-
-                                <input
-                                    type="text"
-                                    id="sideBRegionSearch"
-                                    class="search-input"
-                                    placeholder="Search region..."
-                                >
-
-                            </div>
-
-
-                            <div class="select-all-row">
-
-                                <button
-                                    type="button"
-                                    class="select-all-btn"
-                                    data-list="sideBRegionList"
-                                >
-                                    Select All
-                                </button>
-
-                            </div>
-
-
-                            <div
-                                class="selection-box"
-                                id="sideBRegionList"
+                            <button
+                                type="button"
+                                class="add-row-btn"
+                                id="addSideBRow"
                             >
 
-                                <div class="empty-message">
-                                    Loading regions...
-                                </div>
+                                <i class="fa-solid fa-plus"></i>
 
-                            </div>
+                                Add
 
-                        </div>
-
-
-                        <!-- ===============================
-                             SIDE B STATE
-                        ================================ -->
-
-                        <div class="selection-section">
-
-                            <div class="selection-title">
-
-                                <span>
-                                    State
-                                </span>
-
-                                <span
-                                    class="selection-count"
-                                    id="sideBStateCount"
-                                >
-                                    0 selected
-                                </span>
-
-                            </div>
-
-
-                            <div class="search-box">
-
-                                <i class="fa-solid fa-magnifying-glass"></i>
-
-                                <input
-                                    type="text"
-                                    id="sideBStateSearch"
-                                    class="search-input"
-                                    placeholder="Search state..."
-                                >
-
-                            </div>
-
-
-                            <div class="select-all-row">
-
-                                <button
-                                    type="button"
-                                    class="select-all-btn"
-                                    data-list="sideBStateList"
-                                >
-                                    Select All
-                                </button>
-
-                            </div>
-
-
-                            <div
-                                class="selection-box"
-                                id="sideBStateList"
-                            >
-
-                                <div class="empty-message">
-                                    Loading states...
-                                </div>
-
-                            </div>
+                            </button>
 
                         </div>
 
 
-                    </div>
+                        <div
+                            class="side-body"
+                            id="sideBContainer"
+                        >
 
+                            <!-- JavaScript rows add karega -->
 
-                </div>
-
-
-                <!-- =================================================
-                     INFO
-                ================================================== -->
-
-                <div class="info-box">
-
-                    <i class="fa-solid fa-circle-info"></i>
-
-                    <div>
-
-                        Multiple Regions and multiple States can be
-                        selected on either side.
-
-                        Example:
-                        <strong>
-                            Kolkata Region + Bihar State VS Gujarat State
-                        </strong>
-
-                        <br>
-
-                        Competition result will use the selected
-                        date's Daily Report.
+                        </div>
 
                     </div>
 
                 </div>
 
 
-                <!-- =================================================
+
+                <!-- ==================================================
+                     NOTE
+                =================================================== -->
+
+                <div class="calculation-note">
+
+                    <strong>
+                        Note:
+                    </strong>
+
+                    Competition ka collection yahan enter nahi
+                    kiya jayega. Result page selected date ke
+                    <strong>
+                        Daily Report
+                    </strong>
+                    data se collection calculate karega aur amount
+                    ko <strong>Unit</strong> mein show karega.
+
+                </div>
+
+
+
+                <!-- ==================================================
                      MESSAGE
-                ================================================== -->
+                =================================================== -->
 
                 <div
-                    id="formMessage"
-                    class="message"
+                    id="competitionMessage"
+                    class="competition-message"
                 ></div>
 
 
-                <!-- =================================================
-                     SAVED INFO
-                ================================================== -->
 
-                <div
-                    id="savedInfo"
-                    class="saved-info"
-                ></div>
-
-
-                <!-- =================================================
+                <!-- ==================================================
                      ACTIONS
-                ================================================== -->
+                =================================================== -->
 
-                <div class="actions">
+                <div class="form-actions">
 
 
                     <button
-                        type="button"
+                        type="reset"
                         class="btn btn-secondary"
-                        id="resetBtn"
+                        id="resetCompetitionBtn"
                     >
 
                         <i class="fa-solid fa-rotate-left"></i>
@@ -1275,7 +1578,7 @@
 
 
                     <button
-                        type="button"
+                        type="submit"
                         class="btn btn-primary"
                         id="saveCompetitionBtn"
                     >
@@ -1289,1205 +1592,60 @@
 
                 </div>
 
-            </div>
 
+            </form>
 
         </div>
 
-    </div>
+    </main>
 
 
-    <!-- =====================================================
-         FIREBASE / COMPETITION JAVASCRIPT
-         
-         IMPORTANT:
-         Existing firebase-config.js is used.
-         No Firebase config is written here.
-    ====================================================== -->
 
-    <script type="module">
+    <!-- ==================================================
+         FIREBASE / JAVASCRIPT
+    =================================================== -->
 
-        /* =====================================================
-           FIREBASE IMPORT
-        ====================================================== */
+    <script
+        type="module"
+        src="assets/js/competition-entry.js"
+    ></script>
 
-        import { db } from "./assets/js/firebase-config.js";
 
+    <!-- ==================================================
+         RESET BUTTON
+    =================================================== -->
 
-        import {
-            collection,
-            getDocs,
-            addDoc,
-            serverTimestamp
-        } from
-        "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    <script>
 
+        document
+            .getElementById(
+                "resetCompetitionBtn"
+            )
+            ?.addEventListener(
+                "click",
+                function () {
 
-        /* =====================================================
-           CONSTANTS
-        ====================================================== */
+                    setTimeout(
+                        function () {
 
-        const EMPLOYEES_COLLECTION =
-            "employees";
-
-
-        const COMPETITIONS_COLLECTION =
-            "competitions";
-
-
-        /* =====================================================
-           DATA
-        ====================================================== */
-
-        let regions = [];
-
-        let states = [];
-
-
-        /* =====================================================
-           DOM
-        ====================================================== */
-
-        const competitionName =
-            document.getElementById(
-                "competitionName"
-            );
-
-
-        const competitionDate =
-            document.getElementById(
-                "competitionDate"
-            );
-
-
-        const competitionEndTime =
-            document.getElementById(
-                "competitionEndTime"
-            );
-
-
-        const saveButton =
-            document.getElementById(
-                "saveCompetitionBtn"
-            );
-
-
-        const resetButton =
-            document.getElementById(
-                "resetBtn"
-            );
-
-
-        const formMessage =
-            document.getElementById(
-                "formMessage"
-            );
-
-
-        const savedInfo =
-            document.getElementById(
-                "savedInfo"
-            );
-
-
-        /* =====================================================
-           NORMALIZE
-        ====================================================== */
-
-        function normalize(value) {
-
-            return String(value ?? "")
-                .trim()
-                .toLowerCase();
-
-        }
-
-
-        /* =====================================================
-           ESCAPE HTML
-        ====================================================== */
-
-        function escapeHTML(value) {
-
-            return String(value ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-
-        }
-
-
-        /* =====================================================
-           EMPLOYEE REGION
-        ====================================================== */
-
-        function getEmployeeRegion(employee) {
-
-            return (
-                employee.region ??
-                employee.Region ??
-                employee.regionName ??
-                employee.region_name ??
-                ""
-            );
-
-        }
-
-
-        /* =====================================================
-           EMPLOYEE STATE
-        ====================================================== */
-
-        function getEmployeeState(employee) {
-
-            return (
-                employee.state ??
-                employee.State ??
-                employee.stateName ??
-                employee.state_name ??
-                ""
-            );
-
-        }
-
-
-        /* =====================================================
-           LOAD REGION & STATE
-        ====================================================== */
-
-        async function loadRegionsAndStates() {
-
-            try {
-
-                const snapshot =
-                    await getDocs(
-                        collection(
-                            db,
-                            EMPLOYEES_COLLECTION
-                        )
-                    );
-
-
-                const regionMap =
-                    new Map();
-
-
-                const stateMap =
-                    new Map();
-
-
-                snapshot.forEach(
-                    docSnapshot => {
-
-                        const employee =
-                            docSnapshot.data();
-
-
-                        const region =
-                            String(
-                                getEmployeeRegion(
-                                    employee
-                                )
-                            ).trim();
-
-
-                        const state =
-                            String(
-                                getEmployeeState(
-                                    employee
-                                )
-                            ).trim();
-
-
-                        if (region) {
-
-                            regionMap.set(
-                                normalize(region),
-                                region
-                            );
-
-                        }
-
-
-                        if (state) {
-
-                            stateMap.set(
-                                normalize(state),
-                                state
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                regions =
-                    Array.from(
-                        regionMap.values()
-                    ).sort(
-                        (a, b) =>
-                            a.localeCompare(b)
-                    );
-
-
-                states =
-                    Array.from(
-                        stateMap.values()
-                    ).sort(
-                        (a, b) =>
-                            a.localeCompare(b)
-                    );
-
-
-                renderAllLists();
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Region/State loading error:",
-                    error
-                );
-
-
-                showFormMessage(
-                    "Unable to load Region/State data from Firebase.",
-                    "error"
-                );
-
-
-                showListMessage(
-                    "sideARegionList",
-                    "Unable to load regions."
-                );
-
-
-                showListMessage(
-                    "sideAStateList",
-                    "Unable to load states."
-                );
-
-
-                showListMessage(
-                    "sideBRegionList",
-                    "Unable to load regions."
-                );
-
-
-                showListMessage(
-                    "sideBStateList",
-                    "Unable to load states."
-                );
-
-            }
-
-        }
-
-
-        /* =====================================================
-           SHOW LIST MESSAGE
-        ====================================================== */
-
-        function showListMessage(
-            listId,
-            message
-        ) {
-
-            const list =
-                document.getElementById(
-                    listId
-                );
-
-
-            if (!list) {
-                return;
-            }
-
-
-            list.innerHTML = `
-                <div class="empty-message">
-                    ${escapeHTML(message)}
-                </div>
-            `;
-
-        }
-
-
-        /* =====================================================
-           CREATE CHECKBOX LIST
-        ====================================================== */
-
-        function createCheckboxList(
-            listId,
-            items
-        ) {
-
-            const list =
-                document.getElementById(
-                    listId
-                );
-
-
-            if (!list) {
-                return;
-            }
-
-
-            if (!items.length) {
-
-                showListMessage(
-                    listId,
-                    "No data found."
-                );
-
-                return;
-
-            }
-
-
-            list.innerHTML =
-                items.map(
-                    item => {
-
-                        const safeItem =
-                            escapeHTML(item);
-
-
-                        return `
-                            <label
-                                class="check-item"
-                                data-value="${safeItem}"
-                            >
-
-                                <input
-                                    type="checkbox"
-                                    value="${safeItem}"
-                                >
-
-                                <span>
-                                    ${safeItem}
-                                </span>
-
-                            </label>
-                        `;
-
-                    }
-                ).join("");
-
-
-            updateSelectionCount(
-                listId
-            );
-
-        }
-
-
-        /* =====================================================
-           RENDER ALL LISTS
-        ====================================================== */
-
-        function renderAllLists() {
-
-            createCheckboxList(
-                "sideARegionList",
-                regions
-            );
-
-
-            createCheckboxList(
-                "sideBRegionList",
-                regions
-            );
-
-
-            createCheckboxList(
-                "sideAStateList",
-                states
-            );
-
-
-            createCheckboxList(
-                "sideBStateList",
-                states
-            );
-
-        }
-
-
-        /* =====================================================
-           COUNT
-        ====================================================== */
-
-        function updateSelectionCount(
-            listId
-        ) {
-
-            const list =
-                document.getElementById(
-                    listId
-                );
-
-
-            if (!list) {
-                return;
-            }
-
-
-            const selected =
-                list.querySelectorAll(
-                    'input[type="checkbox"]:checked'
-                ).length;
-
-
-            let countId = "";
-
-
-            switch (listId) {
-
-                case "sideARegionList":
-
-                    countId =
-                        "sideARegionCount";
-
-                    break;
-
-
-                case "sideAStateList":
-
-                    countId =
-                        "sideAStateCount";
-
-                    break;
-
-
-                case "sideBRegionList":
-
-                    countId =
-                        "sideBRegionCount";
-
-                    break;
-
-
-                case "sideBStateList":
-
-                    countId =
-                        "sideBStateCount";
-
-                    break;
-
-            }
-
-
-            const countElement =
-                document.getElementById(
-                    countId
-                );
-
-
-            if (countElement) {
-
-                countElement.textContent =
-                    `${selected} selected`;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           GET SELECTED
-        ====================================================== */
-
-        function getSelectedValues(
-            listId
-        ) {
-
-            const list =
-                document.getElementById(
-                    listId
-                );
-
-
-            if (!list) {
-                return [];
-            }
-
-
-            return Array.from(
-                list.querySelectorAll(
-                    'input[type="checkbox"]:checked'
-                )
-            ).map(
-                checkbox =>
-                    checkbox.value
-            );
-
-        }
-
-
-        /* =====================================================
-           SEARCH
-        ====================================================== */
-
-        function setupSearch(
-            inputId,
-            listId
-        ) {
-
-            const input =
-                document.getElementById(
-                    inputId
-                );
-
-
-            const list =
-                document.getElementById(
-                    listId
-                );
-
-
-            if (!input || !list) {
-                return;
-            }
-
-
-            input.addEventListener(
-                "input",
-                () => {
-
-                    const search =
-                        normalize(
-                            input.value
-                        );
-
-
-                    const items =
-                        list.querySelectorAll(
-                            ".check-item"
-                        );
-
-
-                    items.forEach(
-                        item => {
-
-                            const value =
-                                normalize(
-                                    item.dataset.value
+                            const event =
+                                new Event(
+                                    "competitionFormReset"
                                 );
 
-
-                            item.style.display =
-                                value.includes(
-                                    search
-                                )
-                                ? "flex"
-                                : "none";
-
-                        }
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* =====================================================
-           SELECT ALL
-        ====================================================== */
-
-        function setupSelectAllButtons() {
-
-            document
-                .querySelectorAll(
-                    ".select-all-btn"
-                )
-                .forEach(
-                    button => {
-
-                        button.addEventListener(
-                            "click",
-                            () => {
-
-                                const listId =
-                                    button.dataset.list;
-
-
-                                const list =
-                                    document.getElementById(
-                                        listId
-                                    );
-
-
-                                if (!list) {
-                                    return;
-                                }
-
-
-                                const checkboxes =
-                                    list.querySelectorAll(
-                                        'input[type="checkbox"]'
-                                    );
-
-
-                                if (!checkboxes.length) {
-                                    return;
-                                }
-
-
-                                const allSelected =
-                                    Array.from(
-                                        checkboxes
-                                    ).every(
-                                        checkbox =>
-                                            checkbox.checked
-                                    );
-
-
-                                checkboxes.forEach(
-                                    checkbox => {
-
-                                        checkbox.checked =
-                                            !allSelected;
-
-                                    }
-                                );
-
-
-                                updateSelectionCount(
-                                    listId
-                                );
-
-                            }
-                        );
-
-                    }
-                );
-
-        }
-
-
-        /* =====================================================
-           CHECKBOX CHANGE
-        ====================================================== */
-
-        function setupCheckboxEvents() {
-
-            document.addEventListener(
-                "change",
-                event => {
-
-                    if (
-                        event.target.matches(
-                            '.selection-box input[type="checkbox"]'
-                        )
-                    ) {
-
-                        const list =
-                            event.target.closest(
-                                ".selection-box"
+                            document.dispatchEvent(
+                                event
                             );
 
-
-                        if (list) {
-
-                            updateSelectionCount(
-                                list.id
-                            );
-
-                        }
-
-                    }
-
-                }
-            );
-
-        }
-
-
-        /* =====================================================
-           MESSAGE
-        ====================================================== */
-
-        function showFormMessage(
-            message,
-            type
-        ) {
-
-            if (!formMessage) {
-                return;
-            }
-
-
-            if (!message) {
-
-                formMessage.textContent = "";
-
-                formMessage.className =
-                    "message";
-
-                return;
-
-            }
-
-
-            formMessage.textContent =
-                message;
-
-
-            formMessage.className =
-                `message ${type}`;
-
-        }
-
-
-        /* =====================================================
-           GET FORM DATA
-        ====================================================== */
-
-        function getCompetitionData() {
-
-            return {
-
-                name:
-                    competitionName.value.trim(),
-
-                date:
-                    competitionDate.value,
-
-                endTime:
-                    competitionEndTime.value,
-
-                sideA: {
-
-                    regions:
-                        getSelectedValues(
-                            "sideARegionList"
-                        ),
-
-                    states:
-                        getSelectedValues(
-                            "sideAStateList"
-                        )
-
-                },
-
-                sideB: {
-
-                    regions:
-                        getSelectedValues(
-                            "sideBRegionList"
-                        ),
-
-                    states:
-                        getSelectedValues(
-                            "sideBStateList"
-                        )
-
-                }
-
-            };
-
-        }
-
-
-        /* =====================================================
-           VALIDATION
-        ====================================================== */
-
-        function validateCompetition(
-            data
-        ) {
-
-            if (!data.name) {
-
-                showFormMessage(
-                    "Please enter Competition Name.",
-                    "error"
-                );
-
-                competitionName.focus();
-
-                return false;
-
-            }
-
-
-            if (!data.date) {
-
-                showFormMessage(
-                    "Please select Competition Date.",
-                    "error"
-                );
-
-                competitionDate.focus();
-
-                return false;
-
-            }
-
-
-            if (!data.endTime) {
-
-                showFormMessage(
-                    "Please select Competition End Time.",
-                    "error"
-                );
-
-                competitionEndTime.focus();
-
-                return false;
-
-            }
-
-
-            const sideACount =
-                data.sideA.regions.length +
-                data.sideA.states.length;
-
-
-            const sideBCount =
-                data.sideB.regions.length +
-                data.sideB.states.length;
-
-
-            if (sideACount === 0) {
-
-                showFormMessage(
-                    "Please select at least one Region or State for Side A.",
-                    "error"
-                );
-
-                return false;
-
-            }
-
-
-            if (sideBCount === 0) {
-
-                showFormMessage(
-                    "Please select at least one Region or State for Side B.",
-                    "error"
-                );
-
-                return false;
-
-            }
-
-
-            return true;
-
-        }
-
-
-        /* =====================================================
-           SAVE COMPETITION
-        ====================================================== */
-
-        async function saveCompetition() {
-
-            const data =
-                getCompetitionData();
-
-
-            if (
-                !validateCompetition(
-                    data
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            try {
-
-                saveButton.disabled = true;
-
-
-                saveButton.innerHTML = `
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                    Saving...
-                `;
-
-
-                showFormMessage(
-                    "",
-                    ""
-                );
-
-
-                const competitionDocument = {
-
-                    name:
-                        data.name,
-
-                    date:
-                        data.date,
-
-                    endTime:
-                        data.endTime,
-
-                    sideA: {
-
-                        regions:
-                            data.sideA.regions,
-
-                        states:
-                            data.sideA.states
-
-                    },
-
-                    sideB: {
-
-                        regions:
-                            data.sideB.regions,
-
-                        states:
-                            data.sideB.states
-
-                    },
-
-                    status:
-                        "active",
-
-                    createdAt:
-                        serverTimestamp(),
-
-                    updatedAt:
-                        serverTimestamp()
-
-                };
-
-
-                const docReference =
-                    await addDoc(
-                        collection(
-                            db,
-                            COMPETITIONS_COLLECTION
-                        ),
-                        competitionDocument
-                    );
-
-
-                showFormMessage(
-                    "Competition saved successfully.",
-                    "success"
-                );
-
-
-                savedInfo.style.display =
-                    "block";
-
-
-                savedInfo.innerHTML = `
-                    <strong>
-                        Competition Saved Successfully
-                    </strong>
-
-                    <br>
-
-                    Competition ID:
-                    ${escapeHTML(docReference.id)}
-
-                    <br>
-
-                    ${escapeHTML(data.name)}
-
-                    <br>
-
-                    Date:
-                    ${escapeHTML(data.date)}
-
-                    &nbsp; | &nbsp;
-
-                    End Time:
-                    ${escapeHTML(data.endTime)}
-                `;
-
-
-                /*
-                 * Form reset nahi kar rahe hain immediately,
-                 * taaki saved data user ko screen par dikhe.
-                 */
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Competition save error:",
-                    error
-                );
-
-
-                showFormMessage(
-                    "Competition save failed. Please try again.",
-                    "error"
-                );
-
-            }
-
-            finally {
-
-                saveButton.disabled = false;
-
-
-                saveButton.innerHTML = `
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    Save Competition
-                `;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           RESET
-        ====================================================== */
-
-        function resetForm() {
-
-            competitionName.value = "";
-
-            competitionDate.value = "";
-
-            competitionEndTime.value = "";
-
-
-            document
-                .querySelectorAll(
-                    '.selection-box input[type="checkbox"]'
-                )
-                .forEach(
-                    checkbox => {
-
-                        checkbox.checked =
-                            false;
-
-                    }
-                );
-
-
-            [
-                "sideARegionList",
-                "sideAStateList",
-                "sideBRegionList",
-                "sideBStateList"
-            ].forEach(
-                listId => {
-
-                    updateSelectionCount(
-                        listId
+                        },
+                        0
                     );
 
                 }
             );
-
-
-            document
-                .querySelectorAll(
-                    ".search-input"
-                )
-                .forEach(
-                    input => {
-
-                        input.value = "";
-
-                        input.dispatchEvent(
-                            new Event("input")
-                        );
-
-                    }
-                );
-
-
-            showFormMessage(
-                "",
-                ""
-            );
-
-
-            savedInfo.style.display =
-                "none";
-
-
-            savedInfo.innerHTML = "";
-
-        }
-
-
-        /* =====================================================
-           EVENT LISTENERS
-        ====================================================== */
-
-        saveButton.addEventListener(
-            "click",
-            saveCompetition
-        );
-
-
-        resetButton.addEventListener(
-            "click",
-            resetForm
-        );
-
-
-        /* =====================================================
-           SEARCH EVENTS
-        ====================================================== */
-
-        setupSearch(
-            "sideARegionSearch",
-            "sideARegionList"
-        );
-
-
-        setupSearch(
-            "sideAStateSearch",
-            "sideAStateList"
-        );
-
-
-        setupSearch(
-            "sideBRegionSearch",
-            "sideBRegionList"
-        );
-
-
-        setupSearch(
-            "sideBStateSearch",
-            "sideBStateList"
-        );
-
-
-        /* =====================================================
-           CHECKBOX EVENTS
-        ====================================================== */
-
-        setupCheckboxEvents();
-
-
-        /* =====================================================
-           SELECT ALL
-        ====================================================== */
-
-        setupSelectAllButtons();
-
-
-        /* =====================================================
-           INITIAL LOAD
-        ====================================================== */
-
-        loadRegionsAndStates();
 
     </script>
+
 
 </body>
 
