@@ -55,6 +55,7 @@
     <div id="adminSidebar"></div>
 
 
+
     <!-- =========================================
          MAIN CONTENT
     ========================================== -->
@@ -81,6 +82,7 @@
             </div>
 
         </div>
+
 
 
         <!-- =====================================
@@ -111,6 +113,7 @@
                 </div>
 
 
+
                 <!-- STATE -->
 
                 <div class="filter-group">
@@ -128,6 +131,7 @@
                     </select>
 
                 </div>
+
 
 
                 <!-- CITY -->
@@ -149,6 +153,7 @@
                 </div>
 
 
+
                 <!-- EMPLOYEE -->
 
                 <div class="filter-group">
@@ -168,9 +173,11 @@
                 </div>
 
 
+
                 <!-- BUTTONS -->
 
                 <div class="filter-buttons">
+
 
                     <button
                         type="button"
@@ -185,6 +192,7 @@
                     </button>
 
 
+
                     <button
                         type="button"
                         id="resetFilter"
@@ -197,11 +205,13 @@
 
                     </button>
 
+
                 </div>
 
             </div>
 
         </div>
+
 
 
         <!-- =====================================
@@ -232,6 +242,7 @@
             </div>
 
         </div>
+
 
 
         <!-- =====================================
@@ -266,6 +277,7 @@
             </div>
 
 
+
             <!-- TOTAL COLLECTION -->
 
             <div class="summary-card collection-card">
@@ -289,6 +301,7 @@
                 </div>
 
             </div>
+
 
 
             <!-- REMAINING TARGET -->
@@ -316,6 +329,7 @@
             </div>
 
 
+
             <!-- PERCENTAGE -->
 
             <div class="summary-card percentage-card">
@@ -340,7 +354,9 @@
 
             </div>
 
+
         </div>
+
 
 
         <!-- =====================================
@@ -369,6 +385,7 @@
                 </div>
 
             </div>
+
 
 
             <div class="table-wrapper">
@@ -428,6 +445,7 @@
                     </thead>
 
 
+
                     <tbody id="summaryTableBody">
 
                         <tr>
@@ -446,6 +464,7 @@
                     </tbody>
 
 
+
                     <tfoot id="summaryTableFoot">
 
                     </tfoot>
@@ -457,18 +476,21 @@
         </div>
 
 
+
         <!-- =====================================
              FOOTER NOTE
         ====================================== -->
 
         <div class="footer-note">
 
-            Data is calculated based on selected filters.
+            Collection is calculated from both
+            daily_entry and teacher_entries.
 
         </div>
 
 
     </div>
+
 
 
     <!-- =========================================
@@ -479,7 +501,7 @@
 
         fetch("components/admin-sidebar.html")
 
-            .then(function(response) {
+            .then(function (response) {
 
                 if (!response.ok) {
 
@@ -489,23 +511,29 @@
 
                 }
 
+
                 return response.text();
 
             })
 
-            .then(function(data) {
+            .then(function (data) {
 
                 const sidebarContainer =
                     document.getElementById(
                         "adminSidebar"
                     );
 
-                sidebarContainer.innerHTML =
-                    data;
+
+                if (sidebarContainer) {
+
+                    sidebarContainer.innerHTML =
+                        data;
+
+                }
 
             })
 
-            .catch(function(error) {
+            .catch(function (error) {
 
                 console.error(
                     "Admin Sidebar Error:",
@@ -515,6 +543,7 @@
             });
 
     </script>
+
 
 
     <!-- =========================================
