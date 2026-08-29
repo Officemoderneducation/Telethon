@@ -1,116 +1,105 @@
-/* =========================================================
+/* ============================================================
    TELETHON
    ACADEMIC DEPARTMENT COMPETITION
-   Professional Public Competition Design
-
-   File:
-   assets/css/competition.css
-========================================================= */
+   PROFESSIONAL PUBLIC DESIGN
+   File: assets/css/competition.css
+============================================================ */
 
 
-/* =========================================================
+/* ============================================================
    ROOT
-========================================================= */
+============================================================ */
 
 :root {
 
-    --primary: #173b8f;
-    --primary-dark: #0d245c;
-    --primary-light: #315cc7;
+    --primary: #123c73;
+    --primary-dark: #0b2850;
+    --primary-light: #eaf3ff;
 
-    --secondary: #6d4aff;
+    --secondary: #d89b24;
+    --secondary-light: #fff7df;
 
-    --success: #11845b;
-    --success-light: #e9f8f1;
+    --success: #16834b;
+    --success-light: #eaf8f0;
 
-    --gold: #d89b17;
-    --gold-dark: #8f6100;
-    --gold-light: #fff7dc;
+    --danger: #c0392b;
+    --danger-light: #fff1ef;
 
-    --danger: #c53b3b;
+    --text-dark: #142033;
+    --text: #344054;
+    --text-light: #667085;
 
-    --text: #182033;
-    --text-soft: #667085;
-    --text-light: #98a2b3;
-
-    --border: #e4e8f0;
-
+    --border: #e4eaf2;
     --white: #ffffff;
 
-    --page-bg: #f4f7fc;
+    --shadow:
+        0 18px 50px rgba(16, 42, 77, 0.10);
 
-    --shadow-sm:
-        0 4px 14px rgba(16, 24, 40, 0.06);
-
-    --shadow-md:
-        0 12px 30px rgba(16, 24, 40, 0.09);
-
-    --shadow-lg:
-        0 25px 70px rgba(16, 24, 40, 0.13);
+    --shadow-hover:
+        0 25px 65px rgba(16, 42, 77, 0.16);
 
 }
 
 
-/* =========================================================
+/* ============================================================
    RESET
-========================================================= */
+============================================================ */
 
-* {
+*,
+*::before,
+*::after {
 
     box-sizing: border-box;
 
-    margin: 0;
+}
 
-    padding: 0;
+
+html {
+
+    scroll-behavior: smooth;
 
 }
 
 
-/* =========================================================
-   BODY
-========================================================= */
-
 body {
+
+    margin: 0;
 
     min-height: 100vh;
 
     font-family:
         Inter,
         "Segoe UI",
-        Roboto,
         Arial,
         Helvetica,
         sans-serif;
 
-    color: var(--text);
+    color: var(--text-dark);
 
     background:
-
         radial-gradient(
-            circle at 8% 5%,
-            rgba(49, 92, 199, 0.10),
-            transparent 26%
+            circle at 10% 10%,
+            rgba(30, 102, 180, 0.08),
+            transparent 28%
         ),
-
         radial-gradient(
-            circle at 92% 12%,
-            rgba(109, 74, 255, 0.08),
+            circle at 90% 15%,
+            rgba(216, 155, 36, 0.09),
             transparent 25%
         ),
-
         linear-gradient(
-            180deg,
-            #f8faff 0%,
-            var(--page-bg) 55%,
-            #eef2f8 100%
+            135deg,
+            #f4f8fd 0%,
+            #eef4fa 45%,
+            #f8fafc 100%
         );
 
 }
 
 
-/* =========================================================
+/* ============================================================
    PAGE
-========================================================= */
+============================================================ */
 
 .competition-page {
 
@@ -121,14 +110,14 @@ body {
     margin: 0 auto;
 
     padding:
-        34px 24px 70px;
+        45px 25px 70px;
 
 }
 
 
-/* =========================================================
+/* ============================================================
    PAGE HEADER
-========================================================= */
+============================================================ */
 
 .page-header {
 
@@ -136,33 +125,335 @@ body {
 
     text-align: center;
 
-    margin-bottom: 36px;
+    margin-bottom: 38px;
 
     padding:
-        30px 20px 28px;
+        32px 25px;
+
+    border-radius: 24px;
+
+    overflow: hidden;
 
     background:
         linear-gradient(
             135deg,
-            #ffffff,
-            #f7f9ff
+            var(--primary-dark),
+            var(--primary),
+            #1b568f
         );
 
-    border:
-        1px solid rgba(228, 232, 240, 0.95);
-
-    border-radius: 24px;
-
-    box-shadow: var(--shadow-md);
-
-    overflow: hidden;
+    box-shadow:
+        0 20px 50px rgba(11, 40, 80, 0.20);
 
 }
 
 
-/* Decorative top line */
+/* decorative circles */
 
 .page-header::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+
+    height: 220px;
+
+    border-radius: 50%;
+
+    top: -130px;
+
+    left: -70px;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+}
+
+
+.page-header::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+
+    height: 250px;
+
+    border-radius: 50%;
+
+    bottom: -170px;
+
+    right: -80px;
+
+    background:
+        rgba(216, 155, 36, 0.14);
+
+}
+
+
+/* ============================================================
+   HEADER TITLE
+============================================================ */
+
+.page-header h1 {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin: 0 0 9px;
+
+    color: #ffffff;
+
+    font-size: 32px;
+
+    line-height: 1.2;
+
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+
+}
+
+
+/* ============================================================
+   HEADER SUBTITLE
+============================================================ */
+
+.page-header p {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin: 0;
+
+    color:
+        rgba(255, 255, 255, 0.82);
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+}
+
+
+/* ============================================================
+   LOADING
+============================================================ */
+
+.loading-box {
+
+    width: 100%;
+
+    max-width: 600px;
+
+    margin: 40px auto;
+
+    padding: 45px 25px;
+
+    text-align: center;
+
+    border-radius: 22px;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    box-shadow: var(--shadow);
+
+    color: var(--text-light);
+
+}
+
+
+.loading-box i {
+
+    display: block;
+
+    margin-bottom: 15px;
+
+    font-size: 34px;
+
+    color: var(--primary);
+
+}
+
+
+.loading-box p {
+
+    margin: 0;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+}
+
+
+/* ============================================================
+   ERROR
+============================================================ */
+
+.error-box {
+
+    display: none;
+
+    max-width: 750px;
+
+    margin: 25px auto;
+
+    padding: 18px 22px;
+
+    border-radius: 15px;
+
+    background: var(--danger-light);
+
+    border: 1px solid #f3c7c2;
+
+    color: #9d2d23;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+.error-box i {
+
+    margin-right: 8px;
+
+}
+
+
+/* ============================================================
+   EMPTY
+============================================================ */
+
+.empty-box {
+
+    display: none;
+
+    max-width: 650px;
+
+    margin: 40px auto;
+
+    padding: 55px 25px;
+
+    text-align: center;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 24px;
+
+    box-shadow: var(--shadow);
+
+}
+
+
+.empty-box i {
+
+    display: block;
+
+    margin-bottom: 20px;
+
+    font-size: 48px;
+
+    color: var(--secondary);
+
+}
+
+
+.empty-box h3 {
+
+    margin: 0 0 8px;
+
+    color: var(--text-dark);
+
+    font-size: 23px;
+
+}
+
+
+.empty-box p {
+
+    margin: 0;
+
+    color: var(--text-light);
+
+    font-size: 14px;
+
+}
+
+
+/* ============================================================
+   COMPETITION LIST
+============================================================ */
+
+.competition-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 35px;
+
+}
+
+
+/* ============================================================
+   COMPETITION CARD
+============================================================ */
+
+.competition-card {
+
+    position: relative;
+
+    width: 100%;
+
+    padding: 34px;
+
+    overflow: hidden;
+
+    background:
+        rgba(255, 255, 255, 0.97);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 28px;
+
+    box-shadow: var(--shadow);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+}
+
+
+.competition-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow: var(--shadow-hover);
+
+}
+
+
+/* ============================================================
+   CARD TOP DECORATION
+============================================================ */
+
+.competition-card::before {
 
     content: "";
 
@@ -179,430 +470,40 @@ body {
     background:
         linear-gradient(
             90deg,
-            var(--primary-dark),
             var(--primary),
-            var(--secondary)
+            var(--secondary),
+            var(--primary)
         );
 
 }
 
 
-/* Decorative circle */
-
-.page-header::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 180px;
-
-    height: 180px;
-
-    right: -90px;
-
-    top: -90px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(49, 92, 199, 0.06);
-
-}
-
-
-/* =========================================================
-   HEADER TITLE
-========================================================= */
-
-.page-header h1 {
-
-    position: relative;
-
-    z-index: 2;
-
-    font-size: 32px;
-
-    line-height: 1.25;
-
-    font-weight: 800;
-
-    letter-spacing: -0.6px;
-
-    color: var(--primary-dark);
-
-    margin-bottom: 12px;
-
-}
-
-
-/* =========================================================
-   HEADER SUBTITLE
-========================================================= */
-
-.page-header p {
-
-    position: relative;
-
-    z-index: 2;
-
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    padding:
-        7px 15px;
-
-    border-radius: 30px;
-
-    background: #eef3ff;
-
-    border:
-        1px solid #d8e3ff;
-
-    color: var(--primary);
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.3px;
-
-    text-transform: uppercase;
-
-}
-
-
-/* Live dot */
-
-.page-header p::before {
-
-    content: "";
-
-    width: 8px;
-
-    height: 8px;
-
-    border-radius: 50%;
-
-    background: #16a05d;
-
-    box-shadow:
-        0 0 0 4px rgba(
-            22,
-            160,
-            93,
-            0.12
-        );
-
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-.loading-box {
-
-    max-width: 500px;
-
-    margin: 40px auto;
-
-    padding:
-        45px 25px;
-
-    text-align: center;
-
-    background: var(--white);
-
-    border:
-        1px solid var(--border);
-
-    border-radius: 20px;
-
-    box-shadow: var(--shadow-md);
-
-    color: var(--text-soft);
-
-}
-
-
-.loading-box i {
-
-    display: block;
-
-    font-size: 30px;
-
-    color: var(--primary);
-
-    margin-bottom: 14px;
-
-}
-
-
-.loading-box p {
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-}
-
-
-/* =========================================================
-   ERROR
-========================================================= */
-
-.error-box {
-
-    display: none;
-
-    max-width: 720px;
-
-    margin:
-        20px auto 30px;
-
-    padding:
-        16px 20px;
-
-    border:
-        1px solid #f2c4c4;
-
-    border-left:
-        5px solid var(--danger);
-
-    border-radius: 12px;
-
-    background:
-        #fff7f7;
-
-    color:
-        #9b2c2c;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    text-align: center;
-
-}
-
-
-.error-box i {
-
-    margin-right: 8px;
-
-}
-
-
-/* =========================================================
-   EMPTY
-========================================================= */
-
-.empty-box {
-
-    display: none;
-
-    max-width: 650px;
-
-    margin: 45px auto;
-
-    padding:
-        55px 25px;
-
-    text-align: center;
-
-    background: var(--white);
-
-    border:
-        1px solid var(--border);
-
-    border-radius: 24px;
-
-    box-shadow: var(--shadow-lg);
-
-}
-
-
-.empty-box i {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    width: 78px;
-
-    height: 78px;
-
-    margin:
-        0 auto 20px;
-
-    border-radius: 50%;
-
-    background:
-        linear-gradient(
-            135deg,
-            #f4f6fa,
-            #e8edf5
-        );
-
-    color: #77829a;
-
-    font-size: 32px;
-
-}
-
-
-.empty-box h3 {
-
-    font-size: 22px;
-
-    font-weight: 800;
-
-    color: var(--text);
-
-    margin-bottom: 8px;
-
-}
-
-
-.empty-box p {
-
-    font-size: 14px;
-
-    color: var(--text-soft);
-
-}
-
-
-/* =========================================================
-   COMPETITION LIST
-========================================================= */
-
-.competition-list {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 34px;
-
-}
-
-
-/* =========================================================
-   COMPETITION CARD
-========================================================= */
-
-.competition-card {
-
-    position: relative;
-
-    overflow: hidden;
-
-    width: 100%;
-
-    padding:
-        38px;
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.98
-        );
-
-    border:
-        1px solid var(--border);
-
-    border-radius: 30px;
-
-    box-shadow: var(--shadow-lg);
-
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
-
-}
-
-
-.competition-card:hover {
-
-    transform:
-        translateY(-3px);
-
-    box-shadow:
-        0 30px 80px
-        rgba(
-            16,
-            24,
-            40,
-            0.16
-        );
-
-}
-
-
-/* =========================================================
-   CARD TOP LINE
-========================================================= */
-
-.competition-card::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-
-    left: 0;
-
-    right: 0;
-
-    height: 6px;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--primary-dark),
-            var(--primary),
-            var(--secondary)
-        );
-
-}
-
-
-/* =========================================================
-   CARD HEADER
-========================================================= */
+/* ============================================================
+   COMPETITION NAME
+============================================================ */
 
 .competition-name {
 
+    margin: 0 auto 12px;
+
     text-align: center;
-
-    font-size: 27px;
-
-    line-height: 1.3;
-
-    font-weight: 850;
 
     color: var(--primary-dark);
 
-    letter-spacing: -0.3px;
+    font-size: 26px;
 
-    margin-bottom: 13px;
+    line-height: 1.25;
+
+    font-weight: 850;
+
+    letter-spacing: -0.4px;
 
 }
 
 
-/* =========================================================
+/* ============================================================
    DATE
-========================================================= */
+============================================================ */
 
 .competition-date {
 
@@ -614,13 +515,13 @@ body {
 
     gap: 8px;
 
-    color: var(--text-soft);
+    margin-bottom: 9px;
+
+    color: var(--text);
 
     font-size: 15px;
 
     font-weight: 700;
-
-    margin-bottom: 12px;
 
 }
 
@@ -639,9 +540,9 @@ body {
 }
 
 
-/* =========================================================
+/* ============================================================
    END TIME
-========================================================= */
+============================================================ */
 
 .competition-end {
 
@@ -651,77 +552,73 @@ body {
 
     justify-content: center;
 
-    gap: 4px;
+    gap: 7px;
 
-    width: fit-content;
+    margin-bottom: 32px;
 
-    margin:
-        0 auto 38px;
+    color: var(--text-light);
 
-    padding:
-        8px 17px;
+    font-size: 13px;
 
-    border-radius: 50px;
-
-    background:
-        #fff7e8;
-
-    border:
-        1px solid #f2d49b;
-
-    color:
-        #8a5a00;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.2px;
+    font-weight: 600;
 
 }
 
 
 .competition-end strong {
 
-    color:
-        #b26d00;
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 7px 13px;
+
+    border-radius: 50px;
+
+    background: var(--danger-light);
+
+    border: 1px solid #f1d0cb;
+
+    color: var(--danger);
 
     font-size: 13px;
 
-    margin-left: 4px;
+    font-weight: 800;
 
 }
 
 
-/* =========================================================
+/* ============================================================
    MATCH AREA
-========================================================= */
+============================================================ */
 
 .competition-match {
+
+    position: relative;
 
     display: grid;
 
     grid-template-columns:
         minmax(0, 1fr)
-        105px
+        90px
         minmax(0, 1fr);
 
-    align-items: center;
+    align-items: stretch;
 
-    gap: 22px;
+    gap: 20px;
 
 }
 
 
-/* =========================================================
-   TEAM CARD
-========================================================= */
+/* ============================================================
+   SIDE CARD
+============================================================ */
 
 .competition-side {
 
     position: relative;
 
-    min-height: 245px;
+    min-height: 220px;
 
     display: flex;
 
@@ -729,60 +626,30 @@ body {
 
     justify-content: space-between;
 
-    padding:
-        30px 28px;
+    padding: 30px 25px;
+
+    overflow: hidden;
 
     text-align: center;
 
-    border-radius: 24px;
+    border-radius: 23px;
 
-    border:
-        1px solid #dce4f3;
+    border: 1px solid #d9e5f3;
 
     background:
         linear-gradient(
             145deg,
             #ffffff 0%,
-            #f8faff 55%,
-            #eef4ff 100%
+            #f4f8fd 100%
         );
 
     box-shadow:
-        0 12px 30px
-        rgba(
-            23,
-            59,
-            143,
-            0.07
-        );
-
-    overflow: hidden;
-
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
+        inset 0 1px 0 rgba(255,255,255,0.8);
 
 }
 
 
-.competition-side:hover {
-
-    transform:
-        translateY(-4px);
-
-    box-shadow:
-        0 18px 38px
-        rgba(
-            23,
-            59,
-            143,
-            0.12
-        );
-
-}
-
-
-/* Left colored indicator */
+/* left accent */
 
 .competition-side::before {
 
@@ -790,62 +657,29 @@ body {
 
     position: absolute;
 
-    left: 0;
-
     top: 0;
 
-    bottom: 0;
+    left: 0;
 
-    width: 6px;
+    width: 5px;
+
+    height: 100%;
 
     background:
         linear-gradient(
             180deg,
             var(--primary),
-            var(--secondary)
+            #4e8bc3
         );
 
 }
 
 
-/* Subtle background glow */
-
-.competition-side::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 170px;
-
-    height: 170px;
-
-    right: -90px;
-
-    bottom: -90px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(
-            49,
-            92,
-            199,
-            0.05
-        );
-
-}
-
-
-/* =========================================================
+/* ============================================================
    TEAM NAME
-========================================================= */
+============================================================ */
 
 .team-name {
-
-    position: relative;
-
-    z-index: 2;
 
     min-height: 70px;
 
@@ -855,8 +689,9 @@ body {
 
     justify-content: center;
 
-    padding:
-        0 8px;
+    padding: 0 8px;
+
+    color: var(--primary-dark);
 
     font-size: 25px;
 
@@ -864,51 +699,45 @@ body {
 
     font-weight: 850;
 
-    color: var(--primary);
-
     word-break: break-word;
 
 }
 
 
-/* =========================================================
-   TEAM TOTAL
-========================================================= */
+/* ============================================================
+   TOTAL BOX
+============================================================ */
 
 .team-total {
 
-    position: relative;
-
-    z-index: 2;
-
     margin-top: 25px;
 
-    padding-top: 22px;
+    padding:
+        16px 15px;
 
-    border-top:
-        1px solid #dce4f3;
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f0f6ff,
+            #ffffff
+        );
+
+    border: 1px solid #e0e9f4;
 
 }
 
 
-/* =========================================================
+/* ============================================================
    TOTAL LABEL
-========================================================= */
+============================================================ */
 
 .team-total-label {
 
-    display: flex;
+    margin-bottom: 7px;
 
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 7px;
-
-    margin-bottom: 9px;
-
-    color:
-        #667085;
+    color: var(--text-light);
 
     font-size: 12px;
 
@@ -916,51 +745,37 @@ body {
 
     text-transform: uppercase;
 
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
 
 }
 
 
-.team-total-label::before {
-
-    content: "\f51e";
-
-    font-family:
-        "Font Awesome 6 Free";
-
-    font-weight: 900;
-
-    color:
-        var(--primary-light);
-
-}
-
-
-/* =========================================================
+/* ============================================================
    TOTAL AMOUNT
-========================================================= */
+============================================================ */
 
 .team-total-unit {
 
-    font-size: 38px;
+    color: var(--text-dark);
+
+    font-size: 35px;
 
     line-height: 1;
 
     font-weight: 900;
 
-    letter-spacing: -1px;
-
-    color:
-        #111827;
+    letter-spacing: -0.5px;
 
 }
 
 
-/* =========================================================
+/* ============================================================
    VS AREA
-========================================================= */
+============================================================ */
 
 .vs-area {
+
+    position: relative;
 
     display: flex;
 
@@ -971,17 +786,39 @@ body {
 }
 
 
-/* =========================================================
+/* connecting line */
+
+.vs-area::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    height: 1px;
+
+    background:
+        #d8e1eb;
+
+}
+
+
+/* ============================================================
    VS CIRCLE
-========================================================= */
+============================================================ */
 
 .vs-circle {
 
     position: relative;
 
-    width: 78px;
+    z-index: 2;
 
-    height: 78px;
+    width: 70px;
+
+    height: 70px;
 
     display: flex;
 
@@ -994,115 +831,63 @@ body {
     background:
         linear-gradient(
             145deg,
-            #0d245c,
-            #315cc7
+            var(--primary),
+            var(--primary-dark)
         );
+
+    border:
+        5px solid #ffffff;
 
     color: #ffffff;
 
-    font-size: 18px;
+    font-size: 17px;
 
     font-weight: 900;
 
-    letter-spacing: 0.7px;
-
     box-shadow:
-        0 15px 35px
-        rgba(
-            13,
-            36,
-            92,
-            0.30
+        0 10px 28px rgba(
+            18,
+            60,
+            115,
+            0.25
         );
 
 }
 
 
-/* Outer ring */
-
-.vs-circle::before {
-
-    content: "";
-
-    position: absolute;
-
-    inset: -8px;
-
-    border-radius: 50%;
-
-    border:
-        1px solid #c8d5ef;
-
-}
-
-
-/* Inner highlight */
-
-.vs-circle::after {
-
-    content: "";
-
-    position: absolute;
-
-    inset: 5px;
-
-    border-radius: 50%;
-
-    border:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            0.20
-        );
-
-}
-
-
-/* =========================================================
+/* ============================================================
    WINNER APPRECIATION
-========================================================= */
+============================================================ */
 
 .winner-appreciation {
 
     position: relative;
 
-    overflow: hidden;
-
-    margin-top: 32px;
+    margin-top: 30px;
 
     padding:
-        30px 25px;
+        28px 25px;
 
     text-align: center;
 
-    border:
-        1px solid #ead39a;
+    overflow: hidden;
 
-    border-radius: 24px;
+    border-radius: 22px;
+
+    border:
+        1px solid #ead49e;
 
     background:
         linear-gradient(
             135deg,
-            #fffdf5,
-            #fff8e5,
-            #fffaf0
-        );
-
-    box-shadow:
-        0 14px 35px
-        rgba(
-            143,
-            97,
-            0,
-            0.08
+            #fffaf0,
+            #fffdf8
         );
 
 }
 
 
-/* Gold top line */
+/* winner decorative top */
 
 .winner-appreciation::before {
 
@@ -1110,172 +895,108 @@ body {
 
     position: absolute;
 
+    top: 0;
+
     left: 0;
 
     right: 0;
 
-    top: 0;
-
-    height: 5px;
+    height: 4px;
 
     background:
         linear-gradient(
             90deg,
-            #b77900,
-            #e6ad27,
-            #b77900
+            #c68a16,
+            #edc45b,
+            #c68a16
         );
 
 }
 
 
-/* Decorative glow */
-
-.winner-appreciation::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 170px;
-
-    height: 170px;
-
-    right: -85px;
-
-    top: -85px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(
-            216,
-            155,
-            23,
-            0.08
-        );
-
-}
-
-
-/* =========================================================
+/* ============================================================
    WINNER TITLE
-========================================================= */
+============================================================ */
 
 .winner-appreciation-title {
 
-    position: relative;
+    margin-bottom: 12px;
 
-    z-index: 2;
-
-    margin-bottom: 14px;
-
-    color:
-        var(--gold-dark);
+    color: #9a6910;
 
     font-size: 18px;
 
-    font-weight: 900;
+    font-weight: 850;
 
 }
 
 
-/* =========================================================
-   WINNER NAME
-========================================================= */
+/* ============================================================
+   WINNING TEACHER NAME
+============================================================ */
 
 .winner-teacher-name {
 
-    position: relative;
-
-    z-index: 2;
-
     display: inline-block;
 
-    max-width: 90%;
-
-    margin-bottom: 14px;
+    margin-bottom: 13px;
 
     padding:
-        10px 22px;
+        9px 18px;
 
     border-radius: 50px;
 
     background:
-        #ffffff;
+        var(--secondary-light);
 
     border:
-        1px solid #e7c66f;
+        1px solid #edd795;
 
     color:
-        #684600;
+        #76500b;
 
-    font-size: 22px;
+    font-size: 21px;
 
     font-weight: 900;
 
-    box-shadow:
-        0 7px 20px
-        rgba(
-            143,
-            97,
-            0,
-            0.09
-        );
-
 }
 
 
-/* =========================================================
+/* ============================================================
    WINNER TEXT
-========================================================= */
+============================================================ */
 
 .winner-appreciation-text {
 
-    position: relative;
+    margin-bottom: 8px;
 
-    z-index: 2;
-
-    color:
-        #5f5a4d;
+    color: var(--text);
 
     font-size: 14px;
 
-    font-weight: 600;
-
-    margin-bottom: 8px;
+    font-weight: 700;
 
 }
 
 
-/* =========================================================
-   WINNER BLESSING
-========================================================= */
+/* ============================================================
+   BLESSING
+============================================================ */
 
 .winner-appreciation-blessing {
 
-    position: relative;
-
-    z-index: 2;
-
-    max-width: 700px;
-
-    margin:
-        0 auto;
-
-    color:
-        #817969;
+    color: var(--text-light);
 
     font-size: 13px;
 
-    line-height: 1.7;
+    line-height: 1.6;
 
 }
 
 
-/* =========================================================
+/* ============================================================
    TABLET
-========================================================= */
+============================================================ */
 
 @media (
     max-width: 900px
@@ -1284,15 +1005,14 @@ body {
     .competition-page {
 
         padding:
-            28px 18px 55px;
+            30px 18px 50px;
 
     }
 
 
     .competition-card {
 
-        padding:
-            32px 24px;
+        padding: 28px 22px;
 
     }
 
@@ -1301,20 +1021,10 @@ body {
 
         grid-template-columns:
             minmax(0, 1fr)
-            85px
+            70px
             minmax(0, 1fr);
 
-        gap: 15px;
-
-    }
-
-
-    .competition-side {
-
-        min-height: 220px;
-
-        padding:
-            27px 20px;
+        gap: 12px;
 
     }
 
@@ -1328,16 +1038,16 @@ body {
 
     .team-total-unit {
 
-        font-size: 34px;
+        font-size: 31px;
 
     }
 
 }
 
 
-/* =========================================================
+/* ============================================================
    MOBILE
-========================================================= */
+============================================================ */
 
 @media (
     max-width: 700px
@@ -1347,9 +1057,9 @@ body {
 
         background:
             linear-gradient(
-                180deg,
-                #f6f9ff,
-                #eef2f8
+                145deg,
+                #f3f7fc,
+                #f9fbfd
             );
 
     }
@@ -1358,21 +1068,21 @@ body {
     .competition-page {
 
         padding:
-            18px 11px 40px;
+            18px 12px 40px;
 
     }
 
 
-    /* Header */
+    /* HEADER */
 
     .page-header {
 
-        padding:
-            25px 14px 22px;
-
         margin-bottom: 22px;
 
-        border-radius: 19px;
+        padding:
+            25px 18px;
+
+        border-radius: 20px;
 
     }
 
@@ -1381,96 +1091,68 @@ body {
 
         font-size: 23px;
 
-        letter-spacing: -0.3px;
+        line-height: 1.3;
 
     }
 
 
     .page-header p {
 
-        font-size: 10px;
-
-        padding:
-            6px 12px;
+        font-size: 13px;
 
     }
 
 
-    /* List */
-
-    .competition-list {
-
-        gap: 20px;
-
-    }
-
-
-    /* Card */
+    /* CARD */
 
     .competition-card {
 
         padding:
-            28px 12px 16px;
+            25px 14px;
 
         border-radius: 21px;
 
     }
 
 
-    /* Competition title */
-
     .competition-name {
 
         font-size: 21px;
 
         padding:
-            0 5px;
+            0 8px;
 
     }
 
-
-    /* Date */
 
     .competition-date {
 
-        font-size: 13px;
+        font-size: 14px;
 
     }
 
-
-    /* End */
 
     .competition-end {
 
         margin-bottom: 25px;
-
-        padding:
-            8px 13px;
-
-        font-size: 11px;
-
-    }
-
-
-    .competition-end strong {
 
         font-size: 12px;
 
     }
 
 
-    /* Match */
+    /* MATCH */
 
     .competition-match {
 
         grid-template-columns: 1fr;
 
-        gap: 0;
+        gap: 10px;
 
     }
 
 
-    /* Team */
+    /* SIDE */
 
     .competition-side {
 
@@ -1484,19 +1166,9 @@ body {
     }
 
 
-    .competition-side::before {
-
-        width: 5px;
-
-        border-radius:
-            19px 0 0 19px;
-
-    }
-
-
     .team-name {
 
-        min-height: 52px;
+        min-height: 55px;
 
         font-size: 21px;
 
@@ -1507,7 +1179,8 @@ body {
 
         margin-top: 18px;
 
-        padding-top: 16px;
+        padding:
+            14px 12px;
 
     }
 
@@ -1516,14 +1189,12 @@ body {
 
         font-size: 10px;
 
-        letter-spacing: 0.6px;
-
     }
 
 
     .team-total-unit {
 
-        font-size: 31px;
+        font-size: 29px;
 
     }
 
@@ -1532,44 +1203,41 @@ body {
 
     .vs-area {
 
-        height: 68px;
+        height: 58px;
+
+    }
+
+
+    .vs-area::before {
+
+        left: 20%;
+
+        right: 20%;
 
     }
 
 
     .vs-circle {
 
-        width: 56px;
+        width: 55px;
 
-        height: 56px;
+        height: 55px;
+
+        border-width: 4px;
 
         font-size: 14px;
 
     }
 
 
-    .vs-circle::before {
-
-        inset: -5px;
-
-    }
-
-
-    .vs-circle::after {
-
-        inset: 4px;
-
-    }
-
-
-    /* Winner */
+    /* WINNER */
 
     .winner-appreciation {
 
-        margin-top: 21px;
+        margin-top: 22px;
 
         padding:
-            24px 13px;
+            24px 15px;
 
         border-radius: 19px;
 
@@ -1578,59 +1246,60 @@ body {
 
     .winner-appreciation-title {
 
-        font-size: 15px;
-
-        line-height: 1.45;
+        font-size: 16px;
 
     }
 
 
     .winner-teacher-name {
 
-        max-width: 100%;
+        font-size: 18px;
 
         padding:
             8px 15px;
 
-        font-size: 18px;
-
-        line-height: 1.35;
-
-        word-break: break-word;
+        max-width: 100%;
 
     }
 
 
     .winner-appreciation-text {
 
-        font-size: 12px;
+        font-size: 13px;
 
     }
 
 
     .winner-appreciation-blessing {
 
-        font-size: 11px;
-
-        line-height: 1.6;
+        font-size: 12px;
 
     }
 
 }
 
 
-/* =========================================================
+/* ============================================================
    SMALL MOBILE
-========================================================= */
+============================================================ */
 
 @media (
-    max-width: 380px
+    max-width: 400px
 ) {
 
     .competition-page {
 
+        padding-left: 9px;
+
+        padding-right: 9px;
+
+    }
+
+
+    .competition-card {
+
         padding:
-            15px 8px 35px;
+            22px 11px;
 
     }
 
@@ -1642,27 +1311,9 @@ body {
     }
 
 
-    .competition-card {
-
-        padding:
-            27px 10px 14px;
-
-    }
-
-
     .competition-name {
 
         font-size: 19px;
-
-    }
-
-
-    .competition-side {
-
-        min-height: 160px;
-
-        padding:
-            21px 13px;
 
     }
 
@@ -1676,32 +1327,26 @@ body {
 
     .team-total-unit {
 
-        font-size: 28px;
-
-    }
-
-
-    .winner-teacher-name {
-
-        font-size: 16px;
+        font-size: 27px;
 
     }
 
 }
 
 
-/* =========================================================
-   ACCESSIBILITY
-========================================================= */
+/* ============================================================
+   REDUCE MOTION
+============================================================ */
 
 @media (
     prefers-reduced-motion: reduce
 ) {
 
-    .competition-card,
-    .competition-side {
+    * {
 
-        transition: none;
+        scroll-behavior: auto !important;
+
+        transition: none !important;
 
     }
 
