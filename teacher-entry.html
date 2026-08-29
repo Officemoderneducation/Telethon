@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Teacher Entry | Telethon
+    </title>
+
+
+    <!-- ======================================
+         FONT AWESOME
+    ======================================= -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- ======================================
+         REGION SIDEBAR CSS
+    ======================================= -->
+
+    <link
+        rel="stylesheet"
+        href="components/region-sidebar.css"
+    >
+
+
+    <!-- ======================================
+         ADMIN SIDEBAR CSS
+    ======================================= -->
+
+    <link
+        rel="stylesheet"
+        href="components/admin-sidebar.css"
+    >
+
+
+    <style>
+
+        /* ======================================
+           RESET
+        ======================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            min-height: 100vh;
+            background: #f4f6f9;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+
+        /* ======================================
+           SIDEBAR
+        ======================================= */
+
+        #sidebarContainer {
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+
+            width: 260px;
+            height: 100vh;
+
+            z-index: 99999;
+
+        }
+
+
+        /* ======================================
+           MAIN AREA
+        ======================================= */
+
+        .main-area {
+
+            margin-left: 260px;
+
+            width: calc(100% - 260px);
+
+            min-height: 100vh;
+
+        }
+
+
+        /* ======================================
+           TOPBAR
+        ======================================= */
+
+        .topbar-main {
+
+            height: 76px;
+
+            background: #ffffff;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 26px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+
+        }
+
+
+        .topbar-title h2 {
+
+            font-size: 20px;
+
+            color: #0f172a;
+
+            margin-bottom: 3px;
+
+        }
+
+
+        .topbar-title p {
+
+            font-size: 12px;
+
+            color: #64748b;
+
+        }
+
+
+        .topbar-user {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #334155;
+
+        }
+
+
+        .topbar-user i {
+
+            font-size: 20px;
+
+            color: #2563eb;
+
+        }
+
+
+        /* ======================================
+           MOBILE MENU
+        ======================================= */
+
+        .mobile-menu-btn {
+
+            display: none;
+
+            position: fixed;
+
+            top: 12px;
+            left: 12px;
+
+            width: 42px;
+            height: 42px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+            cursor: pointer;
+
+            font-size: 18px;
+
+            z-index: 100001;
+
+        }
+
+
+        /* ======================================
+           MAIN
+        ======================================= */
+
+        .main {
+
+            padding: 22px;
+
+        }
+
+
+        /* ======================================
+           PAGE HEADER
+        ======================================= */
+
+        .page-header {
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 22px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+
+        }
+
+
+        .page-header h2 {
+
+            font-size: 24px;
+
+            color: #0f172a;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .page-header h2 i {
+
+            color: #2563eb;
+
+            margin-right: 8px;
+
+        }
+
+
+        .page-header p {
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* ======================================
+           USER INFO
+        ======================================= */
+
+        .region-user-info {
+
+            background: #ecfdf5;
+
+            border: 1px solid #bbf7d0;
+
+            color: #166534;
+
+            padding: 14px 18px;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ======================================
+           ENTRY CONTAINER
+        ======================================= */
+
+        .entry-container {
+
+            max-width: 850px;
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06);
+
+        }
+
+
+        .entry-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 22px;
+
+            padding-bottom: 15px;
+
+            border-bottom: 1px solid #e2e8f0;
+
+        }
+
+
+        .entry-title i {
+
+            color: #2563eb;
+
+            font-size: 21px;
+
+        }
+
+
+        .entry-title h3 {
+
+            font-size: 19px;
+
+            color: #0f172a;
+
+        }
+
+
+        /* ======================================
+           FORM GRID
+        ======================================= */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        .form-group.full-width {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        .form-group label {
+
+            margin-bottom: 7px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #475569;
+
+        }
+
+
+        .form-group label i {
+
+            color: #2563eb;
+
+            margin-right: 5px;
+
+        }
+
+
+        .form-group input,
+        .form-group select {
+
+            width: 100%;
+
+            height: 44px;
+
+            padding: 0 13px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 7px;
+
+            outline: none;
+
+            font-size: 14px;
+
+            color: #334155;
+
+            background: #ffffff;
+
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,0.10);
+
+        }
+
+
+        .form-group input[readonly] {
+
+            background: #f8fafc;
+
+            color: #64748b;
+
+        }
+
+
+        /* ======================================
+           BUTTON
+        ======================================= */
+
+        .form-buttons {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 24px;
+
+        }
+
+
+        .btn {
+
+            border: none;
+
+            padding: 11px 20px;
+
+            border-radius: 7px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+        }
+
+
+        .save-btn {
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+        }
+
+
+        .save-btn:hover {
+
+            background: #1d4ed8;
+
+        }
+
+
+        .reset-btn {
+
+            background: #e2e8f0;
+
+            color: #334155;
+
+        }
+
+
+        .reset-btn:hover {
+
+            background: #cbd5e1;
+
+        }
+
+
+        .btn:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+
+        }
+
+
+        /* ======================================
+           MESSAGE
+        ======================================= */
+
+        .message {
+
+            display: none;
+
+            margin-top: 18px;
+
+            padding: 13px 15px;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        .message.success {
+
+            display: block;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+            border: 1px solid #bbf7d0;
+
+        }
+
+
+        .message.error {
+
+            display: block;
+
+            background: #fee2e2;
+
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+
+        }
+
+
+        /* ======================================
+           MOBILE
+        ======================================= */
+
+        @media (max-width: 800px) {
+
+            #sidebarContainer {
+
+                width: 260px;
+
+            }
+
+
+            .main-area {
+
+                margin-left: 0;
+
+                width: 100%;
+
+            }
+
+
+            .mobile-menu-btn {
+
+                display: block;
+
+            }
+
+
+            .topbar-main {
+
+                padding-left: 68px;
+
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .main {
+
+                padding: 12px;
+
+            }
+
+
+            .page-header,
+            .entry-container {
+
+                padding: 17px;
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .form-buttons {
+
+                flex-direction: column;
+
+            }
+
+
+            .btn {
+
+                width: 100%;
+
+            }
+
+
+            .topbar-user {
+
+                display: none;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ======================================
+     SIDEBAR
+====================================== -->
+
+<div id="sidebarContainer"></div>
+
+
+
+<!-- ======================================
+     MOBILE MENU
+====================================== -->
+
+<button
+    type="button"
+    id="mobileMenuBtn"
+    class="mobile-menu-btn"
+>
+
+    <i class="fa-solid fa-bars"></i>
+
+</button>
+
+
+
+<!-- ======================================
+     MAIN AREA
+====================================== -->
+
+<div class="main-area">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar-main">
+
+
+        <div class="topbar-title">
+
+            <h2>
+                Teacher Entry
+            </h2>
+
+            <p>
+                Add Teacher Daily Collection
+            </p>
+
+        </div>
+
+
+        <div class="topbar-user">
+
+            <i class="fa-solid fa-circle-user"></i>
+
+            <span id="regionUserInfoTop">
+                Loading...
+            </span>
+
+        </div>
+
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <!-- PAGE HEADER -->
+
+        <div class="page-header">
+
+            <h2>
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                Teacher Collection Entry
+
+            </h2>
+
+
+            <p>
+
+                Region User apne assigned Teachers ki
+                daily collection entry yahan add kar sakta hai.
+
+                Same Teacher aur same Date ki multiple
+                entries alag-alag save hongi.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- REGION USER -->
+
+        <div
+            id="regionUserInfo"
+            class="region-user-info"
+        >
+
+            Loading Region User...
+
+        </div>
+
+
+
+        <!-- ENTRY FORM -->
+
+        <div class="entry-container">
+
+
+            <div class="entry-title">
+
+                <i class="fa-solid fa-file-circle-plus"></i>
+
+                <h3>
+                    Add Collection Entry
+                </h3>
+
+            </div>
+
+
+
+            <form id="teacherEntryForm">
+
+
+                <div class="form-grid">
+
+
+                    <!-- TEACHER -->
+
+                    <div
+                        class="form-group full-width"
+                    >
+
+                        <label for="teacherSelect">
+
+                            <i class="fa-solid fa-chalkboard-user"></i>
+
+                            Select Teacher
+
+                        </label>
+
+
+                        <select
+                            id="teacherSelect"
+                            required
+                        >
+
+                            <option value="">
+                                Loading Teachers...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- EMPLOYEE CODE -->
+
+                    <div class="form-group">
+
+                        <label for="employeeCode">
+
+                            <i class="fa-solid fa-id-card"></i>
+
+                            Employee Code
+
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="employeeCode"
+                            readonly
+                        >
+
+                    </div>
+
+
+
+                    <!-- TEACHER NAME -->
+
+                    <div class="form-group">
+
+                        <label for="teacherName">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            Teacher Name
+
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="teacherName"
+                            readonly
+                        >
+
+                    </div>
+
+
+
+                    <!-- DATE -->
+
+                    <div class="form-group">
+
+                        <label for="entryDate">
+
+                            <i class="fa-solid fa-calendar"></i>
+
+                            Entry Date
+
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="entryDate"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- AMOUNT -->
+
+                    <div class="form-group">
+
+                        <label for="collectionAmount">
+
+                            <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                            Collection Amount
+
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="collectionAmount"
+                            placeholder="Enter Amount"
+                            min="1"
+                            step="1"
+                            required
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="form-buttons">
+
+
+                    <button
+                        type="submit"
+                        id="saveEntryBtn"
+                        class="btn save-btn"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Save Entry
+
+                    </button>
+
+
+
+                    <button
+                        type="button"
+                        id="resetEntryBtn"
+                        class="btn reset-btn"
+                    >
+
+                        <i class="fa-solid fa-rotate-left"></i>
+
+                        Reset
+
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- MESSAGE -->
+
+                <div
+                    id="formMessage"
+                    class="message"
+                ></div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- ======================================
+     SIDEBAR LOADER
+====================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const sidebarContainer =
+            document.getElementById(
+                "sidebarContainer"
+            );
+
+
+        if (!sidebarContainer) {
+
+            return;
+
+        }
+
+
+        const userRole =
+            (
+                localStorage.getItem(
+                    "userRole"
+                ) || ""
+            )
+            .trim()
+            .toLowerCase();
+
+
+        const adminLoggedIn =
+            localStorage.getItem(
+                "adminLoggedIn"
+            ) === "true";
+
+
+        const isAdminFlag =
+            localStorage.getItem(
+                "isAdmin"
+            ) === "true";
+
+
+        const isAdmin =
+            adminLoggedIn ||
+            isAdminFlag ||
+            userRole === "admin";
+
+
+        const sidebarFile =
+            isAdmin
+                ? "components/admin-sidebar.html"
+                : "components/region-sidebar.html";
+
+
+        fetch(sidebarFile)
+
+        .then(
+            function (response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Sidebar load failed."
+                    );
+
+                }
+
+
+                return response.text();
+
+            }
+        )
+
+        .then(
+            function (data) {
+
+                sidebarContainer.innerHTML =
+                    data;
+
+
+                let currentPage =
+                    window.location.pathname
+                        .split("/")
+                        .pop()
+                        .toLowerCase();
+
+
+                if (!currentPage) {
+
+                    currentPage =
+                        "teacher-entry.html";
+
+                }
+
+
+                /* ADMIN MENU */
+
+                const adminLinks =
+                    sidebarContainer.querySelectorAll(
+                        ".admin-sidebar-menu a[data-page]"
+                    );
+
+
+                adminLinks.forEach(
+                    function (link) {
+
+                        const page =
+                            (
+                                link.getAttribute(
+                                    "data-page"
+                                ) || ""
+                            )
+                            .toLowerCase();
+
+
+                        link.classList.toggle(
+                            "active",
+                            page === currentPage
+                        );
+
+                    }
+                );
+
+
+                /* REGION MENU */
+
+                const regionLinks =
+                    sidebarContainer.querySelectorAll(
+                        ".region-menu-link[data-page]"
+                    );
+
+
+                regionLinks.forEach(
+                    function (link) {
+
+                        const page =
+                            (
+                                link.getAttribute(
+                                    "data-page"
+                                ) || ""
+                            )
+                            .toLowerCase();
+
+
+                        link.classList.toggle(
+                            "active",
+                            page === currentPage
+                        );
+
+                    }
+                );
+
+
+                /* REGION USER NAME */
+
+                const regionUserName =
+                    localStorage.getItem(
+                        "regionUserName"
+                    );
+
+
+                const sidebarUserName =
+                    sidebarContainer.querySelector(
+                        "#regionSidebarUserName"
+                    );
+
+
+                const topUserName =
+                    document.getElementById(
+                        "regionUserInfoTop"
+                    );
+
+
+                if (regionUserName) {
+
+                    if (sidebarUserName) {
+
+                        sidebarUserName.textContent =
+                            regionUserName;
+
+                    }
+
+
+                    if (topUserName) {
+
+                        topUserName.textContent =
+                            regionUserName;
+
+                    }
+
+                }
+
+
+                /* MOBILE MENU */
+
+                const mobileMenuBtn =
+                    document.getElementById(
+                        "mobileMenuBtn"
+                    );
+
+
+                const sidebar =
+                    sidebarContainer.querySelector(
+                        ".region-sidebar, .admin-sidebar"
+                    );
+
+
+                if (
+                    mobileMenuBtn &&
+                    sidebar
+                ) {
+
+                    mobileMenuBtn.addEventListener(
+                        "click",
+                        function () {
+
+                            sidebar.classList.toggle(
+                                "open"
+                            );
+
+                        }
+                    );
+
+                }
+
+            }
+        )
+
+        .catch(
+            function (error) {
+
+                console.error(
+                    error
+                );
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+
+<!-- ======================================
+     TEACHER ENTRY JS
+====================================== -->
+
+<script
+    type="module"
+    src="assets/js/teacher-entry.js"
+></script>
+
+
+</body>
+
+</html>
