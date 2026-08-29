@@ -2,16 +2,31 @@
 // TELETHON
 // TEACHER ENTRY
 //
-// NEW ENTRIES:
-// Firebase Collection = teacher_entries
+// IMPORTANT
 //
-// IMPORTANT:
-// Existing daily_entry collection is NOT modified.
+// OLD daily_entry COLLECTION:
+// --------------------------------------
+// Existing old entries ko touch nahi karta.
 //
-// Same Teacher + Same Date:
-// Multiple entries are allowed.
-// Every new entry is saved as a NEW document.
+// NEW teacher-entry.html ENTRIES:
+// --------------------------------------
+// Nayi entries "teacher_entries" collection
+// mein save hoti hain.
+//
+// SAME TEACHER + SAME DATE:
+// --------------------------------------
+// Multiple entries allowed.
+// Har Save = NEW Firestore document.
+//
+// REGION USER:
+// --------------------------------------
+// Sirf assigned Teachers.
+//
+// ADMIN:
+// --------------------------------------
+// Sabhi Teachers.
 // ======================================================
+
 
 import { db } from "./firebase-config.js";
 
@@ -21,20 +36,10 @@ import {
     query,
     where,
     addDoc,
-    serverTimestamp
+    serverTimestamp,
+    doc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-// ======================================================
-// COLLECTIONS
-// ======================================================
-
-const EMPLOYEES_COLLECTION = "employees";
-
-
-// IMPORTANT:
-// New Teacher Entry data will ONLY be saved here.
-const TEACHER_ENTRIES_COLLECTION = "teacher_entries";
 
 
 // ======================================================
@@ -103,6 +108,8 @@ let allEmployees = [];
 let visibleEmployees = [];
 
 let accessRules = [];
+
+let currentUserData = null;
 
 
 // ======================================================
@@ -193,29 +200,6 @@ function getTeacherName(employee) {
 
 
 // ======================================================
-// JAMIATUL MADINA
-// ======================================================
-
-function getJamiatul(employee) {
-
-    return String(
-
-        employee.jamiatulMadina ||
-
-        employee.jamiatul_madina ||
-
-        employee.jamiatul ||
-
-        employee.madina ||
-
-        ""
-
-    ).trim();
-
-}
-
-
-// ======================================================
 // REGION
 // ======================================================
 
@@ -279,15 +263,80 @@ function getEmployeeCity(employee) {
 
 
 // ======================================================
-// FULL REGION CHECK
+// JAMIATUL MADINA
+// ======================================================
+
+function getEmployeeJamiatul(employee) {
+
+    return String(
+
+        employee.jamiatulMadina ||
+
+        employee.jamiatul_madina ||
+
+        employee.jamiatul ||
+
+        employee.madina ||
+
+        ""
+
+    ).trim();
+
+}
+
+
+// ======================================================
+// SHOW MESSAGE
+// ======================================================
+
+function showMessage(
+    message,
+    type = "success"
+) {
+
+    if (!formMessage) {
+        return;
+    }
+
+
+    formMessage.textContent =
+        message;
+
+
+    formMessage.className =
+        "message " + type;
+
+}
+
+
+// ======================================================
+// CLEAR MESSAGE
+// ======================================================
+
+function clearMessage() {
+
+    if (!formMessage) {
+        return;
+    }
+
+
+    formMessage.textContent =
+        "";
+
+    formMessage.className =
+        "message";
+
+}
+
+
+// ======================================================
+// GET FULL REGION FLAG
 // ======================================================
 
 function isFullRegionRule(rule) {
 
     if (!rule) {
-
         return false;
-
     }
 
 
@@ -317,6 +366,113 @@ function isFullRegionRule(rule) {
 
 
 // ======================================================
+// GET RULE REGION
+// ======================================================
+
+function getRuleRegion(rule) {
+
+    if (!rule) {
+        return "";
+    }
+
+
+    return normalize(
+
+        rule.region ||
+
+        rule.assignedRegion ||
+
+        rule.regionName ||
+
+        rule.region_name ||
+
+        ""
+
+    );
+
+}
+
+
+// ======================================================
+// GET RULE STATES
+// ======================================================
+
+function getRuleStates(rule) {
+
+    if (!rule) {
+        return [];
+    }
+
+
+    if (rule.state) {
+
+        return [
+            String(rule.state)
+        ];
+
+    }
+
+
+    if (
+        Array.isArray(
+            rule.states
+        )
+    ) {
+
+        return rule.states;
+
+    }
+
+
+    if (
+        typeof rule.states ===
+        "string"
+    ) {
+
+        return [
+            rule.states
+        ];
+
+    }
+
+
+    if (
+        Array.isArray(
+            rule.selectedStates
+        )
+    ) {
+
+        return rule.selectedStates;
+
+    }
+
+
+    if (
+        Array.isArray(
+            rule.assignedStates
+        )
+    ) {
+
+        return rule.assignedStates;
+
+    }
+
+
+    if (rule.stateName) {
+
+        return [
+            rule.stateName
+        ];
+
+    }
+
+
+    return [];
+
+}
+
+
+// ======================================================
 // EMPLOYEE ACCESS
 // ======================================================
 
@@ -336,7 +492,7 @@ function hasEmployeeAccess(employee) {
 
 
     // ==================================================
-    // REGION USER
+    // NO ACCESS RULE
     // ==================================================
 
     if (
@@ -351,49 +507,46 @@ function hasEmployeeAccess(employee) {
 
     const employeeRegion =
         normalize(
-            getEmployeeRegion(employee)
+            getEmployeeRegion(
+                employee
+            )
         );
 
 
     const employeeState =
         normalize(
-            getEmployeeState(employee)
+            getEmployeeState(
+                employee
+            )
         );
 
 
+    // ==================================================
+    // CHECK ALL ACCESS RULES
+    // ==================================================
+
     return accessRules.some(
-        function (rule) {
+        (rule) => {
 
             if (!rule) {
-
                 return false;
-
             }
 
 
             const assignedRegion =
-                normalize(
-
-                    rule.region ||
-
-                    rule.assignedRegion ||
-
-                    rule.regionName ||
-
-                    rule.region_name ||
-
-                    ""
-
+                getRuleRegion(
+                    rule
                 );
 
 
-            // ==========================================
-            // REGION CHECK
-            // ==========================================
+            // ==================================================
+            // REGION MATCH
+            // ==================================================
 
             if (
                 assignedRegion &&
-                assignedRegion !== employeeRegion
+                assignedRegion !==
+                employeeRegion
             ) {
 
                 return false;
@@ -401,12 +554,14 @@ function hasEmployeeAccess(employee) {
             }
 
 
-            // ==========================================
+            // ==================================================
             // FULL REGION
-            // ==========================================
+            // ==================================================
 
             if (
-                isFullRegionRule(rule)
+                isFullRegionRule(
+                    rule
+                )
             ) {
 
                 return true;
@@ -414,73 +569,17 @@ function hasEmployeeAccess(employee) {
             }
 
 
-            // ==========================================
-            // STATES
-            // ==========================================
+            // ==================================================
+            // STATE ACCESS
+            // ==================================================
 
-            let states = [];
-
-
-            if (rule.state) {
-
-                states = [
-                    rule.state
-                ];
-
-            }
-
-            else if (
-                Array.isArray(rule.states)
-            ) {
-
-                states =
-                    rule.states;
-
-            }
-
-            else if (
-                typeof rule.states === "string"
-            ) {
-
-                states = [
-                    rule.states
-                ];
-
-            }
-
-            else if (
-                Array.isArray(rule.selectedStates)
-            ) {
-
-                states =
-                    rule.selectedStates;
-
-            }
-
-            else if (
-                Array.isArray(rule.assignedStates)
-            ) {
-
-                states =
-                    rule.assignedStates;
-
-            }
-
-            else if (
-                rule.stateName
-            ) {
-
-                states = [
-                    rule.stateName
-                ];
-
-            }
+            const states =
+                getRuleStates(
+                    rule
+                );
 
 
-            // ==========================================
-            // NO STATE RESTRICTION
-            // ==========================================
-
+            // No state restriction
             if (
                 states.length === 0
             ) {
@@ -490,25 +589,23 @@ function hasEmployeeAccess(employee) {
             }
 
 
-            // ==========================================
-            // STATE MATCH
-            // ==========================================
+            // ==================================================
+            // CHECK STATE
+            // ==================================================
 
             return states.some(
-                function (state) {
+                (state) => {
 
                     const allowedState =
-                        normalize(state);
+                        normalize(
+                            state
+                        );
 
 
                     if (
-
                         allowedState === "*" ||
-
                         allowedState === "all" ||
-
                         allowedState === "all states"
-
                     ) {
 
                         return true;
@@ -544,6 +641,12 @@ async function loadRegionUser() {
         currentUserRole === "admin"
     ) {
 
+        currentUserData = {
+            role: "admin",
+            name: "Administrator"
+        };
+
+
         accessRules = [];
 
 
@@ -573,17 +676,22 @@ async function loadRegionUser() {
 
 
     // ==================================================
-    // REGION USER ROLE CHECK
+    // REGION USER
     // ==================================================
 
+    const validRegionRoles = [
+
+        "regionuser",
+        "region_user",
+        "region-user"
+
+    ];
+
+
     if (
-
-        currentUserRole !== "regionuser" &&
-
-        currentUserRole !== "region_user" &&
-
-        currentUserRole !== "region-user"
-
+        !validRegionRoles.includes(
+            currentUserRole
+        )
     ) {
 
         throw new Error(
@@ -606,14 +714,20 @@ async function loadRegionUser() {
 
 
     // ==================================================
-    // POSSIBLE COLLECTIONS
+    // COLLECTIONS
+    //
+    // Current screenshot ke according:
+    // regionUsers
+    //
+    // Backup:
+    // region_users
     // ==================================================
 
     const collectionNames = [
 
-        "region_users",
+        "regionUsers",
 
-        "regionUsers"
+        "region_users"
 
     ];
 
@@ -640,7 +754,7 @@ async function loadRegionUser() {
 
 
     // ==================================================
-    // SEARCH REGION USER
+    // SEARCH BY FIELD
     // ==================================================
 
     for (
@@ -649,9 +763,7 @@ async function loadRegionUser() {
     ) {
 
         if (userData) {
-
             break;
-
         }
 
 
@@ -661,9 +773,7 @@ async function loadRegionUser() {
         ) {
 
             if (userData) {
-
                 break;
-
             }
 
 
@@ -718,7 +828,7 @@ async function loadRegionUser() {
 
 
     // ==================================================
-    // DOCUMENT ID SEARCH
+    // SEARCH BY DOCUMENT ID
     // ==================================================
 
     if (!userData) {
@@ -729,40 +839,32 @@ async function loadRegionUser() {
         ) {
 
             if (userData) {
-
                 break;
-
             }
 
 
             try {
 
-                const snapshot =
-                    await getDocs(
-                        collection(
-                            db,
-                            collectionName
-                        )
+                const userRef =
+                    doc(
+                        db,
+                        collectionName,
+                        loggedInUser
                     );
 
 
-                const found =
-                    snapshot.docs.find(
-                        function (doc) {
-
-                            return (
-                                doc.id ===
-                                loggedInUser
-                            );
-
-                        }
+                const userSnap =
+                    await getDoc(
+                        userRef
                     );
 
 
-                if (found) {
+                if (
+                    userSnap.exists()
+                ) {
 
                     userData =
-                        found.data();
+                        userSnap.data();
 
                     break;
 
@@ -773,7 +875,7 @@ async function loadRegionUser() {
             catch (error) {
 
                 console.warn(
-                    "Region User Document Search Error:",
+                    "Document Search Error:",
                     error
                 );
 
@@ -797,6 +899,10 @@ async function loadRegionUser() {
     }
 
 
+    currentUserData =
+        userData;
+
+
     // ==================================================
     // USER NAME
     // ==================================================
@@ -811,15 +917,23 @@ async function loadRegionUser() {
 
         userData.fullName ||
 
+        userData.full_name ||
+
         loggedInUser;
 
+
+    // ==================================================
+    // DISPLAY USER
+    // ==================================================
 
     if (regionUserInfo) {
 
         regionUserInfo.innerHTML = `
             Region User:
             <strong>
-                ${escapeHTML(userName)}
+                ${escapeHTML(
+                    userName
+                )}
             </strong>
         `;
 
@@ -866,6 +980,18 @@ async function loadRegionUser() {
 
     }
 
+
+    console.log(
+        "Current Region User:",
+        userData
+    );
+
+
+    console.log(
+        "Access Rules:",
+        accessRules
+    );
+
 }
 
 
@@ -875,11 +1001,11 @@ async function loadRegionUser() {
 
 async function loadEmployees() {
 
-    const snapshot =
+    const employeeSnapshot =
         await getDocs(
             collection(
                 db,
-                EMPLOYEES_COLLECTION
+                "employees"
             )
         );
 
@@ -887,8 +1013,8 @@ async function loadEmployees() {
     allEmployees = [];
 
 
-    snapshot.forEach(
-        function (employeeDoc) {
+    employeeSnapshot.forEach(
+        (employeeDoc) => {
 
             allEmployees.push({
 
@@ -909,24 +1035,21 @@ async function loadEmployees() {
 
     visibleEmployees =
         allEmployees.filter(
-            function (employee) {
-
-                return hasEmployeeAccess(
+            (employee) =>
+                hasEmployeeAccess(
                     employee
-                );
-
-            }
+                )
         );
 
 
     console.log(
-        "All Employees:",
+        "All Teachers:",
         allEmployees.length
     );
 
 
     console.log(
-        "Visible Employees:",
+        "Visible Teachers:",
         visibleEmployees.length
     );
 
@@ -940,79 +1063,17 @@ async function loadEmployees() {
 function loadTeacherOptions() {
 
     if (!teacherSelect) {
-
         return;
-
     }
 
 
     teacherSelect.innerHTML = `
+
         <option value="">
             Select Teacher
         </option>
+
     `;
-
-
-    visibleEmployees
-        .sort(
-            function (a, b) {
-
-                return getTeacherName(a)
-                    .localeCompare(
-                        getTeacherName(b)
-                    );
-
-            }
-        )
-        .forEach(
-            function (employee) {
-
-                const code =
-                    getEmployeeCode(
-                        employee
-                    );
-
-
-                const name =
-                    getTeacherName(
-                        employee
-                    );
-
-
-                if (!code) {
-
-                    return;
-
-                }
-
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                /*
-                 * Store Firestore employee ID
-                 * as option value.
-                 *
-                 * This keeps selection reliable.
-                 */
-
-                option.value =
-                    employee.id;
-
-
-                option.textContent =
-                    `${code} - ${name}`;
-
-
-                teacherSelect.appendChild(
-                    option
-                );
-
-            }
-        );
 
 
     if (
@@ -1020,18 +1081,99 @@ function loadTeacherOptions() {
     ) {
 
         teacherSelect.innerHTML = `
+
             <option value="">
-                No Teachers Available
+                No Assigned Teacher Found
             </option>
+
         `;
 
+        return;
+
     }
+
+
+    // ==================================================
+    // SORT TEACHERS
+    // ==================================================
+
+    const sortedEmployees =
+        [...visibleEmployees].sort(
+            (a, b) => {
+
+                const nameA =
+                    normalize(
+                        getTeacherName(a)
+                    );
+
+                const nameB =
+                    normalize(
+                        getTeacherName(b)
+                    );
+
+                return nameA.localeCompare(
+                    nameB
+                );
+
+            }
+        );
+
+
+    // ==================================================
+    // OPTIONS
+    // ==================================================
+
+    sortedEmployees.forEach(
+        (employee) => {
+
+            const code =
+                getEmployeeCode(
+                    employee
+                );
+
+
+            const name =
+                getTeacherName(
+                    employee
+                );
+
+
+            if (!code) {
+                return;
+            }
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                code;
+
+
+            option.textContent =
+                code +
+                " - " +
+                (
+                    name ||
+                    "Teacher"
+                );
+
+
+            teacherSelect.appendChild(
+                option
+            );
+
+        }
+    );
 
 }
 
 
 // ======================================================
-// SELECT TEACHER
+// TEACHER SELECT CHANGE
 // ======================================================
 
 if (teacherSelect) {
@@ -1040,20 +1182,50 @@ if (teacherSelect) {
         "change",
         function () {
 
-            const employeeId =
-                this.value;
+            clearMessage();
 
+
+            const selectedCode =
+                normalize(
+                    this.value
+                );
+
+
+            if (!selectedCode) {
+
+                if (employeeCodeInput) {
+
+                    employeeCodeInput.value =
+                        "";
+
+                }
+
+
+                if (teacherNameInput) {
+
+                    teacherNameInput.value =
+                        "";
+
+                }
+
+                return;
+
+            }
+
+
+            // ==================================================
+            // FIND SELECTED TEACHER
+            // ==================================================
 
             const employee =
                 visibleEmployees.find(
-                    function (item) {
-
-                        return (
-                            item.id ===
-                            employeeId
-                        );
-
-                    }
+                    (item) =>
+                        normalize(
+                            getEmployeeCode(
+                                item
+                            )
+                        ) ===
+                        selectedCode
                 );
 
 
@@ -1074,11 +1246,14 @@ if (teacherSelect) {
 
                 }
 
-
                 return;
 
             }
 
+
+            // ==================================================
+            // FILL EMPLOYEE CODE
+            // ==================================================
 
             if (employeeCodeInput) {
 
@@ -1089,6 +1264,10 @@ if (teacherSelect) {
 
             }
 
+
+            // ==================================================
+            // FILL TEACHER NAME
+            // ==================================================
 
             if (teacherNameInput) {
 
@@ -1106,15 +1285,13 @@ if (teacherSelect) {
 
 
 // ======================================================
-// TODAY DATE
+// DEFAULT DATE
 // ======================================================
 
 function setDefaultDate() {
 
     if (!entryDateInput) {
-
         return;
-
     }
 
 
@@ -1129,67 +1306,27 @@ function setDefaultDate() {
     const month =
         String(
             today.getMonth() + 1
-        )
-        .padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
     const day =
         String(
             today.getDate()
-        )
-        .padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
     entryDateInput.value =
-        `${year}-${month}-${day}`;
-
-}
-
-
-// ======================================================
-// MESSAGE
-// ======================================================
-
-function showMessage(
-    message,
-    type = "success"
-) {
-
-    if (!formMessage) {
-
-        return;
-
-    }
-
-
-    formMessage.textContent =
-        message;
-
-
-    formMessage.className =
-        `message ${type}`;
-
-}
-
-
-// ======================================================
-// CLEAR MESSAGE
-// ======================================================
-
-function clearMessage() {
-
-    if (!formMessage) {
-
-        return;
-
-    }
-
-
-    formMessage.textContent =
-        "";
-
-    formMessage.className =
-        "message";
+        year +
+        "-" +
+        month +
+        "-" +
+        day;
 
 }
 
@@ -1198,7 +1335,7 @@ function clearMessage() {
 // RESET FORM
 // ======================================================
 
-function resetForm() {
+function resetEntryForm() {
 
     if (teacherEntryForm) {
 
@@ -1240,7 +1377,7 @@ if (resetEntryBtn) {
         "click",
         function () {
 
-            resetForm();
+            resetEntryForm();
 
         }
     );
@@ -1249,7 +1386,17 @@ if (resetEntryBtn) {
 
 
 // ======================================================
-// SAVE NEW TEACHER ENTRY
+// SAVE ENTRY
+//
+// IMPORTANT
+//
+// NEW COLLECTION:
+// teacher_entries
+//
+// Every save creates NEW document.
+//
+// Same Teacher + Same Date
+// multiple entries allowed.
 // ======================================================
 
 if (teacherEntryForm) {
@@ -1264,127 +1411,14 @@ if (teacherEntryForm) {
             clearMessage();
 
 
-            // ==========================================
-            // SELECTED TEACHER
-            // ==========================================
-
-            const employeeId =
-                teacherSelect?.value || "";
-
-
-            const employee =
-                visibleEmployees.find(
-                    function (item) {
-
-                        return (
-                            item.id ===
-                            employeeId
-                        );
-
-                    }
-                );
-
-
-            if (!employee) {
-
-                showMessage(
-                    "Please Select Teacher.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            // ==========================================
-            // EMPLOYEE CODE
-            // ==========================================
-
-            const employeeCode =
-                getEmployeeCode(
-                    employee
-                );
-
-
-            if (!employeeCode) {
-
-                showMessage(
-                    "Selected Teacher ka Employee Code nahi mila.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            // ==========================================
-            // TEACHER NAME
-            // ==========================================
-
-            const teacherName =
-                getTeacherName(
-                    employee
-                );
-
-
-            // ==========================================
-            // DATE
-            // ==========================================
-
-            const entryDate =
-                String(
-                    entryDateInput?.value || ""
-                ).trim();
-
-
-            if (!entryDate) {
-
-                showMessage(
-                    "Please Entry Date select karein.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            // ==========================================
-            // AMOUNT
-            // ==========================================
-
-            const amount =
-                Number(
-                    collectionAmountInput?.value || 0
-                );
-
-
-            if (
-                !Number.isFinite(amount) ||
-                amount <= 0
-            ) {
-
-                showMessage(
-                    "Please valid Collection Amount enter karein.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            // ==========================================
-            // DISABLE SAVE BUTTON
-            // ==========================================
+            // ==================================================
+            // BUTTON DISABLE
+            // ==================================================
 
             if (saveEntryBtn) {
 
                 saveEntryBtn.disabled =
                     true;
-
 
                 saveEntryBtn.innerHTML = `
                     <i class="fa-solid fa-spinner fa-spin"></i>
@@ -1396,147 +1430,315 @@ if (teacherEntryForm) {
 
             try {
 
-                // ======================================
-                // IMPORTANT
-                //
-                // NEW DOCUMENT
-                // NEW COLLECTION
-                //
-                // teacher_entries
-                //
-                // Existing daily_entry is NOT touched.
-                // ======================================
+                // ==================================================
+                // VALUES
+                // ==================================================
 
-                const entryData = {
+                const selectedCode =
+                    String(
+                        teacherSelect?.value || ""
+                    ).trim();
 
-                    // ==================================
-                    // Teacher Information
-                    // ==================================
+
+                const employeeCode =
+                    String(
+                        employeeCodeInput?.value || ""
+                    ).trim();
+
+
+                const teacherName =
+                    String(
+                        teacherNameInput?.value || ""
+                    ).trim();
+
+
+                const entryDate =
+                    String(
+                        entryDateInput?.value || ""
+                    ).trim();
+
+
+                const amount =
+                    Number(
+                        String(
+                            collectionAmountInput?.value || ""
+                        )
+                        .replace(/,/g, "")
+                        .trim()
+                    );
+
+
+                // ==================================================
+                // VALIDATION
+                // ==================================================
+
+                if (!selectedCode) {
+
+                    throw new Error(
+                        "Please Teacher select karein."
+                    );
+
+                }
+
+
+                if (!employeeCode) {
+
+                    throw new Error(
+                        "Employee Code nahi mila."
+                    );
+
+                }
+
+
+                if (!teacherName) {
+
+                    throw new Error(
+                        "Teacher Name nahi mila."
+                    );
+
+                }
+
+
+                if (!entryDate) {
+
+                    throw new Error(
+                        "Please Entry Date select karein."
+                    );
+
+                }
+
+
+                if (
+                    !Number.isFinite(amount) ||
+                    amount <= 0
+                ) {
+
+                    throw new Error(
+                        "Please valid Collection Amount enter karein."
+                    );
+
+                }
+
+
+                // ==================================================
+                // VERIFY TEACHER ACCESS
+                //
+                // Security / accidental wrong selection protection
+                // ==================================================
+
+                const selectedEmployee =
+                    visibleEmployees.find(
+                        (employee) =>
+                            normalize(
+                                getEmployeeCode(
+                                    employee
+                                )
+                            ) ===
+                            normalize(
+                                employeeCode
+                            )
+                    );
+
+
+                if (!selectedEmployee) {
+
+                    throw new Error(
+                        "Aapko is Teacher ki entry karne ki permission nahi hai."
+                    );
+
+                }
+
+
+                // ==================================================
+                // TEACHER DETAILS
+                // ==================================================
+
+                const finalTeacherName =
+                    getTeacherName(
+                        selectedEmployee
+                    );
+
+
+                const finalRegion =
+                    getEmployeeRegion(
+                        selectedEmployee
+                    );
+
+
+                const finalState =
+                    getEmployeeState(
+                        selectedEmployee
+                    );
+
+
+                const finalCity =
+                    getEmployeeCity(
+                        selectedEmployee
+                    );
+
+
+                const finalJamiatul =
+                    getEmployeeJamiatul(
+                        selectedEmployee
+                    );
+
+
+                // ==================================================
+                // SAVE TO NEW COLLECTION
+                //
+                // IMPORTANT:
+                // addDoc = NEW DOCUMENT
+                //
+                // Existing daily_entry is NOT modified.
+                // ==================================================
+
+                const newEntry = {
+
+                    // ==========================================
+                    // Teacher
+                    // ==========================================
 
                     employeeCode:
                         employeeCode,
 
+                    employee_code:
+                        employeeCode,
+
                     teacherName:
+                        finalTeacherName ||
                         teacherName,
 
-                    employeeId:
-                        employee.id,
+                    teacher_name:
+                        finalTeacherName ||
+                        teacherName,
 
 
-                    // ==================================
-                    // Teacher Location
-                    // ==================================
-
-                    region:
-                        getEmployeeRegion(
-                            employee
-                        ),
-
-                    state:
-                        getEmployeeState(
-                            employee
-                        ),
-
-                    city:
-                        getEmployeeCity(
-                            employee
-                        ),
-
-                    jamiatulMadina:
-                        getJamiatul(
-                            employee
-                        ),
-
-
-                    // ==================================
+                    // ==========================================
                     // Collection
-                    // ==================================
+                    // ==========================================
 
                     amount:
                         amount,
 
+                    collection:
+                        amount,
 
-                    // ==================================
+                    collectionAmount:
+                        amount,
+
+
+                    // ==========================================
                     // Date
-                    // ==================================
+                    // ==========================================
 
                     date:
                         entryDate,
 
+                    entryDate:
+                        entryDate,
 
-                    // ==================================
+
+                    // ==========================================
+                    // Teacher Location
+                    // ==========================================
+
+                    region:
+                        finalRegion,
+
+                    state:
+                        finalState,
+
+                    city:
+                        finalCity,
+
+                    jamiatulMadina:
+                        finalJamiatul,
+
+
+                    // ==========================================
                     // Entry Source
-                    // ==================================
+                    // ==========================================
 
                     source:
                         "teacher-entry",
 
-
                     entrySource:
-                        "teacher-entry.html",
+                        "teacher-entry",
 
 
-                    // ==================================
-                    // Who Created Entry
-                    // ==================================
+                    // ==========================================
+                    // Entered By
+                    // ==========================================
 
-                    createdBy:
-                        loggedInUser || "admin",
+                    enteredBy:
+                        loggedInUser,
+
+                    enteredByRole:
+                        currentUserRole,
 
 
-                    createdByRole:
-                        currentUserRole || "unknown",
-
-
-                    // ==================================
-                    // Firestore Server Time
-                    // ==================================
+                    // ==========================================
+                    // Created Time
+                    //
+                    // Daily Report latest code ke liye
+                    // bhi useful rahega.
+                    // ==========================================
 
                     createdAt:
+                        serverTimestamp(),
+
+                    entryTime:
+                        serverTimestamp(),
+
+                    submittedAt:
                         serverTimestamp()
 
                 };
 
 
-                // ======================================
-                // SAVE
-                //
-                // addDoc = NEW DOCUMENT EVERY TIME
-                //
-                // Same Teacher + Same Date
-                // multiple entries are allowed.
-                // ======================================
+                // ==================================================
+                // FIRESTORE
+                // NEW COLLECTION
+                // ==================================================
 
-                const newDoc =
+                const docRef =
                     await addDoc(
+
                         collection(
                             db,
-                            TEACHER_ENTRIES_COLLECTION
+                            "teacher_entries"
                         ),
-                        entryData
+
+                        newEntry
+
                     );
 
 
                 console.log(
                     "New Teacher Entry Saved:",
-                    newDoc.id,
-                    entryData
+                    docRef.id
                 );
 
 
-                // ======================================
+                console.log(
+                    "Saved Data:",
+                    newEntry
+                );
+
+
+                // ==================================================
                 // SUCCESS
-                // ======================================
+                // ==================================================
 
                 showMessage(
-                    `Collection Entry successfully save ho gayi. Employee: ${employeeCode} | Amount: ₹ ${amount.toLocaleString("en-IN")}`,
+                    "Collection Entry successfully save ho gayi.",
                     "success"
                 );
 
 
-                // ======================================
-                // RESET ONLY FORM INPUTS
-                // ======================================
+                // ==================================================
+                // CLEAR ONLY ENTRY VALUES
+                // ==================================================
 
                 if (teacherSelect) {
 
@@ -1570,7 +1772,8 @@ if (teacherEntryForm) {
                 }
 
 
-                // Date remains selected.
+                // Date ko current date par rakhen
+                setDefaultDate();
 
 
             }
@@ -1584,8 +1787,8 @@ if (teacherEntryForm) {
 
 
                 showMessage(
-                    error?.message ||
-                    "Entry save nahi ho saki. Please dobara try karein.",
+                    error.message ||
+                    "Entry save nahi ho saki.",
                     "error"
                 );
 
@@ -1593,15 +1796,14 @@ if (teacherEntryForm) {
 
             finally {
 
-                // ======================================
+                // ==================================================
                 // ENABLE BUTTON
-                // ======================================
+                // ==================================================
 
                 if (saveEntryBtn) {
 
                     saveEntryBtn.disabled =
                         false;
-
 
                     saveEntryBtn.innerHTML = `
                         <i class="fa-solid fa-floppy-disk"></i>
@@ -1619,48 +1821,39 @@ if (teacherEntryForm) {
 
 
 // ======================================================
-// INITIAL LOAD
+// LOAD DATA
 // ======================================================
 
-async function init() {
+async function loadData() {
 
     try {
 
-        showMessage(
-            "Loading...",
-            "success"
-        );
-
-
-        // ==========================================
-        // LOGIN / ACCESS
-        // ==========================================
+        // ==================================================
+        // USER
+        // ==================================================
 
         await loadRegionUser();
 
 
-        // ==========================================
+        // ==================================================
         // EMPLOYEES
-        // ==========================================
+        // ==================================================
 
         await loadEmployees();
 
 
-        // ==========================================
-        // TEACHERS
-        // ==========================================
+        // ==================================================
+        // TEACHER SELECT
+        // ==================================================
 
         loadTeacherOptions();
 
 
-        // ==========================================
+        // ==================================================
         // DEFAULT DATE
-        // ==========================================
+        // ==================================================
 
         setDefaultDate();
-
-
-        clearMessage();
 
 
         console.log(
@@ -1668,24 +1861,19 @@ async function init() {
         );
 
 
-        console.log(
-            "New collection:",
-            TEACHER_ENTRIES_COLLECTION
-        );
-
     }
 
     catch (error) {
 
         console.error(
-            "Teacher Entry Initialization Error:",
+            "Teacher Entry Load Error:",
             error
         );
 
 
         showMessage(
-            error?.message ||
-            "Page load nahi ho saka.",
+            error.message ||
+            "Page load nahi ho saki.",
             "error"
         );
 
@@ -1693,9 +1881,14 @@ async function init() {
         if (teacherSelect) {
 
             teacherSelect.innerHTML = `
+
                 <option value="">
-                    Unable to Load Teachers
+                    ${escapeHTML(
+                        error.message ||
+                        "Unable to load Teachers"
+                    )}
                 </option>
+
             `;
 
         }
@@ -1709,4 +1902,4 @@ async function init() {
 // START
 // ======================================================
 
-init();
+loadData();
