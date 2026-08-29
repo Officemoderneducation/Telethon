@@ -7,11 +7,6 @@
 //
 // IMPORTANT:
 //
-// competition-entry.html
-// competition-entry.js
-//
-// IN FILES KO CHANGE NAHI KIYA GAYA HAI.
-//
 // Public Page:
 //
 // 1. Academic Department Competition
@@ -20,11 +15,19 @@
 // 4. Competition End Time
 // 5. Side A Team Name
 // 6. Side B Team Name
-// 7. Competition Participants
-// 8. Region / State ke Teachers ka Total Unit
+// 7. Side A Total Unit
+// 8. Side B Total Unit
 // 9. Amount public page par show nahi hoga
-// 10. End Time ke baad competition show nahi hoga
-// 11. Individual public URL support
+// 10. End Time ke baad ki entry include nahi hogi
+// 11. End Time ke baad competition public list se hide hoga
+// 12. Individual public URL support
+//
+// IMPORTANT:
+//
+// Competition Participants section REMOVE kiya gaya hai.
+//
+// competition-entry.html / competition-entry.js
+// ko change karne ki zarurat nahi hai.
 //
 // ======================================================
 
@@ -747,16 +750,22 @@ function formatEndTime(
 // ======================================================
 // GET SIDE DATA
 //
-// Firebase example:
+// Supported Firebase:
 //
 // sideA: [
+//     {
+//         region: "Kolkata",
+//         state: "",
+//         teamName: "Chand Sir"
+//     }
+// ]
 //
-//   {
-//      region: "Kolkata",
-//      state: "",
-//      teamName: "Kolkata"
-//   }
-//
+// sideB: [
+//     {
+//         region: "Gujarat",
+//         state: "",
+//         teamName: "Aasim Sir"
+//     }
 // ]
 //
 // ======================================================
@@ -797,15 +806,18 @@ function getSideData(
 
 
 // ======================================================
-// GET ADMIN ENTERED TEAM NAME
+// GET ADMIN TEAM NAME
 //
-// IMPORTANT:
+// Admin ne competition-entry page par
+// jo team name type kiya tha,
+// wahi public page par show hoga.
 //
-// Admin ne jo Name type kiya tha
-// wahi yahan show hoga.
+// Supported fields:
 //
-// Supported:
-//
+// sideATeamName
+// sideA_teamName
+// sideAName
+// sideA_name
 // teamName
 // team_name
 // name
@@ -818,9 +830,9 @@ function getAdminTeamName(
     side
 ) {
 
-    // ==============================================
-    // Direct Side Team Name
-    // ==============================================
+    // ==================================================
+    // DIRECT TEAM NAME
+    // ==================================================
 
     const directNames = [
 
@@ -849,10 +861,8 @@ function getAdminTeamName(
     ) {
 
         if (
-            value !==
-                undefined &&
-            value !==
-                null &&
+            value !== undefined &&
+            value !== null &&
             String(value).trim()
         ) {
 
@@ -865,9 +875,9 @@ function getAdminTeamName(
     }
 
 
-    // ==============================================
-    // Side Array
-    // ==============================================
+    // ==================================================
+    // SIDE ARRAY
+    // ==================================================
 
     const sideData =
         getSideData(
@@ -882,8 +892,7 @@ function getAdminTeamName(
     ) {
 
         if (
-            typeof item ===
-            "string"
+            typeof item === "string"
         ) {
 
             const value =
@@ -901,8 +910,7 @@ function getAdminTeamName(
 
         if (
             item &&
-            typeof item ===
-                "object"
+            typeof item === "object"
         ) {
 
             const value =
@@ -933,10 +941,6 @@ function getAdminTeamName(
     }
 
 
-    // ==============================================
-    // Fallback
-    // ==============================================
-
     return "";
 
 }
@@ -945,8 +949,12 @@ function getAdminTeamName(
 // ======================================================
 // GET PARTICIPANT RULES
 //
-// Region / State data competition-entry se
+// Region / State competition-entry se
 // liya jayega.
+//
+// IMPORTANT:
+//
+// Team Name ko participant rule nahi maana jayega.
 //
 // ======================================================
 
@@ -962,30 +970,31 @@ function getParticipantRules(
         );
 
 
-    return sideData
-        .filter(
-            item => {
+    return sideData.filter(
+        item => {
 
-                if (
-                    typeof item ===
-                    "string"
-                ) {
+            if (
+                !item ||
+                typeof item !== "object"
+            ) {
 
-                    return false;
-
-                }
-
-
-                return (
-                    item &&
-                    (
-                        item.region ||
-                        item.state
-                    )
-                );
+                return false;
 
             }
-        );
+
+
+            return (
+                String(
+                    item.region || ""
+                ).trim() ||
+
+                String(
+                    item.state || ""
+                ).trim()
+            );
+
+        }
+    );
 
 }
 
@@ -1027,9 +1036,9 @@ function employeeMatchesRule(
         );
 
 
-    // ==============================================
-    // Region + State
-    // ==============================================
+    // ==================================================
+    // REGION + STATE
+    // ==================================================
 
     if (
         ruleRegion &&
@@ -1049,9 +1058,9 @@ function employeeMatchesRule(
     }
 
 
-    // ==============================================
-    // Region only
-    // ==============================================
+    // ==================================================
+    // REGION ONLY
+    // ==================================================
 
     if (
         ruleRegion
@@ -1065,9 +1074,9 @@ function employeeMatchesRule(
     }
 
 
-    // ==============================================
-    // State only
-    // ==============================================
+    // ==================================================
+    // STATE ONLY
+    // ==================================================
 
     if (
         ruleState
@@ -1165,7 +1174,7 @@ function getSideParticipants(
 // GET LATEST ENTRIES
 //
 // Same Teacher + Same Date
-// = latest entry
+// = Latest Entry
 //
 // ======================================================
 
@@ -1263,6 +1272,13 @@ function getLatestEntries() {
 
 // ======================================================
 // CALCULATE SIDE UNIT
+//
+// Competition date ke teachers ki
+// collection calculate hogi.
+//
+// End Time ke baad ki entries
+// include nahi hongi.
+//
 // ======================================================
 
 function calculateSideUnit(
@@ -1299,7 +1315,7 @@ function calculateSideUnit(
 
     const competitionDate =
         String(
-            competition.date ||
+            competition?.date ||
             ""
         ).trim();
 
@@ -1336,6 +1352,10 @@ function calculateSideUnit(
                 );
 
 
+            // ==================================================
+            // TEACHER CHECK
+            // ==================================================
+
             if (
                 !teacherSet.has(
                     employeeCode
@@ -1346,6 +1366,10 @@ function calculateSideUnit(
 
             }
 
+
+            // ==================================================
+            // DATE CHECK
+            // ==================================================
 
             const entryDate =
                 getEntryDate(
@@ -1363,15 +1387,18 @@ function calculateSideUnit(
             }
 
 
+            // ==================================================
+            // END TIME CHECK
+            //
+            // End Time ke baad ki entry exclude.
+            //
+            // ==================================================
+
             const createdTime =
                 getCreatedTime(
                     entry
                 );
 
-
-            // ==========================================
-            // End Time ke baad ki entry include nahi
-            // ==========================================
 
             if (
                 endTimestamp &&
@@ -1385,6 +1412,10 @@ function calculateSideUnit(
             }
 
 
+            // ==================================================
+            // ADD AMOUNT
+            // ==================================================
+
             totalAmount +=
                 getEntryAmount(
                     entry
@@ -1393,6 +1424,10 @@ function calculateSideUnit(
         }
     );
 
+
+    // ==================================================
+    // AMOUNT -> UNIT
+    // ==================================================
 
     return (
         totalAmount /
@@ -1404,6 +1439,16 @@ function calculateSideUnit(
 
 // ======================================================
 // CREATE SIDE HTML
+//
+// IMPORTANT:
+//
+// Public page par amount show nahi hoga.
+//
+// Sirf:
+//
+// Team Name
+// Total Unit
+//
 // ======================================================
 
 function createSideHTML(
@@ -1465,69 +1510,13 @@ function createSideHTML(
 
 
 // ======================================================
-// CREATE PARTICIPANTS HTML
+// CREATE COMPETITION CARD
 //
 // IMPORTANT:
 //
-// "Enter Name" mein Admin ka typed Team Name
-// automatically show hoga.
+// Competition Participants section
+// YAHAN NAHI HAI.
 //
-// ======================================================
-
-function createParticipantsHTML(
-    competition,
-    side,
-    sideLabel
-) {
-
-    const teamName =
-        getAdminTeamName(
-            competition,
-            side
-        );
-
-
-    return `
-
-        <div class="participants-box">
-
-            <div class="participants-title">
-
-                Competition Participants
-
-            </div>
-
-
-            <div class="participant-row">
-
-                <span class="participant-side">
-
-                    ${escapeHTML(
-                        sideLabel
-                    )}
-
-                </span>
-
-
-                <span class="participant-name">
-
-                    ${escapeHTML(
-                        teamName
-                    )}
-
-                </span>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-// ======================================================
-// CREATE COMPETITION CARD
 // ======================================================
 
 function createCompetitionCard(
@@ -1548,6 +1537,10 @@ function createCompetitionCard(
         competition.id;
 
 
+    // ==================================================
+    // COMPETITION NAME
+    // ==================================================
+
     const competitionName =
         String(
             competition.name ||
@@ -1555,17 +1548,29 @@ function createCompetitionCard(
         ).trim();
 
 
+    // ==================================================
+    // DATE
+    // ==================================================
+
     const date =
         formatCompetitionDate(
             competition.date
         );
 
 
+    // ==================================================
+    // END TIME
+    // ==================================================
+
     const endTime =
         formatEndTime(
             competition.endTime
         );
 
+
+    // ==================================================
+    // SIDE A
+    // ==================================================
 
     const sideA =
         createSideHTML(
@@ -1574,6 +1579,10 @@ function createCompetitionCard(
         );
 
 
+    // ==================================================
+    // SIDE B
+    // ==================================================
+
     const sideB =
         createSideHTML(
             competition,
@@ -1581,21 +1590,9 @@ function createCompetitionCard(
         );
 
 
-    const participantsA =
-        createParticipantsHTML(
-            competition,
-            "sideA",
-            "Side A"
-        );
-
-
-    const participantsB =
-        createParticipantsHTML(
-            competition,
-            "sideB",
-            "Side B"
-        );
-
+    // ==================================================
+    // CARD HTML
+    // ==================================================
 
     card.innerHTML = `
 
@@ -1676,19 +1673,6 @@ function createCompetitionCard(
 
 
             ${sideB}
-
-        </div>
-
-
-        <!-- ==========================================
-             PARTICIPANTS
-        =========================================== -->
-
-        <div class="participants-wrapper">
-
-            ${participantsA}
-
-            ${participantsB}
 
         </div>
 
@@ -1890,6 +1874,11 @@ function showError(
 
 // ======================================================
 // GET URL ID
+//
+// Example:
+//
+// competition.html?id=ABC123
+//
 // ======================================================
 
 function getCompetitionIdFromURL() {
@@ -1935,6 +1924,10 @@ function getActiveCompetitions() {
     return allCompetitions.filter(
         competition => {
 
+            // ==================================================
+            // DATE REQUIRED
+            // ==================================================
+
             if (
                 !competition.date
             ) {
@@ -1944,6 +1937,10 @@ function getActiveCompetitions() {
             }
 
 
+            // ==================================================
+            // END TIME REQUIRED
+            // ==================================================
+
             if (
                 !competition.endTime
             ) {
@@ -1952,6 +1949,10 @@ function getActiveCompetitions() {
 
             }
 
+
+            // ==================================================
+            // EXPIRED CHECK
+            // ==================================================
 
             if (
                 isCompetitionExpired(
@@ -1964,6 +1965,10 @@ function getActiveCompetitions() {
             }
 
 
+            // ==================================================
+            // STATUS CHECK
+            // ==================================================
+
             const status =
                 normalize(
                     competition.status
@@ -1971,10 +1976,8 @@ function getActiveCompetitions() {
 
 
             if (
-                status ===
-                    "deleted" ||
-                status ===
-                    "inactive"
+                status === "deleted" ||
+                status === "inactive"
             ) {
 
                 return false;
@@ -2314,6 +2317,10 @@ async function loadTeacherEntries() {
 
 // ======================================================
 // SCHEDULE EXPIRY
+//
+// End Time ke baad automatically
+// competition hide ho jayega.
+//
 // ======================================================
 
 function scheduleCompetitionExpiry() {
@@ -2383,6 +2390,10 @@ function scheduleCompetitionExpiry() {
                 getCompetitionIdFromURL();
 
 
+            // ==================================================
+            // SINGLE COMPETITION
+            // ==================================================
+
             if (
                 competitionId
             ) {
@@ -2409,6 +2420,10 @@ function scheduleCompetitionExpiry() {
             }
 
 
+            // ==================================================
+            // ALL COMPETITIONS
+            // ==================================================
+
             displayCompetitions(
                 getActiveCompetitions()
             );
@@ -2434,34 +2449,52 @@ async function loadCompetitionPage() {
         showLoading();
 
 
-        // ==============================================
-        // LOAD DATA
-        // ==============================================
+        // ==================================================
+        // LOAD EMPLOYEES
+        // ==================================================
 
         await loadEmployees();
+
+
+        // ==================================================
+        // LOAD COMPETITIONS
+        // ==================================================
 
         await loadCompetitions();
 
 
+        // ==================================================
+        // CLEAR ENTRIES
+        // ==================================================
+
         allEntries = [];
 
 
+        // ==================================================
+        // LOAD OLD ENTRIES
+        // ==================================================
+
         await loadDailyEntries();
+
+
+        // ==================================================
+        // LOAD NEW ENTRIES
+        // ==================================================
 
         await loadTeacherEntries();
 
 
-        // ==============================================
+        // ==================================================
         // GET URL ID
-        // ==============================================
+        // ==================================================
 
         const competitionId =
             getCompetitionIdFromURL();
 
 
-        // ==============================================
+        // ==================================================
         // SINGLE COMPETITION
-        // ==============================================
+        // ==================================================
 
         if (
             competitionId
@@ -2485,6 +2518,10 @@ async function loadCompetitionPage() {
 
             }
 
+
+            // ==================================================
+            // EXPIRED
+            // ==================================================
 
             if (
                 isCompetitionExpired(
@@ -2511,9 +2548,9 @@ async function loadCompetitionPage() {
         }
 
 
-        // ==============================================
+        // ==================================================
         // ALL ACTIVE COMPETITIONS
-        // ==============================================
+        // ==================================================
 
         const active =
             getActiveCompetitions();
