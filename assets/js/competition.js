@@ -718,23 +718,25 @@ function getParticipantRules(
 //
 // IMPORTANT:
 //
-// Region + State selection is treated as a
-// SEPARATE LOCATION RULE.
+// Region + State selection is treated as
+// Region AND State when both are entered.
 //
 // Example:
 //
-// Kolkata Region
-// Bihar State
+// Region = Kolkata
+// State  = Bihar
 //
 // Means:
 //
 // employee.region == Kolkata
-// OR
+// AND
 // employee.state == Bihar
 //
-// NOT:
-// employee.region == Kolkata AND
-// employee.state == Bihar
+// Region ONLY:
+// employee.region == selected region
+//
+// State ONLY:
+// employee.state == selected state
 // ======================================================
 
 function employeeMatchesRule(
@@ -771,10 +773,9 @@ function employeeMatchesRule(
 
 
     // --------------------------------------------------
-    // REGION + STATE entered in one rule
+    // REGION + STATE
     //
-    // For Competition selection, either selected
-    // location should count.
+    // BOTH must match
     // --------------------------------------------------
 
     if (
@@ -785,7 +786,7 @@ function employeeMatchesRule(
         return (
 
             employeeRegion ===
-                ruleRegion ||
+                ruleRegion &&
 
             employeeState ===
                 ruleState
@@ -913,18 +914,17 @@ function getSideTeacherCodes(
 // ======================================================
 // CALCULATE SIDE AMOUNT
 //
-// VERY IMPORTANT:
-//
 // Competition date ke selected ALL teachers ki
 // entries SUM hongi.
 //
 // Same Teacher + Same Date:
-//    Entry 1 ₹500
-//    Entry 2 ₹1000
-//    Entry 3 ₹1500
+//
+// Entry 1 ₹500
+// Entry 2 ₹1000
+// Entry 3 ₹1500
 //
 // Total:
-//    ₹3000
+// ₹3000
 //
 // Latest entry nahi li jayegi.
 // ======================================================
@@ -1369,10 +1369,6 @@ async function loadPublicCompetitions() {
 
             };
 
-
-            // ----------------------------------------------
-            // Only public competitions
-            // ----------------------------------------------
 
             if (
                 competition.publicVisible ===
