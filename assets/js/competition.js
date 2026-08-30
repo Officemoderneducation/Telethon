@@ -1565,9 +1565,7 @@ function createWinnerHTML(
 
             <div class="winner-appreciation-title">
 
-                <i class="fa-solid fa-trophy"></i>
-
-                Competition Winner
+                🏆 Congratulations to the Winning Team! 🎉
 
             </div>
 
@@ -1583,20 +1581,15 @@ function createWinnerHTML(
 
             <div class="winner-appreciation-text">
 
-                Winning Total:
-                <strong>
-                    ₹${formatAmount(
-                        winnerAmount
-                    )}
-                </strong>
+                Excellent teamwork and outstanding effort!
 
             </div>
 
 
             <div class="winner-appreciation-blessing">
 
-                Allah Ta'ala sabhi participants ki
-                mehnat aur khidmat ko qubool farmaye.
+                May Allah bless your efforts and give you
+                even greater success.
 
             </div>
 
