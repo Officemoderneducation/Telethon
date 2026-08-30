@@ -1,85 +1,115 @@
 // ======================================================
 // TELETHON ADMIN DASHBOARD
-// User Wise Target + Teacher Collection Summary
-// ======================================================
-
-// ======================================================
-// ADMIN ONLY ACCESS
-// ======================================================
-
-const userRole = String(
-    localStorage.getItem("userRole") || ""
-).trim().toLowerCase();
-
-if (userRole !== "admin") {
-
-    localStorage.removeItem("loggedInEmpCode");
-    localStorage.removeItem("userRole");
-
-    window.location.href = "index.html";
-}
-
-// ======================================================
-// FIREBASE
+// REGION USERS + TEACHER COLLECTION
+// 1 UNIT = ₹7,000
+//
+// DATA SOURCE:
+// daily_entry      = OLD ENTRIES
+// teacher_entries  = NEW / REGION USER ENTRIES
+//
+// IMPORTANT:
+// Both collections are merged.
+// Same Teacher + Same Date = SUM
 // ======================================================
 
 import { db } from "./firebase-config.js";
 
 import {
-    collection,
-    getDocs,
-    query,
-    orderBy,
-    doc,
-    setDoc
+collection,
+getDocs,
+query,
+orderBy,
+doc,
+setDoc,
+serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 // ======================================================
-// CONSTANT
+// ADMIN ACCESS
 // ======================================================
 
-// 1 Unit = ₹7,000
-const UNIT_VALUE = 7000;
+const userRole = String(
+localStorage.getItem("userRole") || ""
+)
+.trim()
+.toLowerCase();
+
+if (userRole !== "admin") {
+
+localStorage.removeItem("loggedInEmpCode");
+localStorage.removeItem("userRole");
+
+window.location.href = "index.html";
+
+}
+
+// ======================================================
+// COLLECTIONS
+// ======================================================
+
+const EMPLOYEES_COLLECTION = "employees";
+
+const DAILY_ENTRY_COLLECTION = "daily_entry";
+
+// NEW COLLECTION
+const TEACHER_ENTRIES_COLLECTION = "teacher_entries";
+
+const REGION_USERS_COLLECTION = "regionUsers";
+
+// ======================================================
+// 1 UNIT = ₹7,000
+// ======================================================
+
+const UNIT_AMOUNT = 7000;
 
 // ======================================================
 // HTML ELEMENTS
 // ======================================================
 
-// Summary cards
-
-const userSummaryTotalUsers =
-    document.getElementById("userSummaryTotalUsers");
+const userSummaryTableBody =
+document.getElementById(
+"userSummaryTableBody"
+);
 
 const userSummaryTotalTarget =
-    document.getElementById("userSummaryTotalTarget");
+document.getElementById(
+"userSummaryTotalTarget"
+);
 
 const userSummaryTotalCollection =
-    document.getElementById("userSummaryTotalCollection");
+document.getElementById(
+"userSummaryTotalCollection"
+);
 
 const userSummaryTotalRemaining =
-    document.getElementById("userSummaryTotalRemaining");
+document.getElementById(
+"userSummaryTotalRemaining"
+);
 
-// Main user summary table
+const userSummaryTotalPercentage =
+document.getElementById(
+"userSummaryTotalPercentage"
+);
 
-const userSummaryTableBody =
-    document.getElementById("userSummaryTableBody");
+const todayCollectionTableBody =
+document.getElementById(
+"todayCollectionTableBody"
+);
 
-const userSummarySearch =
-    document.getElementById("userSummarySearch");
+const todayCollectionDateFilter =
+document.getElementById(
+"todayCollectionDateFilter"
+);
 
-// Old collection cards
+const downloadDashboardImageBtn =
+document.getElementById(
+"downloadDashboardImageBtn"
+);
 
-const totalAmountEl =
-    document.getElementById("totalAmount");
-
-const todayAmountEl =
-    document.getElementById("todayAmount");
-
-const totalEntriesCountEl =
-    document.getElementById("totalEntriesCount");
-
-const entriesTableBody =
-    document.getElementById("entriesTableBody");
+const downloadTodayCollectionImageBtn =
+document.getElementById(
+"downloadTodayCollectionImageBtn"
+);
 
 // ======================================================
 // DATA
@@ -89,7 +119,7 @@ let employees = [];
 
 let dailyEntries = [];
 
-// NEW REGION USER / TEACHER ENTRIES
+// NEW DATA
 let teacherEntries = [];
 
 let regionUsers = [];
@@ -102,61 +132,116 @@ let userSummaryData = [];
 
 function normalize(value) {
 
-    return String(value ?? "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, " ");
+return String(value ?? "")
+.trim()
+.toLowerCase();
+
 }
 
 // ======================================================
-// NUMBER
+// NUMBER VALUE
 // ======================================================
 
 function numberValue(value) {
 
-    const number = Number(
-        String(value ?? "")
-            .replace(/,/g, "")
-            .replace(/₹/g, "")
-            .trim()
-    );
+const number =
+Number(
+String(value ?? "")
+.replace(/,/g, "")
+.replace(/₹/g, "")
+.replace(/\s/g, "")
+.trim()
+);
 
-    return Number.isFinite(number)
-        ? number
-        : 0;
+return Number.isFinite(number)
+? number
+: 0;
+
 }
 
 // ======================================================
-// CURRENCY
+// UNIT FROM AMOUNT
 // ======================================================
 
-function formatCurrency(value) {
+function getUnitsFromAmount(value) {
 
-    return (
-        "₹ " +
-        Number(value || 0)
-            .toLocaleString("en-IN")
-    );
+const amount =
+numberValue(value);
+
+return amount / UNIT_AMOUNT;
+
 }
 
 // ======================================================
-// UNIT
+// FORMAT UNIT
 // ======================================================
 
-function calculateUnit(amount) {
+function formatUnit(value) {
 
-    return Number(amount || 0) / UNIT_VALUE;
+const units =
+getUnitsFromAmount(value);
+
+return (
+units.toLocaleString(
+"en-IN",
+{
+minimumFractionDigits: 0,
+maximumFractionDigits: 2
+}
+) + " Unit"
+);
+
 }
 
 // ======================================================
-// UNIT DISPLAY
+// FORMAT UNIT NUMBER
 // ======================================================
 
-function formatUnit(amount) {
+function formatUnitNumber(value) {
 
-    const unit = calculateUnit(amount);
+const units =
+getUnitsFromAmount(value);
 
-    return `${unit.toFixed(2)} Unit`;
+return units.toLocaleString(
+"en-IN",
+{
+minimumFractionDigits: 0,
+maximumFractionDigits: 2
+}
+);
+
+}
+
+// ======================================================
+// FORMAT RUPEES
+// ======================================================
+
+function formatAmount(value) {
+
+return (
+"₹" +
+numberValue(value).toLocaleString(
+"en-IN",
+{
+minimumFractionDigits: 0,
+maximumFractionDigits: 2
+}
+)
+);
+
+}
+
+// ======================================================
+// UNIT TO AMOUNT
+// ======================================================
+
+function unitToAmount(units) {
+
+return (
+numberValue(units) *
+UNIT_AMOUNT
+);
+
 }
 
 // ======================================================
@@ -165,12 +250,13 @@ function formatUnit(amount) {
 
 function escapeHTML(value) {
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+return String(value ?? "")
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;")
+.replace(/'/g, "&#039;");
+
 }
 
 // ======================================================
@@ -179,29 +265,30 @@ function escapeHTML(value) {
 
 function getEmployeeCode(employee) {
 
-    return String(
+return String(
 
-        employee.employeeCode ||
+employee.employeeCode ||
 
-        employee.employee_code ||
+employee.employee_code ||
 
-        employee.empCode ||
+employee.empCode ||
 
-        employee.emp_code ||
+employee.emp_code ||
 
-        employee.employeeID ||
+employee.employeeID ||
 
-        employee.employeeId ||
+employee.employeeId ||
 
-        employee.userCode ||
+employee.userCode ||
 
-        employee.user_code ||
+employee.user_code ||
 
-        employee.id ||
+employee.id ||
 
-        ""
+""
 
-    ).trim();
+).trim();
+
 }
 
 // ======================================================
@@ -210,27 +297,36 @@ function getEmployeeCode(employee) {
 
 function getEntryEmployeeCode(entry) {
 
-    return String(
+return String(
 
-        entry.employee_code ||
+entry.employee_code ||
 
-        entry.employeeCode ||
+entry.employeeCode ||
 
-        entry.empCode ||
+entry.empCode ||
 
-        entry.emp_code ||
+entry.emp_code ||
 
-        entry.employeeID ||
+entry.employeeID ||
 
-        entry.employeeId ||
+entry.employeeId ||
 
-        entry.userCode ||
+entry.userCode ||
 
-        entry.user_code ||
+entry.user_code ||
 
-        ""
+entry.teacherCode ||
 
-    ).trim();
+entry.teacher_code ||
+
+entry.emp_id ||
+
+entry.empId ||
+
+""
+
+).trim();
+
 }
 
 // ======================================================
@@ -239,478 +335,22 @@ function getEntryEmployeeCode(entry) {
 
 function getEntryAmount(entry) {
 
-    return numberValue(
+return numberValue(
 
-        entry.amount ||
+entry.amount ||
 
-        entry.collection ||
+entry.collection ||
 
-        entry.collectionAmount ||
+entry.collectionAmount ||
 
-        entry.totalCollection ||
+entry.totalCollection ||
 
-        entry.total_collection ||
+entry.total_collection ||
 
-        0
+0
 
-    );
-}
+);
 
-// ======================================================
-// EMPLOYEE REGION
-// ======================================================
-
-function getEmployeeRegion(employee) {
-
-    return String(
-
-        employee.region ||
-
-        employee.regionName ||
-
-        employee.region_name ||
-
-        ""
-
-    ).trim();
-}
-
-// ======================================================
-// EMPLOYEE STATE
-// ======================================================
-
-function getEmployeeState(employee) {
-
-    return String(
-
-        employee.state ||
-
-        employee.stateName ||
-
-        employee.state_name ||
-
-        ""
-
-    ).trim();
-}
-
-// ======================================================
-// EMPLOYEE CITY
-// ======================================================
-
-function getEmployeeCity(employee) {
-
-    return String(
-
-        employee.city ||
-
-        employee.cityName ||
-
-        employee.city_name ||
-
-        ""
-
-    ).trim();
-}
-
-// ======================================================
-// USER CODE
-// ======================================================
-
-function getUserCode(user) {
-
-    return String(
-
-        user.userCode ||
-
-        user.user_code ||
-
-        user.employeeCode ||
-
-        user.employee_code ||
-
-        user.empCode ||
-
-        user.emp_code ||
-
-        user.id ||
-
-        ""
-
-    ).trim();
-}
-
-// ======================================================
-// USER NAME
-// ======================================================
-
-function getUserName(user) {
-
-    return String(
-
-        user.userName ||
-
-        user.username ||
-
-        user.name ||
-
-        user.fullName ||
-
-        user.full_name ||
-
-        "Unknown User"
-
-    ).trim();
-}
-
-// ======================================================
-// USER TARGET
-// ======================================================
-
-function getUserTarget(user) {
-
-    return numberValue(
-
-        user.targetAmount ||
-
-        user.target ||
-
-        user.manualTarget ||
-
-        user.manual_target ||
-
-        0
-
-    );
-}
-
-// ======================================================
-// GET USER ACCESS FROM regionUsers
-// ======================================================
-//
-// Dashboard sirf "regionUsers" collection use karta hai.
-//
-// Example:
-// access: [
-//   { region: "Ajmer", state: "Punjab" },
-//   { region: "Ajmer", state: "Rajasthan" }
-// ]
-//
-// state "*" ya blank = Full Region
-// ======================================================
-
-function getUserAccess(user) {
-
-    if (
-        Array.isArray(user?.access) &&
-        user.access.length > 0
-    ) {
-        return user.access
-            .map((item) => ({
-                region: String(
-                    item?.region || ""
-                ).trim(),
-
-                state: String(
-                    item?.state || "*"
-                ).trim()
-            }))
-            .filter(
-                (item) =>
-                    normalize(item.region) !== ""
-            );
-    }
-
-    return [];
-}
-
-// ======================================================
-// GET USER REGIONS
-// ======================================================
-
-function getUserRegions(user) {
-
-    return [
-        ...new Set(
-            getUserAccess(user)
-                .map(
-                    (item) =>
-                        normalize(item.region)
-                )
-                .filter(Boolean)
-        )
-    ];
-}
-
-// ======================================================
-// LOAD EMPLOYEES
-// ======================================================
-
-async function loadEmployees() {
-
-    const snapshot =
-        await getDocs(
-            collection(
-                db,
-                "employees"
-            )
-        );
-
-    employees = [];
-
-    snapshot.forEach(
-        (docSnapshot) => {
-
-            employees.push({
-
-                id:
-                    docSnapshot.id,
-
-                ...docSnapshot.data()
-
-            });
-
-        }
-    );
-
-    console.log(
-        "Total Employees:",
-        employees.length
-    );
-}
-
-// ======================================================
-// LOAD DAILY ENTRIES
-// ======================================================
-
-async function loadDailyEntries() {
-
-    try {
-
-        const entriesQuery =
-            query(
-                collection(
-                    db,
-                    "daily_entry"
-                ),
-                orderBy(
-                    "createdAt",
-                    "desc"
-                )
-            );
-
-        const snapshot =
-            await getDocs(
-                entriesQuery
-            );
-
-        dailyEntries = [];
-
-        snapshot.forEach(
-            (docSnapshot) => {
-
-                dailyEntries.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    source:
-                        "daily_entry",
-
-                    ...docSnapshot.data()
-
-                });
-
-            }
-        );
-
-    }
-
-    catch (error) {
-
-        console.warn(
-            "createdAt orderBy failed. Loading without orderBy.",
-            error
-        );
-
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "daily_entry"
-                )
-            );
-
-        dailyEntries = [];
-
-        snapshot.forEach(
-            (docSnapshot) => {
-
-                dailyEntries.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    source:
-                        "daily_entry",
-
-                    ...docSnapshot.data()
-
-                });
-
-            }
-        );
-    }
-
-    console.log(
-        "Total Daily Entries:",
-        dailyEntries.length
-    );
-}
-
-// ======================================================
-// LOAD TEACHER ENTRIES
-//
-// Region Users ki new entries "teacher_entries" collection
-// mein save hoti hain.
-// ======================================================
-
-async function loadTeacherEntries() {
-
-    try {
-
-        const entriesQuery =
-            query(
-                collection(
-                    db,
-                    "teacher_entries"
-                ),
-                orderBy(
-                    "createdAt",
-                    "desc"
-                )
-            );
-
-        const snapshot =
-            await getDocs(
-                entriesQuery
-            );
-
-        teacherEntries = [];
-
-        snapshot.forEach(
-            (docSnapshot) => {
-
-                teacherEntries.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    source:
-                        "teacher_entries",
-
-                    ...docSnapshot.data()
-
-                });
-
-            }
-        );
-
-    }
-
-    catch (error) {
-
-        console.warn(
-            "teacher_entries orderBy failed. Loading without orderBy.",
-            error
-        );
-
-        try {
-
-            const snapshot =
-                await getDocs(
-                    collection(
-                        db,
-                        "teacher_entries"
-                    )
-                );
-
-            teacherEntries = [];
-
-            snapshot.forEach(
-                (docSnapshot) => {
-
-                    teacherEntries.push({
-
-                        id:
-                            docSnapshot.id,
-
-                        source:
-                            "teacher_entries",
-
-                        ...docSnapshot.data()
-
-                    });
-
-                }
-            );
-
-        }
-
-        catch (secondError) {
-
-            console.warn(
-                "teacher_entries collection load failed:",
-                secondError
-            );
-
-            teacherEntries = [];
-
-        }
-
-    }
-
-    console.log(
-        "Total Teacher Entries:",
-        teacherEntries.length
-    );
-}
-
-// ======================================================
-// LOAD REGION USERS
-// ======================================================
-
-async function loadRegionUsers() {
-
-    const snapshot =
-        await getDocs(
-            collection(
-                db,
-                "regionUsers"
-            )
-        );
-
-    regionUsers = [];
-
-    snapshot.forEach(
-        (docSnapshot) => {
-
-            regionUsers.push({
-
-                id:
-                    docSnapshot.id,
-
-                ...docSnapshot.data()
-
-            });
-
-        }
-    );
-
-    console.log(
-        "Total Region Users:",
-        regionUsers.length
-    );
 }
 
 // ======================================================
@@ -719,2416 +359,3013 @@ async function loadRegionUsers() {
 
 function getEntryDate(entry) {
 
-    const values = [
+return String(
 
-        entry.date,
+entry.date ||
 
-        entry.entryDate,
+entry.entryDate ||
 
-        entry.entry_date,
+entry.entry_date ||
 
-        entry.collectionDate,
+entry.collectionDate ||
 
-        entry.collection_date,
+entry.collection_date ||
 
-        entry.selectedDate,
+""
 
-        entry.selected_date,
+).trim();
 
-        entry.dailyDate,
-
-        entry.daily_date
-
-    ];
-
-    for (
-        const value
-        of values
-    ) {
-
-        if (
-            value === null ||
-            value === undefined ||
-            value === ""
-        ) {
-
-            continue;
-
-        }
-
-        const text =
-            String(value)
-                .trim();
-
-        if (
-            /^\d{4}-\d{2}-\d{2}$/
-                .test(text)
-        ) {
-
-            return text;
-
-        }
-
-        const parsed =
-            new Date(
-                text
-            );
-
-        if (
-            !Number.isNaN(
-                parsed.getTime()
-            )
-        ) {
-
-            const year =
-                parsed.getFullYear();
-
-            const month =
-                String(
-                    parsed.getMonth() + 1
-                ).padStart(
-                    2,
-                    "0"
-                );
-
-            const day =
-                String(
-                    parsed.getDate()
-                ).padStart(
-                    2,
-                    "0"
-                );
-
-            return (
-                `${year}-${month}-${day}`
-            );
-
-        }
-
-    }
-
-    return "";
 }
 
 // ======================================================
-// GET ENTRY CREATED TIME
+// EMPLOYEE REGION
+// ======================================================
+
+function getEmployeeRegion(employee) {
+
+return String(
+
+employee.region ||
+
+employee.regionName ||
+
+employee.region_name ||
+
+""
+
+).trim();
+
+}
+
+// ======================================================
+// EMPLOYEE STATE
+// ======================================================
+
+function getEmployeeState(employee) {
+
+return String(
+
+employee.state ||
+
+employee.stateName ||
+
+employee.state_name ||
+
+""
+
+).trim();
+
+}
+
+// ======================================================
+// USER CODE
+// ======================================================
+
+function getUserCode(user) {
+
+return String(
+
+user.userCode ||
+
+user.user_code ||
+
+user.employeeCode ||
+
+user.employee_code ||
+
+user.empCode ||
+
+user.emp_code ||
+
+user.id ||
+
+""
+
+).trim();
+
+}
+
+// ======================================================
+// USER NAME
+// ======================================================
+
+function getUserName(user) {
+
+return String(
+
+user.userName ||
+
+user.username ||
+
+user.name ||
+
+user.fullName ||
+
+user.full_name ||
+
+user.teacherName ||
+
+user.teacher_name ||
+
+getUserCode(user) ||
+
+"Unknown User"
+
+).trim();
+
+}
+
+// ======================================================
+// USER TARGET
+// ======================================================
+
+function getUserTarget(user) {
+
+return numberValue(
+
+user.targetAmount ||
+
+user.target ||
+
+user.manualTarget ||
+
+user.manual_target ||
+
+0
+
+);
+
+}
+
+// ======================================================
+// LOAD EMPLOYEES
+// ======================================================
+
+async function loadEmployees() {
+
+const snapshot =
+await getDocs(
+collection(
+db,
+EMPLOYEES_COLLECTION
+)
+);
+
+employees = [];
+
+snapshot.forEach(
+(docSnapshot) => {
+
+employees.push({
+
+id:
+docSnapshot.id,
+
+...docSnapshot.data()
+
+});
+
+}
+);
+
+}
+
+// ======================================================
+// LOAD DAILY ENTRIES
+// OLD COLLECTION
+// ======================================================
+
+async function loadDailyEntries() {
+
+try {
+
+const entriesQuery =
+query(
+collection(
+db,
+DAILY_ENTRY_COLLECTION
+),
+orderBy(
+"createdAt",
+"desc"
+)
+);
+
+const snapshot =
+await getDocs(
+entriesQuery
+);
+
+dailyEntries = [];
+
+snapshot.forEach(
+(docSnapshot) => {
+
+dailyEntries.push({
+
+id:
+docSnapshot.id,
+
+...docSnapshot.data(),
+
+source:
+"daily_entry"
+
+});
+
+}
+);
+
+}
+
+catch (error) {
+
+console.warn(
+"daily_entry createdAt orderBy failed. Loading without orderBy.",
+error
+);
+
+const snapshot =
+await getDocs(
+collection(
+db,
+DAILY_ENTRY_COLLECTION
+)
+);
+
+dailyEntries = [];
+
+snapshot.forEach(
+(docSnapshot) => {
+
+dailyEntries.push({
+
+id:
+docSnapshot.id,
+
+...docSnapshot.data(),
+
+source:
+"daily_entry"
+
+});
+
+}
+);
+
+}
+
+}
+
+// ======================================================
+// LOAD TEACHER ENTRIES
+// NEW COLLECTION
+//
+// Region User ki entries yahan se aati hain.
+// ======================================================
+
+async function loadTeacherEntries() {
+
+try {
+
+const entriesQuery =
+query(
+collection(
+db,
+TEACHER_ENTRIES_COLLECTION
+),
+orderBy(
+"createdAt",
+"desc"
+)
+);
+
+const snapshot =
+await getDocs(
+entriesQuery
+);
+
+teacherEntries = [];
+
+snapshot.forEach(
+(docSnapshot) => {
+
+teacherEntries.push({
+
+id:
+docSnapshot.id,
+
+...docSnapshot.data(),
+
+source:
+"teacher_entries"
+
+});
+
+}
+);
+
+}
+
+catch (error) {
+
+console.warn(
+"teacher_entries createdAt orderBy failed. Loading without orderBy.",
+error
+);
+
+const snapshot =
+await getDocs(
+collection(
+db,
+TEACHER_ENTRIES_COLLECTION
+)
+);
+
+teacherEntries = [];
+
+snapshot.forEach(
+(docSnapshot) => {
+
+teacherEntries.push({
+
+id:
+docSnapshot.id,
+
+...docSnapshot.data(),
+
+source:
+"teacher_entries"
+
+});
+
+}
+);
+
+}
+
+}
+
+// ======================================================
+// LOAD REGION USERS
+// ======================================================
+
+async function loadRegionUsers() {
+
+const snapshot =
+await getDocs(
+collection(
+db,
+REGION_USERS_COLLECTION
+)
+);
+
+regionUsers = [];
+
+snapshot.forEach(
+(docSnapshot) => {
+
+regionUsers.push({
+
+id:
+docSnapshot.id,
+
+...docSnapshot.data()
+
+});
+
+}
+);
+
+}
+
+// ======================================================
+// CREATED TIME
 // ======================================================
 
 function getCreatedTime(entry) {
 
-    const createdAt =
-        entry.createdAt;
+if (!entry.createdAt) {
 
-    // Firestore Timestamp
+return 0;
 
-    if (
-        createdAt &&
-        typeof createdAt.toMillis === "function"
-    ) {
+}
 
-        return createdAt.toMillis();
-    }
+if (
+typeof entry.createdAt.toMillis ===
+"function"
+) {
 
-    // JS Date
+return entry.createdAt.toMillis();
 
-    if (
-        createdAt instanceof Date
-    ) {
+}
 
-        return createdAt.getTime();
-    }
+if (entry.createdAt.seconds) {
 
-    // String / Number
+return (
+Number(
+entry.createdAt.seconds
+) * 1000
+);
 
-    const time =
-        new Date(
-            createdAt
-        ).getTime();
+}
 
-    if (
-        Number.isFinite(time)
-    ) {
+const date =
+new Date(
+entry.createdAt
+);
 
-        return time;
-    }
+const time =
+date.getTime();
 
-    return 0;
+return Number.isFinite(time)
+? time
+: 0;
+
 }
 
 // ======================================================
-// GET LATEST ENTRY PER EMPLOYEE + DATE
+// MERGE DAILY ENTRY + TEACHER ENTRIES
+//
+// DAILY REPORT LOGIC:
+//
+// daily_entry
+// +
+// teacher_entries
+//
+// Same Teacher + Same Date = SUM
+//
+// IMPORTANT:
+// Old duplicate/latest-entry logic is NOT used here.
+// Both collections are merged according to Daily Report.
 // ======================================================
 
 function getLatestEntries() {
 
-    // ==================================================
-    // OLD daily_entry
-    //
-    // Same Teacher + Same Date = latest entry
-    // ==================================================
+const mergedMap =
+new Map();
 
-    const latestOldMap =
-        new Map();
+// ==================================================
+// COMBINE BOTH COLLECTIONS
+// ==================================================
 
-    dailyEntries.forEach(
-        (entry) => {
+const allEntries = [
 
-            const employeeCode =
-                getEntryEmployeeCode(
-                    entry
-                );
+...dailyEntries,
 
-            const date =
-                getEntryDate(
-                    entry
-                );
+...teacherEntries
 
-            if (
-                !employeeCode ||
-                !date
-            ) {
+];
 
-                return;
+// ==================================================
+// MERGE BY TEACHER + DATE
+// ==================================================
 
-            }
+allEntries.forEach(
+(entry) => {
 
-            const key =
-                `${normalize(employeeCode)}_${date}`;
+const employeeCode =
+getEntryEmployeeCode(
+entry
+);
 
-            const existing =
-                latestOldMap.get(
-                    key
-                );
+const date =
+getEntryDate(
+entry
+);
 
-            if (!existing) {
+if (
+!employeeCode ||
+!date
+) {
 
-                latestOldMap.set(
-                    key,
-                    entry
-                );
+return;
 
-                return;
+}
 
-            }
+const normalizedCode =
+normalize(
+employeeCode
+);
 
-            if (
-                getCreatedTime(entry) >=
-                getCreatedTime(existing)
-            ) {
+const normalizedDate =
+normalize(
+date
+);
 
-                latestOldMap.set(
-                    key,
-                    entry
-                );
+const key =
+`${normalizedCode}_${normalizedDate}`;
 
-            }
+const amount =
+getEntryAmount(
+entry
+);
 
-        }
-    );
+// ==================================================
+// FIRST ENTRY
+// ==================================================
 
-    // ==================================================
-    // NEW teacher_entries
-    //
-    // Every new entry is a separate valid entry.
-    // ==================================================
+if (
+!mergedMap.has(key)
+) {
 
-    const mergedEntries = [
+mergedMap.set(
+key,
+{
 
-        ...latestOldMap.values(),
+...entry,
 
-        ...teacherEntries
+employeeCode:
+employeeCode,
 
-    ].filter(
-        (entry) => {
+date:
+date,
 
-            const employeeCode =
-                getEntryEmployeeCode(
-                    entry
-                );
+amount:
+amount,
 
-            const date =
-                getEntryDate(
-                    entry
-                );
+collection:
+amount,
 
-            return Boolean(
-                employeeCode &&
-                date
-            );
+sources:
+[
+entry.source || ""
+],
 
-        }
-    );
+entryIds:
+[
+entry.id || ""
+]
 
-    return mergedEntries;
+}
+);
+
+return;
+
+}
+
+// ==================================================
+// EXISTING ENTRY
+// ==================================================
+
+const existing =
+mergedMap.get(
+key
+);
+
+// ==================================================
+// SUM AMOUNT
+// ==================================================
+
+existing.amount =
+numberValue(
+existing.amount
+) +
+amount;
+
+// Keep collection in sync
+existing.collection =
+existing.amount;
+
+// ==================================================
+// TRACK SOURCE
+// ==================================================
+
+if (
+entry.source &&
+!existing.sources.includes(
+entry.source
+)
+) {
+
+existing.sources.push(
+entry.source
+);
+
+}
+
+// ==================================================
+// TRACK IDS
+// ==================================================
+
+if (
+entry.id &&
+!existing.entryIds.includes(
+entry.id
+)
+) {
+
+existing.entryIds.push(
+entry.id
+);
+
+}
+
+// ==================================================
+// KEEP LATEST CREATED DATA
+//
+// Amount is already SUMMED.
+// Other information can come from latest entry.
+// ==================================================
+
+const existingTime =
+getCreatedTime(
+existing
+);
+
+const currentTime =
+getCreatedTime(
+entry
+);
+
+if (
+currentTime >
+existingTime
+) {
+
+existing.createdAt =
+entry.createdAt;
+
+if (
+entry.teacherName
+) {
+
+existing.teacherName =
+entry.teacherName;
+
+}
+
+if (
+entry.teacher_name
+) {
+
+existing.teacher_name =
+entry.teacher_name;
+
+}
+
+if (
+entry.region
+) {
+
+existing.region =
+entry.region;
+
+}
+
+if (
+entry.state
+) {
+
+existing.state =
+entry.state;
+
+}
+
+if (
+entry.city
+) {
+
+existing.city =
+entry.city;
+
+}
+
+}
+
+}
+);
+
+// ==================================================
+// RETURN MERGED ENTRIES
+// ==================================================
+
+return Array.from(
+mergedMap.values()
+);
+
 }
 
 // ======================================================
-// GET EMPLOYEES FOR USER
+// ACCESS RULES
 // ======================================================
-//
-// User ke regionUsers.access ke according teachers
-// filter honge.
-//
-// Region + State:
-//   Ajmer + Punjab
-//   Ajmer + Rajasthan
-//
-// Full Region:
-//   state = "*" ya blank
+
+function getUserAccessRules(user) {
+
+if (
+Array.isArray(
+user.access
+)
+) {
+
+return user.access;
+
+}
+
+if (
+Array.isArray(
+user.accessRules
+)
+) {
+
+return user.accessRules;
+
+}
+
+return [];
+
+}
+
+// ======================================================
+// FULL REGION RULE
+// ======================================================
+
+function isFullRegionRule(rule) {
+
+if (!rule) {
+
+return false;
+
+}
+
+return (
+
+rule.fullRegion === true ||
+
+normalize(
+rule.fullRegion
+) === "true" ||
+
+normalize(
+rule.fullRegion
+) === "yes" ||
+
+normalize(
+rule.accessType
+) === "full" ||
+
+normalize(
+rule.type
+) === "full"
+
+);
+
+}
+
+// ======================================================
+// RULE REGION
+// ======================================================
+
+function getRuleRegion(rule) {
+
+return normalize(
+
+rule.region ||
+
+rule.assignedRegion ||
+
+rule.regionName ||
+
+rule.region_name ||
+
+""
+
+);
+
+}
+
+// ======================================================
+// RULE STATES
+// ======================================================
+
+function getRuleStates(rule) {
+
+if (
+Array.isArray(
+rule.states
+)
+) {
+
+return rule.states;
+
+}
+
+if (
+typeof rule.states ===
+"string"
+) {
+
+return [
+rule.states
+];
+
+}
+
+if (
+Array.isArray(
+rule.selectedStates
+)
+) {
+
+return rule.selectedStates;
+
+}
+
+if (
+Array.isArray(
+rule.assignedStates
+)
+) {
+
+return rule.assignedStates;
+
+}
+
+if (rule.state) {
+
+return [
+rule.state
+];
+
+}
+
+if (rule.stateName) {
+
+return [
+rule.stateName
+];
+
+}
+
+return [];
+
+}
+
+// ======================================================
+// CHECK EMPLOYEE ACCESS
+// ======================================================
+
+function employeeMatchesAccess(
+employee,
+user
+) {
+
+const accessRules =
+getUserAccessRules(
+user
+);
+
+if (
+accessRules.length === 0
+) {
+
+return false;
+
+}
+
+const employeeRegion =
+normalize(
+getEmployeeRegion(
+employee
+)
+);
+
+const employeeState =
+normalize(
+getEmployeeState(
+employee
+)
+);
+
+return accessRules.some(
+(rule) => {
+
+if (!rule) {
+
+return false;
+
+}
+
+const assignedRegion =
+getRuleRegion(
+rule
+);
+
+if (
+assignedRegion &&
+assignedRegion !==
+employeeRegion
+) {
+
+return false;
+
+}
+
+if (
+isFullRegionRule(
+rule
+)
+) {
+
+return true;
+
+}
+
+const states =
+getRuleStates(
+rule
+);
+
+if (
+states.length === 0
+) {
+
+return true;
+
+}
+
+return states.some(
+(state) => {
+
+const normalizedState =
+normalize(
+state
+);
+
+if (
+normalizedState === "*" ||
+normalizedState === "all" ||
+normalizedState === "all states"
+) {
+
+return true;
+
+}
+
+return (
+normalizedState ===
+employeeState
+);
+
+}
+);
+
+}
+);
+
+}
+
+// ======================================================
+// USER TEACHERS
 // ======================================================
 
 function getUserEmployees(user) {
 
-    const access =
-        getUserAccess(user);
+return employees.filter(
+(employee) => {
 
-    console.log(
-        "USER:",
-        getUserName(user),
-        "ACCESS:",
-        access
-    );
+return employeeMatchesAccess(
+employee,
+user
+);
 
-    // Access na ho to user Dashboard me
-    // show hoga, lekin teachers/collection 0 rahegi.
+}
+);
 
-    if (
-        access.length === 0
-    ) {
-
-        console.warn(
-            "No access found for user:",
-            getUserName(user)
-        );
-
-        return [];
-    }
-
-    const matchedEmployees =
-        employees.filter(
-            (employee) => {
-
-                const employeeRegion =
-                    normalize(
-                        getEmployeeRegion(
-                            employee
-                        )
-                    );
-
-                const employeeState =
-                    normalize(
-                        getEmployeeState(
-                            employee
-                        )
-                    );
-
-                return access.some(
-                    (item) => {
-
-                        const allowedRegion =
-                            normalize(
-                                item.region
-                            );
-
-                        const allowedState =
-                            normalize(
-                                item.state
-                            );
-
-                        // Region must match
-
-                        if (
-                            allowedRegion &&
-                            employeeRegion !==
-                                allowedRegion
-                        ) {
-
-                            return false;
-                        }
-
-                        // Full Region
-
-                        if (
-                            allowedState === "*" ||
-                            allowedState === ""
-                        ) {
-
-                            return true;
-                        }
-
-                        // Specific State
-
-                        return (
-                            employeeState ===
-                            allowedState
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-    console.log(
-        "USER:",
-        getUserName(user),
-        "MATCHED TEACHERS:",
-        matchedEmployees.length
-    );
-
-    return matchedEmployees;
 }
 
 // ======================================================
-// GET USER COLLECTION
+// USER COLLECTION
+// ======================================================
+//
+// Collection comes from merged daily_entry +
+// teacher_entries data.
+// Same Teacher + Same Date already SUMMED.
 // ======================================================
 
 function getUserCollection(
-    userEmployees,
-    latestEntries
+userEmployees,
+latestEntries
 ) {
 
-    const employeeCodes =
-        new Set();
+const employeeCodes =
+new Set();
 
-    userEmployees.forEach(
-        (employee) => {
+userEmployees.forEach(
+(employee) => {
 
-            const code =
-                normalize(
-                    getEmployeeCode(
-                        employee
-                    )
-                );
+const code =
+normalize(
+getEmployeeCode(
+employee
+)
+);
 
-            if (code) {
+if (code) {
 
-                employeeCodes.add(
-                    code
-                );
+employeeCodes.add(
+code
+);
 
-            }
+}
 
-        }
-    );
+}
+);
 
-    let total =
-        0;
+let total = 0;
 
-    latestEntries.forEach(
-        (entry) => {
+latestEntries.forEach(
+(entry) => {
 
-            const entryCode =
-                normalize(
-                    getEntryEmployeeCode(
-                        entry
-                    )
-                );
+const entryCode =
+normalize(
+getEntryEmployeeCode(
+entry
+)
+);
 
-            if (
-                employeeCodes.has(
-                    entryCode
-                )
-            ) {
+if (
+employeeCodes.has(
+entryCode
+)
+) {
 
-                total +=
-                    getEntryAmount(
-                        entry
-                    );
+total +=
+getEntryAmount(
+entry
+);
 
-            }
+}
 
-        }
-    );
+}
+);
 
-    return total;
+return total;
+
 }
 
 // ======================================================
 // BUILD USER SUMMARY
+// ALL regionUsers MUST SHOW
 // ======================================================
 
 function buildUserSummary() {
 
-    const latestEntries =
-        getLatestEntries();
+const latestEntries =
+getLatestEntries();
 
-    userSummaryData = [];
+userSummaryData = [];
 
-    regionUsers.forEach(
-        (user) => {
+regionUsers.forEach(
+(user) => {
 
-            const userEmployees =
-                getUserEmployees(
-                    user
-                );
+const userEmployees =
+getUserEmployees(
+user
+);
 
-            const target =
-                getUserTarget(
-                    user
-                );
+const collectionAmount =
+getUserCollection(
+userEmployees,
+latestEntries
+);
 
-            const collection =
-                getUserCollection(
-                    userEmployees,
-                    latestEntries
-                );
+const target =
+getUserTarget(
+user
+);
 
-            // ==================================================
-            // REMAINING
-            // ==================================================
+const remaining =
+Math.max(
+target -
+collectionAmount,
+0
+);
 
-            const remaining =
-                Math.max(
-                    target -
-                    collection,
-                    0
-                );
+const percentage =
+target > 0
+? (
+collectionAmount /
+target
+) * 100
+: 0;
 
-            // ==================================================
-            // PERCENTAGE
-            // ==================================================
+userSummaryData.push({
 
-            const percentage =
-                target > 0
-                    ? (
-                        collection /
-                        target
-                    ) * 100
-                    : 0;
+id:
+user.id,
 
-            // ==================================================
-            // UNITS
-            // ==================================================
+userCode:
+getUserCode(
+user
+),
 
-            const targetUnit =
-                calculateUnit(
-                    target
-                );
+userName:
+getUserName(
+user
+),
 
-            const collectionUnit =
-                calculateUnit(
-                    collection
-                );
+target:
+target,
 
-            const remainingUnit =
-                calculateUnit(
-                    remaining
-                );
+collection:
+collectionAmount,
 
-            // ==================================================
-            // SAVE
-            // ==================================================
+remaining:
+remaining,
 
-            userSummaryData.push({
+percentage:
+percentage,
 
-                id:
-                    user.id,
+teacherCount:
+userEmployees.length,
 
-                userCode:
-                    getUserCode(
-                        user
-                    ),
+teachers:
+userEmployees,
 
-                userName:
-                    getUserName(
-                        user
-                    ),
+originalUser:
+user
 
-                target:
-                    target,
+});
 
-                targetUnit:
-                    targetUnit,
+}
+);
 
-                collection:
-                    collection,
-
-                collectionUnit:
-                    collectionUnit,
-
-                remaining:
-                    remaining,
-
-                remainingUnit:
-                    remainingUnit,
-
-                percentage:
-                    percentage,
-
-                teacherCount:
-                    userEmployees.length,
-
-                regions:
-                    getUserRegions(
-                        user
-                    ),
-
-                originalUser:
-                    user
-
-            });
-
-        }
-    );
-
-    console.log(
-        "USER SUMMARY DATA:",
-        userSummaryData
-    );
 }
 
 // ======================================================
 // UPDATE SUMMARY CARDS
 // ======================================================
 
-function updateUserSummaryCards(
-    list
+function updateUserSummaryCards(list) {
+
+let totalTarget = 0;
+
+let totalCollection = 0;
+
+list.forEach(
+(user) => {
+
+totalTarget +=
+user.target;
+
+totalCollection +=
+user.collection;
+
+}
+);
+
+const totalRemaining =
+Math.max(
+totalTarget -
+totalCollection,
+0
+);
+
+const percentage =
+totalTarget > 0
+? (
+totalCollection /
+totalTarget
+) * 100
+: 0;
+
+if (
+userSummaryTotalTarget
 ) {
 
-    let totalTarget =
-        0;
+userSummaryTotalTarget.textContent =
+formatUnit(
+totalTarget
+);
 
-    let totalCollection =
-        0;
-
-    list.forEach(
-        (user) => {
-
-            totalTarget +=
-                numberValue(
-                    user.target
-                );
-
-            totalCollection +=
-                numberValue(
-                    user.collection
-                );
-
-        }
-    );
-
-    const totalRemaining =
-        Math.max(
-            totalTarget -
-            totalCollection,
-            0
-        );
-
-    // ==================================================
-    // TOTAL USERS CARD REMOVED
-    // ==================================================
-
-    if (
-        userSummaryTotalUsers
-    ) {
-
-        userSummaryTotalUsers
-            .closest(
-                ".user-summary-card"
-            )
-            ?.remove();
-
-    }
-
-    // ==================================================
-    // TOTAL TARGET
-    // ==================================================
-
-    if (
-        userSummaryTotalTarget
-    ) {
-
-        userSummaryTotalTarget.textContent =
-            formatCurrency(
-                totalTarget
-            );
-
-    }
-
-    // ==================================================
-    // TOTAL COLLECTION
-    // ==================================================
-
-    if (
-        userSummaryTotalCollection
-    ) {
-
-        userSummaryTotalCollection.textContent =
-            formatCurrency(
-                totalCollection
-            );
-
-    }
-
-    // ==================================================
-    // TOTAL REMAINING
-    // ==================================================
-
-    if (
-        userSummaryTotalRemaining
-    ) {
-
-        userSummaryTotalRemaining.textContent =
-            formatCurrency(
-                totalRemaining
-            );
-
-    }
 }
 
-// ======================================================
-// GET PERCENTAGE CLASS
-// ======================================================
-
-function getPercentageClass(
-    percentage
+if (
+userSummaryTotalCollection
 ) {
 
-    if (
-        percentage >= 100
-    ) {
+userSummaryTotalCollection.textContent =
+formatUnit(
+totalCollection
+);
 
-        return "complete";
-    }
+}
 
-    if (
-        percentage >= 75
-    ) {
+if (
+userSummaryTotalRemaining
+) {
 
-        return "good";
-    }
+userSummaryTotalRemaining.textContent =
+formatUnit(
+totalRemaining
+);
 
-    if (
-        percentage >= 50
-    ) {
+}
 
-        return "medium";
-    }
+if (
+userSummaryTotalPercentage
+) {
 
-    return "low";
+userSummaryTotalPercentage.textContent =
+percentage.toFixed(2) +
+"%";
+
+}
+
 }
 
 // ======================================================
 // DISPLAY USER SUMMARY
 // ======================================================
 
-function displayUserSummary(
-    list
+function displayUserSummary(list) {
+
+if (
+!userSummaryTableBody
 ) {
 
-    if (
-        !userSummaryTableBody
-    ) {
+return;
 
-        return;
-    }
-
-    // ==================================================
-    // NO DATA
-    // ==================================================
-
-    if (
-        list.length === 0
-    ) {
-
-        userSummaryTableBody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="9"
-                    class="no-data"
-                >
-
-                    Koi User nahi mila.
-
-                </td>
-
-            </tr>
-
-        `;
-
-        updateUserSummaryCards(
-            list
-        );
-
-        return;
-    }
-
-    let html =
-        "";
-
-    list.forEach(
-        (user, index) => {
-
-            const percentage =
-                Number(
-                    user.percentage || 0
-                );
-
-            const progress =
-                Math.min(
-                    Math.max(
-                        percentage,
-                        0
-                    ),
-                    100
-                );
-
-            const percentageClass =
-                getPercentageClass(
-                    percentage
-                );
-
-            // ==================================================
-            // USER NAME
-            // ==================================================
-
-            const userName =
-                escapeHTML(
-                    user.userName
-                );
-
-            // ==================================================
-            // TARGET
-            // ==================================================
-
-            const target =
-                numberValue(
-                    user.target
-                );
-
-            // ==================================================
-            // COLLECTION
-            // ==================================================
-
-            const collectionAmount =
-                numberValue(
-                    user.collection
-                );
-
-            // ==================================================
-            // REMAINING
-            // ==================================================
-
-            const remaining =
-                numberValue(
-                    user.remaining
-                );
-
-            // ==================================================
-            // UNITS
-            // ==================================================
-
-            const targetUnit =
-                calculateUnit(
-                    target
-                );
-
-            const collectionUnit =
-                calculateUnit(
-                    collectionAmount
-                );
-
-            const remainingUnit =
-                calculateUnit(
-                    remaining
-                );
-
-            html += `
-
-                <tr>
-
-                    <!-- NUMBER -->
-
-                    <td>
-                        ${index + 1}
-                    </td>
-
-                    <!-- USER NAME -->
-
-                    <td>
-
-                        <div
-                            class="user-name-cell"
-                        >
-
-                            <input
-                                type="text"
-                                class="user-name-input"
-                                data-id="${escapeHTML(user.id)}"
-                                value="${userName}"
-                                placeholder="Enter User Name"
-                            >
-
-                        </div>
-
-                    </td>
-
-                    <!-- TARGET -->
-
-                    <td>
-
-                        <div
-                            class="target-edit-box"
-                        >
-
-                            <input
-                                type="number"
-                                min="0"
-                                class="user-target-input"
-                                data-id="${escapeHTML(user.id)}"
-                                value="${target || ""}"
-                                placeholder="Enter Target"
-                            >
-
-                            <button
-                                type="button"
-                                class="save-user-target-btn"
-                                data-id="${escapeHTML(user.id)}"
-                                title="Save Target"
-                            >
-
-                                <i
-                                    class="fa-solid fa-floppy-disk"
-                                ></i>
-
-                            </button>
-
-                        </div>
-
-                    </td>
-
-                    <!-- TARGET UNIT -->
-
-                    <td>
-
-                        <strong
-                            style="
-                                color:#059669;
-                                white-space:nowrap;
-                            "
-                        >
-
-                            ${targetUnit.toFixed(2)}
-                            Unit
-
-                        </strong>
-
-                    </td>
-
-                    <!-- TOTAL COLLECTION -->
-
-                    <td>
-
-                        <strong
-                            style="
-                                color:#ef4444;
-                                white-space:nowrap;
-                            "
-                        >
-
-                            ${formatCurrency(
-                                collectionAmount
-                            )}
-
-                        </strong>
-
-                    </td>
-
-                    <!-- COLLECTION UNIT -->
-
-                    <td>
-
-                        <strong
-                            style="
-                                color:#111827;
-                                white-space:nowrap;
-                            "
-                        >
-
-                            ${collectionUnit.toFixed(2)}
-                            Unit
-
-                        </strong>
-
-                    </td>
-
-                    <!-- REMAINING -->
-
-                    <td>
-
-                        <strong
-                            style="
-                                color:#ef4444;
-                                white-space:nowrap;
-                            "
-                        >
-
-                            ${formatCurrency(
-                                remaining
-                            )}
-
-                        </strong>
-
-                    </td>
-
-                    <!-- REMAINING UNIT -->
-
-                    <td>
-
-                        <strong
-                            style="
-                                color:#111827;
-                                white-space:nowrap;
-                            "
-                        >
-
-                            ${remainingUnit.toFixed(2)}
-                            Unit
-
-                        </strong>
-
-                    </td>
-
-                    <!-- PERCENTAGE -->
-
-                    <td>
-
-                        <div
-                            class="
-                                percentage-wrapper
-                            "
-                        >
-
-                            <div
-                                class="
-                                    percentage-badge
-                                    ${percentageClass}
-                                "
-                            >
-
-                                ${percentage.toFixed(2)}%
-
-                            </div>
-
-                            <div
-                                class="
-                                    user-progress-container
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        user-progress-bar
-                                        ${percentageClass}
-                                    "
-                                    style="
-                                        width:${progress}%;
-                                    "
-                                ></div>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        }
-    );
-
-    userSummaryTableBody.innerHTML =
-        html;
-
-    updateUserSummaryCards(
-        list
-    );
-
-    // ==================================================
-    // SAVE TARGET
-    // ==================================================
-
-    document
-        .querySelectorAll(
-            ".save-user-target-btn"
-        )
-        .forEach(
-            (button) => {
-
-                button.addEventListener(
-                    "click",
-                    async function () {
-
-                        const userId =
-                            this.dataset.id;
-
-                        const input =
-                            document.querySelector(
-                                `.user-target-input[data-id="${CSS.escape(userId)}"]`
-                            );
-
-                        if (!input) {
-
-                            return;
-                        }
-
-                        const target =
-                            numberValue(
-                                input.value
-                            );
-
-                        if (
-                            target < 0
-                        ) {
-
-                            alert(
-                                "Please enter a valid Target."
-                            );
-
-                            return;
-                        }
-
-                        const user =
-                            userSummaryData.find(
-                                item =>
-                                    item.id ===
-                                    userId
-                            );
-
-                        if (!user) {
-
-                            return;
-                        }
-
-                        this.disabled =
-                            true;
-
-                        const oldHTML =
-                            this.innerHTML;
-
-                        this.innerHTML = `
-
-                            <i
-                                class="
-                                    fa-solid
-                                    fa-spinner
-                                    fa-spin
-                                "
-                            ></i>
-
-                        `;
-
-                        try {
-
-                            // ==================================================
-                            // SAVE TARGET IN regionUsers
-                            // ==================================================
-
-                            await setDoc(
-
-                                doc(
-                                    db,
-                                    "regionUsers",
-                                    userId
-                                ),
-
-                                {
-
-                                    target:
-                                        target,
-
-                                    targetAmount:
-                                        target,
-
-                                    manualTarget:
-                                        target,
-
-                                    manual_target:
-                                        target,
-
-                                    updatedAt:
-                                        new Date()
-
-                                },
-
-                                {
-                                    merge:
-                                        true
-                                }
-
-                            );
-
-                            // ==================================================
-                            // LOCAL UPDATE
-                            // ==================================================
-
-                            user.target =
-                                target;
-
-                            user.targetUnit =
-                                calculateUnit(
-                                    target
-                                );
-
-                            user.remaining =
-                                Math.max(
-                                    target -
-                                    user.collection,
-                                    0
-                                );
-
-                            user.remainingUnit =
-                                calculateUnit(
-                                    user.remaining
-                                );
-
-                            user.percentage =
-                                target > 0
-
-                                    ? (
-                                        user.collection /
-                                        target
-                                    ) * 100
-
-                                    : 0;
-
-                            displayUserSummary(
-                                userSummaryData
-                            );
-
-                            console.log(
-                                "Target Saved:",
-                                user.userName,
-                                target
-                            );
-
-                        }
-
-                        catch (error) {
-
-                            console.error(
-                                "Target Save Error:",
-                                error
-                            );
-
-                            alert(
-                                "Target save nahi hua:\n" +
-                                error.message
-                            );
-
-                            this.disabled =
-                                false;
-
-                            this.innerHTML =
-                                oldHTML;
-
-                        }
-
-                    }
-                );
-
-            }
-        );
-
-    // ==================================================
-    // SAVE USER NAME
-    // ==================================================
-
-    document
-        .querySelectorAll(
-            ".user-name-input"
-        )
-        .forEach(
-            (input) => {
-
-                input.addEventListener(
-                    "change",
-                    async function () {
-
-                        const userId =
-                            this.dataset.id;
-
-                        const newName =
-                            String(
-                                this.value || ""
-                            ).trim();
-
-                        if (!newName) {
-
-                            alert(
-                                "User Name empty nahi ho sakta."
-                            );
-
-                            return;
-                        }
-
-                        const user =
-                            userSummaryData.find(
-                                item =>
-                                    item.id ===
-                                    userId
-                            );
-
-                        if (!user) {
-
-                            return;
-                        }
-
-                        const oldName =
-                            user.userName;
-
-                        try {
-
-                            // ==================================================
-                            // SAVE USER NAME
-                            // ==================================================
-
-                            await setDoc(
-
-                                doc(
-                                    db,
-                                    "regionUsers",
-                                    userId
-                                ),
-
-                                {
-
-                                    name:
-                                        newName,
-
-                                    userName:
-                                        newName,
-
-                                    updatedAt:
-                                        new Date()
-
-                                },
-
-                                {
-                                    merge:
-                                        true
-                                }
-
-                            );
-
-                            // ==================================================
-                            // LOCAL UPDATE
-                            // ==================================================
-
-                            user.userName =
-                                newName;
-
-                            user.originalUser.name =
-                                newName;
-
-                            user.originalUser.userName =
-                                newName;
-
-                            console.log(
-                                "User Name Saved:",
-                                newName
-                            );
-
-                        }
-
-                        catch (error) {
-
-                            console.error(
-                                "User Name Save Error:",
-                                error
-                            );
-
-                            this.value =
-                                oldName;
-
-                            alert(
-                                "User Name save nahi hua:\n" +
-                                error.message
-                            );
-
-                        }
-
-                    }
-                );
-
-            }
-        );
 }
+
+if (
+list.length === 0
+) {
+
+userSummaryTableBody.innerHTML = `
+
+<tr>
+
+<td
+colspan="6"
+class="no-data"
+>
+
+Koi Region User nahi mila.
+
+</td>
+
+</tr>
+
+`;
+
+updateUserSummaryCards(
+list
+);
+
+return;
+
+}
+
+let html = "";
+
+list.forEach(
+(user, index) => {
+
+const percentage =
+user.percentage;
+
+const progress =
+Math.min(
+Math.max(
+percentage,
+0
+),
+100
+);
+
+let percentageClass =
+"low";
+
+if (
+percentage >= 100
+) {
+
+percentageClass =
+"complete";
+
+}
+
+else if (
+percentage >= 75
+) {
+
+percentageClass =
+"good";
+
+}
+
+else if (
+percentage >= 50
+) {
+
+percentageClass =
+"medium";
+
+}
+
+const safeUserName =
+escapeHTML(
+user.userName
+);
+
+const safeId =
+escapeHTML(
+user.id
+);
+
+html += `
+
+<tr>
+
+<td>
+
+<strong>
+${index + 1}
+</strong>
+
+</td>
+
+<td>
+
+<input
+type="text"
+class="user-name-input"
+data-id="${safeId}"
+value="${safeUserName}"
+placeholder="User Name"
+>
+
+</td>
+
+<td>
+
+<div
+class="target-edit-box"
+>
+
+<input
+type="number"
+min="0"
+step="0.01"
+class="user-target-input"
+data-id="${safeId}"
+value="${formatUnitNumber(
+user.target
+)}"
+placeholder="Unit"
+>
+
+<span
+class="unit-input-label"
+>
+Unit
+</span>
+
+<button
+type="button"
+class="save-user-target-btn"
+data-id="${safeId}"
+title="Save Target"
+>
+
+<i
+class="fa-solid fa-save"
+></i>
+
+</button>
+
+</div>
+
+</td>
+
+<td>
+
+<span
+class="
+unit-main
+collection-main
+"
+>
+
+${formatUnit(
+user.collection
+)}
+
+</span>
+
+</td>
+
+<td>
+
+<span
+class="
+unit-main
+remaining-main
+"
+>
+
+${formatUnit(
+user.remaining
+)}
+
+</span>
+
+</td>
+
+<td>
+
+<div
+class="percentage-wrapper"
+>
+
+<div
+class="
+percentage-badge
+${percentageClass}
+"
+>
+
+${percentage.toFixed(2)}%
+
+</div>
+
+<div
+class="
+user-progress-container
+"
+>
+
+<div
+class="
+user-progress-bar
+${percentageClass}
+"
+style="
+width:${progress}%;
+"
+></div>
+
+</div>
+
+</div>
+
+</td>
+
+</tr>
+
+`;
+
+}
+);
+
+userSummaryTableBody.innerHTML =
+html;
+
+updateUserSummaryCards(
+list
+);
+
+// ==================================================
+// SAVE TARGET
+// ==================================================
+
+document
+.querySelectorAll(
+".save-user-target-btn"
+)
+.forEach(
+(button) => {
+
+button.addEventListener(
+"click",
+async function () {
+
+const userId =
+this.dataset.id;
+
+const input =
+document.querySelector(
+`.user-target-input[data-id="${CSS.escape(userId)}"]`
+);
+
+if (!input) {
+
+return;
+
+}
+
+const targetUnits =
+numberValue(
+input.value
+);
+
+if (
+targetUnits < 0
+) {
+
+alert(
+"Target Unit 0 se kam nahi ho sakta."
+);
+
+return;
+
+}
+
+const targetAmount =
+unitToAmount(
+targetUnits
+);
+
+const user =
+userSummaryData.find(
+item =>
+item.id ===
+userId
+);
+
+if (!user) {
+
+return;
+
+}
+
+const oldHTML =
+this.innerHTML;
+
+this.disabled =
+true;
+
+this.innerHTML = `
+
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
+
+`;
+
+try {
+
+await setDoc(
+
+doc(
+db,
+REGION_USERS_COLLECTION,
+userId
+),
+
+{
+
+target:
+targetAmount,
+
+targetAmount:
+targetAmount,
+
+manualTarget:
+targetAmount,
+
+updatedAt:
+serverTimestamp()
+
+},
+
+{
+merge: true
+}
+
+);
+
+user.target =
+targetAmount;
+
+user.remaining =
+Math.max(
+targetAmount -
+user.collection,
+0
+);
+
+user.percentage =
+targetAmount > 0
+? (
+user.collection /
+targetAmount
+) * 100
+: 0;
+
+displayUserSummary(
+userSummaryData
+);
+
+}
+
+catch (error) {
+
+console.error(
+"Target Save Error:",
+error
+);
+
+alert(
+"Target save nahi hua:\n" +
+error.message
+);
+
+}
+
+finally {
+
+this.disabled =
+false;
+
+this.innerHTML =
+oldHTML;
+
+}
+
+}
+);
+
+}
+);
+
+// ==================================================
+// SAVE USER NAME
+// ==================================================
+
+document
+.querySelectorAll(
+".user-name-input"
+)
+.forEach(
+(input) => {
+
+input.addEventListener(
+"change",
+async function () {
+
+const userId =
+this.dataset.id;
+
+const newName =
+this.value.trim();
+
+if (!newName) {
+
+alert(
+"User Name enter karein."
+);
+
+return;
+
+}
+
+const user =
+userSummaryData.find(
+item =>
+item.id ===
+userId
+);
+
+if (!user) {
+
+return;
+
+}
+
+try {
+
+await setDoc(
+
+doc(
+db,
+REGION_USERS_COLLECTION,
+userId
+),
+
+{
+
+userName:
+newName,
+
+name:
+newName,
+
+updatedAt:
+serverTimestamp()
+
+},
+
+{
+merge: true
+}
+
+);
+
+user.userName =
+newName;
+
+}
+
+catch (error) {
+
+console.error(
+"User Name Save Error:",
+error
+);
+
+alert(
+"User Name save nahi hua:\n" +
+error.message
+);
+
+}
+
+}
+);
+
+}
+);
+
+}
+
 // ======================================================
-// SEARCH
+// DATE - TODAY
+// ======================================================
+
+function getTodayDate() {
+
+const today =
+new Date();
+
+const year =
+today.getFullYear();
+
+const month =
+String(
+today.getMonth() + 1
+).padStart(
+2,
+"0"
+);
+
+const day =
+String(
+today.getDate()
+).padStart(
+2,
+"0"
+);
+
+return (
+`${year}-${month}-${day}`
+);
+
+}
+
+// ======================================================
+// FORMAT DATE FOR DISPLAY
+// ======================================================
+
+function formatDisplayDate(dateValue) {
+
+if (!dateValue) {
+
+return "";
+
+}
+
+const parts =
+String(
+dateValue
+).split("-");
+
+if (
+parts.length !== 3
+) {
+
+return dateValue;
+
+}
+
+return (
+`${parts[2]}-${parts[1]}-${parts[0]}`
+);
+
+}
+
+// ======================================================
+// GET USER COLLECTION FOR SELECTED DATE
+// ======================================================
+
+function getUserCollectionForDate(
+user,
+selectedDate,
+latestEntries
+) {
+
+const userEmployees =
+getUserEmployees(
+user
+);
+
+const employeeCodes =
+new Set();
+
+userEmployees.forEach(
+(employee) => {
+
+const code =
+normalize(
+getEmployeeCode(
+employee
+)
+);
+
+if (code) {
+
+employeeCodes.add(
+code
+);
+
+}
+
+}
+);
+
+let total = 0;
+
+latestEntries.forEach(
+(entry) => {
+
+const entryDate =
+getEntryDate(
+entry
+);
+
+if (
+entryDate !==
+selectedDate
+) {
+
+return;
+
+}
+
+const entryCode =
+normalize(
+getEntryEmployeeCode(
+entry
+)
+);
+
+if (
+employeeCodes.has(
+entryCode
+)
+) {
+
+total +=
+getEntryAmount(
+entry
+);
+
+}
+
+}
+);
+
+return total;
+
+}
+
+// ======================================================
+// DISPLAY TODAY COLLECTION
+// ALL REGION USERS SHOW
+// ======================================================
+
+function displayTodayCollection(
+selectedDate
+) {
+
+if (
+!todayCollectionTableBody
+) {
+
+return;
+
+}
+
+if (
+!selectedDate
+) {
+
+selectedDate =
+getTodayDate();
+
+}
+
+const latestEntries =
+getLatestEntries();
+
+let grandTotal = 0;
+
+let html = "";
+
+// ==================================================
+// IMPORTANT:
+// regionUsers = USERS
+// Employees = Teachers
+//
+// Data:
+// daily_entry + teacher_entries
+// ==================================================
+
+regionUsers.forEach(
+(user, index) => {
+
+const amount =
+getUserCollectionForDate(
+user,
+selectedDate,
+latestEntries
+);
+
+grandTotal +=
+amount;
+
+const userName =
+escapeHTML(
+getUserName(
+user
+)
+);
+
+html += `
+
+<tr>
+
+<td>
+
+<strong>
+${index + 1}
+</strong>
+
+</td>
+
+<td>
+
+<span
+class="today-user-name"
+>
+
+${userName}
+
+</span>
+
+</td>
+
+<td>
+
+<span
+class="
+today-total-amount
+"
+>
+
+${formatAmount(
+amount
+)}
+
+</span>
+
+</td>
+
+</tr>
+
+`;
+
+}
+);
+
+// ==================================================
+// TOTAL AMOUNT
+// ==================================================
+
+html += `
+
+<tr
+class="today-grand-total"
+>
+
+<td
+colspan="2"
+class="today-total-label"
+>
+
+Total Amount
+
+</td>
+
+<td
+class="today-total-value"
+>
+
+${formatAmount(
+grandTotal
+)}
+
+</td>
+
+</tr>
+
+`;
+
+todayCollectionTableBody.innerHTML =
+html;
+
+console.log(
+"Today Collection Total:",
+grandTotal
+);
+
+}
+
+// ======================================================
+// DATE FILTER
 // ======================================================
 
 if (
-    userSummarySearch
+todayCollectionDateFilter
 ) {
 
-    userSummarySearch.addEventListener(
-        "input",
-        function () {
+todayCollectionDateFilter.value =
+getTodayDate();
 
-            const search =
-                normalize(
-                    this.value
-                );
+todayCollectionDateFilter.addEventListener(
+"change",
+function () {
 
-            if (!search) {
+displayTodayCollection(
+this.value
+);
 
-                displayUserSummary(
-                    userSummaryData
-                );
-
-                return;
-            }
-
-            const filtered =
-                userSummaryData.filter(
-                    (user) => {
-
-                        const name =
-                            normalize(
-                                user.userName
-                            );
-
-                        const code =
-                            normalize(
-                                user.userCode
-                            );
-
-                        const regions =
-                            (
-                                user.regions || []
-                            )
-                                .map(
-                                    region =>
-                                        normalize(
-                                            region
-                                        )
-                                )
-                                .join(" ");
-
-                        return (
-                            name.includes(search) ||
-                            code.includes(search) ||
-                            regions.includes(search)
-                        );
-
-                    }
-                );
-
-            displayUserSummary(
-                filtered
-            );
-
-        }
-    );
+}
+);
 
 }
 
-
 // ======================================================
-// LOAD RECENT COLLECTIONS
-// ======================================================
-//
-// Dashboard Recent Collection table
-// daily_entry + teacher_entries dono se data lega.
+// DOWNLOAD DASHBOARD IMAGE
+// FIXED FULL WIDTH
 // ======================================================
 
-async function loadRecentCollections() {
+if (
+downloadDashboardImageBtn
+) {
 
-    if (
-        !entriesTableBody
-    ) {
+downloadDashboardImageBtn.addEventListener(
+"click",
+async function () {
 
-        return;
-    }
+const dashboard =
+document.getElementById(
+"dashboardCaptureArea"
+);
 
-    const allEntries =
-        getLatestEntries();
+if (!dashboard) {
 
-    // ==================================================
-    // SORT NEWEST FIRST
-    // ==================================================
+alert(
+"Dashboard data area nahi mila."
+);
 
-    allEntries.sort(
-        (a, b) => {
+return;
 
-            return (
-                getCreatedTime(b) -
-                getCreatedTime(a)
-            );
-
-        }
-    );
-
-    // ==================================================
-    // TOTAL ENTRIES
-    // ==================================================
-
-    if (
-        totalEntriesCountEl
-    ) {
-
-        totalEntriesCountEl.textContent =
-            allEntries.length
-                .toLocaleString("en-IN");
-
-    }
-
-    // ==================================================
-    // TOTAL COLLECTION
-    // ==================================================
-
-    let totalAmount =
-        0;
-
-    allEntries.forEach(
-        (entry) => {
-
-            totalAmount +=
-                getEntryAmount(
-                    entry
-                );
-
-        }
-    );
-
-    if (
-        totalAmountEl
-    ) {
-
-        totalAmountEl.textContent =
-            formatCurrency(
-                totalAmount
-            );
-
-    }
-
-    // ==================================================
-    // TODAY COLLECTION
-    // ==================================================
-
-    const today =
-        new Date();
-
-    const todayYear =
-        today.getFullYear();
-
-    const todayMonth =
-        String(
-            today.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-    const todayDay =
-        String(
-            today.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-    const todayString =
-        `${todayYear}-${todayMonth}-${todayDay}`;
-
-    let todayAmount =
-        0;
-
-    allEntries.forEach(
-        (entry) => {
-
-            const entryDate =
-                getEntryDate(
-                    entry
-                );
-
-            if (
-                entryDate ===
-                todayString
-            ) {
-
-                todayAmount +=
-                    getEntryAmount(
-                        entry
-                    );
-
-            }
-
-        }
-    );
-
-    if (
-        todayAmountEl
-    ) {
-
-        todayAmountEl.textContent =
-            formatCurrency(
-                todayAmount
-            );
-
-    }
-
-    // ==================================================
-    // NO ENTRIES
-    // ==================================================
-
-    if (
-        allEntries.length === 0
-    ) {
-
-        entriesTableBody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="8"
-                    class="no-data"
-                >
-
-                    No collection entries found.
-
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
-    }
-
-    // ==================================================
-    // RECENT ENTRIES
-    // ==================================================
-
-    const recentEntries =
-        allEntries.slice(
-            0,
-            20
-        );
-
-    let html =
-        "";
-
-    recentEntries.forEach(
-        (entry, index) => {
-
-            const employeeCode =
-                getEntryEmployeeCode(
-                    entry
-                );
-
-            const employee =
-                employees.find(
-                    (item) => {
-
-                        return (
-                            normalize(
-                                getEmployeeCode(
-                                    item
-                                )
-                            ) ===
-                            normalize(
-                                employeeCode
-                            )
-                        );
-
-                    }
-                );
-
-            const employeeName =
-                employee
-
-                    ? (
-                        employee.name ||
-                        employee.fullName ||
-                        employee.full_name ||
-                        employee.teacherName ||
-                        employee.teacher_name ||
-                        ""
-                    )
-
-                    : (
-                        entry.teacherName ||
-                        entry.teacher_name ||
-                        entry.name ||
-                        entry.fullName ||
-                        entry.full_name ||
-                        ""
-                    );
-
-            const region =
-                employee
-
-                    ? getEmployeeRegion(
-                        employee
-                    )
-
-                    : (
-                        entry.region ||
-                        entry.regionName ||
-                        entry.region_name ||
-                        ""
-                    );
-
-            const state =
-                employee
-
-                    ? getEmployeeState(
-                        employee
-                    )
-
-                    : (
-                        entry.state ||
-                        entry.stateName ||
-                        entry.state_name ||
-                        ""
-                    );
-
-            const city =
-                employee
-
-                    ? getEmployeeCity(
-                        employee
-                    )
-
-                    : (
-                        entry.city ||
-                        entry.cityName ||
-                        entry.city_name ||
-                        ""
-                    );
-
-            const date =
-                getEntryDate(
-                    entry
-                );
-
-            const amount =
-                getEntryAmount(
-                    entry
-                );
-
-            const source =
-                entry.source ===
-                "teacher_entries"
-
-                    ? "Region User"
-
-                    : "Daily Collection";
-
-            html += `
-
-                <tr>
-
-                    <!-- NUMBER -->
-
-                    <td>
-                        ${index + 1}
-                    </td>
-
-                    <!-- EMPLOYEE CODE -->
-
-                    <td>
-
-                        <strong>
-
-                            ${escapeHTML(
-                                employeeCode
-                            )}
-
-                        </strong>
-
-                    </td>
-
-                    <!-- TEACHER -->
-
-                    <td>
-
-                        ${escapeHTML(
-                            employeeName ||
-                            "-"
-                        )}
-
-                    </td>
-
-                    <!-- REGION -->
-
-                    <td>
-
-                        ${escapeHTML(
-                            region ||
-                            "-"
-                        )}
-
-                    </td>
-
-                    <!-- STATE -->
-
-                    <td>
-
-                        ${escapeHTML(
-                            state ||
-                            "-"
-                        )}
-
-                    </td>
-
-                    <!-- CITY -->
-
-                    <td>
-
-                        ${escapeHTML(
-                            city ||
-                            "-"
-                        )}
-
-                    </td>
-
-                    <!-- DATE -->
-
-                    <td>
-
-                        ${escapeHTML(
-                            date ||
-                            "-"
-                        )}
-
-                    </td>
-
-                    <!-- AMOUNT -->
-
-                    <td>
-
-                        <strong
-                            style="
-                                color:#059669;
-                                white-space:nowrap;
-                            "
-                        >
-
-                            ${formatCurrency(
-                                amount
-                            )}
-
-                        </strong>
-
-                    </td>
-
-                    <!-- SOURCE -->
-
-                    <td>
-
-                        <span
-                            class="
-                                entry-source-badge
-                            "
-                        >
-
-                            ${escapeHTML(
-                                source
-                            )}
-
-                        </span>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        }
-    );
-
-    entriesTableBody.innerHTML =
-        html;
 }
 
+if (
+typeof html2canvas ===
+"undefined"
+) {
 
-// ======================================================
-// SAVE / UPDATE REGION USER DATA
-// ======================================================
-//
-// Existing helper kept intact.
-// ======================================================
+alert(
+"Image download library load nahi hui. Page refresh karke dobara try karein."
+);
 
-async function refreshDashboardData() {
+return;
 
-    try {
-
-        await Promise.all([
-
-            loadEmployees(),
-
-            loadDailyEntries(),
-
-            loadTeacherEntries(),
-
-            loadRegionUsers()
-
-        ]);
-
-        buildUserSummary();
-
-        displayUserSummary(
-            userSummaryData
-        );
-
-        await loadRecentCollections();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Dashboard Refresh Error:",
-            error
-        );
-
-    }
 }
 
+const oldHTML =
+this.innerHTML;
+
+this.disabled =
+true;
+
+this.innerHTML = `
+
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
+
+Preparing Image...
+
+`;
+
+let originalBodyOverflow =
+"";
+
+let originalHtmlOverflow =
+"";
+
+try {
+
+await new Promise(
+function (resolve) {
+
+requestAnimationFrame(
+function () {
+
+requestAnimationFrame(
+resolve
+);
+
+}
+);
+
+}
+);
+
+originalBodyOverflow =
+document.body.style.overflow;
+
+originalHtmlOverflow =
+document.documentElement.style.overflow;
+
+document.body.style.overflow =
+"visible";
+
+document.documentElement.style.overflow =
+"visible";
+
+const captureWidth =
+dashboard.scrollWidth;
+
+const captureHeight =
+dashboard.scrollHeight;
+
+const canvas =
+await html2canvas(
+dashboard,
+{
+
+scale: 2,
+
+useCORS: true,
+
+allowTaint: false,
+
+backgroundColor:
+"#f4f7fb",
+
+logging: false,
+
+imageTimeout:
+15000,
+
+scrollX: 0,
+
+scrollY: 0,
+
+width:
+captureWidth,
+
+height:
+captureHeight,
+
+windowWidth:
+captureWidth,
+
+windowHeight:
+captureHeight,
+
+onclone:
+function (
+clonedDocument
+) {
+
+// ==================================
+// HIDE DOWNLOAD BUTTON
+// ==================================
+
+const clonedButton =
+clonedDocument
+.getElementById(
+"downloadDashboardImageBtn"
+);
+
+if (
+clonedButton
+) {
+
+clonedButton.style.display =
+"none";
+
+}
+
+// ==================================
+// DASHBOARD WIDTH
+// ==================================
+
+const clonedDashboard =
+clonedDocument
+.getElementById(
+"dashboardCaptureArea"
+);
+
+if (
+clonedDashboard
+) {
+
+clonedDashboard.style.width =
+captureWidth + "px";
+
+clonedDashboard.style.maxWidth =
+"none";
+
+clonedDashboard.style.margin =
+"0";
+
+clonedDashboard.style.padding =
+"0";
+
+clonedDashboard.style.overflow =
+"visible";
+
+}
+
+// ==================================
+// TABLE WRAPPER
+// ==================================
+
+const wrappers =
+clonedDocument.querySelectorAll(
+".user-summary-table-wrapper"
+);
+
+wrappers.forEach(
+function (
+wrapper
+) {
+
+wrapper.style.width =
+"100%";
+
+wrapper.style.maxWidth =
+"none";
+
+wrapper.style.overflow =
+"visible";
+
+}
+);
+
+// ==================================
+// TABLE
+// ==================================
+
+const tables =
+clonedDocument.querySelectorAll(
+".user-summary-table"
+);
+
+tables.forEach(
+function (
+table
+) {
+
+table.style.width =
+"100%";
+
+table.style.maxWidth =
+"none";
+
+}
+);
+
+}
+
+}
+);
+
+// ======================================
+// RESTORE PAGE
+// ======================================
+
+document.body.style.overflow =
+originalBodyOverflow;
+
+document.documentElement.style.overflow =
+originalHtmlOverflow;
+
+// ======================================
+// CREATE IMAGE
+// ======================================
+
+const image =
+canvas.toDataURL(
+"image/png",
+1.0
+);
+
+// ======================================
+// DATE
+// ======================================
+
+const today =
+new Date();
+
+const year =
+today.getFullYear();
+
+const month =
+String(
+today.getMonth() + 1
+).padStart(
+2,
+"0"
+);
+
+const day =
+String(
+today.getDate()
+).padStart(
+2,
+"0"
+);
+
+// ======================================
+// DOWNLOAD
+// ======================================
+
+const link =
+document.createElement(
+"a"
+);
+
+link.download =
+`Telethon-Dashboard-${year}-${month}-${day}.png`;
+
+link.href =
+image;
+
+document.body.appendChild(
+link
+);
+
+link.click();
+
+document.body.removeChild(
+link
+);
+
+}
+
+catch (error) {
+
+console.error(
+"Dashboard Image Download Error:",
+error
+);
+
+document.body.style.overflow =
+originalBodyOverflow;
+
+document.documentElement.style.overflow =
+originalHtmlOverflow;
+
+alert(
+"Dashboard image download nahi hui.\n\n" +
+error.message
+);
+
+}
+
+finally {
+
+this.disabled =
+false;
+
+this.innerHTML =
+oldHTML;
+
+}
+
+}
+);
+
+}
+
+// ======================================================
+// DOWNLOAD TODAY COLLECTION IMAGE
+// FIXED FULL WIDTH
+// ======================================================
+
+if (
+downloadTodayCollectionImageBtn
+) {
+
+downloadTodayCollectionImageBtn.addEventListener(
+"click",
+async function () {
+
+const captureArea =
+document.getElementById(
+"todayCollectionCaptureArea"
+);
+
+if (!captureArea) {
+
+alert(
+"Today Collection area nahi mila."
+);
+
+return;
+
+}
+
+if (
+typeof html2canvas ===
+"undefined"
+) {
+
+alert(
+"Image download library load nahi hui."
+);
+
+return;
+
+}
+
+const oldHTML =
+this.innerHTML;
+
+this.disabled =
+true;
+
+this.innerHTML = `
+
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
+
+Preparing Image...
+
+`;
+
+let originalBodyOverflow =
+"";
+
+let originalHtmlOverflow =
+"";
+
+try {
+
+await new Promise(
+function (resolve) {
+
+requestAnimationFrame(
+function () {
+
+requestAnimationFrame(
+resolve
+);
+
+}
+);
+
+}
+);
+
+originalBodyOverflow =
+document.body.style.overflow;
+
+originalHtmlOverflow =
+document.documentElement.style.overflow;
+
+document.body.style.overflow =
+"visible";
+
+document.documentElement.style.overflow =
+"visible";
+
+const captureWidth =
+captureArea.scrollWidth;
+
+const captureHeight =
+captureArea.scrollHeight;
+
+const canvas =
+await html2canvas(
+captureArea,
+{
+
+scale: 2,
+
+useCORS: true,
+
+allowTaint: false,
+
+backgroundColor:
+"#ffffff",
+
+logging: false,
+
+imageTimeout:
+15000,
+
+scrollX: 0,
+
+scrollY: 0,
+
+width:
+captureWidth,
+
+height:
+captureHeight,
+
+windowWidth:
+captureWidth,
+
+windowHeight:
+captureHeight,
+
+onclone:
+function (
+clonedDocument
+) {
+
+// ==================================
+// HIDE DOWNLOAD BUTTON
+// ==================================
+
+const clonedButton =
+clonedDocument
+.getElementById(
+"downloadTodayCollectionImageBtn"
+);
+
+if (
+clonedButton
+) {
+
+clonedButton.style.display =
+"none";
+
+}
+
+// ==================================
+// REMOVE DATE CONTROLS FROM IMAGE
+// ==================================
+
+const clonedControls =
+clonedDocument
+.querySelector(
+".today-collection-controls"
+);
+
+if (
+clonedControls
+) {
+
+clonedControls.style.display =
+"none";
+
+}
+
+// ==================================
+// FIX WIDTH
+// ==================================
+
+const clonedArea =
+clonedDocument
+.getElementById(
+"todayCollectionCaptureArea"
+);
+
+if (
+clonedArea
+) {
+
+clonedArea.style.width =
+captureWidth + "px";
+
+clonedArea.style.maxWidth =
+"none";
+
+clonedArea.style.margin =
+"0";
+
+clonedArea.style.overflow =
+"visible";
+
+}
+
+}
+
+}
+);
+
+// ======================================
+// RESTORE PAGE
+// ======================================
+
+document.body.style.overflow =
+originalBodyOverflow;
+
+document.documentElement.style.overflow =
+originalHtmlOverflow;
+
+// ======================================
+// IMAGE
+// ======================================
+
+const image =
+canvas.toDataURL(
+"image/png",
+1.0
+);
+
+// ======================================
+// SELECTED DATE
+// ======================================
+
+const selectedDate =
+todayCollectionDateFilter
+? todayCollectionDateFilter.value
+: getTodayDate();
+
+const safeDate =
+selectedDate ||
+getTodayDate();
+
+// ======================================
+// DOWNLOAD
+// ======================================
+
+const link =
+document.createElement(
+"a"
+);
+
+link.download =
+`Telethon-Today-Collection-${safeDate}.png`;
+
+link.href =
+image;
+
+document.body.appendChild(
+link
+);
+
+link.click();
+
+document.body.removeChild(
+link
+);
+
+}
+
+catch (error) {
+
+console.error(
+"Today Collection Image Download Error:",
+error
+);
+
+document.body.style.overflow =
+originalBodyOverflow;
+
+document.documentElement.style.overflow =
+originalHtmlOverflow;
+
+alert(
+"Today Collection image download nahi hui.\n\n" +
+error.message
+);
+
+}
+
+finally {
+
+this.disabled =
+false;
+
+this.innerHTML =
+oldHTML;
+
+}
+
+}
+);
+
+}
 
 // ======================================================
 // LOGOUT
 // ======================================================
 
-const logoutButtons =
-    document.querySelectorAll(
-        "#logoutBtn, .logout-btn, [data-action='logout']"
-    );
-
-logoutButtons.forEach(
-    (button) => {
-
-        button.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-
-                localStorage.removeItem(
-                    "loggedInEmpCode"
-                );
-
-                localStorage.removeItem(
-                    "userRole"
-                );
-
-                localStorage.removeItem(
-                    "regionUserId"
-                );
-
-                localStorage.removeItem(
-                    "regionUserCode"
-                );
-
-                localStorage.removeItem(
-                    "userCode"
-                );
-
-                localStorage.removeItem(
-                    "employeeCode"
-                );
-
-                localStorage.removeItem(
-                    "empCode"
-                );
-
-                localStorage.removeItem(
-                    "username"
-                );
-
-                localStorage.removeItem(
-                    "userName"
-                );
-
-                window.location.href =
-                    "index.html";
-
-            }
-        );
-
-    }
+const logoutBtn =
+document.getElementById(
+"logoutBtn"
 );
 
+if (logoutBtn) {
+
+logoutBtn.addEventListener(
+"click",
+function (event) {
+
+event.preventDefault();
+
+localStorage.removeItem(
+"loggedInEmpCode"
+);
+
+localStorage.removeItem(
+"userRole"
+);
+
+window.location.href =
+"index.html";
+
+}
+);
+
+}
 
 // ======================================================
-// MAIN DASHBOARD LOAD
+// MAIN DASHBOARD
 // ======================================================
 
 async function loadDashboard() {
 
-    try {
+try {
 
-        console.log(
-            "======================================"
-        );
+// ==============================================
+// USER SUMMARY LOADING
+// ==============================================
 
-        console.log(
-            "TELETHON DASHBOARD LOADING..."
-        );
+if (
+userSummaryTableBody
+) {
 
-        console.log(
-            "======================================"
-        );
+userSummaryTableBody.innerHTML = `
 
-        // ==================================================
-        // LOAD ALL DATA
-        // ==================================================
-        //
-        // IMPORTANT:
-        //
-        // employees
-        // daily_entry
-        // teacher_entries
-        // regionUsers
-        //
-        // All are loaded before calculation.
-        // ==================================================
+<tr>
 
-        await Promise.all([
+<td
+colspan="6"
+class="no-data"
+>
 
-            loadEmployees(),
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
 
-            loadDailyEntries(),
+Loading User Summary...
 
-            loadTeacherEntries(),
+</td>
 
-            loadRegionUsers()
+</tr>
 
-        ]);
-
-        console.log(
-            "======================================"
-        );
-
-        console.log(
-            "DATA LOADED"
-        );
-
-        console.log(
-            "Employees:",
-            employees.length
-        );
-
-        console.log(
-            "Old daily_entry:",
-            dailyEntries.length
-        );
-
-        console.log(
-            "New teacher_entries:",
-            teacherEntries.length
-        );
-
-        console.log(
-            "Region Users:",
-            regionUsers.length
-        );
-
-        console.log(
-            "======================================"
-        );
-
-        // ==================================================
-        // BUILD USER SUMMARY
-        // ==================================================
-
-        buildUserSummary();
-
-        // ==================================================
-        // DISPLAY USER SUMMARY
-        // ==================================================
-
-        displayUserSummary(
-            userSummaryData
-        );
-
-        // ==================================================
-        // LOAD RECENT COLLECTION
-        // ==================================================
-
-        await loadRecentCollections();
-
-        console.log(
-            "======================================"
-        );
-
-        console.log(
-            "TELETHON DASHBOARD READY"
-        );
-
-        console.log(
-            "======================================"
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Dashboard Load Error:",
-            error
-        );
-
-        // ==================================================
-        // SHOW ERROR IN TABLE
-        // ==================================================
-
-        if (
-            userSummaryTableBody
-        ) {
-
-            userSummaryTableBody.innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="9"
-                        class="no-data"
-                    >
-
-                        Dashboard data load nahi hua.
-
-                        <br>
-
-                        <small>
-
-                            ${escapeHTML(
-                                error.message
-                            )}
-
-                        </small>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        }
-
-        if (
-            entriesTableBody
-        ) {
-
-            entriesTableBody.innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="9"
-                        class="no-data"
-                    >
-
-                        Collection data load nahi hua.
-
-                        <br>
-
-                        <small>
-
-                            ${escapeHTML(
-                                error.message
-                            )}
-
-                        </small>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        }
-
-    }
+`;
 
 }
 
+// ==============================================
+// TODAY COLLECTION LOADING
+// ==============================================
+
+if (
+todayCollectionTableBody
+) {
+
+todayCollectionTableBody.innerHTML = `
+
+<tr>
+
+<td
+colspan="3"
+class="no-data"
+>
+
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
+
+Loading Today Collection...
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+// ==============================================
+// LOAD ALL DATA
+//
+// IMPORTANT:
+// daily_entry + teacher_entries
+// ==============================================
+
+await Promise.all([
+
+loadEmployees(),
+
+loadDailyEntries(),
+
+loadTeacherEntries(),
+
+loadRegionUsers()
+
+]);
+
+// ==============================================
+// USER SUMMARY
+// ==============================================
+
+buildUserSummary();
+
+displayUserSummary(
+userSummaryData
+);
+
+// ==============================================
+// TODAY COLLECTION
+// ==============================================
+
+const selectedDate =
+todayCollectionDateFilter &&
+todayCollectionDateFilter.value
+? todayCollectionDateFilter.value
+: getTodayDate();
+
+displayTodayCollection(
+selectedDate
+);
+
+// ==============================================
+// DEBUG
+// ==============================================
+
+console.log(
+"======================================"
+);
+
+console.log(
+"Dashboard Loaded Successfully"
+);
+
+console.log(
+"======================================"
+);
+
+console.log(
+"Region Users:",
+regionUsers.length
+);
+
+console.log(
+"Employees:",
+employees.length
+);
+
+console.log(
+"Old daily_entry:",
+dailyEntries.length
+);
+
+console.log(
+"New teacher_entries:",
+teacherEntries.length
+);
+
+console.log(
+"Merged Teacher + Date Entries:",
+getLatestEntries().length
+);
+
+console.log(
+"======================================"
+);
+
+}
+
+catch (error) {
+
+console.error(
+"Dashboard Load Error:",
+error
+);
+
+if (
+userSummaryTableBody
+) {
+
+userSummaryTableBody.innerHTML = `
+
+<tr>
+
+<td
+colspan="6"
+style="
+text-align:center;
+padding:30px;
+color:#dc2626;
+"
+>
+
+Dashboard data load nahi hua.
+
+<br><br>
+
+${escapeHTML(
+error.message
+)}
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+if (
+todayCollectionTableBody
+) {
+
+todayCollectionTableBody.innerHTML = `
+
+<tr>
+
+<td
+colspan="3"
+style="
+text-align:center;
+padding:30px;
+color:#dc2626;
+"
+>
+
+Today Collection data
+load nahi hua.
+
+<br><br>
+
+${escapeHTML(
+error.message
+)}
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+}
+
+}
 
 // ======================================================
-// START DASHBOARD
+// START
 // ======================================================
 
 loadDashboard();
-// ======================================================
-// AUTO REFRESH
-// ======================================================
-//
-// Dashboard ko manually refresh karne ki zarurat na ho,
-// isliye data ko periodically reload kiya ja sakta hai.
-//
-// Existing functionality ko disturb nahi karta.
-// ======================================================
-
-let dashboardRefreshTimer = null;
-
-
-// ======================================================
-// START AUTO REFRESH
-// ======================================================
-
-function startDashboardAutoRefresh() {
-
-    // Existing timer clear
-
-    if (
-        dashboardRefreshTimer
-    ) {
-
-        clearInterval(
-            dashboardRefreshTimer
-        );
-
-    }
-
-    // ==================================================
-    // Refresh every 60 seconds
-    // ==================================================
-
-    dashboardRefreshTimer =
-        setInterval(
-            async function () {
-
-                console.log(
-                    "Refreshing Dashboard Data..."
-                );
-
-                await refreshDashboardData();
-
-            },
-            60000
-        );
-
-}
-
-
-// ======================================================
-// VISIBILITY CHANGE
-// ======================================================
-//
-// Agar browser tab background mein tha aur user wapas
-// Dashboard par aata hai to latest data reload hoga.
-// ======================================================
-
-document.addEventListener(
-    "visibilitychange",
-    async function () {
-
-        if (
-            document.visibilityState ===
-            "visible"
-        ) {
-
-            console.log(
-                "Dashboard visible - refreshing data..."
-            );
-
-            await refreshDashboardData();
-
-        }
-
-    }
-);
-
-
-// ======================================================
-// WINDOW FOCUS
-// ======================================================
-
-window.addEventListener(
-    "focus",
-    async function () {
-
-        console.log(
-            "Dashboard focused - refreshing data..."
-        );
-
-        await refreshDashboardData();
-
-    }
-);
-
-
-// ======================================================
-// START AUTO REFRESH
-// ======================================================
-
-startDashboardAutoRefresh();
-
-
-// ======================================================
-// DEBUG HELPER
-// ======================================================
-//
-// Browser Console mein:
-// debugDashboardData()
-//
-// run karne par collections aur totals check kar
-// sakte hain.
-// ======================================================
-
-window.debugDashboardData =
-    function () {
-
-        const allEntries =
-            getLatestEntries();
-
-        let total =
-            0;
-
-        let todayTotal =
-            0;
-
-        const today =
-            new Date();
-
-        const year =
-            today.getFullYear();
-
-        const month =
-            String(
-                today.getMonth() + 1
-            ).padStart(
-                2,
-                "0"
-            );
-
-        const day =
-            String(
-                today.getDate()
-            ).padStart(
-                2,
-                "0"
-            );
-
-        const todayDate =
-            `${year}-${month}-${day}`;
-
-        allEntries.forEach(
-            (entry) => {
-
-                const amount =
-                    getEntryAmount(
-                        entry
-                    );
-
-                total +=
-                    amount;
-
-                if (
-                    getEntryDate(
-                        entry
-                    ) ===
-                    todayDate
-                ) {
-
-                    todayTotal +=
-                        amount;
-
-                }
-
-            }
-        );
-
-        console.log(
-            "======================================"
-        );
-
-        console.log(
-            "TELETHON DASHBOARD DEBUG"
-        );
-
-        console.log(
-            "======================================"
-        );
-
-        console.log(
-            "Employees:",
-            employees.length
-        );
-
-        console.log(
-            "daily_entry:",
-            dailyEntries.length
-        );
-
-        console.log(
-            "teacher_entries:",
-            teacherEntries.length
-        );
-
-        console.log(
-            "Region Users:",
-            regionUsers.length
-        );
-
-        console.log(
-            "Calculated Entries:",
-            allEntries.length
-        );
-
-        console.log(
-            "Total Collection:",
-            total
-        );
-
-        console.log(
-            "Today Collection:",
-            todayTotal
-        );
-
-        console.log(
-            "User Summary:",
-            userSummaryData
-        );
-
-        console.log(
-            "All Entries:",
-            allEntries
-        );
-
-        console.log(
-            "======================================"
-        );
-
-        return {
-
-            employees:
-                employees,
-
-            dailyEntries:
-                dailyEntries,
-
-            teacherEntries:
-                teacherEntries,
-
-            regionUsers:
-                regionUsers,
-
-            allEntries:
-                allEntries,
-
-            total:
-                total,
-
-            todayTotal:
-                todayTotal,
-
-            userSummaryData:
-                userSummaryData
-
-        };
-
-    };
-
-
-// ======================================================
-// END OF DASHBOARD.JS
-// ======================================================
