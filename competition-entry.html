@@ -11,13 +11,23 @@
     >
 
     <title>
-        Telethon - Competition Entry
+        Competition Entry | Telethon
     </title>
 
 
-    <!-- ==================================================
+    <!-- =====================================
+         MAIN CSS
+    ====================================== -->
+
+    <link
+        rel="stylesheet"
+        href="assets/css/style.css"
+    >
+
+
+    <!-- =====================================
          FONT AWESOME
-    ================================================== -->
+    ====================================== -->
 
     <link
         rel="stylesheet"
@@ -25,9 +35,19 @@
     >
 
 
-    <!-- ==================================================
+    <!-- =====================================
+         ADMIN SIDEBAR CSS
+    ====================================== -->
+
+    <link
+        rel="stylesheet"
+        href="components/admin-sidebar.css"
+    >
+
+
+    <!-- =====================================
          GOOGLE FONT
-    ================================================== -->
+    ====================================== -->
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
@@ -37,10 +57,28 @@
 
     <style>
 
+        /* ==================================================
+           GLOBAL
+        ================================================== */
+
         * {
+
             box-sizing: border-box;
+
             margin: 0;
+
             padding: 0;
+
+        }
+
+
+        html,
+        body {
+
+            width: 100%;
+
+            min-height: 100%;
+
         }
 
 
@@ -62,7 +100,31 @@
 
 
         /* ==================================================
-           HEADER
+           MAIN CONTENT
+        ================================================== */
+
+        .main {
+
+            margin-left:
+                235px;
+
+            width:
+                calc(100% - 235px);
+
+            min-height:
+                100vh;
+
+            padding:
+                25px;
+
+            overflow-x:
+                hidden;
+
+        }
+
+
+        /* ==================================================
+           PAGE HEADER
         ================================================== */
 
         .page-header {
@@ -70,11 +132,17 @@
             background:
                 #ffffff;
 
-            border-bottom:
+            border:
                 1px solid #e5e7eb;
 
+            border-radius:
+                12px;
+
             padding:
-                18px 25px;
+                18px 22px;
+
+            margin-bottom:
+                20px;
 
             display:
                 flex;
@@ -88,14 +156,14 @@
             gap:
                 15px;
 
-            position:
-                sticky;
-
-            top:
-                0;
-
-            z-index:
-                100;
+            box-shadow:
+                0 3px 12px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.05
+                );
 
         }
 
@@ -154,6 +222,9 @@
             margin-bottom:
                 4px;
 
+            color:
+                #111827;
+
         }
 
 
@@ -168,86 +239,8 @@
         }
 
 
-        .header-actions {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                10px;
-
-        }
-
-
-        .header-btn {
-
-            border:
-                1px solid #e5e7eb;
-
-            background:
-                #ffffff;
-
-            color:
-                #374151;
-
-            padding:
-                10px 14px;
-
-            border-radius:
-                8px;
-
-            text-decoration:
-                none;
-
-            cursor:
-                pointer;
-
-            font-size:
-                14px;
-
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            gap:
-                7px;
-
-        }
-
-
-        .logout-btn {
-
-            color:
-                #dc2626;
-
-        }
-
-
         /* ==================================================
-           MAIN
-        ================================================== */
-
-        .main-container {
-
-            max-width:
-                1200px;
-
-            margin:
-                30px auto;
-
-            padding:
-                0 20px 60px;
-
-        }
-
-
-        /* ==================================================
-           FORM CARD
+           MAIN FORM CARD
         ================================================== */
 
         .form-card {
@@ -305,6 +298,9 @@
 
             border-bottom:
                 1px solid #e5e7eb;
+
+            color:
+                #111827;
 
         }
 
@@ -476,8 +472,7 @@
 
 
         /* ==================================================
-           NAME INPUT
-           NO LABEL
+           PARTICIPANT NAME
         ================================================== */
 
         .participant-name {
@@ -601,6 +596,18 @@
         }
 
 
+        .remove-side-row:hover {
+
+            background:
+                #fecaca;
+
+        }
+
+
+        /* ==================================================
+           ADD ROW BUTTON
+        ================================================== */
+
         .add-row-btn {
 
             width:
@@ -629,6 +636,14 @@
 
             cursor:
                 pointer;
+
+        }
+
+
+        .add-row-btn:hover {
+
+            background:
+                #e0e7ff;
 
         }
 
@@ -681,7 +696,7 @@
 
 
         /* ==================================================
-           ACTIONS
+           FORM ACTIONS
         ================================================== */
 
         .form-actions {
@@ -750,6 +765,14 @@
         }
 
 
+        .btn-secondary:hover {
+
+            background:
+                #e5e7eb;
+
+        }
+
+
         .btn-primary {
 
             background:
@@ -757,6 +780,25 @@
 
             color:
                 #ffffff;
+
+        }
+
+
+        .btn-primary:hover {
+
+            background:
+                #4338ca;
+
+        }
+
+
+        .btn:disabled {
+
+            opacity:
+                0.6;
+
+            cursor:
+                not-allowed;
 
         }
 
@@ -823,7 +865,7 @@
         .saved-section {
 
             margin-top:
-                35px;
+                30px;
 
         }
 
@@ -852,6 +894,15 @@
 
             padding:
                 18px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.04
+                );
 
         }
 
@@ -946,6 +997,14 @@
         }
 
 
+        .edit-btn:hover {
+
+            background:
+                #e0e7ff;
+
+        }
+
+
         .delete-btn {
 
             background:
@@ -953,6 +1012,14 @@
 
             color:
                 #dc2626;
+
+        }
+
+
+        .delete-btn:hover {
+
+            background:
+                #fecaca;
 
         }
 
@@ -968,7 +1035,33 @@
         }
 
 
+        .copy-btn:hover {
+
+            background:
+                #d1fae5;
+
+        }
+
+
+        /* ==================================================
+           MOBILE / TABLET
+        ================================================== */
+
         @media (max-width: 900px) {
+
+            .main {
+
+                margin-left:
+                    190px;
+
+                width:
+                    calc(100% - 190px);
+
+                padding:
+                    15px;
+
+            }
+
 
             .form-grid {
 
@@ -998,32 +1091,32 @@
 
         @media (max-width: 600px) {
 
+            .main {
+
+                margin-left:
+                    70px;
+
+                width:
+                    calc(100% - 70px);
+
+                padding:
+                    10px;
+
+            }
+
+
             .page-header {
 
                 padding:
-                    14px;
-
-                flex-direction:
-                    column;
-
-                align-items:
-                    stretch;
+                    16px;
 
             }
 
 
-            .header-actions {
+            .page-title h1 {
 
-                justify-content:
-                    space-between;
-
-            }
-
-
-            .main-container {
-
-                padding:
-                    0 12px 40px;
+                font-size:
+                    19px;
 
             }
 
@@ -1062,6 +1155,9 @@
 
             .btn {
 
+                width:
+                    100%;
+
                 justify-content:
                     center;
 
@@ -1088,66 +1184,227 @@
 <body>
 
 
-<header class="page-header">
+<!-- ==================================================
+     ADMIN SIDEBAR
+================================================== -->
 
-    <div class="page-title">
-
-        <div class="page-title-icon">
-
-            <i class="fa-solid fa-trophy"></i>
-
-        </div>
+<div class="admin-sidebar">
 
 
-        <div>
+    <!-- =====================================
+         LOGO
+    ====================================== -->
 
-            <h1>
-                Competition Entry
-            </h1>
+    <div class="admin-sidebar-logo">
 
-            <p>
-                Create and Manage Competition
-            </p>
+        <img
+            src="assets/images/logo.png"
+            alt="Telethon Logo"
+        >
 
-        </div>
+        <h2>
+            Telethon
+        </h2>
+
+        <p>
+            Admin Panel
+        </p>
 
     </div>
 
 
-    <div class="header-actions">
+    <!-- =====================================
+         MENU
+    ====================================== -->
+
+    <div class="admin-sidebar-menu">
+
+
+        <!-- DASHBOARD -->
 
         <a
             href="dashboard.html"
-            class="header-btn"
+            data-page="dashboard.html"
         >
 
             <i class="fa-solid fa-house"></i>
 
-            Dashboard
+            <span>
+                Dashboard
+            </span>
 
         </a>
 
 
-        <button
-            type="button"
-            class="header-btn logout-btn"
-            id="logoutBtn"
+        <!-- TEACHERS LIST -->
+
+        <a
+            href="users.html"
+            data-page="users.html"
         >
 
-            <i class="fa-solid fa-right-from-bracket"></i>
+            <i class="fa-solid fa-users"></i>
 
-            Logout
+            <span>
+                Teachers List
+            </span>
 
-        </button>
+        </a>
+
+
+        <!-- COLLECTION SUMMARY -->
+
+        <a
+            href="collection-summary.html"
+            data-page="collection-summary.html"
+        >
+
+            <i class="fa-solid fa-chart-pie"></i>
+
+            <span>
+                Collection Summary
+            </span>
+
+        </a>
+
+
+        <!-- TARGET MANAGEMENT -->
+
+        <a
+            href="target-management.html"
+            data-page="target-management.html"
+        >
+
+            <i class="fa-solid fa-bullseye"></i>
+
+            <span>
+                Target Management
+            </span>
+
+        </a>
+
+
+        <!-- REGION USER MANAGEMENT -->
+
+        <a
+            href="region-user-management.html"
+            data-page="region-user-management.html"
+        >
+
+            <i class="fa-solid fa-user-shield"></i>
+
+            <span>
+                Region User Management
+            </span>
+
+        </a>
+
+
+        <!-- ALL ENTRY -->
+
+        <a
+            href="all-entry.html"
+            data-page="all-entry.html"
+        >
+
+            <i class="fa-solid fa-list"></i>
+
+            <span>
+                All Entry
+            </span>
+
+        </a>
+
+
+        <!-- COMPETITION ENTRY -->
+
+        <a
+            href="competition-entry.html"
+            data-page="competition-entry.html"
+        >
+
+            <i class="fa-solid fa-trophy"></i>
+
+            <span>
+                Competition Entry
+            </span>
+
+        </a>
+
+
+        <!-- LOGOUT -->
+
+        <a
+            href="#"
+            id="adminLogoutBtn"
+        >
+
+            <i
+                class="fa-solid fa-right-from-bracket"
+            ></i>
+
+            <span>
+                Logout
+            </span>
+
+        </a>
+
 
     </div>
 
-</header>
+</div>
 
 
 
-<main class="main-container">
+<!-- ==================================================
+     MAIN CONTENT
+================================================== -->
 
+<div class="main">
+
+
+    <!-- ==================================================
+         PAGE HEADER
+    ================================================== -->
+
+    <div class="page-header">
+
+
+        <div class="page-title">
+
+
+            <div class="page-title-icon">
+
+                <i
+                    class="fa-solid fa-trophy"
+                ></i>
+
+            </div>
+
+
+            <div>
+
+                <h1>
+                    Competition Entry
+                </h1>
+
+                <p>
+                    Create and Manage Competition
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ==================================================
+         FORM CARD
+    ================================================== -->
 
     <div class="form-card">
 
@@ -1158,9 +1415,15 @@
         >
 
 
+            <!-- =====================================
+                 COMPETITION DETAILS
+            ====================================== -->
+
             <div class="section-title">
 
-                <i class="fa-solid fa-pen-to-square"></i>
+                <i
+                    class="fa-solid fa-pen-to-square"
+                ></i>
 
                 Competition Details
 
@@ -1169,6 +1432,8 @@
 
             <div class="form-grid">
 
+
+                <!-- COMPETITION NAME -->
 
                 <div class="form-group">
 
@@ -1186,6 +1451,8 @@
                 </div>
 
 
+                <!-- COMPETITION DATE -->
+
                 <div class="form-group">
 
                     <label>
@@ -1200,6 +1467,8 @@
 
                 </div>
 
+
+                <!-- END TIME -->
 
                 <div class="form-group">
 
@@ -1220,9 +1489,15 @@
 
 
 
+            <!-- =====================================
+                 PARTICIPANTS
+            ====================================== -->
+
             <div class="section-title">
 
-                <i class="fa-solid fa-users"></i>
+                <i
+                    class="fa-solid fa-users"
+                ></i>
 
                 Competition Participants
 
@@ -1233,16 +1508,14 @@
             <div class="competition-wrapper">
 
 
-                <!-- ============================
-                     FIRST PARTICIPANT
-                ============================= -->
+                <!-- =================================
+                     PARTICIPANT A
+                ================================== -->
 
                 <div class="side-card">
 
                     <div class="side-body">
 
-
-                        <!-- NO LABEL -->
 
                         <input
                             type="text"
@@ -1264,7 +1537,9 @@
                             id="addSideARow"
                         >
 
-                            <i class="fa-solid fa-plus"></i>
+                            <i
+                                class="fa-solid fa-plus"
+                            ></i>
 
                             Add Region / State
 
@@ -1277,7 +1552,9 @@
 
 
 
-                <!-- VS -->
+                <!-- =================================
+                     VS
+                ================================== -->
 
                 <div class="vs-container">
 
@@ -1289,16 +1566,14 @@
 
 
 
-                <!-- ============================
-                     SECOND PARTICIPANT
-                ============================= -->
+                <!-- =================================
+                     PARTICIPANT B
+                ================================== -->
 
                 <div class="side-card">
 
                     <div class="side-body">
 
-
-                        <!-- NO LABEL -->
 
                         <input
                             type="text"
@@ -1320,7 +1595,9 @@
                             id="addSideBRow"
                         >
 
-                            <i class="fa-solid fa-plus"></i>
+                            <i
+                                class="fa-solid fa-plus"
+                            ></i>
 
                             Add Region / State
 
@@ -1336,12 +1613,20 @@
 
 
 
+            <!-- =====================================
+                 MESSAGE
+            ====================================== -->
+
             <div
                 id="competitionMessage"
                 class="competition-message"
             ></div>
 
 
+
+            <!-- =====================================
+                 ACTIONS
+            ====================================== -->
 
             <div class="form-actions">
 
@@ -1352,7 +1637,9 @@
                     id="resetCompetitionBtn"
                 >
 
-                    <i class="fa-solid fa-rotate-left"></i>
+                    <i
+                        class="fa-solid fa-rotate-left"
+                    ></i>
 
                     Reset
 
@@ -1365,7 +1652,9 @@
                     id="saveCompetitionBtn"
                 >
 
-                    <i class="fa-solid fa-floppy-disk"></i>
+                    <i
+                        class="fa-solid fa-floppy-disk"
+                    ></i>
 
                     Save Competition
 
@@ -1390,7 +1679,9 @@
 
         <div class="section-title">
 
-            <i class="fa-solid fa-list"></i>
+            <i
+                class="fa-solid fa-list"
+            ></i>
 
             Saved Competitions
 
@@ -1406,14 +1697,128 @@
     </section>
 
 
-</main>
+</div>
 
 
+
+<!-- ==================================================
+     COMPETITION JS
+================================================== -->
 
 <script
     type="module"
     src="assets/js/competition-entry.js"
 ></script>
+
+
+
+<!-- ==================================================
+     PAGE PROTECTION
+================================================== -->
+
+<script
+    type="module"
+    src="assets/js/page-protection.js"
+></script>
+
+
+
+<!-- ==================================================
+     ACTIVE PAGE + LOGOUT
+================================================== -->
+
+<script>
+
+(function () {
+
+
+    /* =====================================
+       ACTIVE PAGE
+    ====================================== */
+
+    const currentPage =
+        window.location.pathname
+            .split("/")
+            .pop()
+            .toLowerCase();
+
+
+    const menuLinks =
+        document.querySelectorAll(
+            ".admin-sidebar-menu a[data-page]"
+        );
+
+
+    menuLinks.forEach(function (link) {
+
+        const page =
+            (
+                link.getAttribute(
+                    "data-page"
+                ) || ""
+            ).toLowerCase();
+
+
+        link.classList.remove(
+            "active"
+        );
+
+
+        if (
+            page === currentPage
+        ) {
+
+            link.classList.add(
+                "active"
+            );
+
+        }
+
+    });
+
+
+
+    /* =====================================
+       LOGOUT
+    ====================================== */
+
+    const logoutBtn =
+        document.getElementById(
+            "adminLogoutBtn"
+        );
+
+
+    if (logoutBtn) {
+
+        logoutBtn.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+
+                localStorage.removeItem(
+                    "loggedInEmpCode"
+                );
+
+
+                localStorage.removeItem(
+                    "userRole"
+                );
+
+
+                window.location.href =
+                    "index.html";
+
+            }
+        );
+
+    }
+
+
+})();
+
+</script>
 
 
 </body>
