@@ -10,7 +10,7 @@
 // 2. Search
 // 3. Region filter
 // 4. Date filter
-// 5. Edit entry
+// 5. Edit ONLY Amount
 // 6. Delete entry
 //
 // IMPORTANT:
@@ -112,24 +112,28 @@ async function loadTeacherEntries() {
 
     try {
 
-        tableBody.innerHTML = `
+        if (tableBody) {
 
-            <tr>
+            tableBody.innerHTML = `
 
-                <td
-                    colspan="10"
-                    class="loading"
-                >
+                <tr>
 
-                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <td
+                        colspan="10"
+                        class="loading"
+                    >
 
-                    Loading Teacher Entries...
+                        <i class="fa-solid fa-spinner fa-spin"></i>
 
-                </td>
+                        Loading Teacher Entries...
 
-            </tr>
+                    </td>
 
-        `;
+                </tr>
+
+            `;
+
+        }
 
 
         let snapshot;
@@ -205,7 +209,7 @@ async function loadTeacherEntries() {
 
 
         // ==================================================
-        // SORT
+        // SORT NEWEST FIRST
         // ==================================================
 
         teacherEntries.sort(
@@ -256,30 +260,34 @@ async function loadTeacherEntries() {
         );
 
 
-        tableBody.innerHTML = `
+        if (tableBody) {
 
-            <tr>
+            tableBody.innerHTML = `
 
-                <td
-                    colspan="10"
-                    class="no-data"
-                >
+                <tr>
 
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <td
+                        colspan="10"
+                        class="no-data"
+                    >
 
-                    Unable to load Teacher Entries.
+                        <i class="fa-solid fa-triangle-exclamation"></i>
 
-                    <br><br>
+                        Unable to load Teacher Entries.
 
-                    ${escapeHTML(
-                        error.message || ""
-                    )}
+                        <br><br>
 
-                </td>
+                        ${escapeHTML(
+                            error.message || ""
+                        )}
 
-            </tr>
+                    </td>
 
-        `;
+                </tr>
+
+            `;
+
+        }
 
     }
 
@@ -362,7 +370,9 @@ function getTimeValue(entry) {
     }
 
 
-    // Firestore Timestamp
+    // ==================================================
+    // FIRESTORE TIMESTAMP
+    // ==================================================
 
     if (
         typeof value.toDate ===
@@ -376,7 +386,9 @@ function getTimeValue(entry) {
     }
 
 
-    // Timestamp object
+    // ==================================================
+    // TIMESTAMP OBJECT
+    // ==================================================
 
     if (
         value.seconds !== undefined
@@ -386,11 +398,16 @@ function getTimeValue(entry) {
             Number(
                 value.seconds
             )
-            * 1000
+            *
+            1000
         );
 
     }
 
+
+    // ==================================================
+    // NORMAL DATE
+    // ==================================================
 
     const date =
         new Date(value);
@@ -507,7 +524,9 @@ function getEntryDate(entry) {
     }
 
 
-    // Firestore Timestamp
+    // ==================================================
+    // FIRESTORE TIMESTAMP
+    // ==================================================
 
     if (
         typeof value.toDate ===
@@ -521,7 +540,9 @@ function getEntryDate(entry) {
     }
 
 
-    // Timestamp object
+    // ==================================================
+    // TIMESTAMP OBJECT
+    // ==================================================
 
     if (
         value.seconds !== undefined
@@ -533,7 +554,8 @@ function getEntryDate(entry) {
                 Number(
                     value.seconds
                 )
-                * 1000
+                *
+                1000
             )
 
         );
@@ -567,17 +589,23 @@ function getFilterDate(entry) {
         );
 
 
+    // ==================================================
+    // STRING DATE
+    // ==================================================
+
     if (
         typeof value === "string"
         &&
         value
     ) {
 
+        // ----------------------------------------------
         // YYYY-MM-DD
+        // ----------------------------------------------
 
         if (
             /^\d{4}-\d{2}-\d{2}$/
-            .test(value)
+                .test(value)
         ) {
 
             return value;
@@ -585,11 +613,13 @@ function getFilterDate(entry) {
         }
 
 
+        // ----------------------------------------------
         // DD/MM/YYYY
+        // ----------------------------------------------
 
         if (
             /^\d{2}\/\d{2}\/\d{4}$/
-            .test(value)
+                .test(value)
         ) {
 
             const parts =
@@ -611,6 +641,10 @@ function getFilterDate(entry) {
         }
 
 
+        // ----------------------------------------------
+        // OTHER DATE STRING
+        // ----------------------------------------------
+
         const parsed =
             new Date(value);
 
@@ -630,6 +664,10 @@ function getFilterDate(entry) {
     }
 
 
+    // ==================================================
+    // FIRESTORE TIMESTAMP
+    // ==================================================
+
     if (
         value
         &&
@@ -644,6 +682,10 @@ function getFilterDate(entry) {
     }
 
 
+    // ==================================================
+    // TIMESTAMP OBJECT
+    // ==================================================
+
     if (
         value
         &&
@@ -656,13 +698,18 @@ function getFilterDate(entry) {
                 Number(
                     value.seconds
                 )
-                * 1000
+                *
+                1000
             )
 
         );
 
     }
 
+
+    // ==================================================
+    // CREATED TIME
+    // ==================================================
 
     const time =
         getTimeValue(entry);
@@ -847,7 +894,9 @@ function populateRegions() {
             if (region) {
 
                 regions.add(
-                    String(region).trim()
+                    String(
+                        region
+                    ).trim()
                 );
 
             }
@@ -1001,7 +1050,9 @@ function applyFilters() {
                     );
 
 
+                // ==================================================
                 // SEARCH
+                // ==================================================
 
                 if (
                     search
@@ -1020,7 +1071,9 @@ function applyFilters() {
                 }
 
 
+                // ==================================================
                 // REGION
+                // ==================================================
 
                 if (
                     selectedRegion
@@ -1034,7 +1087,9 @@ function applyFilters() {
                 }
 
 
+                // ==================================================
                 // FROM DATE
+                // ==================================================
 
                 if (
                     from
@@ -1049,7 +1104,9 @@ function applyFilters() {
                 }
 
 
+                // ==================================================
                 // TO DATE
+                // ==================================================
 
                 if (
                     to
@@ -1137,7 +1194,8 @@ function renderTable() {
 
                         ]
                     )
-                    || "-";
+                    ||
+                    "-";
 
 
                 const employeeCode =
@@ -1155,7 +1213,8 @@ function renderTable() {
 
                         ]
                     )
-                    || "-";
+                    ||
+                    "-";
 
 
                 const region =
@@ -1169,7 +1228,8 @@ function renderTable() {
 
                         ]
                     )
-                    || "-";
+                    ||
+                    "-";
 
 
                 const state =
@@ -1183,7 +1243,8 @@ function renderTable() {
 
                         ]
                     )
-                    || "-";
+                    ||
+                    "-";
 
 
                 const city =
@@ -1197,14 +1258,16 @@ function renderTable() {
 
                         ]
                     )
-                    || "-";
+                    ||
+                    "-";
 
 
                 const date =
                     getEntryDate(
                         entry
                     )
-                    || "-";
+                    ||
+                    "-";
 
 
                 const amount =
@@ -1418,6 +1481,26 @@ function updateSummary() {
 
 // ======================================================
 // EDIT ENTRY
+//
+// IMPORTANT:
+//
+// ONLY AMOUNT CAN BE EDITED.
+//
+// Teacher Name
+// Employee Code
+// Region
+// State
+// City
+// Date
+// Entry Time
+//
+// IN SAB ME KOI CHANGE NAHI HOGA.
+//
+// ONLY:
+// amount
+// collection
+//
+// UPDATE HOGA.
 // ======================================================
 
 async function editTeacherEntry(
@@ -1442,65 +1525,9 @@ async function editTeacherEntry(
     }
 
 
-    const currentTeacherName =
-        getValue(
-            entry,
-            [
-                "teacherName",
-                "teacher_name",
-                "employeeName",
-                "name"
-            ]
-        );
-
-
-    const currentEmployeeCode =
-        getValue(
-            entry,
-            [
-                "employeeCode",
-                "employee_code",
-                "empCode",
-                "teacherCode"
-            ]
-        );
-
-
-    const currentRegion =
-        getValue(
-            entry,
-            [
-                "region",
-                "regionName"
-            ]
-        );
-
-
-    const currentState =
-        getValue(
-            entry,
-            [
-                "state",
-                "stateName"
-            ]
-        );
-
-
-    const currentCity =
-        getValue(
-            entry,
-            [
-                "city",
-                "cityName"
-            ]
-        );
-
-
-    const currentDate =
-        getFilterDate(
-            entry
-        );
-
+    // ==================================================
+    // CURRENT AMOUNT
+    // ==================================================
 
     const currentAmount =
         getAmount(
@@ -1509,127 +1536,7 @@ async function editTeacherEntry(
 
 
     // ==================================================
-    // TEACHER NAME
-    // ==================================================
-
-    const teacherName =
-        prompt(
-            "Teacher Name:",
-            currentTeacherName
-        );
-
-
-    if (
-        teacherName === null
-    ) {
-
-        return;
-
-    }
-
-
-    // ==================================================
-    // EMPLOYEE CODE
-    // ==================================================
-
-    const employeeCode =
-        prompt(
-            "Employee Code:",
-            currentEmployeeCode
-        );
-
-
-    if (
-        employeeCode === null
-    ) {
-
-        return;
-
-    }
-
-
-    // ==================================================
-    // REGION
-    // ==================================================
-
-    const region =
-        prompt(
-            "Region:",
-            currentRegion
-        );
-
-
-    if (
-        region === null
-    ) {
-
-        return;
-
-    }
-
-
-    // ==================================================
-    // STATE
-    // ==================================================
-
-    const state =
-        prompt(
-            "State:",
-            currentState
-        );
-
-
-    if (
-        state === null
-    ) {
-
-        return;
-
-    }
-
-
-    // ==================================================
-    // CITY
-    // ==================================================
-
-    const city =
-        prompt(
-            "City:",
-            currentCity
-        );
-
-
-    if (
-        city === null
-    ) {
-
-        return;
-
-    }
-
-
-    // ==================================================
-    // DATE
-    // ==================================================
-
-    const date =
-        prompt(
-            "Entry Date (YYYY-MM-DD):",
-            currentDate
-        );
-
-
-    if (
-        date === null
-    ) {
-
-        return;
-
-    }
-
-
-    // ==================================================
-    // AMOUNT
+    // ASK NEW AMOUNT
     // ==================================================
 
     const amountText =
@@ -1638,6 +1545,10 @@ async function editTeacherEntry(
             currentAmount
         );
 
+
+    // ==================================================
+    // CANCEL
+    // ==================================================
 
     if (
         amountText === null
@@ -1648,19 +1559,28 @@ async function editTeacherEntry(
     }
 
 
+    // ==================================================
+    // CONVERT AMOUNT
+    // ==================================================
+
     const amount =
         Number(
             String(
                 amountText
-            ).replace(
-                /[^\d.-]/g,
-                ""
             )
+                .replace(
+                    /[^\d.-]/g,
+                    ""
+                )
         );
 
 
+    // ==================================================
+    // VALIDATE AMOUNT
+    // ==================================================
+
     if (
-        !amount
+        !Number.isFinite(amount)
         ||
         amount <= 0
     ) {
@@ -1674,25 +1594,29 @@ async function editTeacherEntry(
     }
 
 
-    if (
-        !/^\d{4}-\d{2}-\d{2}$/
-            .test(
-                date
-            )
-    ) {
-
-        alert(
-            "Date format YYYY-MM-DD hona chahiye."
-        );
-
-        return;
-
-    }
-
+    // ==================================================
+    // CONFIRM
+    // ==================================================
 
     const confirmEdit =
         confirm(
-            "Kya aap is Teacher Entry ko update karna chahte hain?"
+
+            "Kya aap sirf Amount update karna chahte hain?\n\n"
+            +
+            "Old Amount: ₹"
+            +
+            currentAmount.toLocaleString(
+                "en-IN"
+            )
+            +
+            "\n"
+            +
+            "New Amount: ₹"
+            +
+            amount.toLocaleString(
+                "en-IN"
+            )
+
         );
 
 
@@ -1706,7 +1630,7 @@ async function editTeacherEntry(
     try {
 
         // ==================================================
-        // UPDATE FIRESTORE DOCUMENT
+        // FIRESTORE DOCUMENT
         // ==================================================
 
         const entryRef =
@@ -1717,36 +1641,13 @@ async function editTeacherEntry(
             );
 
 
+        // ==================================================
+        // ONLY AMOUNT UPDATE
+        // ==================================================
+
         await updateDoc(
             entryRef,
             {
-
-                employeeCode:
-                    employeeCode.trim(),
-
-                employee_code:
-                    employeeCode.trim(),
-
-                teacherName:
-                    teacherName.trim(),
-
-                teacher_name:
-                    teacherName.trim(),
-
-                region:
-                    region.trim(),
-
-                state:
-                    state.trim(),
-
-                city:
-                    city.trim(),
-
-                date:
-                    date,
-
-                entryDate:
-                    date,
 
                 amount:
                     amount,
@@ -1761,10 +1662,18 @@ async function editTeacherEntry(
         );
 
 
+        // ==================================================
+        // SUCCESS
+        // ==================================================
+
         alert(
-            "Teacher Entry successfully updated."
+            "Amount successfully updated."
         );
 
+
+        // ==================================================
+        // RELOAD
+        // ==================================================
 
         await loadTeacherEntries();
 
@@ -1773,13 +1682,13 @@ async function editTeacherEntry(
     catch (error) {
 
         console.error(
-            "Edit Entry Error:",
+            "Amount Edit Error:",
             error
         );
 
 
         alert(
-            "Entry update nahi ho saki.\n\n"
+            "Amount update nahi ho saka.\n\n"
             +
             error.message
         );
@@ -1819,10 +1728,15 @@ async function deleteTeacherEntry(
         getValue(
             entry,
             [
+
                 "teacherName",
+
                 "teacher_name",
+
                 "employeeName",
+
                 "name"
+
             ]
         )
         ||
@@ -1903,6 +1817,10 @@ async function deleteTeacherEntry(
             "Teacher Entry successfully deleted."
         );
 
+
+        // ==================================================
+        // RELOAD
+        // ==================================================
 
         await loadTeacherEntries();
 
