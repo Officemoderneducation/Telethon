@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,10 +12,16 @@
 
     <title>Teacher Entries | Telethon</title>
 
+
+    <!-- =====================================
+         FONT AWESOME
+    ====================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     >
+
 
     <style>
 
@@ -24,203 +31,438 @@
             box-sizing: border-box;
         }
 
+
         body {
             font-family: Arial, sans-serif;
             background: #f4f6f9;
             color: #222;
         }
 
-        /* ===============================
-           PAGE
-        =============================== */
 
         .page-container {
             padding: 25px;
             width: 100%;
         }
 
-        /* ===============================
+
+        /* =====================================
            HEADER
-        =============================== */
+        ====================================== */
 
         .page-header {
+
             background: #ffffff;
+
             padding: 20px;
+
             border-radius: 12px;
+
             margin-bottom: 20px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+
+            box-shadow:
+                0 3px 12px
+                rgba(0, 0, 0, 0.08);
 
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
             gap: 15px;
         }
+
 
         .page-header h1 {
             font-size: 24px;
         }
 
+
         .page-header p {
+
             margin-top: 5px;
+
             color: #777;
         }
 
+
         .refresh-btn {
+
             border: none;
-            padding: 11px 18px;
+
+            padding:
+                11px
+                18px;
+
             border-radius: 7px;
+
             cursor: pointer;
-            background: #2563eb;
+
+            background:
+                #2563eb;
+
             color: white;
+
             font-size: 14px;
         }
+
 
         .refresh-btn:hover {
             opacity: 0.9;
         }
 
-        /* ===============================
+
+        /* =====================================
            SUMMARY
-        =============================== */
+        ====================================== */
 
         .summary-grid {
+
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
             gap: 18px;
+
             margin-bottom: 20px;
         }
 
+
         .summary-card {
+
             background: white;
+
             padding: 20px;
+
             border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+
+            box-shadow:
+                0 3px 12px
+                rgba(0, 0, 0, 0.08);
         }
 
+
         .summary-card h3 {
+
             font-size: 14px;
+
             color: #777;
+
             margin-bottom: 10px;
         }
 
+
         .summary-card .number {
+
             font-size: 25px;
+
             font-weight: bold;
         }
 
-        /* ===============================
+
+        /* =====================================
            FILTERS
-        =============================== */
+        ====================================== */
 
         .filters {
+
             background: white;
+
             padding: 20px;
+
             border-radius: 12px;
+
             margin-bottom: 20px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+
+            box-shadow:
+                0 3px 12px
+                rgba(0, 0, 0, 0.08);
 
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(180px, 1fr)
+                );
+
             gap: 15px;
         }
 
+
         .filter-group {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 7px;
         }
 
+
         .filter-group label {
+
             font-size: 13px;
+
             font-weight: bold;
         }
 
+
         .filter-group input,
         .filter-group select {
+
             width: 100%;
+
             padding: 10px;
-            border: 1px solid #ddd;
+
+            border:
+                1px solid
+                #ddd;
+
             border-radius: 7px;
+
             outline: none;
+
+            font-size: 14px;
         }
+
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+
+            border-color:
+                #2563eb;
+        }
+
+
+        /* =====================================
+           CLEAR
+        ====================================== */
 
         .clear-btn {
+
             border: none;
-            background: #dc2626;
+
+            background:
+                #dc2626;
+
             color: white;
+
             padding: 10px;
+
             border-radius: 7px;
+
             cursor: pointer;
+
             margin-top: 23px;
+
+            font-size: 14px;
         }
 
-        /* ===============================
+
+        .clear-btn:hover {
+            opacity: 0.9;
+        }
+
+
+        /* =====================================
            TABLE
-        =============================== */
+        ====================================== */
 
         .table-container {
+
             background: white;
+
             border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+
+            box-shadow:
+                0 3px 12px
+                rgba(0, 0, 0, 0.08);
+
             overflow: hidden;
         }
+
 
         .table-scroll {
             overflow-x: auto;
         }
 
+
         table {
+
             width: 100%;
-            border-collapse: collapse;
-            min-width: 1100px;
+
+            border-collapse:
+                collapse;
+
+            min-width:
+                1250px;
         }
 
+
         thead {
-            background: #1e3a8a;
+
+            background:
+                #1e3a8a;
+
             color: white;
         }
 
+
         th,
         td {
+
             padding: 14px;
+
             text-align: left;
-            border-bottom: 1px solid #eee;
+
+            border-bottom:
+                1px solid
+                #eee;
+
             font-size: 14px;
+
+            white-space:
+                nowrap;
         }
+
 
         tbody tr:hover {
-            background: #f8fafc;
+
+            background:
+                #f8fafc;
         }
 
+
         .amount {
+
             font-weight: bold;
-            color: #15803d;
+
+            color:
+                #15803d;
         }
+
+
+        /* =====================================
+           ACTION BUTTONS
+        ====================================== */
+
+        .action-buttons {
+
+            display: flex;
+
+            gap: 7px;
+        }
+
+
+        .edit-btn,
+        .delete-btn {
+
+            border: none;
+
+            padding:
+                8px
+                11px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            color: white;
+
+            font-size: 13px;
+
+            white-space:
+                nowrap;
+        }
+
+
+        .edit-btn {
+
+            background:
+                #2563eb;
+        }
+
+
+        .edit-btn:hover {
+
+            background:
+                #1d4ed8;
+        }
+
+
+        .delete-btn {
+
+            background:
+                #dc2626;
+        }
+
+
+        .delete-btn:hover {
+
+            background:
+                #b91c1c;
+        }
+
+
+        /* =====================================
+           LOADING / NO DATA
+        ====================================== */
 
         .loading,
         .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #777;
+
+            text-align:
+                center;
+
+            padding:
+                40px;
+
+            color:
+                #777;
         }
 
-        /* ===============================
-           MOBILE
-        =============================== */
 
-        @media (max-width: 600px) {
+        /* =====================================
+           MOBILE
+        ====================================== */
+
+        @media (
+            max-width: 600px
+        ) {
 
             .page-container {
                 padding: 12px;
             }
 
+
             .page-header {
-                flex-direction: column;
-                align-items: flex-start;
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
             }
 
+
+            .refresh-btn {
+
+                width:
+                    100%;
+            }
+
+
             .clear-btn {
-                margin-top: 0;
+
+                margin-top:
+                    0;
             }
 
         }
@@ -229,46 +471,72 @@
 
 </head>
 
+
 <body>
+
 
     <div class="page-container">
 
-        <!-- ===============================
+
+        <!-- =====================================
              HEADER
-        ================================ -->
+        ====================================== -->
 
         <div class="page-header">
 
             <div>
+
                 <h1>
-                    <i class="fa-solid fa-chalkboard-user"></i>
+
+                    <i
+                        class="fa-solid fa-chalkboard-user"
+                    ></i>
+
                     Teacher Entries
+
                 </h1>
 
+
                 <p>
-                    Region Users ke through ki gayi Teacher Entries
+
+                    Region Users ke through ki gayi
+                    Teacher Entries
+
                 </p>
+
             </div>
 
+
             <button
+                type="button"
                 class="refresh-btn"
                 onclick="loadTeacherEntries()"
             >
-                <i class="fa-solid fa-rotate"></i>
+
+                <i
+                    class="fa-solid fa-rotate"
+                ></i>
+
                 Refresh
+
             </button>
 
         </div>
 
 
-        <!-- ===============================
+        <!-- =====================================
              SUMMARY
-        ================================ -->
+        ====================================== -->
 
         <div class="summary-grid">
 
+
             <div class="summary-card">
-                <h3>Total Entries</h3>
+
+                <h3>
+                    Total Entries
+                </h3>
+
 
                 <div
                     class="number"
@@ -276,11 +544,16 @@
                 >
                     0
                 </div>
+
             </div>
 
 
             <div class="summary-card">
-                <h3>Total Teachers</h3>
+
+                <h3>
+                    Total Teachers
+                </h3>
+
 
                 <div
                     class="number"
@@ -288,11 +561,16 @@
                 >
                     0
                 </div>
+
             </div>
 
 
             <div class="summary-card">
-                <h3>Total Amount</h3>
+
+                <h3>
+                    Total Amount
+                </h3>
+
 
                 <div
                     class="number"
@@ -300,27 +578,34 @@
                 >
                     ₹0
                 </div>
+
             </div>
+
 
         </div>
 
 
-        <!-- ===============================
+        <!-- =====================================
              FILTERS
-        ================================ -->
+        ====================================== -->
 
         <div class="filters">
 
+
             <div class="filter-group">
 
-                <label>
+                <label
+                    for="searchInput"
+                >
                     Search
                 </label>
+
 
                 <input
                     type="text"
                     id="searchInput"
                     placeholder="Teacher Name / Employee Code"
+                    autocomplete="off"
                 >
 
             </div>
@@ -328,11 +613,16 @@
 
             <div class="filter-group">
 
-                <label>
+                <label
+                    for="regionFilter"
+                >
                     Region
                 </label>
 
-                <select id="regionFilter">
+
+                <select
+                    id="regionFilter"
+                >
 
                     <option value="">
                         All Regions
@@ -345,9 +635,12 @@
 
             <div class="filter-group">
 
-                <label>
+                <label
+                    for="fromDate"
+                >
                     From Date
                 </label>
+
 
                 <input
                     type="date"
@@ -359,9 +652,12 @@
 
             <div class="filter-group">
 
-                <label>
+                <label
+                    for="toDate"
+                >
                     To Date
                 </label>
+
 
                 <input
                     type="date"
@@ -373,1283 +669,145 @@
 
             <div class="filter-group">
 
+                <label>
+                    &nbsp;
+                </label>
+
+
                 <button
+                    type="button"
                     class="clear-btn"
                     onclick="clearFilters()"
                 >
+
+                    <i
+                        class="fa-solid fa-filter-circle-xmark"
+                    ></i>
+
                     Clear Filters
+
                 </button>
 
             </div>
 
+
         </div>
 
 
-        <!-- ===============================
+        <!-- =====================================
              TABLE
-        ================================ -->
+        ====================================== -->
 
         <div class="table-container">
 
             <div class="table-scroll">
 
+
                 <table>
+
 
                     <thead>
 
                         <tr>
 
-                            <th>#</th>
+                            <th>
+                                #
+                            </th>
 
-                            <th>Teacher Name</th>
 
-                            <th>Employee Code</th>
+                            <th>
+                                Teacher Name
+                            </th>
 
-                            <th>Region</th>
 
-                            <th>State</th>
+                            <th>
+                                Employee Code
+                            </th>
 
-                            <th>City</th>
 
-                            <th>Entry Date</th>
+                            <th>
+                                Region
+                            </th>
 
-                            <th>Amount</th>
 
-                            <th>Entry Time</th>
+                            <th>
+                                State
+                            </th>
+
+
+                            <th>
+                                City
+                            </th>
+
+
+                            <th>
+                                Entry Date
+                            </th>
+
+
+                            <th>
+                                Amount
+                            </th>
+
+
+                            <th>
+                                Entry Time
+                            </th>
+
+
+                            <th>
+                                Actions
+                            </th>
 
                         </tr>
 
                     </thead>
 
 
-                    <tbody id="teacherEntriesTable">
+                    <tbody
+                        id="teacherEntriesTable"
+                    >
 
                         <tr>
 
                             <td
-                                colspan="9"
+                                colspan="10"
                                 class="loading"
                             >
+
+                                <i
+                                    class="fa-solid fa-spinner fa-spin"
+                                ></i>
+
                                 Loading Teacher Entries...
+
                             </td>
 
                         </tr>
 
                     </tbody>
 
+
                 </table>
+
 
             </div>
 
         </div>
 
+
     </div>
 
 
     <!-- =====================================
-         FIREBASE SCRIPT
+         JS
     ====================================== -->
 
-    <script type="module">
+    <script
+        type="module"
+        src="assets/js/region-user-entries.js"
+    ></script>
 
-        import {
-            db
-        } from "./assets/js/firebase-config.js";
-
-
-        import {
-
-            collection,
-            getDocs,
-            query,
-            orderBy
-
-        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-        /* =====================================
-           COLLECTION
-
-           IMPORTANT:
-           ONLY teacher_entries
-
-           daily_entry is NOT used
-        ====================================== */
-
-        const TEACHER_ENTRIES_COLLECTION =
-            "teacher_entries";
-
-
-        /* =====================================
-           GLOBAL DATA
-        ====================================== */
-
-        let teacherEntries = [];
-
-        let filteredEntries = [];
-
-
-        /* =====================================
-           ELEMENTS
-        ====================================== */
-
-        const tableBody =
-            document.getElementById(
-                "teacherEntriesTable"
-            );
-
-
-        const totalEntries =
-            document.getElementById(
-                "totalEntries"
-            );
-
-
-        const totalTeachers =
-            document.getElementById(
-                "totalTeachers"
-            );
-
-
-        const totalAmount =
-            document.getElementById(
-                "totalAmount"
-            );
-
-
-        const searchInput =
-            document.getElementById(
-                "searchInput"
-            );
-
-
-        const regionFilter =
-            document.getElementById(
-                "regionFilter"
-            );
-
-
-        const fromDate =
-            document.getElementById(
-                "fromDate"
-            );
-
-
-        const toDate =
-            document.getElementById(
-                "toDate"
-            );
-
-
-        /* =====================================
-           LOAD TEACHER ENTRIES
-        ====================================== */
-
-        window.loadTeacherEntries =
-            async function () {
-
-                try {
-
-                    tableBody.innerHTML = `
-
-                        <tr>
-
-                            <td
-                                colspan="9"
-                                class="loading"
-                            >
-                                Loading Teacher Entries...
-                            </td>
-
-                        </tr>
-
-                    `;
-
-
-                    /*
-                     * First try ordered query
-                     */
-
-                    let snapshot;
-
-
-                    try {
-
-                        const q = query(
-
-                            collection(
-                                db,
-                                TEACHER_ENTRIES_COLLECTION
-                            ),
-
-                            orderBy(
-                                "createdAt",
-                                "desc"
-                            )
-
-                        );
-
-
-                        snapshot =
-                            await getDocs(q);
-
-                    }
-
-                    catch (queryError) {
-
-                        /*
-                         * If createdAt index/order problem,
-                         * load normally
-                         */
-
-                        console.warn(
-                            "Ordered query failed:",
-                            queryError
-                        );
-
-
-                        snapshot =
-                            await getDocs(
-
-                                collection(
-                                    db,
-                                    TEACHER_ENTRIES_COLLECTION
-                                )
-
-                            );
-
-                    }
-
-
-                    teacherEntries = [];
-
-
-                    snapshot.forEach(
-                        (doc) => {
-
-                            const data =
-                                doc.data();
-
-
-                            teacherEntries.push({
-
-                                id: doc.id,
-
-                                ...data
-
-                            });
-
-                        }
-                    );
-
-
-                    /*
-                     * Sort newest first
-                     */
-
-                    teacherEntries.sort(
-
-                        (a, b) => {
-
-                            return getTimeValue(b)
-                                -
-                                getTimeValue(a);
-
-                        }
-
-                    );
-
-
-                    populateRegions();
-
-
-                    applyFilters();
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "Teacher Entries Load Error:",
-                        error
-                    );
-
-
-                    tableBody.innerHTML = `
-
-                        <tr>
-
-                            <td
-                                colspan="9"
-                                class="no-data"
-                            >
-
-                                Unable to load Teacher Entries
-
-                            </td>
-
-                        </tr>
-
-                    `;
-
-                }
-
-            };
-
-
-        /* =====================================
-           GET TIME VALUE
-        ====================================== */
-
-        function getTimeValue(entry) {
-
-            const value =
-
-                entry.createdAt
-                ||
-                entry.created_at
-                ||
-                entry.timestamp
-                ||
-                entry.entryTime
-                ||
-                0;
-
-
-            if (!value) {
-
-                return 0;
-
-            }
-
-
-            if (
-                typeof value.toDate ===
-                "function"
-            ) {
-
-                return value
-                    .toDate()
-                    .getTime();
-
-            }
-
-
-            if (
-                value.seconds
-            ) {
-
-                return value.seconds
-                    * 1000;
-
-            }
-
-
-            const date =
-                new Date(value);
-
-
-            if (
-                !isNaN(date.getTime())
-            ) {
-
-                return date.getTime();
-
-            }
-
-
-            return 0;
-
-        }
-
-
-        /* =====================================
-           GET FIELD
-        ====================================== */
-
-        function getValue(
-            entry,
-            fields
-        ) {
-
-            for (
-                const field of fields
-            ) {
-
-                if (
-                    entry[field] !== undefined
-                    &&
-                    entry[field] !== null
-                    &&
-                    entry[field] !== ""
-                ) {
-
-                    return entry[field];
-
-                }
-
-            }
-
-
-            return "";
-
-        }
-
-
-        /* =====================================
-           NORMALIZE
-        ====================================== */
-
-        function normalize(value) {
-
-            return String(
-                value || ""
-            )
-
-            .trim()
-
-            .toLowerCase();
-
-        }
-
-
-        /* =====================================
-           GET AMOUNT
-        ====================================== */
-
-        function getAmount(entry) {
-
-            const value =
-                getValue(
-                    entry,
-                    [
-
-                        "amount",
-                        "collection",
-                        "collectionAmount",
-                        "totalAmount"
-
-                    ]
-                );
-
-
-            const number =
-                Number(
-                    String(value || 0)
-                    .replace(/[^\d.-]/g, "")
-                );
-
-
-            return isNaN(number)
-                ? 0
-                : number;
-
-        }
-
-
-        /* =====================================
-           GET ENTRY DATE
-        ====================================== */
-
-        function getEntryDate(entry) {
-
-            const value =
-                getValue(
-                    entry,
-                    [
-
-                        "date",
-                        "entryDate",
-                        "collectionDate"
-
-                    ]
-                );
-
-
-            if (value) {
-
-                if (
-                    typeof value.toDate ===
-                    "function"
-                ) {
-
-                    return formatDate(
-                        value.toDate()
-                    );
-
-                }
-
-
-                if (
-                    value.seconds
-                ) {
-
-                    return formatDate(
-                        new Date(
-                            value.seconds * 1000
-                        )
-                    );
-
-                }
-
-
-                return String(value);
-
-            }
-
-
-            const time =
-                getTimeValue(entry);
-
-
-            if (time) {
-
-                return formatDate(
-                    new Date(time)
-                );
-
-            }
-
-
-            return "";
-
-        }
-
-
-        /* =====================================
-           FORMAT DATE
-        ====================================== */
-
-        function formatDate(date) {
-
-            if (
-                !date ||
-                isNaN(date.getTime())
-            ) {
-
-                return "";
-
-            }
-
-
-            return date
-                .toLocaleDateString(
-                    "en-GB"
-                );
-
-        }
-
-
-        /* =====================================
-           DATE FOR FILTER
-        ====================================== */
-
-        function getFilterDate(entry) {
-
-            const value =
-                getValue(
-                    entry,
-                    [
-
-                        "date",
-                        "entryDate",
-                        "collectionDate"
-
-                    ]
-                );
-
-
-            if (
-                typeof value === "string"
-            ) {
-
-                /*
-                 * YYYY-MM-DD
-                 */
-
-                if (
-                    /^\d{4}-\d{2}-\d{2}$/
-                    .test(value)
-                ) {
-
-                    return value;
-
-                }
-
-            }
-
-
-            const time =
-                getTimeValue(entry);
-
-
-            if (time) {
-
-                const d =
-                    new Date(time);
-
-
-                const year =
-                    d.getFullYear();
-
-
-                const month =
-                    String(
-                        d.getMonth() + 1
-                    )
-                    .padStart(2, "0");
-
-
-                const day =
-                    String(
-                        d.getDate()
-                    )
-                    .padStart(2, "0");
-
-
-                return `${year}-${month}-${day}`;
-
-            }
-
-
-            return "";
-
-        }
-
-
-        /* =====================================
-           POPULATE REGIONS
-        ====================================== */
-
-        function populateRegions() {
-
-            const currentValue =
-                regionFilter.value;
-
-
-            const regions =
-                new Set();
-
-
-            teacherEntries.forEach(
-                (entry) => {
-
-                    const region =
-                        getValue(
-                            entry,
-                            [
-
-                                "region",
-                                "regionName"
-
-                            ]
-                        );
-
-
-                    if (region) {
-
-                        regions.add(region);
-
-                    }
-
-                }
-            );
-
-
-            const sortedRegions =
-                [...regions]
-                .sort();
-
-
-            regionFilter.innerHTML =
-                `<option value="">
-                    All Regions
-                </option>`;
-
-
-            sortedRegions.forEach(
-                (region) => {
-
-                    const option =
-                        document.createElement(
-                            "option"
-                        );
-
-
-                    option.value =
-                        region;
-
-
-                    option.textContent =
-                        region;
-
-
-                    regionFilter.appendChild(
-                        option
-                    );
-
-                }
-            );
-
-
-            regionFilter.value =
-                currentValue;
-
-        }
-
-
-        /* =====================================
-           APPLY FILTERS
-        ====================================== */
-
-        function applyFilters() {
-
-            const search =
-                normalize(
-                    searchInput.value
-                );
-
-
-            const selectedRegion =
-                normalize(
-                    regionFilter.value
-                );
-
-
-            const from =
-                fromDate.value;
-
-
-            const to =
-                toDate.value;
-
-
-            filteredEntries =
-                teacherEntries.filter(
-                    (entry) => {
-
-                        const teacherName =
-                            normalize(
-                                getValue(
-                                    entry,
-                                    [
-
-                                        "teacherName",
-                                        "employeeName",
-                                        "name",
-                                        "teacher_name"
-
-                                    ]
-                                )
-                            );
-
-
-                        const employeeCode =
-                            normalize(
-                                getValue(
-                                    entry,
-                                    [
-
-                                        "employeeCode",
-                                        "empCode",
-                                        "employee_code",
-                                        "teacherCode"
-
-                                    ]
-                                )
-                            );
-
-
-                        const region =
-                            normalize(
-                                getValue(
-                                    entry,
-                                    [
-
-                                        "region",
-                                        "regionName"
-
-                                    ]
-                                )
-                            );
-
-
-                        const entryDate =
-                            getFilterDate(
-                                entry
-                            );
-
-
-                        /*
-                         * SEARCH
-                         */
-
-                        if (
-                            search
-                            &&
-                            !teacherName.includes(search)
-                            &&
-                            !employeeCode.includes(search)
-                        ) {
-
-                            return false;
-
-                        }
-
-
-                        /*
-                         * REGION
-                         */
-
-                        if (
-                            selectedRegion
-                            &&
-                            region !== selectedRegion
-                        ) {
-
-                            return false;
-
-                        }
-
-
-                        /*
-                         * FROM DATE
-                         */
-
-                        if (
-                            from
-                            &&
-                            entryDate
-                            &&
-                            entryDate < from
-                        ) {
-
-                            return false;
-
-                        }
-
-
-                        /*
-                         * TO DATE
-                         */
-
-                        if (
-                            to
-                            &&
-                            entryDate
-                            &&
-                            entryDate > to
-                        ) {
-
-                            return false;
-
-                        }
-
-
-                        return true;
-
-                    }
-                );
-
-
-            renderTable();
-
-
-            updateSummary();
-
-        }
-
-
-        /* =====================================
-           RENDER TABLE
-        ====================================== */
-
-        function renderTable() {
-
-            if (
-                filteredEntries.length === 0
-            ) {
-
-                tableBody.innerHTML = `
-
-                    <tr>
-
-                        <td
-                            colspan="9"
-                            class="no-data"
-                        >
-
-                            No Teacher Entries Found
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-
-                return;
-
-            }
-
-
-            tableBody.innerHTML =
-                filteredEntries.map(
-
-                    (entry, index) => {
-
-                        const teacherName =
-                            getValue(
-                                entry,
-                                [
-
-                                    "teacherName",
-                                    "employeeName",
-                                    "name",
-                                    "teacher_name"
-
-                                ]
-                            )
-                            || "-";
-
-
-                        const employeeCode =
-                            getValue(
-                                entry,
-                                [
-
-                                    "employeeCode",
-                                    "empCode",
-                                    "employee_code",
-                                    "teacherCode"
-
-                                ]
-                            )
-                            || "-";
-
-
-                        const region =
-                            getValue(
-                                entry,
-                                [
-
-                                    "region",
-                                    "regionName"
-
-                                ]
-                            )
-                            || "-";
-
-
-                        const state =
-                            getValue(
-                                entry,
-                                [
-
-                                    "state",
-                                    "stateName"
-
-                                ]
-                            )
-                            || "-";
-
-
-                        const city =
-                            getValue(
-                                entry,
-                                [
-
-                                    "city",
-                                    "cityName"
-
-                                ]
-                            )
-                            || "-";
-
-
-                        const date =
-                            getEntryDate(entry)
-                            || "-";
-
-
-                        const amount =
-                            getAmount(entry);
-
-
-                        const time =
-                            getEntryTime(entry);
-
-
-                        return `
-
-                            <tr>
-
-                                <td>
-                                    ${index + 1}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        teacherName
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        employeeCode
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        region
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        state
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        city
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        date
-                                    )}
-                                </td>
-
-                                <td
-                                    class="amount"
-                                >
-
-                                    ₹${amount.toLocaleString(
-                                        "en-IN"
-                                    )}
-
-                                </td>
-
-                                <td>
-
-                                    ${escapeHTML(
-                                        time
-                                    )}
-
-                                </td>
-
-                            </tr>
-
-                        `;
-
-                    }
-
-                ).join("");
-
-        }
-
-
-        /* =====================================
-           ENTRY TIME
-        ====================================== */
-
-        function getEntryTime(entry) {
-
-            const time =
-                getTimeValue(entry);
-
-
-            if (!time) {
-
-                return "-";
-
-            }
-
-
-            return new Date(time)
-                .toLocaleTimeString(
-                    "en-IN",
-                    {
-
-                        hour:
-                            "2-digit",
-
-                        minute:
-                            "2-digit",
-
-                        second:
-                            "2-digit"
-
-                    }
-                );
-
-        }
-
-
-        /* =====================================
-           UPDATE SUMMARY
-        ====================================== */
-
-        function updateSummary() {
-
-            totalEntries.textContent =
-                filteredEntries.length;
-
-
-            let total = 0;
-
-
-            const teachers =
-                new Set();
-
-
-            filteredEntries.forEach(
-                (entry) => {
-
-                    total +=
-                        getAmount(entry);
-
-
-                    const code =
-                        getValue(
-                            entry,
-                            [
-
-                                "employeeCode",
-                                "empCode",
-                                "employee_code",
-                                "teacherCode"
-
-                            ]
-                        );
-
-
-                    if (code) {
-
-                        teachers.add(
-                            normalize(code)
-                        );
-
-                    }
-
-                }
-            );
-
-
-            totalTeachers.textContent =
-                teachers.size;
-
-
-            totalAmount.textContent =
-                "₹"
-                +
-                total.toLocaleString(
-                    "en-IN"
-                );
-
-        }
-
-
-        /* =====================================
-           ESCAPE HTML
-        ====================================== */
-
-        function escapeHTML(value) {
-
-            return String(value || "")
-
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-
-        }
-
-
-        /* =====================================
-           CLEAR FILTERS
-        ====================================== */
-
-        window.clearFilters =
-            function () {
-
-                searchInput.value =
-                    "";
-
-                regionFilter.value =
-                    "";
-
-                fromDate.value =
-                    "";
-
-                toDate.value =
-                    "";
-
-
-                applyFilters();
-
-            };
-
-
-        /* =====================================
-           FILTER EVENTS
-        ====================================== */
-
-        searchInput.addEventListener(
-            "input",
-            applyFilters
-        );
-
-
-        regionFilter.addEventListener(
-            "change",
-            applyFilters
-        );
-
-
-        fromDate.addEventListener(
-            "change",
-            applyFilters
-        );
-
-
-        toDate.addEventListener(
-            "change",
-            applyFilters
-        );
-
-
-        /* =====================================
-           INITIAL LOAD
-        ====================================== */
-
-        loadTeacherEntries();
-
-    </script>
 
 </body>
 
