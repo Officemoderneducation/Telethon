@@ -760,41 +760,173 @@
 
 <script>
 
-fetch("components/admin-sidebar.html")
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    .then(function(response) {
+        fetch(
+            "components/admin-sidebar.html"
+        )
 
-        if (!response.ok) {
+            .then(
+                function (response) {
 
-            throw new Error(
-                "Admin Sidebar not found"
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Admin Sidebar not found: " +
+                            response.status
+                        );
+
+                    }
+
+                    return response.text();
+
+                }
+            )
+
+            .then(
+                function (data) {
+
+                    const sidebar =
+                        document.getElementById(
+                            "adminSidebar"
+                        );
+
+
+                    if (!sidebar) {
+
+                        return;
+
+                    }
+
+
+                    sidebar.innerHTML =
+                        data;
+
+
+                    /* =================================
+                       ACTIVE PAGE
+                    ================================= */
+
+                    let currentPage =
+                        window.location.pathname
+                            .split("/")
+                            .pop()
+                            .toLowerCase();
+
+
+                    if (
+                        !currentPage ||
+                        currentPage === ""
+                    ) {
+
+                        currentPage =
+                            "dashboard.html";
+
+                    }
+
+
+                    const menuLinks =
+                        sidebar.querySelectorAll(
+                            ".admin-sidebar-menu a[data-page]"
+                        );
+
+
+                    menuLinks.forEach(
+                        function (link) {
+
+                            const page =
+                                link
+                                    .getAttribute(
+                                        "data-page"
+                                    )
+                                    .toLowerCase();
+
+
+                            if (
+                                page ===
+                                currentPage
+                            ) {
+
+                                link.classList.add(
+                                    "active"
+                                );
+
+                            }
+
+                            else {
+
+                                link.classList.remove(
+                                    "active"
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                    /* =================================
+                       ADMIN LOGOUT
+                    ================================= */
+
+                    const logoutBtn =
+                        sidebar.querySelector(
+                            "#adminLogoutBtn"
+                        );
+
+
+                    if (logoutBtn) {
+
+                        logoutBtn.addEventListener(
+                            "click",
+                            function (e) {
+
+                                e.preventDefault();
+
+
+                                localStorage.removeItem(
+                                    "loggedInEmpCode"
+                                );
+
+                                localStorage.removeItem(
+                                    "userRole"
+                                );
+
+                                localStorage.removeItem(
+                                    "adminLoggedIn"
+                                );
+
+                                localStorage.removeItem(
+                                    "isAdmin"
+                                );
+
+
+                                window.location.href =
+                                    "index.html";
+
+                            }
+                        );
+
+                    }
+
+                }
+            )
+
+            .catch(
+                function (error) {
+
+                    console.error(
+                        "Admin Sidebar Error:",
+                        error
+                    );
+
+                }
             );
 
-        }
-
-        return response.text();
-
-    })
-
-    .then(function(data) {
-
-        const sidebar =
-            document.getElementById(
-                "adminSidebar"
-            );
-
-        sidebar.innerHTML = data;
-
-    })
-
-    .catch(function(error) {
-
-        console.error(
-            "Admin Sidebar Error:",
-            error
-        );
-
-    });
+    }
+);
 
 </script>
 
