@@ -1,20 +1,22 @@
-// ======================================
+// ======================================================
 // TELETHON
 // ADMIN - REGION USER TEACHER ENTRIES
 //
 // DATA SOURCE:
 // teacher_entries ONLY
 //
+// ADMIN FUNCTIONS:
+// 1. View entries
+// 2. Search
+// 3. Region filter
+// 4. Date filter
+// 5. Edit entry
+// 6. Delete entry
+//
 // IMPORTANT:
-// 1. daily_entry is NOT used.
-// 2. This page is for Admin.
-// 3. All teacher_entries are displayed.
-// ======================================
+// daily_entry is NEVER touched.
+// ======================================================
 
-
-// ======================================
-// FIREBASE IMPORTS
-// ======================================
 
 import {
     db
@@ -22,35 +24,37 @@ import {
 
 
 import {
-
     collection,
     getDocs,
     query,
-    orderBy
+    orderBy,
+    updateDoc,
+    deleteDoc,
+    doc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-// ======================================
+// ======================================================
 // COLLECTION
-// ======================================
+// ======================================================
 
 const TEACHER_ENTRIES_COLLECTION =
     "teacher_entries";
 
 
-// ======================================
-// GLOBAL DATA
-// ======================================
+// ======================================================
+// DATA
+// ======================================================
 
 let teacherEntries = [];
 
 let filteredEntries = [];
 
 
-// ======================================
+// ======================================================
 // HTML ELEMENTS
-// ======================================
+// ======================================================
 
 const tableBody =
     document.getElementById(
@@ -100,74 +104,73 @@ const toDate =
     );
 
 
-// ======================================
-// LOAD TEACHER ENTRIES
-// ======================================
+// ======================================================
+// LOAD ENTRIES
+// ======================================================
 
 async function loadTeacherEntries() {
 
     try {
 
-        if (tableBody) {
+        tableBody.innerHTML = `
 
-            tableBody.innerHTML = `
+            <tr>
 
-                <tr>
+                <td
+                    colspan="10"
+                    class="loading"
+                >
 
-                    <td
-                        colspan="9"
-                        class="loading"
-                    >
-                        Loading Teacher Entries...
-                    </td>
+                    <i class="fa-solid fa-spinner fa-spin"></i>
 
-                </tr>
+                    Loading Teacher Entries...
 
-            `;
+                </td>
 
-        }
+            </tr>
+
+        `;
 
 
         let snapshot;
 
 
-        // ----------------------------------
-        // TRY ORDERED QUERY
-        // ----------------------------------
+        // ==================================================
+        // FIRST TRY createdAt ORDER
+        // ==================================================
 
         try {
 
-            const q = query(
+            const entriesQuery =
+                query(
 
-                collection(
-                    db,
-                    TEACHER_ENTRIES_COLLECTION
-                ),
+                    collection(
+                        db,
+                        TEACHER_ENTRIES_COLLECTION
+                    ),
 
-                orderBy(
-                    "createdAt",
-                    "desc"
-                )
+                    orderBy(
+                        "createdAt",
+                        "desc"
+                    )
 
-            );
+                );
 
 
             snapshot =
-                await getDocs(q);
+                await getDocs(
+                    entriesQuery
+                );
 
         }
 
-        catch (queryError) {
+        catch (orderError) {
 
             console.warn(
-                "createdAt order query failed. Loading normally:",
-                queryError
+                "OrderBy failed. Loading without orderBy.",
+                orderError
             );
 
-
-            // ----------------------------------
-            // FALLBACK - LOAD ALL DOCUMENTS
-            // ----------------------------------
 
             snapshot =
                 await getDocs(
@@ -186,17 +189,14 @@ async function loadTeacherEntries() {
 
 
         snapshot.forEach(
-            (docSnap) => {
-
-                const data =
-                    docSnap.data() || {};
-
+            (docSnapshot) => {
 
                 teacherEntries.push({
 
-                    id: docSnap.id,
+                    id:
+                        docSnapshot.id,
 
-                    ...data
+                    ...docSnapshot.data()
 
                 });
 
@@ -204,9 +204,9 @@ async function loadTeacherEntries() {
         );
 
 
-        // ----------------------------------
-        // SORT NEWEST FIRST
-        // ----------------------------------
+        // ==================================================
+        // SORT
+        // ==================================================
 
         teacherEntries.sort(
 
@@ -224,13 +224,25 @@ async function loadTeacherEntries() {
 
 
         console.log(
-            "Teacher Entries Loaded:",
+            "================================="
+        );
+
+        console.log(
+            "TOTAL TEACHER ENTRIES:",
+            teacherEntries.length
+        );
+
+        console.log(
+            "TEACHER ENTRIES:",
             teacherEntries
+        );
+
+        console.log(
+            "================================="
         );
 
 
         populateRegions();
-
 
         applyFilters();
 
@@ -244,33 +256,89 @@ async function loadTeacherEntries() {
         );
 
 
-        if (tableBody) {
+        tableBody.innerHTML = `
 
-            tableBody.innerHTML = `
+            <tr>
 
-                <tr>
+                <td
+                    colspan="10"
+                    class="no-data"
+                >
 
-                    <td
-                        colspan="9"
-                        class="no-data"
-                    >
-                        Unable to load Teacher Entries
-                    </td>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
 
-                </tr>
+                    Unable to load Teacher Entries.
 
-            `;
+                    <br><br>
 
-        }
+                    ${escapeHTML(
+                        error.message || ""
+                    )}
+
+                </td>
+
+            </tr>
+
+        `;
 
     }
 
 }
 
 
-// ======================================
-// GET TIME VALUE
-// ======================================
+// ======================================================
+// GET FIELD
+// ======================================================
+
+function getValue(
+    entry,
+    fields
+) {
+
+    for (
+        const field of fields
+    ) {
+
+        if (
+            entry[field] !== undefined
+            &&
+            entry[field] !== null
+            &&
+            entry[field] !== ""
+        ) {
+
+            return entry[field];
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+// ======================================================
+// NORMALIZE
+// ======================================================
+
+function normalize(value) {
+
+    return String(
+        value ?? ""
+    )
+
+        .trim()
+
+        .toLowerCase();
+
+}
+
+
+// ======================================================
+// GET TIME
+// ======================================================
 
 function getTimeValue(entry) {
 
@@ -308,19 +376,21 @@ function getTimeValue(entry) {
     }
 
 
-    // Timestamp Object
+    // Timestamp object
 
     if (
-        value.seconds
+        value.seconds !== undefined
     ) {
 
-        return value.seconds
-            * 1000;
+        return (
+            Number(
+                value.seconds
+            )
+            * 1000
+        );
 
     }
 
-
-    // Date String / Date
 
     const date =
         new Date(value);
@@ -342,59 +412,9 @@ function getTimeValue(entry) {
 }
 
 
-// ======================================
-// GET FIELD VALUE
-// ======================================
-
-function getValue(
-    entry,
-    fields
-) {
-
-    for (
-        const field of fields
-    ) {
-
-        if (
-            entry[field] !== undefined
-            &&
-            entry[field] !== null
-            &&
-            entry[field] !== ""
-        ) {
-
-            return entry[field];
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-// ======================================
-// NORMALIZE
-// ======================================
-
-function normalize(value) {
-
-    return String(
-        value ?? ""
-    )
-
-        .trim()
-
-        .toLowerCase();
-
-}
-
-
-// ======================================
+// ======================================================
 // GET AMOUNT
-// ======================================
+// ======================================================
 
 function getAmount(entry) {
 
@@ -409,12 +429,19 @@ function getAmount(entry) {
 
                 "collectionAmount",
 
-                "totalAmount",
-
-                "amountCollected"
+                "totalAmount"
 
             ]
         );
+
+
+    if (
+        typeof value === "number"
+    ) {
+
+        return value;
+
+    }
 
 
     const number =
@@ -439,9 +466,9 @@ function getAmount(entry) {
 }
 
 
-// ======================================
-// GET ENTRY DATE
-// ======================================
+// ======================================================
+// GET DATE
+// ======================================================
 
 function getEntryDate(entry) {
 
@@ -454,101 +481,74 @@ function getEntryDate(entry) {
 
                 "entryDate",
 
-                "collectionDate",
-
-                "selectedDate"
+                "collectionDate"
 
             ]
         );
 
 
-    if (value) {
+    if (!value) {
 
-        // Firestore Timestamp
+        const time =
+            getTimeValue(entry);
 
-        if (
-            typeof value.toDate ===
-            "function"
-        ) {
 
-            return formatDate(
-                value.toDate()
+        if (time) {
+
+            return formatDisplayDate(
+                new Date(time)
             );
 
         }
 
-
-        // Timestamp Object
-
-        if (
-            value.seconds
-        ) {
-
-            return formatDate(
-
-                new Date(
-                    value.seconds
-                    * 1000
-                )
-
-            );
-
-        }
-
-
-        return String(value);
-
-    }
-
-
-    const time =
-        getTimeValue(entry);
-
-
-    if (time) {
-
-        return formatDate(
-            new Date(time)
-        );
-
-    }
-
-
-    return "";
-
-}
-
-
-// ======================================
-// FORMAT DATE
-// ======================================
-
-function formatDate(date) {
-
-    if (
-        !date
-        ||
-        isNaN(
-            date.getTime()
-        )
-    ) {
 
         return "";
 
     }
 
 
-    return date
-        .toLocaleDateString(
-            "en-GB"
+    // Firestore Timestamp
+
+    if (
+        typeof value.toDate ===
+        "function"
+    ) {
+
+        return formatDisplayDate(
+            value.toDate()
         );
+
+    }
+
+
+    // Timestamp object
+
+    if (
+        value.seconds !== undefined
+    ) {
+
+        return formatDisplayDate(
+
+            new Date(
+                Number(
+                    value.seconds
+                )
+                * 1000
+            )
+
+        );
+
+    }
+
+
+    return String(value);
 
 }
 
 
-// ======================================
+// ======================================================
 // DATE FOR FILTER
-// ======================================
+// ======================================================
 
 function getFilterDate(entry) {
 
@@ -561,9 +561,7 @@ function getFilterDate(entry) {
 
                 "entryDate",
 
-                "collectionDate",
-
-                "selectedDate"
+                "collectionDate"
 
             ]
         );
@@ -571,6 +569,8 @@ function getFilterDate(entry) {
 
     if (
         typeof value === "string"
+        &&
+        value
     ) {
 
         // YYYY-MM-DD
@@ -585,7 +585,31 @@ function getFilterDate(entry) {
         }
 
 
-        // Try normal date conversion
+        // DD/MM/YYYY
+
+        if (
+            /^\d{2}\/\d{2}\/\d{4}$/
+            .test(value)
+        ) {
+
+            const parts =
+                value.split("/");
+
+
+            return (
+                parts[2]
+                +
+                "-"
+                +
+                parts[1]
+                +
+                "-"
+                +
+                parts[0]
+            );
+
+        }
+
 
         const parsed =
             new Date(value);
@@ -606,8 +630,6 @@ function getFilterDate(entry) {
     }
 
 
-    // Firestore Timestamp
-
     if (
         value
         &&
@@ -622,18 +644,18 @@ function getFilterDate(entry) {
     }
 
 
-    // Timestamp object
-
     if (
         value
         &&
-        value.seconds
+        value.seconds !== undefined
     ) {
 
         return getDateInputFormat(
 
             new Date(
-                value.seconds
+                Number(
+                    value.seconds
+                )
                 * 1000
             )
 
@@ -660,10 +682,9 @@ function getFilterDate(entry) {
 }
 
 
-// ======================================
+// ======================================================
 // DATE INPUT FORMAT
-// YYYY-MM-DD
-// ======================================
+// ======================================================
 
 function getDateInputFormat(date) {
 
@@ -688,7 +709,6 @@ function getDateInputFormat(date) {
         String(
             date.getMonth() + 1
         )
-
             .padStart(
                 2,
                 "0"
@@ -699,21 +719,97 @@ function getDateInputFormat(date) {
         String(
             date.getDate()
         )
-
             .padStart(
                 2,
                 "0"
             );
 
 
-    return `${year}-${month}-${day}`;
+    return (
+        year
+        +
+        "-"
+        +
+        month
+        +
+        "-"
+        +
+        day
+    );
 
 }
 
 
-// ======================================
-// POPULATE REGIONS
-// ======================================
+// ======================================================
+// DISPLAY DATE
+// ======================================================
+
+function formatDisplayDate(date) {
+
+    if (
+        !date
+        ||
+        isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "";
+
+    }
+
+
+    return date
+        .toLocaleDateString(
+            "en-GB"
+        );
+
+}
+
+
+// ======================================================
+// ENTRY TIME
+// ======================================================
+
+function getEntryTime(entry) {
+
+    const time =
+        getTimeValue(entry);
+
+
+    if (!time) {
+
+        return "-";
+
+    }
+
+
+    return new Date(time)
+        .toLocaleTimeString(
+            "en-IN",
+            {
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit",
+
+                second:
+                    "2-digit",
+
+                hour12:
+                    true
+
+            }
+        );
+
+}
+
+
+// ======================================================
+// REGIONS
+// ======================================================
 
 function populateRegions() {
 
@@ -742,9 +838,7 @@ function populateRegions() {
 
                         "region",
 
-                        "regionName",
-
-                        "teacherRegion"
+                        "regionName"
 
                     ]
                 );
@@ -764,19 +858,19 @@ function populateRegions() {
 
     const sortedRegions =
         [...regions]
-
-            .filter(Boolean)
-
             .sort(
                 (a, b) =>
                     a.localeCompare(b)
             );
 
 
-    regionFilter.innerHTML =
-        `<option value="">
+    regionFilter.innerHTML = `
+
+        <option value="">
             All Regions
-        </option>`;
+        </option>
+
+    `;
 
 
     sortedRegions.forEach(
@@ -804,59 +898,44 @@ function populateRegions() {
     );
 
 
-    // Restore previous selection
-
-    const optionExists =
-        [...regionFilter.options]
-            .some(
-                option =>
-                    option.value ===
-                    currentValue
-            );
-
-
-    if (optionExists) {
-
-        regionFilter.value =
-            currentValue;
-
-    }
+    regionFilter.value =
+        currentValue;
 
 }
 
 
-// ======================================
-// APPLY FILTERS
-// ======================================
+// ======================================================
+// FILTER
+// ======================================================
 
 function applyFilters() {
 
     const search =
         normalize(
-            searchInput
-                ? searchInput.value
-                : ""
+            searchInput?.value
+            ||
+            ""
         );
 
 
     const selectedRegion =
         normalize(
-            regionFilter
-                ? regionFilter.value
-                : ""
+            regionFilter?.value
+            ||
+            ""
         );
 
 
     const from =
-        fromDate
-            ? fromDate.value
-            : "";
+        fromDate?.value
+        ||
+        "";
 
 
     const to =
-        toDate
-            ? toDate.value
-            : "";
+        toDate?.value
+        ||
+        "";
 
 
     filteredEntries =
@@ -865,66 +944,54 @@ function applyFilters() {
 
                 const teacherName =
                     normalize(
-
                         getValue(
                             entry,
                             [
 
                                 "teacherName",
 
-                                "employeeName",
-
-                                "name",
-
                                 "teacher_name",
 
-                                "fullName"
+                                "employeeName",
+
+                                "name"
 
                             ]
                         )
-
                     );
 
 
                 const employeeCode =
                     normalize(
-
                         getValue(
                             entry,
                             [
 
                                 "employeeCode",
 
-                                "empCode",
-
                                 "employee_code",
 
-                                "teacherCode",
+                                "empCode",
 
-                                "emp_code"
+                                "teacherCode"
 
                             ]
                         )
-
                     );
 
 
                 const region =
                     normalize(
-
                         getValue(
                             entry,
                             [
 
                                 "region",
 
-                                "regionName",
-
-                                "teacherRegion"
+                                "regionName"
 
                             ]
                         )
-
                     );
 
 
@@ -1005,23 +1072,18 @@ function applyFilters() {
 
     renderTable();
 
-
     updateSummary();
 
 }
 
 
-// ======================================
+// ======================================================
 // RENDER TABLE
-// ======================================
+// ======================================================
 
 function renderTable() {
 
     if (!tableBody) {
-
-        console.error(
-            "teacherEntriesTable not found"
-        );
 
         return;
 
@@ -1037,10 +1099,12 @@ function renderTable() {
             <tr>
 
                 <td
-                    colspan="9"
+                    colspan="10"
                     class="no-data"
                 >
+
                     No Teacher Entries Found
+
                 </td>
 
             </tr>
@@ -1065,13 +1129,11 @@ function renderTable() {
 
                             "teacherName",
 
-                            "employeeName",
-
-                            "name",
-
                             "teacher_name",
 
-                            "fullName"
+                            "employeeName",
+
+                            "name"
 
                         ]
                     )
@@ -1085,13 +1147,11 @@ function renderTable() {
 
                             "employeeCode",
 
-                            "empCode",
-
                             "employee_code",
 
-                            "teacherCode",
+                            "empCode",
 
-                            "emp_code"
+                            "teacherCode"
 
                         ]
                     )
@@ -1105,9 +1165,7 @@ function renderTable() {
 
                             "region",
 
-                            "regionName",
-
-                            "teacherRegion"
+                            "regionName"
 
                         ]
                     )
@@ -1121,9 +1179,7 @@ function renderTable() {
 
                             "state",
 
-                            "stateName",
-
-                            "teacherState"
+                            "stateName"
 
                         ]
                     )
@@ -1137,9 +1193,7 @@ function renderTable() {
 
                             "city",
 
-                            "cityName",
-
-                            "teacherCity"
+                            "cityName"
 
                         ]
                     )
@@ -1173,11 +1227,13 @@ function renderTable() {
                             ${index + 1}
                         </td>
 
+
                         <td>
                             ${escapeHTML(
                                 teacherName
                             )}
                         </td>
+
 
                         <td>
                             ${escapeHTML(
@@ -1185,11 +1241,13 @@ function renderTable() {
                             )}
                         </td>
 
+
                         <td>
                             ${escapeHTML(
                                 region
                             )}
                         </td>
+
 
                         <td>
                             ${escapeHTML(
@@ -1197,17 +1255,20 @@ function renderTable() {
                             )}
                         </td>
 
+
                         <td>
                             ${escapeHTML(
                                 city
                             )}
                         </td>
 
+
                         <td>
                             ${escapeHTML(
                                 date
                             )}
                         </td>
+
 
                         <td class="amount">
 
@@ -1217,11 +1278,48 @@ function renderTable() {
 
                         </td>
 
+
                         <td>
 
                             ${escapeHTML(
                                 time
                             )}
+
+                        </td>
+
+
+                        <td>
+
+                            <div
+                                class="action-buttons"
+                            >
+
+                                <button
+                                    type="button"
+                                    class="edit-btn"
+                                    onclick="editTeacherEntry('${escapeAttribute(entry.id)}')"
+                                >
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                    Edit
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="delete-btn"
+                                    onclick="deleteTeacherEntry('${escapeAttribute(entry.id)}')"
+                                >
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                    Delete
+
+                                </button>
+
+                            </div>
 
                         </td>
 
@@ -1231,58 +1329,14 @@ function renderTable() {
 
             }
 
-        )
-
-        .join("");
+        ).join("");
 
 }
 
 
-// ======================================
-// GET ENTRY TIME
-// ======================================
-
-function getEntryTime(entry) {
-
-    const time =
-        getTimeValue(
-            entry
-        );
-
-
-    if (!time) {
-
-        return "-";
-
-    }
-
-
-    return new Date(time)
-        .toLocaleTimeString(
-            "en-IN",
-            {
-
-                hour:
-                    "2-digit",
-
-                minute:
-                    "2-digit",
-
-                second:
-                    "2-digit",
-
-                hour12:
-                    true
-
-            }
-        );
-
-}
-
-
-// ======================================
-// UPDATE SUMMARY
-// ======================================
+// ======================================================
+// SUMMARY
+// ======================================================
 
 function updateSummary() {
 
@@ -1294,7 +1348,8 @@ function updateSummary() {
     }
 
 
-    let total = 0;
+    let total =
+        0;
 
 
     const teachers =
@@ -1317,13 +1372,11 @@ function updateSummary() {
 
                         "employeeCode",
 
-                        "empCode",
-
                         "employee_code",
 
-                        "teacherCode",
+                        "empCode",
 
-                        "emp_code"
+                        "teacherCode"
 
                     ]
                 );
@@ -1363,47 +1416,520 @@ function updateSummary() {
 }
 
 
-// ======================================
-// ESCAPE HTML
-// ======================================
+// ======================================================
+// EDIT ENTRY
+// ======================================================
 
-function escapeHTML(value) {
+async function editTeacherEntry(
+    entryId
+) {
 
-    return String(
-        value ?? ""
-    )
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
+    const entry =
+        teacherEntries.find(
+            (item) =>
+                item.id === entryId
         );
+
+
+    if (!entry) {
+
+        alert(
+            "Entry nahi mili."
+        );
+
+        return;
+
+    }
+
+
+    const currentTeacherName =
+        getValue(
+            entry,
+            [
+                "teacherName",
+                "teacher_name",
+                "employeeName",
+                "name"
+            ]
+        );
+
+
+    const currentEmployeeCode =
+        getValue(
+            entry,
+            [
+                "employeeCode",
+                "employee_code",
+                "empCode",
+                "teacherCode"
+            ]
+        );
+
+
+    const currentRegion =
+        getValue(
+            entry,
+            [
+                "region",
+                "regionName"
+            ]
+        );
+
+
+    const currentState =
+        getValue(
+            entry,
+            [
+                "state",
+                "stateName"
+            ]
+        );
+
+
+    const currentCity =
+        getValue(
+            entry,
+            [
+                "city",
+                "cityName"
+            ]
+        );
+
+
+    const currentDate =
+        getFilterDate(
+            entry
+        );
+
+
+    const currentAmount =
+        getAmount(
+            entry
+        );
+
+
+    // ==================================================
+    // TEACHER NAME
+    // ==================================================
+
+    const teacherName =
+        prompt(
+            "Teacher Name:",
+            currentTeacherName
+        );
+
+
+    if (
+        teacherName === null
+    ) {
+
+        return;
+
+    }
+
+
+    // ==================================================
+    // EMPLOYEE CODE
+    // ==================================================
+
+    const employeeCode =
+        prompt(
+            "Employee Code:",
+            currentEmployeeCode
+        );
+
+
+    if (
+        employeeCode === null
+    ) {
+
+        return;
+
+    }
+
+
+    // ==================================================
+    // REGION
+    // ==================================================
+
+    const region =
+        prompt(
+            "Region:",
+            currentRegion
+        );
+
+
+    if (
+        region === null
+    ) {
+
+        return;
+
+    }
+
+
+    // ==================================================
+    // STATE
+    // ==================================================
+
+    const state =
+        prompt(
+            "State:",
+            currentState
+        );
+
+
+    if (
+        state === null
+    ) {
+
+        return;
+
+    }
+
+
+    // ==================================================
+    // CITY
+    // ==================================================
+
+    const city =
+        prompt(
+            "City:",
+            currentCity
+        );
+
+
+    if (
+        city === null
+    ) {
+
+        return;
+
+    }
+
+
+    // ==================================================
+    // DATE
+    // ==================================================
+
+    const date =
+        prompt(
+            "Entry Date (YYYY-MM-DD):",
+            currentDate
+        );
+
+
+    if (
+        date === null
+    ) {
+
+        return;
+
+    }
+
+
+    // ==================================================
+    // AMOUNT
+    // ==================================================
+
+    const amountText =
+        prompt(
+            "Amount:",
+            currentAmount
+        );
+
+
+    if (
+        amountText === null
+    ) {
+
+        return;
+
+    }
+
+
+    const amount =
+        Number(
+            String(
+                amountText
+            ).replace(
+                /[^\d.-]/g,
+                ""
+            )
+        );
+
+
+    if (
+        !amount
+        ||
+        amount <= 0
+    ) {
+
+        alert(
+            "Please enter a valid amount."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !/^\d{4}-\d{2}-\d{2}$/
+            .test(
+                date
+            )
+    ) {
+
+        alert(
+            "Date format YYYY-MM-DD hona chahiye."
+        );
+
+        return;
+
+    }
+
+
+    const confirmEdit =
+        confirm(
+            "Kya aap is Teacher Entry ko update karna chahte hain?"
+        );
+
+
+    if (!confirmEdit) {
+
+        return;
+
+    }
+
+
+    try {
+
+        // ==================================================
+        // UPDATE FIRESTORE DOCUMENT
+        // ==================================================
+
+        const entryRef =
+            doc(
+                db,
+                TEACHER_ENTRIES_COLLECTION,
+                entryId
+            );
+
+
+        await updateDoc(
+            entryRef,
+            {
+
+                employeeCode:
+                    employeeCode.trim(),
+
+                employee_code:
+                    employeeCode.trim(),
+
+                teacherName:
+                    teacherName.trim(),
+
+                teacher_name:
+                    teacherName.trim(),
+
+                region:
+                    region.trim(),
+
+                state:
+                    state.trim(),
+
+                city:
+                    city.trim(),
+
+                date:
+                    date,
+
+                entryDate:
+                    date,
+
+                amount:
+                    amount,
+
+                collection:
+                    amount,
+
+                updatedAt:
+                    serverTimestamp()
+
+            }
+        );
+
+
+        alert(
+            "Teacher Entry successfully updated."
+        );
+
+
+        await loadTeacherEntries();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Edit Entry Error:",
+            error
+        );
+
+
+        alert(
+            "Entry update nahi ho saki.\n\n"
+            +
+            error.message
+        );
+
+    }
 
 }
 
 
-// ======================================
+// ======================================================
+// DELETE ENTRY
+// ======================================================
+
+async function deleteTeacherEntry(
+    entryId
+) {
+
+    const entry =
+        teacherEntries.find(
+            (item) =>
+                item.id === entryId
+        );
+
+
+    if (!entry) {
+
+        alert(
+            "Entry nahi mili."
+        );
+
+        return;
+
+    }
+
+
+    const teacherName =
+        getValue(
+            entry,
+            [
+                "teacherName",
+                "teacher_name",
+                "employeeName",
+                "name"
+            ]
+        )
+        ||
+        "Unknown Teacher";
+
+
+    const amount =
+        getAmount(
+            entry
+        );
+
+
+    const date =
+        getEntryDate(
+            entry
+        )
+        ||
+        "-";
+
+
+    const confirmed =
+        confirm(
+
+            "DELETE ENTRY\n\n"
+            +
+            "Teacher: "
+            +
+            teacherName
+            +
+            "\n"
+            +
+            "Date: "
+            +
+            date
+            +
+            "\n"
+            +
+            "Amount: ₹"
+            +
+            amount.toLocaleString(
+                "en-IN"
+            )
+            +
+            "\n\n"
+            +
+            "Kya aap is entry ko permanently delete karna chahte hain?"
+
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        // ==================================================
+        // DELETE ONLY teacher_entries DOCUMENT
+        // ==================================================
+
+        const entryRef =
+            doc(
+                db,
+                TEACHER_ENTRIES_COLLECTION,
+                entryId
+            );
+
+
+        await deleteDoc(
+            entryRef
+        );
+
+
+        alert(
+            "Teacher Entry successfully deleted."
+        );
+
+
+        await loadTeacherEntries();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Delete Entry Error:",
+            error
+        );
+
+
+        alert(
+            "Entry delete nahi ho saki.\n\n"
+            +
+            error.message
+        );
+
+    }
+
+}
+
+
+// ======================================================
 // CLEAR FILTERS
-// ======================================
+// ======================================================
 
 function clearFilters() {
 
@@ -1444,21 +1970,70 @@ function clearFilters() {
 }
 
 
-// ======================================
-// GLOBAL FUNCTIONS
-// ======================================
+// ======================================================
+// ESCAPE HTML
+// ======================================================
 
-window.loadTeacherEntries =
-    loadTeacherEntries;
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
 
 
-window.clearFilters =
-    clearFilters;
+// ======================================================
+// ESCAPE ATTRIBUTE
+// ======================================================
+
+function escapeAttribute(value) {
+
+    return String(
+        value ?? ""
+    )
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /'/g,
+            "\\'"
+        );
+
+}
 
 
-// ======================================
+// ======================================================
 // FILTER EVENTS
-// ======================================
+// ======================================================
 
 if (searchInput) {
 
@@ -1500,8 +2075,28 @@ if (toDate) {
 }
 
 
-// ======================================
+// ======================================================
+// GLOBAL FUNCTIONS
+// ======================================================
+
+window.loadTeacherEntries =
+    loadTeacherEntries;
+
+
+window.clearFilters =
+    clearFilters;
+
+
+window.editTeacherEntry =
+    editTeacherEntry;
+
+
+window.deleteTeacherEntry =
+    deleteTeacherEntry;
+
+
+// ======================================================
 // INITIAL LOAD
-// ======================================
+// ======================================================
 
 loadTeacherEntries();
