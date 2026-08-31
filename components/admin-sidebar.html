@@ -1,3 +1,9 @@
+<!-- ======================================================
+     TELETHON
+     ADMIN SIDEBAR
+     CENTRAL SIDEBAR COMPONENT
+====================================================== -->
+
 <div class="admin-sidebar">
 
     <!-- =========================================
@@ -151,9 +157,16 @@
         </a>
 
 
-        <!-- =====================================
-             LOGOUT
-        ====================================== -->
+        <!-- =========================================
+             SEPARATOR
+        ========================================== -->
+
+        <div class="admin-sidebar-separator"></div>
+
+
+        <!-- =========================================
+             10. LOGOUT
+        ========================================== -->
 
         <a
             href="#"
@@ -171,241 +184,3 @@
     </div>
 
 </div>
-
-
-
-<!-- =========================================
-     ACTIVE PAGE + FIREBASE LOGOUT
-========================================= -->
-
-<script type="module">
-
-
-    /* =====================================
-       FIREBASE
-    ===================================== */
-
-    import {
-        auth
-    } from "./assets/js/firebase-config.js";
-
-
-    import {
-        signOut
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-
-    /* =====================================
-       ACTIVE PAGE
-    ===================================== */
-
-    const currentPage =
-
-        window.location.pathname
-            .split("/")
-            .pop()
-            .toLowerCase();
-
-
-
-    const sidebar =
-
-        document.querySelector(
-            ".admin-sidebar"
-        );
-
-
-
-    if (sidebar) {
-
-
-        const menuLinks =
-
-            sidebar.querySelectorAll(
-                ".admin-sidebar-menu a[data-page]"
-            );
-
-
-
-        menuLinks.forEach(
-            function (link) {
-
-
-                const page =
-
-                    link
-                        .getAttribute(
-                            "data-page"
-                        )
-                        .toLowerCase();
-
-
-
-                if (
-                    page === currentPage
-                ) {
-
-
-                    link.classList.add(
-                        "active"
-                    );
-
-
-                } else {
-
-
-                    link.classList.remove(
-                        "active"
-                    );
-
-
-                }
-
-
-            }
-        );
-
-
-    }
-
-
-
-    /* =====================================
-       LOGOUT
-    ===================================== */
-
-    const logoutBtn =
-
-        document.getElementById(
-            "adminLogoutBtn"
-        );
-
-
-
-    if (logoutBtn) {
-
-
-        logoutBtn.addEventListener(
-            "click",
-            async function (e) {
-
-
-                e.preventDefault();
-
-
-
-                /* =================================
-                   CONFIRM LOGOUT
-                ================================= */
-
-                const confirmLogout =
-
-                    confirm(
-                        "Kya aap Admin Panel se Logout karna chahte hain?"
-                    );
-
-
-
-                if (!confirmLogout) {
-
-                    return;
-
-                }
-
-
-
-                try {
-
-
-                    /* =============================
-                       FIREBASE SIGN OUT
-                    ============================= */
-
-                    await signOut(
-                        auth
-                    );
-
-
-
-                    /* =============================
-                       CLEAR ADMIN SESSION
-                    ============================= */
-
-                    localStorage.removeItem(
-                        "loggedInEmpCode"
-                    );
-
-
-                    localStorage.removeItem(
-                        "userRole"
-                    );
-
-
-                    localStorage.removeItem(
-                        "adminLoggedIn"
-                    );
-
-
-                    localStorage.removeItem(
-                        "isAdmin"
-                    );
-
-
-                    localStorage.removeItem(
-                        "regionUserId"
-                    );
-
-
-                    localStorage.removeItem(
-                        "regionUserCode"
-                    );
-
-
-                    localStorage.removeItem(
-                        "regionUserName"
-                    );
-
-
-                    localStorage.removeItem(
-                        "savedRegionUserName"
-                    );
-
-
-
-                    /* =============================
-                       GO TO LOGIN
-                    ============================= */
-
-                    window.location.href =
-                        "index.html";
-
-
-                }
-
-                catch (error) {
-
-
-                    console.error(
-                        "Admin Logout Error:",
-                        error
-                    );
-
-
-
-                    alert(
-                        "Logout nahi ho saka. Please try again."
-                    );
-
-
-                }
-
-
-            }
-        );
-
-
-    }
-
-
-</script>
