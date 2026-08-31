@@ -11,7 +11,7 @@
     >
 
     <title>
-        Competition Entry | Telethon
+        Telethon - Competition Entry
     </title>
 
 
@@ -26,22 +26,22 @@
 
 
     <!-- ==================================================
-         ADMIN SIDEBAR CSS
-    ================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="components/admin-sidebar.css"
-    >
-
-
-    <!-- ==================================================
          GOOGLE FONT
     ================================================== -->
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
+    >
+
+
+    <!-- ==================================================
+         ADMIN SIDEBAR CSS
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="components/admin-sidebar.css"
     >
 
 
@@ -94,268 +94,27 @@
 
 
         /* ==================================================
-           ADMIN SIDEBAR
+           ADMIN PAGE CONTENT
+           
+           IMPORTANT:
+           Existing admin-sidebar.html ke liye
+           content ko sidebar ke right shift kiya gaya hai.
         ================================================== */
 
-        .admin-sidebar {
+        .admin-page-content {
 
-            width: 235px;
-
-            min-width: 235px;
-
-            height: 100vh;
-
-            position: fixed;
-
-            left: 0;
-
-            top: 0;
-
-            bottom: 0;
-
-            background:
-                #0f172a;
-
-            color:
-                #ffffff;
-
-            display:
-                flex;
-
-            flex-direction:
-                column;
-
-            z-index: 9999;
-
-            overflow-y: auto;
-
-        }
-
-
-        /* ==================================================
-           SIDEBAR LOGO
-        ================================================== */
-
-        .admin-sidebar-logo {
-
-            width: 100%;
-
-            min-height: 150px;
-
-            padding:
-                12px 15px;
-
-            text-align:
-                center;
-
-            border-bottom:
-                1px solid #263247;
-
-            flex-shrink: 0;
-
-        }
-
-
-        .admin-sidebar-logo img {
-
-            width: 55px;
-
-            height: 55px;
-
-            object-fit:
-                contain;
-
-            display:
-                block;
-
-            margin:
-                0 auto 5px;
-
-        }
-
-
-        .admin-sidebar-logo h2 {
-
-            margin:
-                0 0 3px;
-
-            font-size:
-                19px;
-
-            font-weight:
-                700;
-
-            color:
-                #38bdf8;
-
-        }
-
-
-        .admin-sidebar-logo p {
-
-            margin: 0;
-
-            font-size:
-                12px;
-
-            color:
-                #cbd5e1;
-
-        }
-
-
-        /* ==================================================
-           SIDEBAR MENU
-        ================================================== */
-
-        .admin-sidebar-menu {
-
-            width: 100%;
-
-            padding:
-                10px 0;
-
-        }
-
-
-        .admin-sidebar-menu a {
-
-            width: 100%;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                12px;
-
-            padding:
-                11px 22px;
-
-            color:
-                #cbd5e1;
-
-            text-decoration:
-                none;
-
-            font-size:
-                14px;
-
-            font-weight:
-                500;
-
-            transition:
-                all 0.2s ease;
-
-        }
-
-
-        .admin-sidebar-menu a i {
-
-            width:
-                20px;
-
-            min-width:
-                20px;
-
-            text-align:
-                center;
-
-            font-size:
-                15px;
-
-        }
-
-
-        .admin-sidebar-menu a span {
-
-            display:
-                inline-block;
-
-            white-space:
-                nowrap;
-
-        }
-
-
-        .admin-sidebar-menu a:hover {
-
-            background:
-                #1e293b;
-
-            color:
-                #ffffff;
-
-        }
-
-
-        .admin-sidebar-menu a.active {
-
-            background:
-                #2563eb;
-
-            color:
-                #ffffff;
-
-        }
-
-
-        /* ==================================================
-           SIDEBAR SCROLLBAR
-        ================================================== */
-
-        .admin-sidebar::-webkit-scrollbar {
-
-            width:
-                5px;
-
-        }
-
-
-        .admin-sidebar::-webkit-scrollbar-track {
-
-            background:
-                #0f172a;
-
-        }
-
-
-        .admin-sidebar::-webkit-scrollbar-thumb {
-
-            background:
-                #334155;
-
-            border-radius:
-                10px;
-
-        }
-
-
-        /* ==================================================
-           MAIN CONTENT
-        ================================================== */
-
-        .main-content {
-
-            margin-left:
-                235px;
+            margin-left: 235px;
 
             width:
                 calc(100% - 235px);
 
-            min-height:
-                100vh;
-
-            padding:
-                25px;
+            min-height: 100vh;
 
         }
 
 
         /* ==================================================
-           PAGE HEADER
+           HEADER
         ================================================== */
 
         .page-header {
@@ -363,17 +122,11 @@
             background:
                 #ffffff;
 
-            border:
+            border-bottom:
                 1px solid #e5e7eb;
 
-            border-radius:
-                12px;
-
             padding:
-                20px 25px;
-
-            margin-bottom:
-                20px;
+                18px 25px;
 
             display:
                 flex;
@@ -387,14 +140,14 @@
             gap:
                 15px;
 
-            box-shadow:
-                0 3px 12px
-                rgba(
-                    0,
-                    0,
-                    0,
-                    0.05
-                );
+            position:
+                sticky;
+
+            top:
+                0;
+
+            z-index:
+                100;
 
         }
 
@@ -416,10 +169,10 @@
         .page-title-icon {
 
             width:
-                46px;
+                44px;
 
             height:
-                46px;
+                44px;
 
             border-radius:
                 11px;
@@ -450,11 +203,8 @@
             font-size:
                 22px;
 
-            margin:
-                0 0 4px;
-
-            color:
-                #111827;
+            margin-bottom:
+                4px;
 
         }
 
@@ -467,8 +217,38 @@
             color:
                 #6b7280;
 
+        }
+
+
+        /* ==================================================
+           HEADER ACTIONS
+           
+           Dashboard / Logout yahan nahi rakhe gaye.
+           Ye existing Admin Sidebar mein hain.
+        ================================================== */
+
+        .header-actions {
+
+            display:
+                none;
+
+        }
+
+
+        /* ==================================================
+           MAIN
+        ================================================== */
+
+        .main-container {
+
+            max-width:
+                1200px;
+
             margin:
-                0;
+                30px auto;
+
+            padding:
+                0 20px 60px;
 
         }
 
@@ -801,6 +581,10 @@
         }
 
 
+        /* ==================================================
+           REMOVE ROW
+        ================================================== */
+
         .remove-side-row {
 
             width:
@@ -826,6 +610,18 @@
 
         }
 
+
+        .remove-side-row:hover {
+
+            background:
+                #fecaca;
+
+        }
+
+
+        /* ==================================================
+           ADD ROW
+        ================================================== */
 
         .add-row-btn {
 
@@ -915,62 +711,7 @@
 
 
         /* ==================================================
-           MESSAGE
-        ================================================== */
-
-        .competition-message {
-
-            display:
-                none;
-
-            margin-top:
-                20px;
-
-            padding:
-                13px;
-
-            border-radius:
-                8px;
-
-            font-size:
-                14px;
-
-            font-weight:
-                600;
-
-        }
-
-
-        .competition-message.success {
-
-            display:
-                block;
-
-            background:
-                #dcfce7;
-
-            color:
-                #166534;
-
-        }
-
-
-        .competition-message.error {
-
-            display:
-                block;
-
-            background:
-                #fee2e2;
-
-            color:
-                #991b1b;
-
-        }
-
-
-        /* ==================================================
-           FORM ACTIONS
+           ACTIONS
         ================================================== */
 
         .form-actions {
@@ -1062,6 +803,72 @@
 
             background:
                 #4338ca;
+
+        }
+
+
+        .btn:disabled {
+
+            opacity:
+                0.6;
+
+            cursor:
+                not-allowed;
+
+        }
+
+
+        /* ==================================================
+           MESSAGE
+        ================================================== */
+
+        .competition-message {
+
+            display:
+                none;
+
+            margin-top:
+                20px;
+
+            padding:
+                13px;
+
+            border-radius:
+                8px;
+
+            font-size:
+                14px;
+
+            font-weight:
+                600;
+
+        }
+
+
+        .competition-message.success {
+
+            display:
+                block;
+
+            background:
+                #dcfce7;
+
+            color:
+                #166534;
+
+        }
+
+
+        .competition-message.error {
+
+            display:
+                block;
+
+            background:
+                #fee2e2;
+
+            color:
+                #991b1b;
 
         }
 
@@ -1196,6 +1003,14 @@
         }
 
 
+        .edit-btn:hover {
+
+            background:
+                #e0e7ff;
+
+        }
+
+
         .delete-btn {
 
             background:
@@ -1203,6 +1018,14 @@
 
             color:
                 #dc2626;
+
+        }
+
+
+        .delete-btn:hover {
+
+            background:
+                #fecaca;
 
         }
 
@@ -1218,11 +1041,47 @@
         }
 
 
+        .copy-btn:hover {
+
+            background:
+                #d1fae5;
+
+        }
+
+
         /* ==================================================
-           MOBILE / TABLET
+           SIDEBAR COMPATIBILITY
+           
+           Existing sidebar ke common selectors ko
+           content ke saath compatible rakha gaya hai.
+        ================================================== */
+
+        #adminSidebarContainer {
+
+            position:
+                relative;
+
+        }
+
+
+        /* ==================================================
+           TABLET
         ================================================== */
 
         @media (max-width: 900px) {
+
+            .admin-page-content {
+
+                margin-left:
+                    190px;
+
+                width:
+                    calc(
+                        100% - 190px
+                    );
+
+            }
+
 
             .form-grid {
 
@@ -1250,128 +1109,21 @@
         }
 
 
-        @media (max-width: 800px) {
-
-            .admin-sidebar {
-
-                width:
-                    190px;
-
-                min-width:
-                    190px;
-
-            }
-
-
-            .admin-sidebar-logo {
-
-                min-height:
-                    140px;
-
-            }
-
-
-            .admin-sidebar-menu a {
-
-                padding:
-                    11px 15px;
-
-                font-size:
-                    13px;
-
-            }
-
-
-            .main-content {
-
-                margin-left:
-                    190px;
-
-                width:
-                    calc(100% - 190px);
-
-                padding:
-                    15px;
-
-            }
-
-        }
-
+        /* ==================================================
+           MOBILE
+        ================================================== */
 
         @media (max-width: 600px) {
 
-            .admin-sidebar {
-
-                width:
-                    70px;
-
-                min-width:
-                    70px;
-
-            }
-
-
-            .admin-sidebar-logo {
-
-                min-height:
-                    90px;
-
-                padding:
-                    8px 5px;
-
-            }
-
-
-            .admin-sidebar-logo img {
-
-                width:
-                    45px;
-
-                height:
-                    45px;
-
-            }
-
-
-            .admin-sidebar-logo h2,
-            .admin-sidebar-logo p,
-            .admin-sidebar-menu a span {
-
-                display:
-                    none;
-
-            }
-
-
-            .admin-sidebar-menu a {
-
-                justify-content:
-                    center;
-
-                padding:
-                    14px 5px;
-
-            }
-
-
-            .admin-sidebar-menu a i {
-
-                font-size:
-                    17px;
-
-            }
-
-
-            .main-content {
+            .admin-page-content {
 
                 margin-left:
                     70px;
 
                 width:
-                    calc(100% - 70px);
-
-                padding:
-                    10px;
+                    calc(
+                        100% - 70px
+                    );
 
             }
 
@@ -1379,23 +1131,24 @@
             .page-header {
 
                 padding:
-                    16px;
+                    14px;
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    stretch;
 
             }
 
 
-            .page-title h1 {
+            .main-container {
 
-                font-size:
-                    19px;
+                padding:
+                    0 12px 40px;
 
-            }
-
-
-            .page-title p {
-
-                font-size:
-                    12px;
+                margin-top:
+                    20px;
 
             }
 
@@ -1434,11 +1187,11 @@
 
             .btn {
 
-                width:
-                    100%;
-
                 justify-content:
                     center;
+
+                width:
+                    100%;
 
             }
 
@@ -1464,201 +1217,32 @@
 
 
 <!-- ==================================================
-     ADMIN SIDEBAR
+     EXISTING ADMIN SIDEBAR
+     
+     IMPORTANT:
+     Yahan NEW SIDEBAR nahi banaya gaya.
+     Existing components/admin-sidebar.html hi load hoga.
 ================================================== -->
 
-<div class="admin-sidebar">
-
-
-    <!-- LOGO -->
-
-    <div class="admin-sidebar-logo">
-
-        <img
-            src="assets/images/logo.png"
-            alt="Telethon Logo"
-        >
-
-
-        <h2>
-            Telethon
-        </h2>
-
-
-        <p>
-            Admin Panel
-        </p>
-
-    </div>
-
-
-    <!-- MENU -->
-
-    <div class="admin-sidebar-menu">
-
-
-        <!-- DASHBOARD -->
-
-        <a
-            href="dashboard.html"
-            data-page="dashboard.html"
-        >
-
-            <i
-                class="fa-solid fa-house"
-            ></i>
-
-            <span>
-                Dashboard
-            </span>
-
-        </a>
-
-
-        <!-- TEACHERS LIST -->
-
-        <a
-            href="users.html"
-            data-page="users.html"
-        >
-
-            <i
-                class="fa-solid fa-users"
-            ></i>
-
-            <span>
-                Teachers List
-            </span>
-
-        </a>
-
-
-        <!-- COLLECTION SUMMARY -->
-
-        <a
-            href="collection-summary.html"
-            data-page="collection-summary.html"
-        >
-
-            <i
-                class="fa-solid fa-chart-pie"
-            ></i>
-
-            <span>
-                Collection Summary
-            </span>
-
-        </a>
-
-
-        <!-- TARGET MANAGEMENT -->
-
-        <a
-            href="target-management.html"
-            data-page="target-management.html"
-        >
-
-            <i
-                class="fa-solid fa-bullseye"
-            ></i>
-
-            <span>
-                Target Management
-            </span>
-
-        </a>
-
-
-        <!-- REGION USER MANAGEMENT -->
-
-        <a
-            href="region-user-management.html"
-            data-page="region-user-management.html"
-        >
-
-            <i
-                class="fa-solid fa-user-shield"
-            ></i>
-
-            <span>
-                Region User Management
-            </span>
-
-        </a>
-
-
-        <!-- ALL ENTRY -->
-
-        <a
-            href="all-entry.html"
-            data-page="all-entry.html"
-        >
-
-            <i
-                class="fa-solid fa-list"
-            ></i>
-
-            <span>
-                All Entry
-            </span>
-
-        </a>
-
-
-        <!-- COMPETITION ENTRY -->
-
-        <a
-            href="competition-entry.html"
-            data-page="competition-entry.html"
-        >
-
-            <i
-                class="fa-solid fa-trophy"
-            ></i>
-
-            <span>
-                Competition Entry
-            </span>
-
-        </a>
-
-
-        <!-- LOGOUT -->
-
-        <a
-            href="#"
-            id="adminLogoutBtn"
-        >
-
-            <i
-                class="fa-solid fa-right-from-bracket"
-            ></i>
-
-            <span>
-                Logout
-            </span>
-
-        </a>
-
-
-    </div>
-
-</div>
+<div id="adminSidebarContainer"></div>
 
 
 
 <!-- ==================================================
-     MAIN CONTENT
+     ADMIN PAGE CONTENT
 ================================================== -->
 
-<div class="main-content">
+<div class="admin-page-content">
 
 
     <!-- ==================================================
-         PAGE HEADER
+         HEADER
+         
+         Dashboard / Logout REMOVE kiya gaya.
+         Existing Admin Sidebar mein already available hain.
     ================================================== -->
 
-    <div class="page-header">
+    <header class="page-header">
 
 
         <div class="page-title">
@@ -1690,216 +1274,242 @@
         </div>
 
 
-    </div>
+    </header>
 
 
 
     <!-- ==================================================
-         FORM CARD
+         MAIN
     ================================================== -->
 
-    <div class="form-card">
+    <main class="main-container">
 
 
-        <form
-            id="competitionForm"
-            autocomplete="off"
-        >
+        <!-- ==================================================
+             FORM CARD
+        ================================================== -->
+
+        <div class="form-card">
 
 
-            <!-- ==================================================
-                 COMPETITION DETAILS
-            ================================================== -->
-
-            <div class="section-title">
-
-                <i
-                    class="fa-solid fa-pen-to-square"
-                ></i>
-
-                Competition Details
-
-            </div>
+            <form
+                id="competitionForm"
+                autocomplete="off"
+            >
 
 
-            <div class="form-grid">
+                <!-- ==========================================
+                     COMPETITION DETAILS
+                =========================================== -->
 
+                <div class="section-title">
 
-                <!-- COMPETITION NAME -->
+                    <i
+                        class="fa-solid fa-pen-to-square"
+                    ></i>
 
-                <div class="form-group">
-
-                    <label>
-                        Competition Name
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="competitionName"
-                        placeholder="Competition Name"
-                        required
-                    >
+                    Competition Details
 
                 </div>
 
 
-                <!-- COMPETITION DATE -->
-
-                <div class="form-group">
-
-                    <label>
-                        Competition Date
-                    </label>
+                <div class="form-grid">
 
 
-                    <input
-                        type="date"
-                        id="competitionDate"
-                        required
-                    >
+                    <!-- COMPETITION NAME -->
 
-                </div>
+                    <div class="form-group">
 
+                        <label
+                            for="competitionName"
+                        >
 
-                <!-- COMPETITION END TIME -->
+                            Competition Name
 
-                <div class="form-group">
-
-                    <label>
-                        Competition End Time
-                    </label>
-
-
-                    <input
-                        type="time"
-                        id="competitionEndTime"
-                        required
-                    >
-
-                </div>
-
-
-            </div>
-
-
-
-            <!-- ==================================================
-                 PARTICIPANTS
-            ================================================== -->
-
-            <div class="section-title">
-
-                <i
-                    class="fa-solid fa-users"
-                ></i>
-
-                Competition Participants
-
-            </div>
-
-
-
-            <div class="competition-wrapper">
-
-
-                <!-- ==================================================
-                     PARTICIPANT A
-                ================================================== -->
-
-                <div class="side-card">
-
-
-                    <div class="side-body">
+                        </label>
 
 
                         <input
                             type="text"
-                            id="participantAName"
-                            class="participant-name"
-                            placeholder="Enter Name"
+                            id="competitionName"
+                            placeholder="Competition Name"
                             required
                         >
 
-
-                        <div
-                            id="sideAContainer"
-                        ></div>
+                    </div>
 
 
-                        <button
-                            type="button"
-                            class="add-row-btn"
-                            id="addSideARow"
+                    <!-- COMPETITION DATE -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="competitionDate"
                         >
 
-                            <i
-                                class="fa-solid fa-plus"
-                            ></i>
+                            Competition Date
 
-                            Add Region / State
-
-                        </button>
-
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- ==================================================
-                     VS
-                ================================================== -->
-
-                <div class="vs-container">
-
-                    <div class="vs-circle">
-                        VS
-                    </div>
-
-                </div>
-
-
-
-                <!-- ==================================================
-                     PARTICIPANT B
-                ================================================== -->
-
-                <div class="side-card">
-
-
-                    <div class="side-body">
+                        </label>
 
 
                         <input
-                            type="text"
-                            id="participantBName"
-                            class="participant-name"
-                            placeholder="Enter Name"
+                            type="date"
+                            id="competitionDate"
                             required
                         >
 
-
-                        <div
-                            id="sideBContainer"
-                        ></div>
+                    </div>
 
 
-                        <button
-                            type="button"
-                            class="add-row-btn"
-                            id="addSideBRow"
+                    <!-- END TIME -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="competitionEndTime"
                         >
 
-                            <i
-                                class="fa-solid fa-plus"
-                            ></i>
+                            Competition End Time
 
-                            Add Region / State
+                        </label>
 
-                        </button>
+
+                        <input
+                            type="time"
+                            id="competitionEndTime"
+                            required
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     PARTICIPANTS
+                ================================================== -->
+
+                <div class="section-title">
+
+                    <i
+                        class="fa-solid fa-users"
+                    ></i>
+
+                    Competition Participants
+
+                </div>
+
+
+
+                <div class="competition-wrapper">
+
+
+                    <!-- ==================================================
+                         PARTICIPANT A
+                    ================================================== -->
+
+                    <div class="side-card">
+
+
+                        <div class="side-body">
+
+
+                            <input
+                                type="text"
+                                id="participantAName"
+                                class="participant-name"
+                                placeholder="Enter Name"
+                                required
+                            >
+
+
+                            <div
+                                id="sideAContainer"
+                            ></div>
+
+
+                            <button
+                                type="button"
+                                class="add-row-btn"
+                                id="addSideARow"
+                            >
+
+                                <i
+                                    class="fa-solid fa-plus"
+                                ></i>
+
+                                Add Region / State
+
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- ==================================================
+                         VS
+                    ================================================== -->
+
+                    <div class="vs-container">
+
+
+                        <div class="vs-circle">
+
+                            VS
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- ==================================================
+                         PARTICIPANT B
+                    ================================================== -->
+
+                    <div class="side-card">
+
+
+                        <div class="side-body">
+
+
+                            <input
+                                type="text"
+                                id="participantBName"
+                                class="participant-name"
+                                placeholder="Enter Name"
+                                required
+                            >
+
+
+                            <div
+                                id="sideBContainer"
+                            ></div>
+
+
+                            <button
+                                type="button"
+                                class="add-row-btn"
+                                id="addSideBRow"
+                            >
+
+                                <i
+                                    class="fa-solid fa-plus"
+                                ></i>
+
+                                Add Region / State
+
+                            </button>
+
+
+                        </div>
 
 
                     </div>
@@ -1908,93 +1518,93 @@
                 </div>
 
 
-            </div>
+
+                <!-- ==================================================
+                     MESSAGE
+                ================================================== -->
+
+                <div
+                    id="competitionMessage"
+                    class="competition-message"
+                ></div>
 
 
 
-            <!-- ==================================================
-                 MESSAGE
-            ================================================== -->
+                <!-- ==================================================
+                     FORM ACTIONS
+                ================================================== -->
 
-            <div
-                id="competitionMessage"
-                class="competition-message"
-            ></div>
+                <div class="form-actions">
 
 
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="resetCompetitionBtn"
+                    >
 
-            <!-- ==================================================
-                 ACTIONS
-            ================================================== -->
+                        <i
+                            class="fa-solid fa-rotate-left"
+                        ></i>
 
-            <div class="form-actions">
+                        Reset
 
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    id="resetCompetitionBtn"
-                >
-
-                    <i
-                        class="fa-solid fa-rotate-left"
-                    ></i>
-
-                    Reset
-
-                </button>
+                    </button>
 
 
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                    id="saveCompetitionBtn"
-                >
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="saveCompetitionBtn"
+                    >
 
-                    <i
-                        class="fa-solid fa-floppy-disk"
-                    ></i>
+                        <i
+                            class="fa-solid fa-floppy-disk"
+                        ></i>
 
-                    Save Competition
+                        Save Competition
 
-                </button>
-
-
-            </div>
+                    </button>
 
 
-        </form>
+                </div>
 
 
-    </div>
+            </form>
 
-
-
-    <!-- ==================================================
-         SAVED COMPETITIONS
-    ================================================== -->
-
-    <section class="saved-section">
-
-
-        <div class="section-title">
-
-            <i
-                class="fa-solid fa-list"
-            ></i>
-
-            Saved Competitions
 
         </div>
 
 
-        <div
-            id="competitionList"
-            class="competition-list"
-        ></div>
+
+        <!-- ==================================================
+             SAVED COMPETITIONS
+        ================================================== -->
+
+        <section class="saved-section">
 
 
-    </section>
+            <div class="section-title">
+
+                <i
+                    class="fa-solid fa-list"
+                ></i>
+
+                Saved Competitions
+
+            </div>
+
+
+            <div
+                id="competitionList"
+                class="competition-list"
+            ></div>
+
+
+        </section>
+
+
+    </main>
 
 
 </div>
@@ -2002,7 +1612,177 @@
 
 
 <!-- ==================================================
-     COMPETITION JS
+     LOAD EXISTING ADMIN SIDEBAR
+================================================== -->
+
+<script>
+
+(function () {
+
+
+    const sidebarContainer =
+        document.getElementById(
+            "adminSidebarContainer"
+        );
+
+
+    if (!sidebarContainer) {
+
+        console.error(
+            "adminSidebarContainer not found."
+        );
+
+        return;
+
+    }
+
+
+    fetch(
+        "components/admin-sidebar.html"
+    )
+
+        .then(function (response) {
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Admin Sidebar load nahi hua. HTTP Status: "
+                    +
+                    response.status
+                );
+
+            }
+
+
+            return response.text();
+
+        })
+
+
+        .then(function (html) {
+
+
+            sidebarContainer.innerHTML =
+                html;
+
+
+            /* ==========================================
+               ACTIVE PAGE
+            =========================================== */
+
+            const currentPage =
+                window.location.pathname
+                    .split("/")
+                    .pop()
+                    .toLowerCase();
+
+
+            const menuLinks =
+                sidebarContainer.querySelectorAll(
+                    "a[data-page]"
+                );
+
+
+            menuLinks.forEach(
+                function (link) {
+
+
+                    const page =
+                        (
+                            link.getAttribute(
+                                "data-page"
+                            )
+                            || ""
+                        )
+                        .toLowerCase();
+
+
+                    link.classList.remove(
+                        "active"
+                    );
+
+
+                    if (
+                        page === currentPage
+                    ) {
+
+                        link.classList.add(
+                            "active"
+                        );
+
+                    }
+
+                }
+            );
+
+
+            /* ==========================================
+               LOGOUT
+            =========================================== */
+
+            const logoutBtn =
+                sidebarContainer.querySelector(
+                    "#adminLogoutBtn"
+                );
+
+
+            if (logoutBtn) {
+
+
+                logoutBtn.addEventListener(
+                    "click",
+                    function (event) {
+
+
+                        event.preventDefault();
+
+
+                        localStorage.removeItem(
+                            "loggedInEmpCode"
+                        );
+
+
+                        localStorage.removeItem(
+                            "userRole"
+                        );
+
+
+                        window.location.href =
+                            "index.html";
+
+                    }
+                );
+
+            }
+
+
+        })
+
+
+        .catch(function (error) {
+
+
+            console.error(
+                "Admin Sidebar Error:",
+                error
+            );
+
+
+            sidebarContainer.innerHTML = "";
+
+
+        });
+
+
+})();
+
+</script>
+
+
+
+<!-- ==================================================
+     COMPETITION ENTRY JS
 ================================================== -->
 
 <script
@@ -2014,115 +1794,16 @@
 
 <!-- ==================================================
      PAGE PROTECTION
+     
+     Agar aapke project mein Admin page protection
+     already use ho rahi hai to ye same protection
+     yahan bhi rahegi.
 ================================================== -->
 
 <script
     type="module"
     src="assets/js/page-protection.js"
 ></script>
-
-
-
-<!-- ==================================================
-     SIDEBAR ACTIVE PAGE + LOGOUT
-================================================== -->
-
-<script>
-
-(function () {
-
-
-    /* ==================================================
-       ACTIVE PAGE
-    ================================================== */
-
-    const currentPage =
-        window.location.pathname
-            .split("/")
-            .pop()
-            .toLowerCase();
-
-
-    const menuLinks =
-        document.querySelectorAll(
-            ".admin-sidebar-menu a[data-page]"
-        );
-
-
-    menuLinks.forEach(
-        function (link) {
-
-
-            const page =
-                (
-                    link.getAttribute(
-                        "data-page"
-                    ) || ""
-                ).toLowerCase();
-
-
-            link.classList.remove(
-                "active"
-            );
-
-
-            if (
-                page === currentPage
-            ) {
-
-                link.classList.add(
-                    "active"
-                );
-
-            }
-
-        }
-    );
-
-
-
-    /* ==================================================
-       ADMIN LOGOUT
-    ================================================== */
-
-    const logoutBtn =
-        document.getElementById(
-            "adminLogoutBtn"
-        );
-
-
-    if (logoutBtn) {
-
-
-        logoutBtn.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-
-
-                localStorage.removeItem(
-                    "loggedInEmpCode"
-                );
-
-
-                localStorage.removeItem(
-                    "userRole"
-                );
-
-
-                window.location.href =
-                    "index.html";
-
-            }
-        );
-
-    }
-
-
-})();
-
-</script>
 
 
 </body>
