@@ -8,7 +8,6 @@
 // teacher_entries  = NEW / REGION USER ENTRIES
 //
 // IMPORTANT:
-// Both collections are READ ONLY.
 // Both collections are merged.
 // Same Teacher + Same Date = SUM
 // ======================================================
@@ -31,7 +30,9 @@ import {
 
 const userRole = String(
     localStorage.getItem("userRole") || ""
-).trim().toLowerCase();
+)
+    .trim()
+    .toLowerCase();
 
 if (userRole !== "admin") {
 
@@ -39,7 +40,6 @@ if (userRole !== "admin") {
     localStorage.removeItem("userRole");
 
     window.location.href = "index.html";
-
 }
 
 // ======================================================
@@ -47,8 +47,11 @@ if (userRole !== "admin") {
 // ======================================================
 
 const EMPLOYEES_COLLECTION = "employees";
+
 const DAILY_ENTRY_COLLECTION = "daily_entry";
+
 const TEACHER_ENTRIES_COLLECTION = "teacher_entries";
+
 const REGION_USERS_COLLECTION = "regionUsers";
 
 // ======================================================
@@ -62,40 +65,62 @@ const UNIT_AMOUNT = 7000;
 // ======================================================
 
 const userSummaryTableBody =
-    document.getElementById("userSummaryTableBody");
+    document.getElementById(
+        "userSummaryTableBody"
+    );
 
 const userSummaryTotalTarget =
-    document.getElementById("userSummaryTotalTarget");
+    document.getElementById(
+        "userSummaryTotalTarget"
+    );
 
 const userSummaryTotalCollection =
-    document.getElementById("userSummaryTotalCollection");
+    document.getElementById(
+        "userSummaryTotalCollection"
+    );
 
 const userSummaryTotalRemaining =
-    document.getElementById("userSummaryTotalRemaining");
+    document.getElementById(
+        "userSummaryTotalRemaining"
+    );
 
 const userSummaryTotalPercentage =
-    document.getElementById("userSummaryTotalPercentage");
+    document.getElementById(
+        "userSummaryTotalPercentage"
+    );
 
 const todayCollectionTableBody =
-    document.getElementById("todayCollectionTableBody");
+    document.getElementById(
+        "todayCollectionTableBody"
+    );
 
 const todayCollectionDateFilter =
-    document.getElementById("todayCollectionDateFilter");
+    document.getElementById(
+        "todayCollectionDateFilter"
+    );
 
 const downloadDashboardImageBtn =
-    document.getElementById("downloadDashboardImageBtn");
+    document.getElementById(
+        "downloadDashboardImageBtn"
+    );
 
 const downloadTodayCollectionImageBtn =
-    document.getElementById("downloadTodayCollectionImageBtn");
+    document.getElementById(
+        "downloadTodayCollectionImageBtn"
+    );
 
 // ======================================================
 // DATA
 // ======================================================
 
 let employees = [];
+
 let dailyEntries = [];
+
 let teacherEntries = [];
+
 let regionUsers = [];
+
 let userSummaryData = [];
 
 // ======================================================
@@ -107,7 +132,6 @@ function normalize(value) {
     return String(value ?? "")
         .trim()
         .toLowerCase();
-
 }
 
 // ======================================================
@@ -116,34 +140,18 @@ function normalize(value) {
 
 function numberValue(value) {
 
-    if (
-        value === null ||
-        value === undefined ||
-        value === ""
-    ) {
-        return 0;
-    }
-
-    if (typeof value === "number") {
-
-        return Number.isFinite(value)
-            ? value
-            : 0;
-
-    }
-
-    const number = Number(
-        String(value)
-            .replace(/,/g, "")
-            .replace(/₹/g, "")
-            .replace(/\s/g, "")
-            .trim()
-    );
+    const number =
+        Number(
+            String(value ?? "")
+                .replace(/,/g, "")
+                .replace(/₹/g, "")
+                .replace(/\s/g, "")
+                .trim()
+        );
 
     return Number.isFinite(number)
         ? number
         : 0;
-
 }
 
 // ======================================================
@@ -152,8 +160,10 @@ function numberValue(value) {
 
 function getUnitsFromAmount(value) {
 
-    return numberValue(value) / UNIT_AMOUNT;
+    const amount =
+        numberValue(value);
 
+    return amount / UNIT_AMOUNT;
 }
 
 // ======================================================
@@ -162,15 +172,18 @@ function getUnitsFromAmount(value) {
 
 function formatUnit(value) {
 
-    const units = getUnitsFromAmount(value);
+    const units =
+        getUnitsFromAmount(value);
 
     return (
-        units.toLocaleString("en-IN", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        }) + " Unit"
+        units.toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        ) + " Unit"
     );
-
 }
 
 // ======================================================
@@ -179,13 +192,16 @@ function formatUnit(value) {
 
 function formatUnitNumber(value) {
 
-    const units = getUnitsFromAmount(value);
+    const units =
+        getUnitsFromAmount(value);
 
-    return units.toLocaleString("en-IN", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2
-    });
-
+    return units.toLocaleString(
+        "en-IN",
+        {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        }
+    );
 }
 
 // ======================================================
@@ -196,12 +212,14 @@ function formatAmount(value) {
 
     return (
         "₹" +
-        numberValue(value).toLocaleString("en-IN", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        })
+        numberValue(value).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        )
     );
-
 }
 
 // ======================================================
@@ -210,8 +228,10 @@ function formatAmount(value) {
 
 function unitToAmount(units) {
 
-    return numberValue(units) * UNIT_AMOUNT;
-
+    return (
+        numberValue(units) *
+        UNIT_AMOUNT
+    );
 }
 
 // ======================================================
@@ -226,7 +246,6 @@ function escapeHTML(value) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-
 }
 
 // ======================================================
@@ -253,20 +272,11 @@ function getEmployeeCode(employee) {
 
         employee.user_code ||
 
-        employee.teacherCode ||
-
-        employee.teacher_code ||
-
-        employee.emp_id ||
-
-        employee.empId ||
-
         employee.id ||
 
         ""
 
     ).trim();
-
 }
 
 // ======================================================
@@ -301,18 +311,9 @@ function getEntryEmployeeCode(entry) {
 
         entry.empId ||
 
-        entry.teacherId ||
-
-        entry.teacher_id ||
-
-        entry.staffCode ||
-
-        entry.staff_code ||
-
         ""
 
     ).trim();
-
 }
 
 // ======================================================
@@ -321,161 +322,21 @@ function getEntryEmployeeCode(entry) {
 
 function getEntryAmount(entry) {
 
-    const possibleValues = [
+    return numberValue(
 
-        entry.amount,
-        entry.collection,
-        entry.collectionAmount,
-        entry.totalCollection,
-        entry.total_collection,
-        entry.collection_amount,
-        entry.amountCollected,
-        entry.amount_collected
+        entry.amount ||
 
-    ];
+        entry.collection ||
 
-    for (const value of possibleValues) {
+        entry.collectionAmount ||
 
-        if (
-            value !== undefined &&
-            value !== null &&
-            value !== ""
-        ) {
+        entry.totalCollection ||
 
-            return numberValue(value);
+        entry.total_collection ||
 
-        }
+        0
 
-    }
-
-    return 0;
-
-}
-
-// ======================================================
-// DATE NORMALIZATION
-// ======================================================
-
-function normalizeDateValue(value) {
-
-    if (!value) {
-        return "";
-    }
-
-    // Firestore Timestamp
-    if (
-        typeof value === "object" &&
-        typeof value.toDate === "function"
-    ) {
-
-        const date = value.toDate();
-
-        return localDateString(date);
-
-    }
-
-    // Firestore timestamp object
-    if (
-        typeof value === "object" &&
-        value.seconds
-    ) {
-
-        const date =
-            new Date(
-                Number(value.seconds) * 1000
-            );
-
-        return localDateString(date);
-
-    }
-
-    const raw =
-        String(value).trim();
-
-    if (!raw) {
-        return "";
-    }
-
-    // YYYY-MM-DD
-    let match =
-        raw.match(
-            /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/
-        );
-
-    if (match) {
-
-        return (
-            match[1] +
-            "-" +
-            String(match[2]).padStart(2, "0") +
-            "-" +
-            String(match[3]).padStart(2, "0")
-        );
-
-    }
-
-    // DD-MM-YYYY / DD/MM/YYYY
-    match =
-        raw.match(
-            /^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/
-        );
-
-    if (match) {
-
-        return (
-            match[3] +
-            "-" +
-            String(match[2]).padStart(2, "0") +
-            "-" +
-            String(match[1]).padStart(2, "0")
-        );
-
-    }
-
-    const parsed =
-        new Date(raw);
-
-    if (
-        Number.isFinite(
-            parsed.getTime()
-        )
-    ) {
-
-        return localDateString(parsed);
-
-    }
-
-    return raw;
-
-}
-
-// ======================================================
-// LOCAL DATE STRING
-// ======================================================
-
-function localDateString(date) {
-
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0");
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, "0");
-
-    return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day
     );
-
 }
 
 // ======================================================
@@ -484,34 +345,21 @@ function localDateString(date) {
 
 function getEntryDate(entry) {
 
-    const possibleDates = [
+    return String(
 
-        entry.date,
-        entry.entryDate,
-        entry.entry_date,
-        entry.collectionDate,
-        entry.collection_date,
-        entry.dateValue,
-        entry.collection_date_value
+        entry.date ||
 
-    ];
+        entry.entryDate ||
 
-    for (const value of possibleDates) {
+        entry.entry_date ||
 
-        if (
-            value !== undefined &&
-            value !== null &&
-            String(value).trim() !== ""
-        ) {
+        entry.collectionDate ||
 
-            return normalizeDateValue(value);
+        entry.collection_date ||
 
-        }
+        ""
 
-    }
-
-    return "";
-
+    ).trim();
 }
 
 // ======================================================
@@ -528,14 +376,9 @@ function getEmployeeRegion(employee) {
 
         employee.region_name ||
 
-        employee.assignedRegion ||
-
-        employee.assigned_region ||
-
         ""
 
     ).trim();
-
 }
 
 // ======================================================
@@ -555,7 +398,6 @@ function getEmployeeState(employee) {
         ""
 
     ).trim();
-
 }
 
 // ======================================================
@@ -583,7 +425,6 @@ function getUserCode(user) {
         ""
 
     ).trim();
-
 }
 
 // ======================================================
@@ -613,7 +454,6 @@ function getUserName(user) {
         "Unknown User"
 
     ).trim();
-
 }
 
 // ======================================================
@@ -635,7 +475,6 @@ function getUserTarget(user) {
         0
 
     );
-
 }
 
 // ======================================================
@@ -668,12 +507,10 @@ async function loadEmployees() {
 
         }
     );
-
 }
 
 // ======================================================
 // LOAD DAILY ENTRIES
-// OLD COLLECTION
 // ======================================================
 
 async function loadDailyEntries() {
@@ -722,7 +559,7 @@ async function loadDailyEntries() {
     catch (error) {
 
         console.warn(
-            "daily_entry orderBy failed:",
+            "daily_entry createdAt orderBy failed. Loading without orderBy.",
             error
         );
 
@@ -755,12 +592,10 @@ async function loadDailyEntries() {
         );
 
     }
-
 }
 
 // ======================================================
 // LOAD TEACHER ENTRIES
-// NEW COLLECTION
 // ======================================================
 
 async function loadTeacherEntries() {
@@ -809,7 +644,7 @@ async function loadTeacherEntries() {
     catch (error) {
 
         console.warn(
-            "teacher_entries orderBy failed:",
+            "teacher_entries createdAt orderBy failed. Loading without orderBy.",
             error
         );
 
@@ -842,7 +677,6 @@ async function loadTeacherEntries() {
         );
 
     }
-
 }
 
 // ======================================================
@@ -875,7 +709,6 @@ async function loadRegionUsers() {
 
         }
     );
-
 }
 
 // ======================================================
@@ -885,6 +718,7 @@ async function loadRegionUsers() {
 function getCreatedTime(entry) {
 
     if (!entry.createdAt) {
+
         return 0;
     }
 
@@ -894,19 +728,15 @@ function getCreatedTime(entry) {
     ) {
 
         return entry.createdAt.toMillis();
-
     }
 
-    if (
-        entry.createdAt.seconds !== undefined
-    ) {
+    if (entry.createdAt.seconds) {
 
         return (
             Number(
                 entry.createdAt.seconds
             ) * 1000
         );
-
     }
 
     const date =
@@ -920,14 +750,10 @@ function getCreatedTime(entry) {
     return Number.isFinite(time)
         ? time
         : 0;
-
 }
 
 // ======================================================
-// MERGE ENTRIES
-//
-// IMPORTANT:
-// daily_entry + teacher_entries
+// MERGE DAILY ENTRY + TEACHER ENTRIES
 //
 // Same Teacher + Same Date = SUM
 // ======================================================
@@ -964,7 +790,6 @@ function getLatestEntries() {
             ) {
 
                 return;
-
             }
 
             const normalizedCode =
@@ -973,7 +798,7 @@ function getLatestEntries() {
                 );
 
             const normalizedDate =
-                normalizeDateValue(
+                normalize(
                     date
                 );
 
@@ -999,7 +824,7 @@ function getLatestEntries() {
                             employeeCode,
 
                         date:
-                            normalizedDate,
+                            date,
 
                         amount:
                             amount,
@@ -1008,28 +833,25 @@ function getLatestEntries() {
                             amount,
 
                         sources:
-                            entry.source
-                                ? [entry.source]
-                                : [],
+                            [
+                                entry.source || ""
+                            ],
 
                         entryIds:
-                            entry.id
-                                ? [entry.id]
-                                : []
+                            [
+                                entry.id || ""
+                            ]
 
                     }
                 );
 
                 return;
-
             }
 
             const existing =
-                mergedMap.get(key);
-
-            // =========================================
-            // SUM BOTH COLLECTIONS
-            // =========================================
+                mergedMap.get(
+                    key
+                );
 
             existing.amount =
                 numberValue(
@@ -1039,10 +861,6 @@ function getLatestEntries() {
 
             existing.collection =
                 existing.amount;
-
-            // =========================================
-            // SOURCE TRACK
-            // =========================================
 
             if (
                 entry.source &&
@@ -1057,10 +875,6 @@ function getLatestEntries() {
 
             }
 
-            // =========================================
-            // DOCUMENT ID TRACK
-            // =========================================
-
             if (
                 entry.id &&
                 !existing.entryIds.includes(
@@ -1073,10 +887,6 @@ function getLatestEntries() {
                 );
 
             }
-
-            // =========================================
-            // KEEP LATEST NON-DATA INFORMATION
-            // =========================================
 
             const existingTime =
                 getCreatedTime(
@@ -1102,7 +912,6 @@ function getLatestEntries() {
 
                     existing.teacherName =
                         entry.teacherName;
-
                 }
 
                 if (
@@ -1111,7 +920,6 @@ function getLatestEntries() {
 
                     existing.teacher_name =
                         entry.teacher_name;
-
                 }
 
                 if (
@@ -1120,7 +928,6 @@ function getLatestEntries() {
 
                     existing.region =
                         entry.region;
-
                 }
 
                 if (
@@ -1129,7 +936,6 @@ function getLatestEntries() {
 
                     existing.state =
                         entry.state;
-
                 }
 
                 if (
@@ -1138,7 +944,6 @@ function getLatestEntries() {
 
                     existing.city =
                         entry.city;
-
                 }
 
             }
@@ -1149,7 +954,6 @@ function getLatestEntries() {
     return Array.from(
         mergedMap.values()
     );
-
 }
 
 // ======================================================
@@ -1165,7 +969,6 @@ function getUserAccessRules(user) {
     ) {
 
         return user.access;
-
     }
 
     if (
@@ -1175,30 +978,9 @@ function getUserAccessRules(user) {
     ) {
 
         return user.accessRules;
-
-    }
-
-    // Support single access object
-    if (
-        user.access &&
-        typeof user.access === "object"
-    ) {
-
-        return [user.access];
-
-    }
-
-    if (
-        user.accessRules &&
-        typeof user.accessRules === "object"
-    ) {
-
-        return [user.accessRules];
-
     }
 
     return [];
-
 }
 
 // ======================================================
@@ -1208,6 +990,7 @@ function getUserAccessRules(user) {
 function isFullRegionRule(rule) {
 
     if (!rule) {
+
         return false;
     }
 
@@ -1232,7 +1015,6 @@ function isFullRegionRule(rule) {
         ) === "full"
 
     );
-
 }
 
 // ======================================================
@@ -1254,7 +1036,6 @@ function getRuleRegion(rule) {
         ""
 
     );
-
 }
 
 // ======================================================
@@ -1270,7 +1051,6 @@ function getRuleStates(rule) {
     ) {
 
         return rule.states;
-
     }
 
     if (
@@ -1278,14 +1058,9 @@ function getRuleStates(rule) {
         "string"
     ) {
 
-        return rule.states
-            .split(",")
-            .map(
-                state =>
-                    state.trim()
-            )
-            .filter(Boolean);
-
+        return [
+            rule.states
+        ];
     }
 
     if (
@@ -1295,7 +1070,6 @@ function getRuleStates(rule) {
     ) {
 
         return rule.selectedStates;
-
     }
 
     if (
@@ -1305,27 +1079,23 @@ function getRuleStates(rule) {
     ) {
 
         return rule.assignedStates;
-
     }
 
-    if (
-        rule.state
-    ) {
+    if (rule.state) {
 
-        return [rule.state];
-
+        return [
+            rule.state
+        ];
     }
 
-    if (
-        rule.stateName
-    ) {
+    if (rule.stateName) {
 
-        return [rule.stateName];
-
+        return [
+            rule.stateName
+        ];
     }
 
     return [];
-
 }
 
 // ======================================================
@@ -1347,7 +1117,6 @@ function employeeMatchesAccess(
     ) {
 
         return false;
-
     }
 
     const employeeRegion =
@@ -1368,6 +1137,7 @@ function employeeMatchesAccess(
         (rule) => {
 
             if (!rule) {
+
                 return false;
             }
 
@@ -1383,7 +1153,6 @@ function employeeMatchesAccess(
             ) {
 
                 return false;
-
             }
 
             if (
@@ -1393,7 +1162,6 @@ function employeeMatchesAccess(
             ) {
 
                 return true;
-
             }
 
             const states =
@@ -1406,7 +1174,6 @@ function employeeMatchesAccess(
             ) {
 
                 return true;
-
             }
 
             return states.some(
@@ -1424,7 +1191,6 @@ function employeeMatchesAccess(
                     ) {
 
                         return true;
-
                     }
 
                     return (
@@ -1437,7 +1203,6 @@ function employeeMatchesAccess(
 
         }
     );
-
 }
 
 // ======================================================
@@ -1456,7 +1221,6 @@ function getUserEmployees(user) {
 
         }
     );
-
 }
 
 // ======================================================
@@ -1465,7 +1229,7 @@ function getUserEmployees(user) {
 
 function getUserCollection(
     userEmployees,
-    mergedEntries
+    latestEntries
 ) {
 
     const employeeCodes =
@@ -1486,7 +1250,6 @@ function getUserCollection(
                 employeeCodes.add(
                     code
                 );
-
             }
 
         }
@@ -1494,7 +1257,7 @@ function getUserCollection(
 
     let total = 0;
 
-    mergedEntries.forEach(
+    latestEntries.forEach(
         (entry) => {
 
             const entryCode =
@@ -1514,14 +1277,12 @@ function getUserCollection(
                     getEntryAmount(
                         entry
                     );
-
             }
 
         }
     );
 
     return total;
-
 }
 
 // ======================================================
@@ -1530,7 +1291,7 @@ function getUserCollection(
 
 function buildUserSummary() {
 
-    const mergedEntries =
+    const latestEntries =
         getLatestEntries();
 
     userSummaryData = [];
@@ -1546,7 +1307,7 @@ function buildUserSummary() {
             const collectionAmount =
                 getUserCollection(
                     userEmployees,
-                    mergedEntries
+                    latestEntries
                 );
 
             const target =
@@ -1609,7 +1370,6 @@ function buildUserSummary() {
 
         }
     );
-
 }
 
 // ======================================================
@@ -1619,6 +1379,7 @@ function buildUserSummary() {
 function updateUserSummaryCards(list) {
 
     let totalTarget = 0;
+
     let totalCollection = 0;
 
     list.forEach(
@@ -1656,7 +1417,6 @@ function updateUserSummaryCards(list) {
             formatUnit(
                 totalTarget
             );
-
     }
 
     if (
@@ -1667,7 +1427,6 @@ function updateUserSummaryCards(list) {
             formatUnit(
                 totalCollection
             );
-
     }
 
     if (
@@ -1678,7 +1437,6 @@ function updateUserSummaryCards(list) {
             formatUnit(
                 totalRemaining
             );
-
     }
 
     if (
@@ -1688,9 +1446,7 @@ function updateUserSummaryCards(list) {
         userSummaryTotalPercentage.textContent =
             percentage.toFixed(2) +
             "%";
-
     }
-
 }
 
 // ======================================================
@@ -1704,7 +1460,6 @@ function displayUserSummary(list) {
     ) {
 
         return;
-
     }
 
     if (
@@ -1713,27 +1468,26 @@ function displayUserSummary(list) {
 
         userSummaryTableBody.innerHTML = `
 
-            <tr>
+<tr>
 
-                <td
-                    colspan="6"
-                    class="no-data"
-                >
+<td
+colspan="6"
+class="no-data"
+>
 
-                    Koi Region User nahi mila.
+Koi Region User nahi mila.
 
-                </td>
+</td>
 
-            </tr>
+</tr>
 
-        `;
+`;
 
         updateUserSummaryCards(
             list
         );
 
         return;
-
     }
 
     let html = "";
@@ -1764,6 +1518,7 @@ function displayUserSummary(list) {
                     "complete";
 
             }
+
             else if (
                 percentage >= 75
             ) {
@@ -1772,13 +1527,13 @@ function displayUserSummary(list) {
                     "good";
 
             }
+
             else if (
                 percentage >= 50
             ) {
 
                 percentageClass =
                     "medium";
-
             }
 
             const safeUserName =
@@ -1793,145 +1548,145 @@ function displayUserSummary(list) {
 
             html += `
 
-                <tr>
+<tr>
 
-                    <td>
+<td>
 
-                        <strong>
-                            ${index + 1}
-                        </strong>
+<strong>
+${index + 1}
+</strong>
 
-                    </td>
+</td>
 
-                    <td>
+<td>
 
-                        <input
-                            type="text"
-                            class="user-name-input"
-                            data-id="${safeId}"
-                            value="${safeUserName}"
-                            placeholder="User Name"
-                        >
+<input
+type="text"
+class="user-name-input"
+data-id="${safeId}"
+value="${safeUserName}"
+placeholder="User Name"
+>
 
-                    </td>
+</td>
 
-                    <td>
+<td>
 
-                        <div
-                            class="target-edit-box"
-                        >
+<div
+class="target-edit-box"
+>
 
-                            <input
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                class="user-target-input"
-                                data-id="${safeId}"
-                                value="${formatUnitNumber(
-                                    user.target
-                                )}"
-                                placeholder="Unit"
-                            >
+<input
+type="number"
+min="0"
+step="0.01"
+class="user-target-input"
+data-id="${safeId}"
+value="${formatUnitNumber(
+    user.target
+)}"
+placeholder="Unit"
+>
 
-                            <span
-                                class="unit-input-label"
-                            >
-                                Unit
-                            </span>
+<span
+class="unit-input-label"
+>
+Unit
+</span>
 
-                            <button
-                                type="button"
-                                class="save-user-target-btn"
-                                data-id="${safeId}"
-                                title="Save Target"
-                            >
+<button
+type="button"
+class="save-user-target-btn"
+data-id="${safeId}"
+title="Save Target"
+>
 
-                                <i
-                                    class="fa-solid fa-save"
-                                ></i>
+<i
+class="fa-solid fa-save"
+></i>
 
-                            </button>
+</button>
 
-                        </div>
+</div>
 
-                    </td>
+</td>
 
-                    <td>
+<td>
 
-                        <span
-                            class="
-                                unit-main
-                                collection-main
-                            "
-                        >
+<span
+class="
+unit-main
+collection-main
+"
+>
 
-                            ${formatUnit(
-                                user.collection
-                            )}
+${formatUnit(
+    user.collection
+)}
 
-                        </span>
+</span>
 
-                    </td>
+</td>
 
-                    <td>
+<td>
 
-                        <span
-                            class="
-                                unit-main
-                                remaining-main
-                            "
-                        >
+<span
+class="
+unit-main
+remaining-main
+"
+>
 
-                            ${formatUnit(
-                                user.remaining
-                            )}
+${formatUnit(
+    user.remaining
+)}
 
-                        </span>
+</span>
 
-                    </td>
+</td>
 
-                    <td>
+<td>
 
-                        <div
-                            class="percentage-wrapper"
-                        >
+<div
+class="percentage-wrapper"
+>
 
-                            <div
-                                class="
-                                    percentage-badge
-                                    ${percentageClass}
-                                "
-                            >
+<div
+class="
+percentage-badge
+${percentageClass}
+"
+>
 
-                                ${percentage.toFixed(2)}%
+${percentage.toFixed(2)}%
 
-                            </div>
+</div>
 
-                            <div
-                                class="
-                                    user-progress-container
-                                "
-                            >
+<div
+class="
+user-progress-container
+"
+>
 
-                                <div
-                                    class="
-                                        user-progress-bar
-                                        ${percentageClass}
-                                    "
-                                    style="
-                                        width:${progress}%;
-                                    "
-                                ></div>
+<div
+class="
+user-progress-bar
+${percentageClass}
+"
+style="
+width:${progress}%;
+"
+></div>
 
-                            </div>
+</div>
 
-                        </div>
+</div>
 
-                    </td>
+</td>
 
-                </tr>
+</tr>
 
-            `;
+`;
 
         }
     );
@@ -1967,6 +1722,7 @@ function displayUserSummary(list) {
                             );
 
                         if (!input) {
+
                             return;
                         }
 
@@ -1984,7 +1740,6 @@ function displayUserSummary(list) {
                             );
 
                             return;
-
                         }
 
                         const targetAmount =
@@ -2000,6 +1755,7 @@ function displayUserSummary(list) {
                             );
 
                         if (!user) {
+
                             return;
                         }
 
@@ -2011,15 +1767,15 @@ function displayUserSummary(list) {
 
                         this.innerHTML = `
 
-                            <i
-                                class="
-                                    fa-solid
-                                    fa-spinner
-                                    fa-spin
-                                "
-                            ></i>
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
 
-                        `;
+`;
 
                         try {
 
@@ -2135,7 +1891,6 @@ function displayUserSummary(list) {
                             );
 
                             return;
-
                         }
 
                         const user =
@@ -2146,6 +1901,7 @@ function displayUserSummary(list) {
                             );
 
                         if (!user) {
+
                             return;
                         }
 
@@ -2202,61 +1958,77 @@ function displayUserSummary(list) {
 
             }
         );
-
 }
 
 // ======================================================
-// TODAY DATE
+// DATE - TODAY
 // ======================================================
 
 function getTodayDate() {
 
-    return localDateString(
-        new Date()
-    );
+    const today =
+        new Date();
 
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+    return (
+        `${year}-${month}-${day}`
+    );
 }
 
 // ======================================================
-// FORMAT DATE
+// FORMAT DATE FOR DISPLAY
 // ======================================================
 
 function formatDisplayDate(dateValue) {
 
     if (!dateValue) {
+
         return "";
     }
 
-    const normalized =
-        normalizeDateValue(
-            dateValue
-        );
-
     const parts =
-        normalized.split("-");
+        String(
+            dateValue
+        ).split("-");
 
     if (
         parts.length !== 3
     ) {
 
-        return normalized;
-
+        return dateValue;
     }
 
     return (
         `${parts[2]}-${parts[1]}-${parts[0]}`
     );
-
 }
 
 // ======================================================
-// USER COLLECTION FOR DATE
+// GET USER COLLECTION FOR SELECTED DATE
 // ======================================================
 
 function getUserCollectionForDate(
     user,
     selectedDate,
-    mergedEntries
+    latestEntries
 ) {
 
     const userEmployees =
@@ -2282,36 +2054,27 @@ function getUserCollectionForDate(
                 employeeCodes.add(
                     code
                 );
-
             }
 
         }
     );
 
-    const wantedDate =
-        normalizeDateValue(
-            selectedDate
-        );
-
     let total = 0;
 
-    mergedEntries.forEach(
+    latestEntries.forEach(
         (entry) => {
 
             const entryDate =
-                normalizeDateValue(
-                    getEntryDate(
-                        entry
-                    )
+                getEntryDate(
+                    entry
                 );
 
             if (
                 entryDate !==
-                wantedDate
+                selectedDate
             ) {
 
                 return;
-
             }
 
             const entryCode =
@@ -2331,14 +2094,12 @@ function getUserCollectionForDate(
                     getEntryAmount(
                         entry
                     );
-
             }
 
         }
     );
 
     return total;
-
 }
 
 // ======================================================
@@ -2354,17 +2115,17 @@ function displayTodayCollection(
     ) {
 
         return;
-
     }
 
-    if (!selectedDate) {
+    if (
+        !selectedDate
+    ) {
 
         selectedDate =
             getTodayDate();
-
     }
 
-    const mergedEntries =
+    const latestEntries =
         getLatestEntries();
 
     let grandTotal = 0;
@@ -2378,7 +2139,7 @@ function displayTodayCollection(
                 getUserCollectionForDate(
                     user,
                     selectedDate,
-                    mergedEntries
+                    latestEntries
                 );
 
             grandTotal +=
@@ -2393,91 +2154,88 @@ function displayTodayCollection(
 
             html += `
 
-                <tr>
+<tr>
 
-                    <td>
+<td>
 
-                        <strong>
-                            ${index + 1}
-                        </strong>
+<strong>
+${index + 1}
+</strong>
 
-                    </td>
+</td>
 
-                    <td>
+<td>
 
-                        <span
-                            class="today-user-name"
-                        >
+<span
+class="today-user-name"
+>
 
-                            ${userName}
+${userName}
 
-                        </span>
+</span>
 
-                    </td>
+</td>
 
-                    <td>
+<td>
 
-                        <span
-                            class="today-total-amount"
-                        >
+<span
+class="
+today-total-amount
+"
 
-                            ${formatAmount(
-                                amount
-                            )}
+>
 
-                        </span>
+${formatAmount(
+    amount
+)}
 
-                    </td>
+</span>
 
-                </tr>
+</td>
 
-            `;
+</tr>
+
+`;
 
         }
     );
 
     html += `
 
-        <tr
-            class="today-grand-total"
-        >
+<tr
+class="today-grand-total"
+>
 
-            <td
-                colspan="2"
-                class="today-total-label"
-            >
+<td
+colspan="2"
+class="today-total-label"
+>
 
-                Total Amount
+Total Amount
 
-            </td>
+</td>
 
-            <td
-                class="today-total-value"
-            >
+<td
+class="today-total-value"
+>
 
-                ${formatAmount(
-                    grandTotal
-                )}
+${formatAmount(
+    grandTotal
+)}
 
-            </td>
+</td>
 
-        </tr>
+</tr>
 
-    `;
+`;
 
     todayCollectionTableBody.innerHTML =
         html;
 
     console.log(
-        "Selected Date:",
-        selectedDate
-    );
-
-    console.log(
         "Today Collection Total:",
         grandTotal
     );
-
 }
 
 // ======================================================
@@ -2501,11 +2259,12 @@ if (
 
         }
     );
-
 }
 
 // ======================================================
 // DOWNLOAD DASHBOARD IMAGE
+// FIXED:
+// FULL WIDTH + SIDE DATA
 // ======================================================
 
 if (
@@ -2528,7 +2287,6 @@ if (
                 );
 
                 return;
-
             }
 
             if (
@@ -2541,7 +2299,6 @@ if (
                 );
 
                 return;
-
             }
 
             const oldHTML =
@@ -2552,17 +2309,17 @@ if (
 
             this.innerHTML = `
 
-                <i
-                    class="
-                        fa-solid
-                        fa-spinner
-                        fa-spin
-                    "
-                ></i>
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
 
-                Preparing Image...
+Preparing Image...
 
-            `;
+`;
 
             let originalBodyOverflow = "";
             let originalHtmlOverflow = "";
@@ -2585,6 +2342,10 @@ if (
                     }
                 );
 
+                // ==========================================
+                // SAVE ORIGINAL PAGE SETTINGS
+                // ==========================================
+
                 originalBodyOverflow =
                     document.body.style.overflow;
 
@@ -2597,11 +2358,27 @@ if (
                 document.documentElement.style.overflow =
                     "visible";
 
+                // ==========================================
+                // GET COMPLETE WIDTH / HEIGHT
+                // ==========================================
+
                 const captureWidth =
-                    dashboard.scrollWidth;
+                    Math.max(
+                        dashboard.scrollWidth,
+                        dashboard.offsetWidth,
+                        dashboard.clientWidth
+                    );
 
                 const captureHeight =
-                    dashboard.scrollHeight;
+                    Math.max(
+                        dashboard.scrollHeight,
+                        dashboard.offsetHeight,
+                        dashboard.clientHeight
+                    );
+
+                // ==========================================
+                // CREATE FULL CANVAS
+                // ==========================================
 
                 const canvas =
                     await html2canvas(
@@ -2643,11 +2420,14 @@ if (
                                     clonedDocument
                                 ) {
 
+                                    // ======================================
+                                    // HIDE DOWNLOAD BUTTON
+                                    // ======================================
+
                                     const clonedButton =
-                                        clonedDocument
-                                            .getElementById(
-                                                "downloadDashboardImageBtn"
-                                            );
+                                        clonedDocument.getElementById(
+                                            "downloadDashboardImageBtn"
+                                        );
 
                                     if (
                                         clonedButton
@@ -2658,17 +2438,56 @@ if (
 
                                     }
 
+                                    // ======================================
+                                    // MAIN CONTENT FULL WIDTH
+                                    // ======================================
+
+                                    const clonedMain =
+                                        clonedDocument.querySelector(
+                                            ".main-content"
+                                        );
+
+                                    if (
+                                        clonedMain
+                                    ) {
+
+                                        clonedMain.style.width =
+                                            captureWidth + "px";
+
+                                        clonedMain.style.minWidth =
+                                            captureWidth + "px";
+
+                                        clonedMain.style.maxWidth =
+                                            "none";
+
+                                        clonedMain.style.marginLeft =
+                                            "0";
+
+                                        clonedMain.style.padding =
+                                            "30px";
+
+                                        clonedMain.style.overflow =
+                                            "visible";
+
+                                    }
+
+                                    // ======================================
+                                    // DASHBOARD FULL WIDTH
+                                    // ======================================
+
                                     const clonedDashboard =
-                                        clonedDocument
-                                            .getElementById(
-                                                "dashboardCaptureArea"
-                                            );
+                                        clonedDocument.getElementById(
+                                            "dashboardCaptureArea"
+                                        );
 
                                     if (
                                         clonedDashboard
                                     ) {
 
                                         clonedDashboard.style.width =
+                                            captureWidth + "px";
+
+                                        clonedDashboard.style.minWidth =
                                             captureWidth + "px";
 
                                         clonedDashboard.style.maxWidth =
@@ -2685,11 +2504,40 @@ if (
 
                                     }
 
+                                    // ======================================
+                                    // SUMMARY CARDS
+                                    // ======================================
+
+                                    const summaryCards =
+                                        clonedDocument.querySelector(
+                                            ".user-summary-cards"
+                                        );
+
+                                    if (
+                                        summaryCards
+                                    ) {
+
+                                        summaryCards.style.width =
+                                            captureWidth + "px";
+
+                                        summaryCards.style.minWidth =
+                                            captureWidth + "px";
+
+                                        summaryCards.style.maxWidth =
+                                            "none";
+
+                                    }
+
+                                    // ======================================
+                                    // TABLE WRAPPER
+                                    // IMPORTANT:
+                                    // SCREEN KA HORIZONTAL SCROLL REMOVE
+                                    // ======================================
+
                                     const wrappers =
-                                        clonedDocument
-                                            .querySelectorAll(
-                                                ".user-summary-table-wrapper"
-                                            );
+                                        clonedDocument.querySelectorAll(
+                                            ".user-summary-table-wrapper"
+                                        );
 
                                     wrappers.forEach(
                                         function (
@@ -2697,7 +2545,10 @@ if (
                                         ) {
 
                                             wrapper.style.width =
-                                                "100%";
+                                                captureWidth + "px";
+
+                                            wrapper.style.minWidth =
+                                                captureWidth + "px";
 
                                             wrapper.style.maxWidth =
                                                 "none";
@@ -2705,14 +2556,23 @@ if (
                                             wrapper.style.overflow =
                                                 "visible";
 
+                                            wrapper.style.overflowX =
+                                                "visible";
+
+                                            wrapper.style.overflowY =
+                                                "visible";
+
                                         }
                                     );
 
+                                    // ======================================
+                                    // TABLE FULL WIDTH
+                                    // ======================================
+
                                     const tables =
-                                        clonedDocument
-                                            .querySelectorAll(
-                                                ".user-summary-table"
-                                            );
+                                        clonedDocument.querySelectorAll(
+                                            ".user-summary-table"
+                                        );
 
                                     tables.forEach(
                                         function (
@@ -2722,8 +2582,69 @@ if (
                                             table.style.width =
                                                 "100%";
 
+                                            table.style.minWidth =
+                                                "800px";
+
                                             table.style.maxWidth =
                                                 "none";
+
+                                            table.style.tableLayout =
+                                                "auto";
+
+                                        }
+                                    );
+
+                                    // ======================================
+                                    // TABLE CELLS
+                                    // ======================================
+
+                                    const cells =
+                                        clonedDocument.querySelectorAll(
+                                            ".user-summary-table th, .user-summary-table td"
+                                        );
+
+                                    cells.forEach(
+                                        function (
+                                            cell
+                                        ) {
+
+                                            cell.style.whiteSpace =
+                                                "nowrap";
+
+                                        }
+                                    );
+
+                                    // ======================================
+                                    // REMOVE ALL HORIZONTAL SCROLL
+                                    // ======================================
+
+                                    const allElements =
+                                        clonedDocument.querySelectorAll(
+                                            "*"
+                                        );
+
+                                    allElements.forEach(
+                                        function (
+                                            element
+                                        ) {
+
+                                            const computed =
+                                                clonedDocument.defaultView
+                                                    .getComputedStyle(
+                                                        element
+                                                    );
+
+                                            if (
+                                                computed.overflowX ===
+                                                    "auto" ||
+                                                computed.overflowX ===
+                                                    "scroll"
+                                            ) {
+
+                                                element.style.overflowX =
+                                                    "visible";
+
+                                            }
 
                                         }
                                     );
@@ -2733,17 +2654,29 @@ if (
                         }
                     );
 
+                // ==========================================
+                // RESTORE PAGE
+                // ==========================================
+
                 document.body.style.overflow =
                     originalBodyOverflow;
 
                 document.documentElement.style.overflow =
                     originalHtmlOverflow;
 
+                // ==========================================
+                // CREATE IMAGE
+                // ==========================================
+
                 const image =
                     canvas.toDataURL(
                         "image/png",
                         1.0
                     );
+
+                // ==========================================
+                // DATE
+                // ==========================================
 
                 const today =
                     new Date();
@@ -2766,6 +2699,10 @@ if (
                         2,
                         "0"
                     );
+
+                // ==========================================
+                // DOWNLOAD
+                // ==========================================
 
                 const link =
                     document.createElement(
@@ -2849,7 +2786,6 @@ if (
                 );
 
                 return;
-
             }
 
             if (
@@ -2862,7 +2798,6 @@ if (
                 );
 
                 return;
-
             }
 
             const oldHTML =
@@ -2873,17 +2808,17 @@ if (
 
             this.innerHTML = `
 
-                <i
-                    class="
-                        fa-solid
-                        fa-spinner
-                        fa-spin
-                    "
-                ></i>
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
 
-                Preparing Image...
+Preparing Image...
 
-            `;
+`;
 
             let originalBodyOverflow = "";
             let originalHtmlOverflow = "";
@@ -2919,10 +2854,18 @@ if (
                     "visible";
 
                 const captureWidth =
-                    captureArea.scrollWidth;
+                    Math.max(
+                        captureArea.scrollWidth,
+                        captureArea.offsetWidth,
+                        captureArea.clientWidth
+                    );
 
                 const captureHeight =
-                    captureArea.scrollHeight;
+                    Math.max(
+                        captureArea.scrollHeight,
+                        captureArea.offsetHeight,
+                        captureArea.clientHeight
+                    );
 
                 const canvas =
                     await html2canvas(
@@ -2965,10 +2908,9 @@ if (
                                 ) {
 
                                     const clonedButton =
-                                        clonedDocument
-                                            .getElementById(
-                                                "downloadTodayCollectionImageBtn"
-                                            );
+                                        clonedDocument.getElementById(
+                                            "downloadTodayCollectionImageBtn"
+                                        );
 
                                     if (
                                         clonedButton
@@ -2980,10 +2922,9 @@ if (
                                     }
 
                                     const clonedControls =
-                                        clonedDocument
-                                            .querySelector(
-                                                ".today-collection-controls"
-                                            );
+                                        clonedDocument.querySelector(
+                                            ".today-collection-controls"
+                                        );
 
                                     if (
                                         clonedControls
@@ -2995,16 +2936,18 @@ if (
                                     }
 
                                     const clonedArea =
-                                        clonedDocument
-                                            .getElementById(
-                                                "todayCollectionCaptureArea"
-                                            );
+                                        clonedDocument.getElementById(
+                                            "todayCollectionCaptureArea"
+                                        );
 
                                     if (
                                         clonedArea
                                     ) {
 
                                         clonedArea.style.width =
+                                            captureWidth + "px";
+
+                                        clonedArea.style.minWidth =
                                             captureWidth + "px";
 
                                         clonedArea.style.maxWidth =
@@ -3144,7 +3087,7 @@ async function loadDashboard() {
     try {
 
         // ==============================================
-        // LOADING USER SUMMARY
+        // USER SUMMARY LOADING
         // ==============================================
 
         if (
@@ -3153,33 +3096,33 @@ async function loadDashboard() {
 
             userSummaryTableBody.innerHTML = `
 
-                <tr>
+<tr>
 
-                    <td
-                        colspan="6"
-                        class="no-data"
-                    >
+<td
+colspan="6"
+class="no-data"
+>
 
-                        <i
-                            class="
-                                fa-solid
-                                fa-spinner
-                                fa-spin
-                            "
-                        ></i>
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
 
-                        Loading User Summary...
+Loading User Summary...
 
-                    </td>
+</td>
 
-                </tr>
+</tr>
 
-            `;
+`;
 
         }
 
         // ==============================================
-        // LOADING TODAY COLLECTION
+        // TODAY COLLECTION LOADING
         // ==============================================
 
         if (
@@ -3188,28 +3131,28 @@ async function loadDashboard() {
 
             todayCollectionTableBody.innerHTML = `
 
-                <tr>
+<tr>
 
-                    <td
-                        colspan="3"
-                        class="no-data"
-                    >
+<td
+colspan="3"
+class="no-data"
+>
 
-                        <i
-                            class="
-                                fa-solid
-                                fa-spinner
-                                fa-spin
-                            "
-                        ></i>
+<i
+class="
+fa-solid
+fa-spinner
+fa-spin
+"
+></i>
 
-                        Loading Today Collection...
+Loading Today Collection...
 
-                    </td>
+</td>
 
-                </tr>
+</tr>
 
-            `;
+`;
 
         }
 
@@ -3313,30 +3256,30 @@ async function loadDashboard() {
 
             userSummaryTableBody.innerHTML = `
 
-                <tr>
+<tr>
 
-                    <td
-                        colspan="6"
-                        style="
-                            text-align:center;
-                            padding:30px;
-                            color:#dc2626;
-                        "
-                    >
+<td
+colspan="6"
+style="
+text-align:center;
+padding:30px;
+color:#dc2626;
+"
+>
 
-                        Dashboard data load nahi hua.
+Dashboard data load nahi hua.
 
-                        <br><br>
+<br><br>
 
-                        ${escapeHTML(
-                            error.message
-                        )}
+${escapeHTML(
+    error.message
+)}
 
-                    </td>
+</td>
 
-                </tr>
+</tr>
 
-            `;
+`;
 
         }
 
@@ -3346,36 +3289,35 @@ async function loadDashboard() {
 
             todayCollectionTableBody.innerHTML = `
 
-                <tr>
+<tr>
 
-                    <td
-                        colspan="3"
-                        style="
-                            text-align:center;
-                            padding:30px;
-                            color:#dc2626;
-                        "
-                    >
+<td
+colspan="3"
+style="
+text-align:center;
+padding:30px;
+color:#dc2626;
+"
+>
 
-                        Today Collection data
-                        load nahi hua.
+Today Collection data
+load nahi hua.
 
-                        <br><br>
+<br><br>
 
-                        ${escapeHTML(
-                            error.message
-                        )}
+${escapeHTML(
+    error.message
+)}
 
-                    </td>
+</td>
 
-                </tr>
+</tr>
 
-            `;
+`;
 
         }
 
     }
-
 }
 
 // ======================================================
