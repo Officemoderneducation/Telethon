@@ -2263,8 +2263,8 @@ if (
 
 // ======================================================
 // DOWNLOAD DASHBOARD IMAGE
-// FIXED:
-// FULL WIDTH + SIDE DATA
+// ONLY THIS SECTION FIXED
+// FULL WIDTH + FULL SIDE DATA + FULL HEIGHT
 // ======================================================
 
 if (
@@ -2326,6 +2326,10 @@ Preparing Image...
 
             try {
 
+                // ==================================================
+                // WAIT FOR RENDER
+                // ==================================================
+
                 await new Promise(
                     function (resolve) {
 
@@ -2342,9 +2346,9 @@ Preparing Image...
                     }
                 );
 
-                // ==========================================
+                // ==================================================
                 // SAVE ORIGINAL PAGE SETTINGS
-                // ==========================================
+                // ==================================================
 
                 originalBodyOverflow =
                     document.body.style.overflow;
@@ -2358,15 +2362,21 @@ Preparing Image...
                 document.documentElement.style.overflow =
                     "visible";
 
-                // ==========================================
-                // GET COMPLETE WIDTH / HEIGHT
-                // ==========================================
+                // ==================================================
+                // FORCE COMPLETE DASHBOARD SIZE
+                // ==================================================
+
+                const dashboardRect =
+                    dashboard.getBoundingClientRect();
 
                 const captureWidth =
                     Math.max(
                         dashboard.scrollWidth,
                         dashboard.offsetWidth,
-                        dashboard.clientWidth
+                        dashboard.clientWidth,
+                        Math.ceil(
+                            dashboardRect.width
+                        )
                     );
 
                 const captureHeight =
@@ -2376,9 +2386,9 @@ Preparing Image...
                         dashboard.clientHeight
                     );
 
-                // ==========================================
-                // CREATE FULL CANVAS
-                // ==========================================
+                // ==================================================
+                // HTML2CANVAS
+                // ==================================================
 
                 const canvas =
                     await html2canvas(
@@ -2410,19 +2420,25 @@ Preparing Image...
                                 captureHeight,
 
                             windowWidth:
-                                captureWidth,
+                                Math.max(
+                                    window.innerWidth,
+                                    captureWidth
+                                ),
 
                             windowHeight:
-                                captureHeight,
+                                Math.max(
+                                    window.innerHeight,
+                                    captureHeight
+                                ),
 
                             onclone:
                                 function (
                                     clonedDocument
                                 ) {
 
-                                    // ======================================
+                                    // ==================================================
                                     // HIDE DOWNLOAD BUTTON
-                                    // ======================================
+                                    // ==================================================
 
                                     const clonedButton =
                                         clonedDocument.getElementById(
@@ -2438,9 +2454,9 @@ Preparing Image...
 
                                     }
 
-                                    // ======================================
-                                    // MAIN CONTENT FULL WIDTH
-                                    // ======================================
+                                    // ==================================================
+                                    // MAIN CONTENT
+                                    // ==================================================
 
                                     const clonedMain =
                                         clonedDocument.querySelector(
@@ -2460,20 +2476,32 @@ Preparing Image...
                                         clonedMain.style.maxWidth =
                                             "none";
 
-                                        clonedMain.style.marginLeft =
+                                        clonedMain.style.height =
+                                            "auto";
+
+                                        clonedMain.style.minHeight =
                                             "0";
 
-                                        clonedMain.style.padding =
-                                            "30px";
+                                        clonedMain.style.maxHeight =
+                                            "none";
+
+                                        clonedMain.style.marginLeft =
+                                            "0";
 
                                         clonedMain.style.overflow =
                                             "visible";
 
+                                        clonedMain.style.overflowX =
+                                            "visible";
+
+                                        clonedMain.style.overflowY =
+                                            "visible";
+
                                     }
 
-                                    // ======================================
-                                    // DASHBOARD FULL WIDTH
-                                    // ======================================
+                                    // ==================================================
+                                    // DASHBOARD CAPTURE AREA
+                                    // ==================================================
 
                                     const clonedDashboard =
                                         clonedDocument.getElementById(
@@ -2493,6 +2521,15 @@ Preparing Image...
                                         clonedDashboard.style.maxWidth =
                                             "none";
 
+                                        clonedDashboard.style.height =
+                                            captureHeight + "px";
+
+                                        clonedDashboard.style.minHeight =
+                                            captureHeight + "px";
+
+                                        clonedDashboard.style.maxHeight =
+                                            "none";
+
                                         clonedDashboard.style.margin =
                                             "0";
 
@@ -2502,11 +2539,17 @@ Preparing Image...
                                         clonedDashboard.style.overflow =
                                             "visible";
 
+                                        clonedDashboard.style.overflowX =
+                                            "visible";
+
+                                        clonedDashboard.style.overflowY =
+                                            "visible";
+
                                     }
 
-                                    // ======================================
+                                    // ==================================================
                                     // SUMMARY CARDS
-                                    // ======================================
+                                    // ==================================================
 
                                     const summaryCards =
                                         clonedDocument.querySelector(
@@ -2526,13 +2569,14 @@ Preparing Image...
                                         summaryCards.style.maxWidth =
                                             "none";
 
+                                        summaryCards.style.overflow =
+                                            "visible";
+
                                     }
 
-                                    // ======================================
-                                    // TABLE WRAPPER
-                                    // IMPORTANT:
-                                    // SCREEN KA HORIZONTAL SCROLL REMOVE
-                                    // ======================================
+                                    // ==================================================
+                                    // TABLE WRAPPERS
+                                    // ==================================================
 
                                     const wrappers =
                                         clonedDocument.querySelectorAll(
@@ -2553,6 +2597,15 @@ Preparing Image...
                                             wrapper.style.maxWidth =
                                                 "none";
 
+                                            wrapper.style.height =
+                                                "auto";
+
+                                            wrapper.style.minHeight =
+                                                "0";
+
+                                            wrapper.style.maxHeight =
+                                                "none";
+
                                             wrapper.style.overflow =
                                                 "visible";
 
@@ -2565,9 +2618,9 @@ Preparing Image...
                                         }
                                     );
 
-                                    // ======================================
-                                    // TABLE FULL WIDTH
-                                    // ======================================
+                                    // ==================================================
+                                    // USER SUMMARY TABLE
+                                    // ==================================================
 
                                     const tables =
                                         clonedDocument.querySelectorAll(
@@ -2580,10 +2633,10 @@ Preparing Image...
                                         ) {
 
                                             table.style.width =
-                                                "100%";
+                                                "max-content";
 
                                             table.style.minWidth =
-                                                "800px";
+                                                "100%";
 
                                             table.style.maxWidth =
                                                 "none";
@@ -2591,12 +2644,15 @@ Preparing Image...
                                             table.style.tableLayout =
                                                 "auto";
 
+                                            table.style.overflow =
+                                                "visible";
+
                                         }
                                     );
 
-                                    // ======================================
+                                    // ==================================================
                                     // TABLE CELLS
-                                    // ======================================
+                                    // ==================================================
 
                                     const cells =
                                         clonedDocument.querySelectorAll(
@@ -2611,12 +2667,18 @@ Preparing Image...
                                             cell.style.whiteSpace =
                                                 "nowrap";
 
+                                            cell.style.overflow =
+                                                "visible";
+
+                                            cell.style.textOverflow =
+                                                "clip";
+
                                         }
                                     );
 
-                                    // ======================================
-                                    // REMOVE ALL HORIZONTAL SCROLL
-                                    // ======================================
+                                    // ==================================================
+                                    // REMOVE SCROLL FROM ALL ELEMENTS
+                                    // ==================================================
 
                                     const allElements =
                                         clonedDocument.querySelectorAll(
@@ -2628,20 +2690,33 @@ Preparing Image...
                                             element
                                         ) {
 
-                                            const computed =
-                                                clonedDocument.defaultView
+                                            const style =
+                                                clonedDocument
+                                                    .defaultView
                                                     .getComputedStyle(
                                                         element
                                                     );
 
                                             if (
-                                                computed.overflowX ===
+                                                style.overflowX ===
                                                     "auto" ||
-                                                computed.overflowX ===
+                                                style.overflowX ===
                                                     "scroll"
                                             ) {
 
                                                 element.style.overflowX =
+                                                    "visible";
+
+                                            }
+
+                                            if (
+                                                style.overflowY ===
+                                                    "auto" ||
+                                                style.overflowY ===
+                                                    "scroll"
+                                            ) {
+
+                                                element.style.overflowY =
                                                     "visible";
 
                                             }
@@ -2654,9 +2729,9 @@ Preparing Image...
                         }
                     );
 
-                // ==========================================
-                // RESTORE PAGE
-                // ==========================================
+                // ==================================================
+                // RESTORE ORIGINAL PAGE
+                // ==================================================
 
                 document.body.style.overflow =
                     originalBodyOverflow;
@@ -2664,9 +2739,9 @@ Preparing Image...
                 document.documentElement.style.overflow =
                     originalHtmlOverflow;
 
-                // ==========================================
+                // ==================================================
                 // CREATE IMAGE
-                // ==========================================
+                // ==================================================
 
                 const image =
                     canvas.toDataURL(
@@ -2674,9 +2749,9 @@ Preparing Image...
                         1.0
                     );
 
-                // ==========================================
+                // ==================================================
                 // DATE
-                // ==========================================
+                // ==================================================
 
                 const today =
                     new Date();
@@ -2700,9 +2775,9 @@ Preparing Image...
                         "0"
                     );
 
-                // ==========================================
+                // ==================================================
                 // DOWNLOAD
-                // ==========================================
+                // ==================================================
 
                 const link =
                     document.createElement(
