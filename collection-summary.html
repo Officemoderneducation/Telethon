@@ -450,45 +450,13 @@
 
 
     <!-- =========================================
-         ADMIN SIDEBAR LOADER
+         CENTRAL ADMIN SIDEBAR
     ========================================== -->
 
-    <script>
-
-        fetch("components/admin-sidebar.html")
-
-            .then((response) => {
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "Admin Sidebar not found"
-                    );
-
-                }
-
-                return response.text();
-
-            })
-
-            .then((data) => {
-
-                document.getElementById(
-                    "adminSidebar"
-                ).innerHTML = data;
-
-            })
-
-            .catch((error) => {
-
-                console.error(
-                    "Admin Sidebar Error:",
-                    error
-                );
-
-            });
-
-    </script>
+    <script
+        type="module"
+        src="assets/js/admin-sidebar.js"
+    ></script>
 
 
     <!-- =========================================
