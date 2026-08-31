@@ -15,19 +15,9 @@
     </title>
 
 
-    <!-- =====================================
-         MAIN CSS
-    ====================================== -->
-
-    <link
-        rel="stylesheet"
-        href="assets/css/style.css"
-    >
-
-
-    <!-- =====================================
+    <!-- ==================================================
          FONT AWESOME
-    ====================================== -->
+    ================================================== -->
 
     <link
         rel="stylesheet"
@@ -35,9 +25,9 @@
     >
 
 
-    <!-- =====================================
+    <!-- ==================================================
          ADMIN SIDEBAR CSS
-    ====================================== -->
+    ================================================== -->
 
     <link
         rel="stylesheet"
@@ -45,9 +35,9 @@
     >
 
 
-    <!-- =====================================
+    <!-- ==================================================
          GOOGLE FONT
-    ====================================== -->
+    ================================================== -->
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
@@ -79,6 +69,10 @@
 
             min-height: 100%;
 
+            margin: 0;
+
+            padding: 0;
+
         }
 
 
@@ -100,10 +94,250 @@
 
 
         /* ==================================================
+           ADMIN SIDEBAR
+        ================================================== */
+
+        .admin-sidebar {
+
+            width: 235px;
+
+            min-width: 235px;
+
+            height: 100vh;
+
+            position: fixed;
+
+            left: 0;
+
+            top: 0;
+
+            bottom: 0;
+
+            background:
+                #0f172a;
+
+            color:
+                #ffffff;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            z-index: 9999;
+
+            overflow-y: auto;
+
+        }
+
+
+        /* ==================================================
+           SIDEBAR LOGO
+        ================================================== */
+
+        .admin-sidebar-logo {
+
+            width: 100%;
+
+            min-height: 150px;
+
+            padding:
+                12px 15px;
+
+            text-align:
+                center;
+
+            border-bottom:
+                1px solid #263247;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .admin-sidebar-logo img {
+
+            width: 55px;
+
+            height: 55px;
+
+            object-fit:
+                contain;
+
+            display:
+                block;
+
+            margin:
+                0 auto 5px;
+
+        }
+
+
+        .admin-sidebar-logo h2 {
+
+            margin:
+                0 0 3px;
+
+            font-size:
+                19px;
+
+            font-weight:
+                700;
+
+            color:
+                #38bdf8;
+
+        }
+
+
+        .admin-sidebar-logo p {
+
+            margin: 0;
+
+            font-size:
+                12px;
+
+            color:
+                #cbd5e1;
+
+        }
+
+
+        /* ==================================================
+           SIDEBAR MENU
+        ================================================== */
+
+        .admin-sidebar-menu {
+
+            width: 100%;
+
+            padding:
+                10px 0;
+
+        }
+
+
+        .admin-sidebar-menu a {
+
+            width: 100%;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                12px;
+
+            padding:
+                11px 22px;
+
+            color:
+                #cbd5e1;
+
+            text-decoration:
+                none;
+
+            font-size:
+                14px;
+
+            font-weight:
+                500;
+
+            transition:
+                all 0.2s ease;
+
+        }
+
+
+        .admin-sidebar-menu a i {
+
+            width:
+                20px;
+
+            min-width:
+                20px;
+
+            text-align:
+                center;
+
+            font-size:
+                15px;
+
+        }
+
+
+        .admin-sidebar-menu a span {
+
+            display:
+                inline-block;
+
+            white-space:
+                nowrap;
+
+        }
+
+
+        .admin-sidebar-menu a:hover {
+
+            background:
+                #1e293b;
+
+            color:
+                #ffffff;
+
+        }
+
+
+        .admin-sidebar-menu a.active {
+
+            background:
+                #2563eb;
+
+            color:
+                #ffffff;
+
+        }
+
+
+        /* ==================================================
+           SIDEBAR SCROLLBAR
+        ================================================== */
+
+        .admin-sidebar::-webkit-scrollbar {
+
+            width:
+                5px;
+
+        }
+
+
+        .admin-sidebar::-webkit-scrollbar-track {
+
+            background:
+                #0f172a;
+
+        }
+
+
+        .admin-sidebar::-webkit-scrollbar-thumb {
+
+            background:
+                #334155;
+
+            border-radius:
+                10px;
+
+        }
+
+
+        /* ==================================================
            MAIN CONTENT
         ================================================== */
 
-        .main {
+        .main-content {
 
             margin-left:
                 235px;
@@ -116,9 +350,6 @@
 
             padding:
                 25px;
-
-            overflow-x:
-                hidden;
 
         }
 
@@ -139,7 +370,7 @@
                 12px;
 
             padding:
-                18px 22px;
+                20px 25px;
 
             margin-bottom:
                 20px;
@@ -185,10 +416,10 @@
         .page-title-icon {
 
             width:
-                44px;
+                46px;
 
             height:
-                44px;
+                46px;
 
             border-radius:
                 11px;
@@ -219,8 +450,8 @@
             font-size:
                 22px;
 
-            margin-bottom:
-                4px;
+            margin:
+                0 0 4px;
 
             color:
                 #111827;
@@ -236,11 +467,14 @@
             color:
                 #6b7280;
 
+            margin:
+                0;
+
         }
 
 
         /* ==================================================
-           MAIN FORM CARD
+           FORM CARD
         ================================================== */
 
         .form-card {
@@ -298,9 +532,6 @@
 
             border-bottom:
                 1px solid #e5e7eb;
-
-            color:
-                #111827;
 
         }
 
@@ -596,18 +827,6 @@
         }
 
 
-        .remove-side-row:hover {
-
-            background:
-                #fecaca;
-
-        }
-
-
-        /* ==================================================
-           ADD ROW BUTTON
-        ================================================== */
-
         .add-row-btn {
 
             width:
@@ -691,6 +910,61 @@
 
             font-weight:
                 800;
+
+        }
+
+
+        /* ==================================================
+           MESSAGE
+        ================================================== */
+
+        .competition-message {
+
+            display:
+                none;
+
+            margin-top:
+                20px;
+
+            padding:
+                13px;
+
+            border-radius:
+                8px;
+
+            font-size:
+                14px;
+
+            font-weight:
+                600;
+
+        }
+
+
+        .competition-message.success {
+
+            display:
+                block;
+
+            background:
+                #dcfce7;
+
+            color:
+                #166534;
+
+        }
+
+
+        .competition-message.error {
+
+            display:
+                block;
+
+            background:
+                #fee2e2;
+
+            color:
+                #991b1b;
 
         }
 
@@ -792,72 +1066,6 @@
         }
 
 
-        .btn:disabled {
-
-            opacity:
-                0.6;
-
-            cursor:
-                not-allowed;
-
-        }
-
-
-        /* ==================================================
-           MESSAGE
-        ================================================== */
-
-        .competition-message {
-
-            display:
-                none;
-
-            margin-top:
-                20px;
-
-            padding:
-                13px;
-
-            border-radius:
-                8px;
-
-            font-size:
-                14px;
-
-            font-weight:
-                600;
-
-        }
-
-
-        .competition-message.success {
-
-            display:
-                block;
-
-            background:
-                #dcfce7;
-
-            color:
-                #166534;
-
-        }
-
-
-        .competition-message.error {
-
-            display:
-                block;
-
-            background:
-                #fee2e2;
-
-            color:
-                #991b1b;
-
-        }
-
-
         /* ==================================================
            SAVED COMPETITIONS
         ================================================== */
@@ -865,7 +1073,7 @@
         .saved-section {
 
             margin-top:
-                30px;
+                35px;
 
         }
 
@@ -894,15 +1102,6 @@
 
             padding:
                 18px;
-
-            box-shadow:
-                0 3px 12px
-                rgba(
-                    0,
-                    0,
-                    0,
-                    0.04
-                );
 
         }
 
@@ -997,14 +1196,6 @@
         }
 
 
-        .edit-btn:hover {
-
-            background:
-                #e0e7ff;
-
-        }
-
-
         .delete-btn {
 
             background:
@@ -1012,14 +1203,6 @@
 
             color:
                 #dc2626;
-
-        }
-
-
-        .delete-btn:hover {
-
-            background:
-                #fecaca;
 
         }
 
@@ -1035,33 +1218,11 @@
         }
 
 
-        .copy-btn:hover {
-
-            background:
-                #d1fae5;
-
-        }
-
-
         /* ==================================================
            MOBILE / TABLET
         ================================================== */
 
         @media (max-width: 900px) {
-
-            .main {
-
-                margin-left:
-                    190px;
-
-                width:
-                    calc(100% - 190px);
-
-                padding:
-                    15px;
-
-            }
-
 
             .form-grid {
 
@@ -1089,9 +1250,119 @@
         }
 
 
+        @media (max-width: 800px) {
+
+            .admin-sidebar {
+
+                width:
+                    190px;
+
+                min-width:
+                    190px;
+
+            }
+
+
+            .admin-sidebar-logo {
+
+                min-height:
+                    140px;
+
+            }
+
+
+            .admin-sidebar-menu a {
+
+                padding:
+                    11px 15px;
+
+                font-size:
+                    13px;
+
+            }
+
+
+            .main-content {
+
+                margin-left:
+                    190px;
+
+                width:
+                    calc(100% - 190px);
+
+                padding:
+                    15px;
+
+            }
+
+        }
+
+
         @media (max-width: 600px) {
 
-            .main {
+            .admin-sidebar {
+
+                width:
+                    70px;
+
+                min-width:
+                    70px;
+
+            }
+
+
+            .admin-sidebar-logo {
+
+                min-height:
+                    90px;
+
+                padding:
+                    8px 5px;
+
+            }
+
+
+            .admin-sidebar-logo img {
+
+                width:
+                    45px;
+
+                height:
+                    45px;
+
+            }
+
+
+            .admin-sidebar-logo h2,
+            .admin-sidebar-logo p,
+            .admin-sidebar-menu a span {
+
+                display:
+                    none;
+
+            }
+
+
+            .admin-sidebar-menu a {
+
+                justify-content:
+                    center;
+
+                padding:
+                    14px 5px;
+
+            }
+
+
+            .admin-sidebar-menu a i {
+
+                font-size:
+                    17px;
+
+            }
+
+
+            .main-content {
 
                 margin-left:
                     70px;
@@ -1117,6 +1388,14 @@
 
                 font-size:
                     19px;
+
+            }
+
+
+            .page-title p {
+
+                font-size:
+                    12px;
 
             }
 
@@ -1191,9 +1470,7 @@
 <div class="admin-sidebar">
 
 
-    <!-- =====================================
-         LOGO
-    ====================================== -->
+    <!-- LOGO -->
 
     <div class="admin-sidebar-logo">
 
@@ -1202,9 +1479,11 @@
             alt="Telethon Logo"
         >
 
+
         <h2>
             Telethon
         </h2>
+
 
         <p>
             Admin Panel
@@ -1213,9 +1492,7 @@
     </div>
 
 
-    <!-- =====================================
-         MENU
-    ====================================== -->
+    <!-- MENU -->
 
     <div class="admin-sidebar-menu">
 
@@ -1227,7 +1504,9 @@
             data-page="dashboard.html"
         >
 
-            <i class="fa-solid fa-house"></i>
+            <i
+                class="fa-solid fa-house"
+            ></i>
 
             <span>
                 Dashboard
@@ -1243,7 +1522,9 @@
             data-page="users.html"
         >
 
-            <i class="fa-solid fa-users"></i>
+            <i
+                class="fa-solid fa-users"
+            ></i>
 
             <span>
                 Teachers List
@@ -1259,7 +1540,9 @@
             data-page="collection-summary.html"
         >
 
-            <i class="fa-solid fa-chart-pie"></i>
+            <i
+                class="fa-solid fa-chart-pie"
+            ></i>
 
             <span>
                 Collection Summary
@@ -1275,7 +1558,9 @@
             data-page="target-management.html"
         >
 
-            <i class="fa-solid fa-bullseye"></i>
+            <i
+                class="fa-solid fa-bullseye"
+            ></i>
 
             <span>
                 Target Management
@@ -1291,7 +1576,9 @@
             data-page="region-user-management.html"
         >
 
-            <i class="fa-solid fa-user-shield"></i>
+            <i
+                class="fa-solid fa-user-shield"
+            ></i>
 
             <span>
                 Region User Management
@@ -1307,7 +1594,9 @@
             data-page="all-entry.html"
         >
 
-            <i class="fa-solid fa-list"></i>
+            <i
+                class="fa-solid fa-list"
+            ></i>
 
             <span>
                 All Entry
@@ -1323,7 +1612,9 @@
             data-page="competition-entry.html"
         >
 
-            <i class="fa-solid fa-trophy"></i>
+            <i
+                class="fa-solid fa-trophy"
+            ></i>
 
             <span>
                 Competition Entry
@@ -1360,7 +1651,7 @@
      MAIN CONTENT
 ================================================== -->
 
-<div class="main">
+<div class="main-content">
 
 
     <!-- ==================================================
@@ -1387,6 +1678,7 @@
                 <h1>
                     Competition Entry
                 </h1>
+
 
                 <p>
                     Create and Manage Competition
@@ -1415,9 +1707,9 @@
         >
 
 
-            <!-- =====================================
+            <!-- ==================================================
                  COMPETITION DETAILS
-            ====================================== -->
+            ================================================== -->
 
             <div class="section-title">
 
@@ -1441,6 +1733,7 @@
                         Competition Name
                     </label>
 
+
                     <input
                         type="text"
                         id="competitionName"
@@ -1459,6 +1752,7 @@
                         Competition Date
                     </label>
 
+
                     <input
                         type="date"
                         id="competitionDate"
@@ -1468,13 +1762,14 @@
                 </div>
 
 
-                <!-- END TIME -->
+                <!-- COMPETITION END TIME -->
 
                 <div class="form-group">
 
                     <label>
                         Competition End Time
                     </label>
+
 
                     <input
                         type="time"
@@ -1489,9 +1784,9 @@
 
 
 
-            <!-- =====================================
+            <!-- ==================================================
                  PARTICIPANTS
-            ====================================== -->
+            ================================================== -->
 
             <div class="section-title">
 
@@ -1508,11 +1803,12 @@
             <div class="competition-wrapper">
 
 
-                <!-- =================================
+                <!-- ==================================================
                      PARTICIPANT A
-                ================================== -->
+                ================================================== -->
 
                 <div class="side-card">
+
 
                     <div class="side-body">
 
@@ -1548,13 +1844,14 @@
 
                     </div>
 
+
                 </div>
 
 
 
-                <!-- =================================
+                <!-- ==================================================
                      VS
-                ================================== -->
+                ================================================== -->
 
                 <div class="vs-container">
 
@@ -1566,11 +1863,12 @@
 
 
 
-                <!-- =================================
+                <!-- ==================================================
                      PARTICIPANT B
-                ================================== -->
+                ================================================== -->
 
                 <div class="side-card">
+
 
                     <div class="side-body">
 
@@ -1606,6 +1904,7 @@
 
                     </div>
 
+
                 </div>
 
 
@@ -1613,9 +1912,9 @@
 
 
 
-            <!-- =====================================
+            <!-- ==================================================
                  MESSAGE
-            ====================================== -->
+            ================================================== -->
 
             <div
                 id="competitionMessage"
@@ -1624,9 +1923,9 @@
 
 
 
-            <!-- =====================================
+            <!-- ==================================================
                  ACTIONS
-            ====================================== -->
+            ================================================== -->
 
             <div class="form-actions">
 
@@ -1665,6 +1964,7 @@
 
 
         </form>
+
 
     </div>
 
@@ -1724,7 +2024,7 @@
 
 
 <!-- ==================================================
-     ACTIVE PAGE + LOGOUT
+     SIDEBAR ACTIVE PAGE + LOGOUT
 ================================================== -->
 
 <script>
@@ -1732,9 +2032,9 @@
 (function () {
 
 
-    /* =====================================
+    /* ==================================================
        ACTIVE PAGE
-    ====================================== */
+    ================================================== */
 
     const currentPage =
         window.location.pathname
@@ -1749,38 +2049,41 @@
         );
 
 
-    menuLinks.forEach(function (link) {
-
-        const page =
-            (
-                link.getAttribute(
-                    "data-page"
-                ) || ""
-            ).toLowerCase();
+    menuLinks.forEach(
+        function (link) {
 
 
-        link.classList.remove(
-            "active"
-        );
+            const page =
+                (
+                    link.getAttribute(
+                        "data-page"
+                    ) || ""
+                ).toLowerCase();
 
 
-        if (
-            page === currentPage
-        ) {
-
-            link.classList.add(
+            link.classList.remove(
                 "active"
             );
 
+
+            if (
+                page === currentPage
+            ) {
+
+                link.classList.add(
+                    "active"
+                );
+
+            }
+
         }
-
-    });
-
+    );
 
 
-    /* =====================================
-       LOGOUT
-    ====================================== */
+
+    /* ==================================================
+       ADMIN LOGOUT
+    ================================================== */
 
     const logoutBtn =
         document.getElementById(
@@ -1789,6 +2092,7 @@
 
 
     if (logoutBtn) {
+
 
         logoutBtn.addEventListener(
             "click",
