@@ -2267,6 +2267,13 @@ if (
 // FULL WIDTH + FULL SIDE DATA + FULL HEIGHT
 // ======================================================
 
+// ======================================================
+// DOWNLOAD DASHBOARD IMAGE
+// FIX:
+// COMPLETE TABLE WIDTH + RIGHT SIDE DATA
+// SCREEN SE CUT NAHI HOGA
+// ======================================================
+
 if (
     downloadDashboardImageBtn
 ) {
@@ -2304,31 +2311,21 @@ if (
             const oldHTML =
                 this.innerHTML;
 
-            this.disabled =
-                true;
+            this.disabled = true;
 
             this.innerHTML = `
-
-<i
-class="
-fa-solid
-fa-spinner
-fa-spin
-"
-></i>
-
-Preparing Image...
-
-`;
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Preparing Image...
+            `;
 
             let originalBodyOverflow = "";
             let originalHtmlOverflow = "";
 
             try {
 
-                // ==================================================
-                // WAIT FOR RENDER
-                // ==================================================
+                // ==========================================
+                // WAIT FOR DOM
+                // ==========================================
 
                 await new Promise(
                     function (resolve) {
@@ -2346,9 +2343,9 @@ Preparing Image...
                     }
                 );
 
-                // ==================================================
-                // SAVE ORIGINAL PAGE SETTINGS
-                // ==================================================
+                // ==========================================
+                // SAVE ORIGINAL SETTINGS
+                // ==========================================
 
                 originalBodyOverflow =
                     document.body.style.overflow;
@@ -2362,22 +2359,81 @@ Preparing Image...
                 document.documentElement.style.overflow =
                     "visible";
 
-                // ==================================================
-                // FORCE COMPLETE DASHBOARD SIZE
-                // ==================================================
+                // ==========================================
+                // FIND ACTUAL REQUIRED WIDTH
+                // INCLUDING HIDDEN RIGHT-SIDE TABLE DATA
+                // ==========================================
 
-                const dashboardRect =
-                    dashboard.getBoundingClientRect();
-
-                const captureWidth =
+                let captureWidth =
                     Math.max(
                         dashboard.scrollWidth,
                         dashboard.offsetWidth,
-                        dashboard.clientWidth,
-                        Math.ceil(
-                            dashboardRect.width
-                        )
+                        dashboard.clientWidth
                     );
+
+                // ==========================================
+                // CHECK ALL TABLES
+                // ==========================================
+
+                const dashboardTables =
+                    dashboard.querySelectorAll(
+                        "table"
+                    );
+
+                dashboardTables.forEach(
+                    function (table) {
+
+                        captureWidth =
+                            Math.max(
+                                captureWidth,
+                                table.scrollWidth,
+                                table.offsetWidth,
+                                table.clientWidth
+                            );
+
+                    }
+                );
+
+                // ==========================================
+                // CHECK ALL TABLE WRAPPERS
+                // ==========================================
+
+                const dashboardWrappers =
+                    dashboard.querySelectorAll(
+                        "*"
+                    );
+
+                dashboardWrappers.forEach(
+                    function (element) {
+
+                        const width =
+                            Math.max(
+                                element.scrollWidth || 0,
+                                element.offsetWidth || 0,
+                                element.clientWidth || 0
+                            );
+
+                        captureWidth =
+                            Math.max(
+                                captureWidth,
+                                width
+                            );
+
+                    }
+                );
+
+                // ==========================================
+                // ADD EXTRA SPACE
+                // ==========================================
+
+                captureWidth =
+                    Math.ceil(
+                        captureWidth + 40
+                    );
+
+                // ==========================================
+                // GET COMPLETE HEIGHT
+                // ==========================================
 
                 const captureHeight =
                     Math.max(
@@ -2386,9 +2442,19 @@ Preparing Image...
                         dashboard.clientHeight
                     );
 
-                // ==================================================
-                // HTML2CANVAS
-                // ==================================================
+                // ==========================================
+                // FULL PAGE WIDTH
+                // ==========================================
+
+                const originalWindowWidth =
+                    Math.max(
+                        window.innerWidth,
+                        captureWidth
+                    );
+
+                // ==========================================
+                // CREATE CANVAS
+                // ==========================================
 
                 const canvas =
                     await html2canvas(
@@ -2420,10 +2486,7 @@ Preparing Image...
                                 captureHeight,
 
                             windowWidth:
-                                Math.max(
-                                    window.innerWidth,
-                                    captureWidth
-                                ),
+                                originalWindowWidth,
 
                             windowHeight:
                                 Math.max(
@@ -2436,9 +2499,9 @@ Preparing Image...
                                     clonedDocument
                                 ) {
 
-                                    // ==================================================
+                                    // ==================================
                                     // HIDE DOWNLOAD BUTTON
-                                    // ==================================================
+                                    // ==================================
 
                                     const clonedButton =
                                         clonedDocument.getElementById(
@@ -2454,54 +2517,9 @@ Preparing Image...
 
                                     }
 
-                                    // ==================================================
-                                    // MAIN CONTENT
-                                    // ==================================================
-
-                                    const clonedMain =
-                                        clonedDocument.querySelector(
-                                            ".main-content"
-                                        );
-
-                                    if (
-                                        clonedMain
-                                    ) {
-
-                                        clonedMain.style.width =
-                                            captureWidth + "px";
-
-                                        clonedMain.style.minWidth =
-                                            captureWidth + "px";
-
-                                        clonedMain.style.maxWidth =
-                                            "none";
-
-                                        clonedMain.style.height =
-                                            "auto";
-
-                                        clonedMain.style.minHeight =
-                                            "0";
-
-                                        clonedMain.style.maxHeight =
-                                            "none";
-
-                                        clonedMain.style.marginLeft =
-                                            "0";
-
-                                        clonedMain.style.overflow =
-                                            "visible";
-
-                                        clonedMain.style.overflowX =
-                                            "visible";
-
-                                        clonedMain.style.overflowY =
-                                            "visible";
-
-                                    }
-
-                                    // ==================================================
-                                    // DASHBOARD CAPTURE AREA
-                                    // ==================================================
+                                    // ==================================
+                                    // DASHBOARD
+                                    // ==================================
 
                                     const clonedDashboard =
                                         clonedDocument.getElementById(
@@ -2522,18 +2540,15 @@ Preparing Image...
                                             "none";
 
                                         clonedDashboard.style.height =
-                                            captureHeight + "px";
+                                            "auto";
 
                                         clonedDashboard.style.minHeight =
-                                            captureHeight + "px";
+                                            "0";
 
                                         clonedDashboard.style.maxHeight =
                                             "none";
 
                                         clonedDashboard.style.margin =
-                                            "0";
-
-                                        clonedDashboard.style.padding =
                                             "0";
 
                                         clonedDashboard.style.overflow =
@@ -2547,9 +2562,48 @@ Preparing Image...
 
                                     }
 
-                                    // ==================================================
+                                    // ==================================
+                                    // MAIN CONTENT
+                                    // ==================================
+
+                                    const clonedMain =
+                                        clonedDocument.querySelector(
+                                            ".main-content"
+                                        );
+
+                                    if (
+                                        clonedMain
+                                    ) {
+
+                                        clonedMain.style.width =
+                                            captureWidth + "px";
+
+                                        clonedMain.style.minWidth =
+                                            captureWidth + "px";
+
+                                        clonedMain.style.maxWidth =
+                                            "none";
+
+                                        clonedMain.style.marginLeft =
+                                            "0";
+
+                                        clonedMain.style.marginRight =
+                                            "0";
+
+                                        clonedMain.style.overflow =
+                                            "visible";
+
+                                        clonedMain.style.overflowX =
+                                            "visible";
+
+                                        clonedMain.style.overflowY =
+                                            "visible";
+
+                                    }
+
+                                    // ==================================
                                     // SUMMARY CARDS
-                                    // ==================================================
+                                    // ==================================
 
                                     const summaryCards =
                                         clonedDocument.querySelector(
@@ -2574,9 +2628,9 @@ Preparing Image...
 
                                     }
 
-                                    // ==================================================
+                                    // ==================================
                                     // TABLE WRAPPERS
-                                    // ==================================================
+                                    // ==================================
 
                                     const wrappers =
                                         clonedDocument.querySelectorAll(
@@ -2600,9 +2654,6 @@ Preparing Image...
                                             wrapper.style.height =
                                                 "auto";
 
-                                            wrapper.style.minHeight =
-                                                "0";
-
                                             wrapper.style.maxHeight =
                                                 "none";
 
@@ -2618,13 +2669,13 @@ Preparing Image...
                                         }
                                     );
 
-                                    // ==================================================
-                                    // USER SUMMARY TABLE
-                                    // ==================================================
+                                    // ==================================
+                                    // ALL TABLES
+                                    // ==================================
 
                                     const tables =
                                         clonedDocument.querySelectorAll(
-                                            ".user-summary-table"
+                                            "table"
                                         );
 
                                     tables.forEach(
@@ -2632,11 +2683,22 @@ Preparing Image...
                                             table
                                         ) {
 
+                                            const originalTableWidth =
+                                                table.scrollWidth ||
+                                                table.offsetWidth ||
+                                                0;
+
                                             table.style.width =
-                                                "max-content";
+                                                Math.max(
+                                                    originalTableWidth,
+                                                    captureWidth
+                                                ) + "px";
 
                                             table.style.minWidth =
-                                                "100%";
+                                                Math.max(
+                                                    originalTableWidth,
+                                                    800
+                                                ) + "px";
 
                                             table.style.maxWidth =
                                                 "none";
@@ -2650,13 +2712,14 @@ Preparing Image...
                                         }
                                     );
 
-                                    // ==================================================
+                                    // ==================================
                                     // TABLE CELLS
-                                    // ==================================================
+                                    // DO NOT WRAP RIGHT-SIDE DATA
+                                    // ==================================
 
                                     const cells =
                                         clonedDocument.querySelectorAll(
-                                            ".user-summary-table th, .user-summary-table td"
+                                            "table th, table td"
                                         );
 
                                     cells.forEach(
@@ -2670,15 +2733,13 @@ Preparing Image...
                                             cell.style.overflow =
                                                 "visible";
 
-                                            cell.style.textOverflow =
-                                                "clip";
-
                                         }
                                     );
 
-                                    // ==================================================
-                                    // REMOVE SCROLL FROM ALL ELEMENTS
-                                    // ==================================================
+                                    // ==================================
+                                    // REMOVE HORIZONTAL SCROLL
+                                    // FROM ALL CHILD ELEMENTS
+                                    // ==================================
 
                                     const allElements =
                                         clonedDocument.querySelectorAll(
@@ -2690,7 +2751,7 @@ Preparing Image...
                                             element
                                         ) {
 
-                                            const style =
+                                            const computed =
                                                 clonedDocument
                                                     .defaultView
                                                     .getComputedStyle(
@@ -2698,10 +2759,12 @@ Preparing Image...
                                                     );
 
                                             if (
-                                                style.overflowX ===
+                                                computed.overflowX ===
                                                     "auto" ||
-                                                style.overflowX ===
-                                                    "scroll"
+                                                computed.overflowX ===
+                                                    "scroll" ||
+                                                computed.overflowX ===
+                                                    "hidden"
                                             ) {
 
                                                 element.style.overflowX =
@@ -2710,9 +2773,9 @@ Preparing Image...
                                             }
 
                                             if (
-                                                style.overflowY ===
+                                                computed.overflowY ===
                                                     "auto" ||
-                                                style.overflowY ===
+                                                computed.overflowY ===
                                                     "scroll"
                                             ) {
 
@@ -2724,14 +2787,42 @@ Preparing Image...
                                         }
                                     );
 
+                                    // ==================================
+                                    // BODY
+                                    // ==================================
+
+                                    clonedDocument.body.style.width =
+                                        captureWidth + "px";
+
+                                    clonedDocument.body.style.minWidth =
+                                        captureWidth + "px";
+
+                                    clonedDocument.body.style.maxWidth =
+                                        "none";
+
+                                    clonedDocument.body.style.overflow =
+                                        "visible";
+
+                                    clonedDocument.documentElement.style.width =
+                                        captureWidth + "px";
+
+                                    clonedDocument.documentElement.style.minWidth =
+                                        captureWidth + "px";
+
+                                    clonedDocument.documentElement.style.maxWidth =
+                                        "none";
+
+                                    clonedDocument.documentElement.style.overflow =
+                                        "visible";
+
                                 }
 
                         }
                     );
 
-                // ==================================================
-                // RESTORE ORIGINAL PAGE
-                // ==================================================
+                // ==========================================
+                // RESTORE PAGE
+                // ==========================================
 
                 document.body.style.overflow =
                     originalBodyOverflow;
@@ -2739,9 +2830,9 @@ Preparing Image...
                 document.documentElement.style.overflow =
                     originalHtmlOverflow;
 
-                // ==================================================
-                // CREATE IMAGE
-                // ==================================================
+                // ==========================================
+                // CREATE PNG
+                // ==========================================
 
                 const image =
                     canvas.toDataURL(
@@ -2749,9 +2840,9 @@ Preparing Image...
                         1.0
                     );
 
-                // ==================================================
+                // ==========================================
                 // DATE
-                // ==================================================
+                // ==========================================
 
                 const today =
                     new Date();
@@ -2775,9 +2866,9 @@ Preparing Image...
                         "0"
                     );
 
-                // ==================================================
+                // ==========================================
                 // DOWNLOAD
-                // ==================================================
+                // ==========================================
 
                 const link =
                     document.createElement(
