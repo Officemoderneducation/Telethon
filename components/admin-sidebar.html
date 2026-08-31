@@ -123,16 +123,45 @@
         </a>
 
 
-        <!-- 8. LOGOUT -->
+        <!-- 8. REGION USER ENTRIES -->
+
+        <a
+            href="region-user-entries.html"
+            data-page="region-user-entries.html"
+        >
+
+            <i class="fa-solid fa-user-pen"></i>
+
+            <span>Region User Entries</span>
+
+        </a>
+
+
+        <!-- 9. COMPETITION ENTRY -->
+
+        <a
+            href="competition-entry.html"
+            data-page="competition-entry.html"
+        >
+
+            <i class="fa-solid fa-trophy"></i>
+
+            <span>Competition Entry</span>
+
+        </a>
+
+
+        <!-- =====================================
+             LOGOUT
+        ====================================== -->
 
         <a
             href="#"
             id="adminLogoutBtn"
+            class="admin-logout"
         >
 
-            <i
-                class="fa-solid fa-right-from-bracket"
-            ></i>
+            <i class="fa-solid fa-right-from-bracket"></i>
 
             <span>Logout</span>
 
@@ -142,6 +171,7 @@
     </div>
 
 </div>
+
 
 
 <!-- =========================================
@@ -222,9 +252,7 @@
                     );
 
 
-                }
-
-                else {
+                } else {
 
 
                     link.classList.remove(
@@ -267,12 +295,32 @@
 
 
 
+                /* =================================
+                   CONFIRM LOGOUT
+                ================================= */
+
+                const confirmLogout =
+
+                    confirm(
+                        "Kya aap Admin Panel se Logout karna chahte hain?"
+                    );
+
+
+
+                if (!confirmLogout) {
+
+                    return;
+
+                }
+
+
+
                 try {
 
 
-                    /* ==========================
+                    /* =============================
                        FIREBASE SIGN OUT
-                    ========================== */
+                    ============================= */
 
                     await signOut(
                         auth
@@ -280,9 +328,9 @@
 
 
 
-                    /* ==========================
-                       CLEAR LOCAL STORAGE
-                    ========================== */
+                    /* =============================
+                       CLEAR ADMIN SESSION
+                    ============================= */
 
                     localStorage.removeItem(
                         "loggedInEmpCode"
@@ -304,10 +352,30 @@
                     );
 
 
+                    localStorage.removeItem(
+                        "regionUserId"
+                    );
 
-                    /* ==========================
+
+                    localStorage.removeItem(
+                        "regionUserCode"
+                    );
+
+
+                    localStorage.removeItem(
+                        "regionUserName"
+                    );
+
+
+                    localStorage.removeItem(
+                        "savedRegionUserName"
+                    );
+
+
+
+                    /* =============================
                        GO TO LOGIN
-                    ========================== */
+                    ============================= */
 
                     window.location.href =
                         "index.html";
@@ -319,7 +387,7 @@
 
 
                     console.error(
-                        "Logout Error:",
+                        "Admin Logout Error:",
                         error
                     );
 
