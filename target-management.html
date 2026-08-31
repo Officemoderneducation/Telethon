@@ -608,48 +608,13 @@
 
 
 <!-- =========================================
-     LOAD ADMIN SIDEBAR
+     CENTRAL ADMIN SIDEBAR
 ========================================= -->
 
-<script>
-
-fetch("components/admin-sidebar.html")
-
-    .then(function(response) {
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Admin Sidebar not found"
-            );
-
-        }
-
-        return response.text();
-
-    })
-
-    .then(function(data) {
-
-        const sidebar =
-            document.getElementById(
-                "adminSidebar"
-            );
-
-        sidebar.innerHTML = data;
-
-    })
-
-    .catch(function(error) {
-
-        console.error(
-            "Admin Sidebar Error:",
-            error
-        );
-
-    });
-
-</script>
+<script
+    type="module"
+    src="assets/js/admin-sidebar.js"
+></script>
 
 
 
