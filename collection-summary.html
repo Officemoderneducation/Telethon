@@ -75,7 +75,7 @@
                 </h1>
 
                 <p>
-                    View collection summary by Region, State, City or Employee
+                    View collection summary by Region User, Region, State, City or Employee
                 </p>
 
             </div>
@@ -90,6 +90,25 @@
         <div class="filter-card">
 
             <div class="filter-grid">
+
+
+                <!-- REGION USER -->
+
+                <div class="filter-group">
+
+                    <label>
+                        Filter By Region User
+                    </label>
+
+                    <select id="regionUserFilter">
+
+                        <option value="">
+                            All Region Users
+                        </option>
+
+                    </select>
+
+                </div>
 
 
                 <!-- REGION -->
@@ -197,144 +216,35 @@
 
                     </button>
 
-                </div>
 
-            </div>
+                    <!-- DOWNLOAD IMAGE -->
 
-        </div>
+                    <button
+                        type="button"
+                        id="downloadImage"
+                        class="apply-btn"
+                    >
 
+                        <i class="fa-solid fa-image"></i>
 
-        <!-- =====================================
-             SELECTED FILTER
-        ====================================== -->
+                        Download Image
 
-        <div
-            class="selected-info"
-            id="selectedInfo"
-        >
-
-            <div class="success-icon">
-
-                <i class="fa-solid fa-check"></i>
-
-            </div>
-
-            <div>
-
-                <span>
-                    You are viewing summary for:
-                </span>
-
-                <strong id="selectedTitle">
-                    All Teachers
-                </strong>
-
-            </div>
-
-        </div>
+                    </button>
 
 
-        <!-- =====================================
-             SUMMARY CARDS
-        ====================================== -->
+                    <!-- DOWNLOAD CSV -->
 
-        <div class="summary-grid">
+                    <button
+                        type="button"
+                        id="downloadCSV"
+                        class="reset-btn"
+                    >
 
+                        <i class="fa-solid fa-file-csv"></i>
 
-            <!-- TOTAL TARGET -->
+                        Download CSV
 
-            <div class="summary-card target-card">
-
-                <div class="summary-icon">
-
-                    <i class="fa-solid fa-bullseye"></i>
-
-                </div>
-
-                <div>
-
-                    <span>
-                        Total Target
-                    </span>
-
-                    <strong id="totalTarget">
-                        ₹ 0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <!-- TOTAL COLLECTION -->
-
-            <div class="summary-card collection-card">
-
-                <div class="summary-icon">
-
-                    <i class="fa-solid fa-indian-rupee-sign"></i>
-
-                </div>
-
-                <div>
-
-                    <span>
-                        Total Collection
-                    </span>
-
-                    <strong id="totalCollection">
-                        ₹ 0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <!-- REMAINING TARGET -->
-
-            <div class="summary-card remaining-card">
-
-                <div class="summary-icon">
-
-                    <i class="fa-solid fa-chart-pie"></i>
-
-                </div>
-
-                <div>
-
-                    <span>
-                        Remaining Target
-                    </span>
-
-                    <strong id="remainingTarget">
-                        ₹ 0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <!-- ACHIEVEMENT -->
-
-            <div class="summary-card percentage-card">
-
-                <div class="summary-icon">
-
-                    <i class="fa-solid fa-percent"></i>
-
-                </div>
-
-                <div>
-
-                    <span>
-                        Achievement
-                    </span>
-
-                    <strong id="percentage">
-                        0%
-                    </strong>
+                    </button>
 
                 </div>
 
@@ -344,92 +254,241 @@
 
 
         <!-- =====================================
-             DETAILS TABLE
+             DOWNLOAD AREA
         ====================================== -->
 
-        <div class="details-card">
+        <div id="downloadArea">
 
 
-            <div class="details-header">
+            <!-- =====================================
+                 SELECTED FILTER
+            ====================================== -->
+
+            <div
+                class="selected-info"
+                id="selectedInfo"
+            >
+
+                <div class="success-icon">
+
+                    <i class="fa-solid fa-check"></i>
+
+                </div>
 
                 <div>
 
-                    <h2>
+                    <span>
+                        You are viewing summary for:
+                    </span>
 
-                        <i class="fa-solid fa-list"></i>
-
-                        Details
-
-                    </h2>
-
-                    <p>
-                        Teacher target and collection details
-                    </p>
+                    <strong id="selectedTitle">
+                        All Teachers
+                    </strong>
 
                 </div>
 
             </div>
 
 
-            <div class="table-wrapper">
+            <!-- =====================================
+                 SUMMARY CARDS
+            ====================================== -->
 
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>#</th>
-
-                            <th>Region</th>
-
-                            <th>State</th>
-
-                            <th>City</th>
-
-                            <th>Jamiatul Madina</th>
-
-                            <th>Employee Code</th>
-
-                            <th>Teacher Name</th>
-
-                            <th>Target</th>
-
-                            <th>Total Collection</th>
-
-                            <th>Remaining Target</th>
-
-                            <th>Percentage</th>
-
-                        </tr>
-
-                    </thead>
+            <div class="summary-grid">
 
 
-                    <tbody id="summaryTableBody">
+                <!-- TOTAL TARGET -->
 
-                        <tr>
+                <div class="summary-card target-card">
 
-                            <td
-                                colspan="11"
-                                class="loading"
-                            >
+                    <div class="summary-icon">
 
-                                Loading data...
+                        <i class="fa-solid fa-bullseye"></i>
 
-                            </td>
+                    </div>
 
-                        </tr>
+                    <div>
 
-                    </tbody>
+                        <span>
+                            Total Target
+                        </span>
+
+                        <strong id="totalTarget">
+                            ₹ 0
+                        </strong>
+
+                    </div>
+
+                </div>
 
 
-                    <tfoot id="summaryTableFoot">
-                    </tfoot>
+                <!-- TOTAL COLLECTION -->
 
-                </table>
+                <div class="summary-card collection-card">
+
+                    <div class="summary-icon">
+
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Collection
+                        </span>
+
+                        <strong id="totalCollection">
+                            ₹ 0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REMAINING TARGET -->
+
+                <div class="summary-card remaining-card">
+
+                    <div class="summary-icon">
+
+                        <i class="fa-solid fa-chart-pie"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Remaining Target
+                        </span>
+
+                        <strong id="remainingTarget">
+                            ₹ 0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACHIEVEMENT -->
+
+                <div class="summary-card percentage-card">
+
+                    <div class="summary-icon">
+
+                        <i class="fa-solid fa-percent"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Achievement
+                        </span>
+
+                        <strong id="percentage">
+                            0%
+                        </strong>
+
+                    </div>
+
+                </div>
 
             </div>
+
+
+            <!-- =====================================
+                 DETAILS TABLE
+            ====================================== -->
+
+            <div class="details-card">
+
+
+                <div class="details-header">
+
+                    <div>
+
+                        <h2>
+
+                            <i class="fa-solid fa-list"></i>
+
+                            Details
+
+                        </h2>
+
+                        <p>
+                            Teacher target and collection details
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+
+                                <th>Region</th>
+
+                                <th>State</th>
+
+                                <th>City</th>
+
+                                <th>Jamiatul Madina</th>
+
+                                <th>Employee Code</th>
+
+                                <th>Teacher Name</th>
+
+                                <th>Target</th>
+
+                                <th>Total Collection</th>
+
+                                <th>Remaining Target</th>
+
+                                <th>Percentage</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="summaryTableBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="11"
+                                    class="loading"
+                                >
+
+                                    Loading data...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+
+                        <tfoot id="summaryTableFoot">
+                        </tfoot>
+
+                    </table>
+
+                </div>
+
+            </div>
+
 
         </div>
 
@@ -447,6 +506,16 @@
 
 
     </div>
+
+
+    <!-- =========================================
+         HTML2CANVAS
+         IMAGE DOWNLOAD
+    ========================================== -->
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    ></script>
 
 
     <!-- =========================================
