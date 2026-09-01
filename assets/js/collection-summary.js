@@ -18,17 +18,13 @@
 // - Filtered Data CSV Download
 // - Old Daily Entry functionality is NOT changed
 //
-// IMPORTANT FIX:
-// Region User access is now COMBINED.
-// Direct Employees + Access Rules + Region/State/City
-// are all checked together.
-//
-// Example:
-// One user has:
-//   Kolkata
-//   Bihar
-//
-// Both states will now appear in filter.
+// FILTER FIX:
+// - Region User can have MULTIPLE States
+// - Region User can have MULTIPLE Cities
+// - Multiple access rules are combined
+// - Direct assignment + access rules + region/state/city
+//   are handled together
+// - One incomplete assignment source will NOT hide valid data
 // ======================================================
 
 
@@ -638,6 +634,226 @@ function getRegionUserCode(regionUser) {
 
 
 // ======================================================
+// GENERIC VALUE TO ARRAY
+//
+// IMPORTANT:
+// Handles:
+// - string
+// - number
+// - array
+// - object
+// - comma separated values
+// ======================================================
+
+function valueToArray(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return [];
+
+    }
+
+
+    if (Array.isArray(value)) {
+
+        return value;
+
+    }
+
+
+    if (
+        typeof value === "string"
+    ) {
+
+        const text =
+            value.trim();
+
+
+        if (!text) {
+
+            return [];
+
+        }
+
+
+        // Support comma separated values
+        if (
+            text.includes(",")
+        ) {
+
+            return text
+                .split(",")
+                .map(
+                    item =>
+                        item.trim()
+                )
+                .filter(Boolean);
+
+        }
+
+
+        return [text];
+
+    }
+
+
+    return [value];
+
+}
+
+
+// ======================================================
+// EXTRACT TEXT FROM ASSIGNMENT OBJECT
+// ======================================================
+
+function extractTextValues(
+    value,
+    fields
+) {
+
+    const result = [];
+
+
+    function walk(
+        current,
+        depth = 0
+    ) {
+
+        if (
+            current === null ||
+            current === undefined ||
+            depth > 8
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            typeof current === "string" ||
+            typeof current === "number"
+        ) {
+
+            const text =
+                String(current).trim();
+
+
+            if (text) {
+
+                result.push(text);
+
+            }
+
+
+            return;
+
+        }
+
+
+        if (
+            Array.isArray(current)
+        ) {
+
+            current.forEach(
+                item => {
+
+                    walk(
+                        item,
+                        depth + 1
+                    );
+
+                }
+            );
+
+
+            return;
+
+        }
+
+
+        if (
+            typeof current !== "object"
+        ) {
+
+            return;
+
+        }
+
+
+        fields.forEach(
+            field => {
+
+                if (
+                    current[field] !==
+                    undefined
+                ) {
+
+                    valueToArray(
+                        current[field]
+                    ).forEach(
+                        item => {
+
+                            if (
+                                typeof item ===
+                                "object"
+                            ) {
+
+                                walk(
+                                    item,
+                                    depth + 1
+                                );
+
+                            }
+                            else {
+
+                                const text =
+                                    String(item)
+                                        .trim();
+
+
+                                if (text) {
+
+                                    result.push(
+                                        text
+                                    );
+
+                                }
+
+                            }
+
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    walk(value);
+
+
+    return [
+        ...new Set(
+            result
+                .map(
+                    item =>
+                        String(item).trim()
+                )
+                .filter(Boolean)
+        )
+    ];
+
+}
+
+
+// ======================================================
 // GET EMPLOYEE REGION
 // ======================================================
 
@@ -747,14 +963,29 @@ function getRegionUserRegion(regionUser) {
 
 // ======================================================
 // GET REGION USER STATES
+//
+// FIXED:
+// Reads ALL possible state fields.
+// Supports:
+// - state
+// - states
+// - selectedStates
+// - assignedStates
+// - nested objects
+// - arrays
+// - comma separated values
 // ======================================================
 
 function getRegionUserStates(regionUser) {
 
-    const states = [];
+    if (!regionUser) {
+
+        return [];
+
+    }
 
 
-    const possibleFields = [
+    const stateFields = [
 
         "states",
 
@@ -776,60 +1007,136 @@ function getRegionUserStates(regionUser) {
 
         "stateName",
 
-        "state_name"
+        "state_name",
+
+        "selectedState",
+
+        "selected_state",
+
+        "stateNames",
+
+        "state_names",
+
+        "assignedStateNames",
+
+        "assigned_state_names",
+
+        "locations",
+
+        "location",
+
+        "assignments",
+
+        "assignment"
 
     ];
 
 
-    possibleFields.forEach(
-        (field) => {
-
-            const value =
-                regionUser?.[field];
+    const result = [];
 
 
-            if (
-                Array.isArray(value)
-            ) {
+    function collect(
+        value,
+        depth = 0
+    ) {
 
-                value.forEach(
-                    (item) => {
+        if (
+            value === null ||
+            value === undefined ||
+            depth > 8
+        ) {
 
-                        if (
-                            item !== null &&
-                            item !== undefined &&
-                            String(item).trim()
-                        ) {
-
-                            states.push(
-                                String(item).trim()
-                            );
-
-                        }
-
-                    }
-                );
-
-            }
-            else if (
-                value !== null &&
-                value !== undefined &&
-                String(value).trim()
-            ) {
-
-                states.push(
-                    String(value).trim()
-                );
-
-            }
+            return;
 
         }
-    );
+
+
+        if (
+            typeof value === "string" ||
+            typeof value === "number"
+        ) {
+
+            const text =
+                String(value).trim();
+
+
+            if (text) {
+
+                // Support comma separated states
+                text
+                    .split(",")
+                    .map(
+                        item =>
+                            item.trim()
+                    )
+                    .filter(Boolean)
+                    .forEach(
+                        item =>
+                            result.push(item)
+                    );
+
+            }
+
+
+            return;
+
+        }
+
+
+        if (
+            Array.isArray(value)
+        ) {
+
+            value.forEach(
+                item => {
+
+                    collect(
+                        item,
+                        depth + 1
+                    );
+
+                }
+            );
+
+
+            return;
+
+        }
+
+
+        if (
+            typeof value === "object"
+        ) {
+
+            stateFields.forEach(
+                field => {
+
+                    if (
+                        value[field] !==
+                        undefined
+                    ) {
+
+                        collect(
+                            value[field],
+                            depth + 1
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+
+
+    collect(regionUser);
 
 
     return [
         ...new Set(
-            states
+            result
                 .map(
                     state =>
                         normalize(state)
@@ -847,10 +1154,14 @@ function getRegionUserStates(regionUser) {
 
 function getRegionUserCities(regionUser) {
 
-    const cities = [];
+    if (!regionUser) {
+
+        return [];
+
+    }
 
 
-    const possibleFields = [
+    const cityFields = [
 
         "cities",
 
@@ -872,60 +1183,135 @@ function getRegionUserCities(regionUser) {
 
         "cityName",
 
-        "city_name"
+        "city_name",
+
+        "selectedCity",
+
+        "selected_city",
+
+        "cityNames",
+
+        "city_names",
+
+        "assignedCityNames",
+
+        "assigned_city_names",
+
+        "locations",
+
+        "location",
+
+        "assignments",
+
+        "assignment"
 
     ];
 
 
-    possibleFields.forEach(
-        (field) => {
-
-            const value =
-                regionUser?.[field];
+    const result = [];
 
 
-            if (
-                Array.isArray(value)
-            ) {
+    function collect(
+        value,
+        depth = 0
+    ) {
 
-                value.forEach(
-                    (item) => {
+        if (
+            value === null ||
+            value === undefined ||
+            depth > 8
+        ) {
 
-                        if (
-                            item !== null &&
-                            item !== undefined &&
-                            String(item).trim()
-                        ) {
-
-                            cities.push(
-                                String(item).trim()
-                            );
-
-                        }
-
-                    }
-                );
-
-            }
-            else if (
-                value !== null &&
-                value !== undefined &&
-                String(value).trim()
-            ) {
-
-                cities.push(
-                    String(value).trim()
-                );
-
-            }
+            return;
 
         }
-    );
+
+
+        if (
+            typeof value === "string" ||
+            typeof value === "number"
+        ) {
+
+            const text =
+                String(value).trim();
+
+
+            if (text) {
+
+                text
+                    .split(",")
+                    .map(
+                        item =>
+                            item.trim()
+                    )
+                    .filter(Boolean)
+                    .forEach(
+                        item =>
+                            result.push(item)
+                    );
+
+            }
+
+
+            return;
+
+        }
+
+
+        if (
+            Array.isArray(value)
+        ) {
+
+            value.forEach(
+                item => {
+
+                    collect(
+                        item,
+                        depth + 1
+                    );
+
+                }
+            );
+
+
+            return;
+
+        }
+
+
+        if (
+            typeof value === "object"
+        ) {
+
+            cityFields.forEach(
+                field => {
+
+                    if (
+                        value[field] !==
+                        undefined
+                    ) {
+
+                        collect(
+                            value[field],
+                            depth + 1
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+
+
+    collect(regionUser);
 
 
     return [
         ...new Set(
-            cities
+            result
                 .map(
                     city =>
                         normalize(city)
@@ -941,7 +1327,16 @@ function getRegionUserCities(regionUser) {
 // GET REGION USER ACCESS RULES
 // ======================================================
 
-function getRegionUserAccessRules(regionUser) {
+function getRegionUserAccessRules(
+    regionUser
+) {
+
+    if (!regionUser) {
+
+        return [];
+
+    }
+
 
     const rules = [];
 
@@ -960,16 +1355,24 @@ function getRegionUserAccessRules(regionUser) {
 
         "assignedAccess",
 
-        "assigned_access"
+        "assigned_access",
+
+        "assignments",
+
+        "assignment",
+
+        "locations",
+
+        "location"
 
     ];
 
 
     possibleFields.forEach(
-        (field) => {
+        field => {
 
             const value =
-                regionUser?.[field];
+                regionUser[field];
 
 
             if (
@@ -977,7 +1380,7 @@ function getRegionUserAccessRules(regionUser) {
             ) {
 
                 value.forEach(
-                    (item) => {
+                    item => {
 
                         if (
                             item &&
@@ -998,15 +1401,6 @@ function getRegionUserAccessRules(regionUser) {
                 value &&
                 typeof value === "object"
             ) {
-
-                /*
-                 * Important:
-                 * Some Firestore data may have an object
-                 * containing multiple rules instead of one rule.
-                 *
-                 * If it already looks like one access rule,
-                 * use it directly.
-                 */
 
                 rules.push(
                     value
@@ -1059,16 +1453,16 @@ function getRuleRegion(rule) {
 
 // ======================================================
 // GET RULE STATES
+//
+// FIXED:
+// ALL states from a rule are returned.
 // ======================================================
 
 function getRuleStates(rule) {
 
-    const states = [];
-
-
     if (!rule) {
 
-        return states;
+        return [];
 
     }
 
@@ -1095,52 +1489,128 @@ function getRuleStates(rule) {
 
         "stateName",
 
-        "state_name"
+        "state_name",
+
+        "selectedState",
+
+        "selected_state",
+
+        "stateNames",
+
+        "state_names",
+
+        "assignedStateNames",
+
+        "assigned_state_names"
 
     ];
 
 
+    const result = [];
+
+
     fields.forEach(
-        (field) => {
-
-            const value =
-                rule[field];
-
+        field => {
 
             if (
-                Array.isArray(value)
+                rule[field] ===
+                undefined
             ) {
 
-                value.forEach(
-                    (item) => {
+                return;
 
-                        if (
-                            item !== null &&
-                            item !== undefined &&
-                            String(item).trim()
-                        ) {
+            }
 
-                            states.push(
-                                normalize(item)
-                            );
+
+            valueToArray(
+                rule[field]
+            ).forEach(
+                value => {
+
+                    if (
+                        value &&
+                        typeof value ===
+                        "object"
+                    ) {
+
+                        fields.forEach(
+                            nestedField => {
+
+                                if (
+                                    value[
+                                        nestedField
+                                    ] !==
+                                    undefined
+                                ) {
+
+                                    valueToArray(
+                                        value[
+                                            nestedField
+                                        ]
+                                    ).forEach(
+                                        item => {
+
+                                            const text =
+                                                String(
+                                                    item
+                                                ).trim();
+
+
+                                            if (
+                                                text
+                                            ) {
+
+                                                result.push(
+                                                    normalize(
+                                                        text
+                                                    )
+                                                );
+
+                                            }
+
+                                        }
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+                    else {
+
+                        const text =
+                            String(value)
+                                .trim();
+
+
+                        if (text) {
+
+                            text
+                                .split(",")
+                                .map(
+                                    item =>
+                                        item.trim()
+                                )
+                                .filter(Boolean)
+                                .forEach(
+                                    item => {
+
+                                        result.push(
+                                            normalize(
+                                                item
+                                            )
+                                        );
+
+                                    }
+                                );
 
                         }
 
                     }
-                );
 
-            }
-            else if (
-                value !== null &&
-                value !== undefined &&
-                String(value).trim()
-            ) {
-
-                states.push(
-                    normalize(value)
-                );
-
-            }
+                }
+            );
 
         }
     );
@@ -1148,7 +1618,7 @@ function getRuleStates(rule) {
 
     return [
         ...new Set(
-            states.filter(Boolean)
+            result.filter(Boolean)
         )
     ];
 
@@ -1161,12 +1631,9 @@ function getRuleStates(rule) {
 
 function getRuleCities(rule) {
 
-    const cities = [];
-
-
     if (!rule) {
 
-        return cities;
+        return [];
 
     }
 
@@ -1193,52 +1660,64 @@ function getRuleCities(rule) {
 
         "cityName",
 
-        "city_name"
+        "city_name",
+
+        "selectedCity",
+
+        "selected_city",
+
+        "cityNames",
+
+        "city_names"
 
     ];
 
 
+    const result = [];
+
+
     fields.forEach(
-        (field) => {
-
-            const value =
-                rule[field];
-
+        field => {
 
             if (
-                Array.isArray(value)
+                rule[field] ===
+                undefined
             ) {
 
-                value.forEach(
-                    (item) => {
+                return;
 
-                        if (
-                            item !== null &&
-                            item !== undefined &&
-                            String(item).trim()
-                        ) {
+            }
 
-                            cities.push(
-                                normalize(item)
+
+            valueToArray(
+                rule[field]
+            ).forEach(
+                value => {
+
+                    const text =
+                        String(value).trim();
+
+
+                    if (text) {
+
+                        text
+                            .split(",")
+                            .map(
+                                item =>
+                                    item.trim()
+                            )
+                            .filter(Boolean)
+                            .forEach(
+                                item =>
+                                    result.push(
+                                        normalize(item)
+                                    )
                             );
 
-                        }
-
                     }
-                );
 
-            }
-            else if (
-                value !== null &&
-                value !== undefined &&
-                String(value).trim()
-            ) {
-
-                cities.push(
-                    normalize(value)
-                );
-
-            }
+                }
+            );
 
         }
     );
@@ -1246,7 +1725,7 @@ function getRuleCities(rule) {
 
     return [
         ...new Set(
-            cities.filter(Boolean)
+            result.filter(Boolean)
         )
     ];
 
@@ -1285,11 +1764,17 @@ function isFullRegionRule(rule) {
 
 
     if (
+
         accessType === "fullregion" ||
+
         accessType === "full_region" ||
+
         accessType === "full region" ||
+
         accessType === "region" ||
+
         accessType === "full"
+
     ) {
 
         return true;
@@ -1323,17 +1808,7 @@ function isFullRegionRule(rule) {
 
 
 // ======================================================
-// COLLECT EMPLOYEE CODES
-// ======================================================
-//
-// IMPORTANT:
-// This function only extracts actual employee-code fields.
-// It does NOT treat region/state/city strings as employee
-// codes.
-//
-// This prevents:
-// "Kolkata" or "Bihar"
-// from accidentally becoming employee codes.
+// EMPLOYEE CODE ASSIGNMENT EXTRACTION
 // ======================================================
 
 function collectEmployeeCodes(
@@ -1379,7 +1854,7 @@ function collectEmployeeCodes(
     if (Array.isArray(value)) {
 
         value.forEach(
-            (item) => {
+            item => {
 
                 collectEmployeeCodes(
                     item,
@@ -1400,56 +1875,40 @@ function collectEmployeeCodes(
         typeof value === "object"
     ) {
 
-        const directFields = [
+        const directCode =
 
-            "employeeCode",
+            value.employeeCode ||
 
-            "employee_code",
+            value.employee_code ||
 
-            "empCode",
+            value.empCode ||
 
-            "emp_code",
+            value.emp_code ||
 
-            "employeeID",
+            value.employeeID ||
 
-            "employeeId",
+            value.employeeId ||
 
-            "userCode",
+            value.userCode ||
 
-            "user_code",
+            value.user_code ||
 
-            "teacherCode",
+            value.teacherCode ||
 
-            "teacher_code",
+            value.teacher_code ||
 
-            "code"
-
-        ];
+            value.code;
 
 
-        directFields.forEach(
-            (field) => {
+        if (directCode) {
 
-                const directCode =
-                    value[field];
+            result.add(
+                normalize(
+                    directCode
+                )
+            );
 
-
-                if (
-                    directCode !== null &&
-                    directCode !== undefined &&
-                    String(directCode).trim()
-                ) {
-
-                    result.add(
-                        normalize(
-                            directCode
-                        )
-                    );
-
-                }
-
-            }
-        );
+        }
 
 
         const nestedFields = [
@@ -1494,7 +1953,7 @@ function collectEmployeeCodes(
 
 
         nestedFields.forEach(
-            (field) => {
+            field => {
 
                 if (
                     value[field] !==
@@ -1578,7 +2037,7 @@ function getRegionUserAssignedCodes(
 
 
     fields.forEach(
-        (field) => {
+        field => {
 
             if (
                 regionUser[field] !==
@@ -1591,95 +2050,6 @@ function getRegionUserAssignedCodes(
                 );
 
             }
-
-        }
-    );
-
-
-    /*
-     * IMPORTANT FIX:
-     *
-     * Do NOT run collectEmployeeCodes(rule)
-     * on the entire rule.
-     *
-     * Because a rule may contain:
-     *
-     * region = Kolkata
-     * state = Bihar
-     *
-     * Those are NOT employee codes.
-     *
-     * Only explicit employee-code fields are read.
-     */
-
-
-    const rules =
-        getRegionUserAccessRules(
-            regionUser
-        );
-
-
-    rules.forEach(
-        (rule) => {
-
-            const ruleCodeFields = [
-
-                "employeeCodes",
-
-                "employee_codes",
-
-                "assignedEmployees",
-
-                "assignedEmployeeCodes",
-
-                "assigned_employee_codes",
-
-                "assignedTeachers",
-
-                "assignedTeacherCodes",
-
-                "assigned_teacher_codes",
-
-                "teachers",
-
-                "teacherCodes",
-
-                "teacher_codes",
-
-                "employees",
-
-                "employeeList",
-
-                "teacherList",
-
-                "users",
-
-                "assignedUsers",
-
-                "members",
-
-                "assignedMembers"
-
-            ];
-
-
-            ruleCodeFields.forEach(
-                (field) => {
-
-                    if (
-                        rule[field] !==
-                        undefined
-                    ) {
-
-                        collectEmployeeCodes(
-                            rule[field],
-                            result
-                        );
-
-                    }
-
-                }
-            );
 
         }
     );
@@ -1699,7 +2069,7 @@ function employeeMatchesAccessRule(
     rule
 ) {
 
-    if (!employee || !rule) {
+    if (!rule) {
 
         return false;
 
@@ -1751,12 +2121,13 @@ function employeeMatchesAccessRule(
 
 
     // ==============================================
-    // REGION CHECK
+    // REGION
     // ==============================================
 
     if (
         ruleRegion &&
-        employeeRegion !== ruleRegion
+        employeeRegion !==
+        ruleRegion
     ) {
 
         return false;
@@ -1778,7 +2149,7 @@ function employeeMatchesAccessRule(
 
 
     // ==============================================
-    // STATE CHECK
+    // STATE
     // ==============================================
 
     if (
@@ -1799,7 +2170,7 @@ function employeeMatchesAccessRule(
 
 
     // ==============================================
-    // CITY CHECK
+    // CITY
     // ==============================================
 
     if (
@@ -1819,27 +2190,6 @@ function employeeMatchesAccessRule(
     }
 
 
-    /*
-     * If rule has no region/state/city restriction,
-     * but contains direct employee codes, those codes
-     * are handled separately.
-     *
-     * We should NOT automatically match every employee
-     * here unless the rule explicitly represents full access.
-     */
-
-    if (
-        !ruleRegion &&
-        ruleStates.length === 0 &&
-        ruleCities.length === 0 &&
-        !isFullRegionRule(rule)
-    ) {
-
-        return false;
-
-    }
-
-
     return true;
 
 }
@@ -1847,32 +2197,26 @@ function employeeMatchesAccessRule(
 
 // ======================================================
 // GET REGION USER EMPLOYEES
-// ======================================================
 //
-// MAIN FIX
+// IMPORTANT FIX
 //
 // OLD PROBLEM:
-//
-// Direct assignment found
-//        ↓
-// return directEmployees
-//        ↓
-// Access Rules never checked
-//        ↓
-// Kolkata missing
+// If direct employee assignment existed, function returned
+// only direct employees and completely ignored valid
+// State/Region assignments.
 //
 // NEW LOGIC:
+// 1. Direct employee codes
+// 2. Access rules
+// 3. Direct region/state/city
 //
-// Direct employees
-//       +
-// Access Rule employees
-//       +
-// Region/State/City employees
-//       ↓
-// COMBINE ALL
-//       ↓
-// UNIQUE EMPLOYEES
+// ALL VALID SOURCES ARE COMBINED.
 //
+// This prevents:
+// Kolkata + Bihar
+// Kolkata + Bihar + another state
+// Multiple access rules
+// from losing teachers.
 // ======================================================
 
 function getRegionUserEmployees(
@@ -1891,7 +2235,7 @@ function getRegionUserEmployees(
 
 
     // ==================================================
-    // 1. DIRECT EMPLOYEE ASSIGNMENT
+    // 1. DIRECT EMPLOYEE ASSIGNMENTS
     // ==================================================
 
     const assignedCodes =
@@ -1900,19 +2244,36 @@ function getRegionUserEmployees(
         );
 
 
-    assignedCodes.forEach(
-        (code) => {
+    if (
+        assignedCodes.size > 0
+    ) {
 
-            if (code) {
+        employees.forEach(
+            employee => {
 
-                matchedCodes.add(
-                    normalize(code)
-                );
+                const code =
+                    normalize(
+                        getEmployeeCode(
+                            employee
+                        )
+                    );
+
+
+                if (
+                    code &&
+                    assignedCodes.has(code)
+                ) {
+
+                    matchedCodes.add(
+                        code
+                    );
+
+                }
 
             }
+        );
 
-        }
-    );
+    }
 
 
     // ==================================================
@@ -1925,132 +2286,47 @@ function getRegionUserEmployees(
         );
 
 
-    rules.forEach(
-        (rule) => {
+    if (
+        rules.length > 0
+    ) {
 
-            if (!rule) {
+        employees.forEach(
+            employee => {
 
-                return;
-
-            }
-
-
-            // ------------------------------------------
-            // Direct employee codes inside this rule
-            // ------------------------------------------
-
-            const ruleAssignedCodes =
-                new Set();
-
-
-            const codeFields = [
-
-                "employeeCodes",
-
-                "employee_codes",
-
-                "assignedEmployees",
-
-                "assignedEmployeeCodes",
-
-                "assigned_employee_codes",
-
-                "assignedTeachers",
-
-                "assignedTeacherCodes",
-
-                "assigned_teacher_codes",
-
-                "teachers",
-
-                "teacherCodes",
-
-                "teacher_codes",
-
-                "employees",
-
-                "employeeList",
-
-                "teacherList",
-
-                "users",
-
-                "assignedUsers",
-
-                "members",
-
-                "assignedMembers"
-
-            ];
+                const matched =
+                    rules.some(
+                        rule =>
+                            employeeMatchesAccessRule(
+                                employee,
+                                rule
+                            )
+                    );
 
 
-            codeFields.forEach(
-                (field) => {
+                if (matched) {
 
-                    if (
-                        rule[field] !==
-                        undefined
-                    ) {
+                    const code =
+                        normalize(
+                            getEmployeeCode(
+                                employee
+                            )
+                        );
 
-                        collectEmployeeCodes(
-                            rule[field],
-                            ruleAssignedCodes
+
+                    if (code) {
+
+                        matchedCodes.add(
+                            code
                         );
 
                     }
 
                 }
-            );
 
+            }
+        );
 
-            ruleAssignedCodes.forEach(
-                (code) => {
-
-                    matchedCodes.add(
-                        normalize(code)
-                    );
-
-                }
-            );
-
-
-            // ------------------------------------------
-            // Region / State / City rule
-            // ------------------------------------------
-
-            employees.forEach(
-                (employee) => {
-
-                    if (
-                        employeeMatchesAccessRule(
-                            employee,
-                            rule
-                        )
-                    ) {
-
-                        const code =
-                            normalize(
-                                getEmployeeCode(
-                                    employee
-                                )
-                            );
-
-
-                        if (code) {
-
-                            matchedCodes.add(
-                                code
-                            );
-
-                        }
-
-                    }
-
-                }
-            );
-
-        }
-    );
+    }
 
 
     // ==================================================
@@ -2077,19 +2353,34 @@ function getRegionUserEmployees(
         );
 
 
-    /*
-     * IMPORTANT:
-     *
-     * Region + States are treated as a combined
-     * permission.
-     *
-     * Example:
-     *
-     * Region = Kolkata Region
-     * States = [Kolkata, Bihar]
-     *
-     * Then BOTH states are included.
-     */
+    // ==================================================
+    // DEBUG INFORMATION
+    // ==================================================
+    //
+    // This makes it easier to verify a Region User
+    // with multiple states.
+    //
+
+    console.log(
+        "Region User:",
+        getRegionUserName(regionUser),
+        {
+            region:
+                userRegion,
+
+            states:
+                userStates,
+
+            cities:
+                userCities,
+
+            directEmployeeCodes:
+                [...assignedCodes],
+
+            accessRules:
+                rules
+        }
+    );
 
 
     if (
@@ -2099,7 +2390,7 @@ function getRegionUserEmployees(
     ) {
 
         employees.forEach(
-            (employee) => {
+            employee => {
 
                 const employeeRegion =
                     normalize(
@@ -2125,9 +2416,9 @@ function getRegionUserEmployees(
                     );
 
 
-                // --------------------------------------
-                // Region
-                // --------------------------------------
+                // ------------------------------------------
+                // REGION CHECK
+                // ------------------------------------------
 
                 if (
                     userRegion &&
@@ -2140,9 +2431,12 @@ function getRegionUserEmployees(
                 }
 
 
-                // --------------------------------------
-                // State
-                // --------------------------------------
+                // ------------------------------------------
+                // STATE CHECK
+                //
+                // IMPORTANT:
+                // includes() allows MULTIPLE STATES.
+                // ------------------------------------------
 
                 if (
                     userStates.length > 0 &&
@@ -2156,9 +2450,9 @@ function getRegionUserEmployees(
                 }
 
 
-                // --------------------------------------
-                // City
-                // --------------------------------------
+                // ------------------------------------------
+                // CITY CHECK
+                // ------------------------------------------
 
                 if (
                     userCities.length > 0 &&
@@ -2195,31 +2489,15 @@ function getRegionUserEmployees(
 
 
     // ==================================================
-    // 4. RETURN UNIQUE EMPLOYEES
+    // RETURN FINAL EMPLOYEE LIST
     // ==================================================
 
-    /*
-     * IMPORTANT:
-     *
-     * We do NOT return employees.slice()
-     * when a Region User has no match.
-     *
-     * This prevents another user's data
-     * from appearing.
-     */
-
     if (
-        matchedCodes.size === 0
+        matchedCodes.size > 0
     ) {
 
-        return [];
-
-    }
-
-
-    const result =
-        employees.filter(
-            (employee) => {
+        return employees.filter(
+            employee => {
 
                 const code =
                     normalize(
@@ -2231,16 +2509,20 @@ function getRegionUserEmployees(
 
                 return (
                     code &&
-                    matchedCodes.has(
-                        code
-                    )
+                    matchedCodes.has(code)
                 );
 
             }
         );
 
+    }
 
-    return result;
+
+    // ==================================================
+    // NOTHING MATCHED
+    // ==================================================
+
+    return [];
 
 }
 
@@ -2287,7 +2569,7 @@ function loadRegionUserDropdown() {
             }
         )
         .forEach(
-            (regionUser) => {
+            regionUser => {
 
                 const name =
                     getRegionUserName(
@@ -2321,24 +2603,16 @@ function loadRegionUserDropdown() {
                     regionUser.id;
 
 
-                if (
-                    name &&
-                    code
-                ) {
+                option.textContent =
 
-                    option.textContent =
-                        name +
-                        " - " +
-                        code;
+                    name && code
 
-                }
-                else {
+                        ? name +
+                          " - " +
+                          code
 
-                    option.textContent =
-                        name ||
-                        code;
-
-                }
+                        : name ||
+                          code;
 
 
                 regionUserFilter.appendChild(
@@ -2369,7 +2643,7 @@ function loadRegionDropdown() {
 
 
     employees.forEach(
-        (employee) => {
+        employee => {
 
             const region =
                 getEmployeeRegion(
@@ -2377,14 +2651,11 @@ function loadRegionDropdown() {
                 );
 
 
-            const key =
-                normalize(region);
+            if (region) {
 
+                const key =
+                    normalize(region);
 
-            if (
-                region &&
-                key
-            ) {
 
                 if (
                     !regions.has(key)
@@ -2418,7 +2689,7 @@ function loadRegionDropdown() {
                 a.localeCompare(b)
         )
         .forEach(
-            (region) => {
+            region => {
 
                 const option =
                     document.createElement(
@@ -2461,7 +2732,7 @@ function getCurrentRegionUserEmployees() {
 
     const regionUser =
         regionUsers.find(
-            (user) =>
+            user =>
                 String(user.id) ===
                 String(
                     regionUserFilter.value
@@ -2484,7 +2755,12 @@ function getCurrentRegionUserEmployees() {
 
 
 // ======================================================
-// STATE DROPDOWN
+// UPDATE STATE DROPDOWN
+//
+// IMPORTANT:
+// It is rebuilt from the CURRENT Region User employee list.
+// Therefore if user has Kolkata + Bihar,
+// both states will be shown.
 // ======================================================
 
 function updateStateDropdown() {
@@ -2511,7 +2787,7 @@ function updateStateDropdown() {
 
 
     baseEmployees.forEach(
-        (employee) => {
+        employee => {
 
             const employeeRegion =
                 getEmployeeRegion(
@@ -2540,14 +2816,11 @@ function updateStateDropdown() {
             }
 
 
-            const key =
-                normalize(state);
+            if (state) {
 
+                const key =
+                    normalize(state);
 
-            if (
-                state &&
-                key
-            ) {
 
                 if (
                     !states.has(key)
@@ -2581,7 +2854,7 @@ function updateStateDropdown() {
                 a.localeCompare(b)
         )
         .forEach(
-            (state) => {
+            state => {
 
                 const option =
                     document.createElement(
@@ -2641,7 +2914,7 @@ function updateCityDropdown() {
 
 
     baseEmployees.forEach(
-        (employee) => {
+        employee => {
 
             const employeeRegion =
                 getEmployeeRegion(
@@ -2691,14 +2964,11 @@ function updateCityDropdown() {
             }
 
 
-            const key =
-                normalize(city);
+            if (city) {
 
+                const key =
+                    normalize(city);
 
-            if (
-                city &&
-                key
-            ) {
 
                 if (
                     !cities.has(key)
@@ -2732,7 +3002,7 @@ function updateCityDropdown() {
                 a.localeCompare(b)
         )
         .forEach(
-            (city) => {
+            city => {
 
                 const option =
                     document.createElement(
@@ -2797,7 +3067,7 @@ function loadEmployeeDropdown() {
 
         filteredEmployees =
             filteredEmployees.filter(
-                (employee) =>
+                employee =>
                     normalize(
                         getEmployeeRegion(
                             employee
@@ -2815,7 +3085,7 @@ function loadEmployeeDropdown() {
 
         filteredEmployees =
             filteredEmployees.filter(
-                (employee) =>
+                employee =>
                     normalize(
                         getEmployeeState(
                             employee
@@ -2833,7 +3103,7 @@ function loadEmployeeDropdown() {
 
         filteredEmployees =
             filteredEmployees.filter(
-                (employee) =>
+                employee =>
                     normalize(
                         getEmployeeCity(
                             employee
@@ -2866,7 +3136,7 @@ function loadEmployeeDropdown() {
                     )
         )
         .forEach(
-            (employee) => {
+            employee => {
 
                 const employeeCode =
                     getEmployeeCode(
@@ -2938,7 +3208,7 @@ function getFilteredEmployees() {
 
         filteredEmployees =
             filteredEmployees.filter(
-                (employee) =>
+                employee =>
 
                     normalize(
                         getEmployeeRegion(
@@ -2964,7 +3234,7 @@ function getFilteredEmployees() {
 
         filteredEmployees =
             filteredEmployees.filter(
-                (employee) =>
+                employee =>
 
                     normalize(
                         getEmployeeState(
@@ -2990,7 +3260,7 @@ function getFilteredEmployees() {
 
         filteredEmployees =
             filteredEmployees.filter(
-                (employee) =>
+                employee =>
 
                     normalize(
                         getEmployeeCity(
@@ -3016,7 +3286,7 @@ function getFilteredEmployees() {
 
         filteredEmployees =
             filteredEmployees.filter(
-                (employee) =>
+                employee =>
 
                     normalize(
                         getEmployeeCode(
@@ -3060,7 +3330,7 @@ function updateSelectedTitle() {
 
         const employee =
             employees.find(
-                (item) =>
+                item =>
                     normalize(
                         getEmployeeCode(
                             item
@@ -3129,7 +3399,7 @@ function updateSelectedTitle() {
 
         const regionUser =
             regionUsers.find(
-                (user) =>
+                user =>
                     String(user.id) ===
                     String(
                         regionUserFilter.value
@@ -3203,7 +3473,7 @@ function buildTeacherCollectionMap() {
     // ==============================================
 
     allCollectionEntries.forEach(
-        (entry) => {
+        entry => {
 
             const employeeCode =
                 normalize(
@@ -3336,7 +3606,7 @@ function displaySummary(list) {
 
 
     list.forEach(
-        (employee) => {
+        employee => {
 
             const employeeCode =
                 getEmployeeCode(
@@ -3885,7 +4155,7 @@ function downloadFilteredCSV() {
             csvRows.push(
 
                 row.map(
-                    (value) =>
+                    value =>
 
                         `"${String(value)
                             .replace(/"/g, '""')}"`
@@ -4174,7 +4444,7 @@ async function downloadFilteredImage() {
 
 
         await new Promise(
-            (resolve) => {
+            resolve => {
 
                 requestAnimationFrame(
                     () => {
@@ -4382,13 +4652,12 @@ if (regionUserFilter) {
             }
 
 
-            /*
-             * IMPORTANT:
-             *
-             * Region User select karte hi
-             * uske COMPLETE access employees se
-             * dropdowns rebuild honge.
-             */
+            // ==========================================
+            // IMPORTANT:
+            // Region User select hote hi uski complete
+            // employee list se State/City/Employee dropdown
+            // rebuild honge.
+            // ==========================================
 
             updateStateDropdown();
 
@@ -4698,7 +4967,7 @@ async function loadData() {
 
 
         employeeSnapshot.forEach(
-            (employeeDoc) => {
+            employeeDoc => {
 
                 employees.push({
 
@@ -4730,7 +4999,7 @@ async function loadData() {
 
 
         regionUserSnapshot.forEach(
-            (regionUserDoc) => {
+            regionUserDoc => {
 
                 regionUsers.push({
 
