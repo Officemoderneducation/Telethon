@@ -13,6 +13,7 @@
 // - Same Teacher + Same Date = SUM
 // - Collection Summary shows All-Time Collection
 // - Region User Filter
+// - Region / State / City / Employee Filter
 // - Filtered Data Image Download
 // - Filtered Data CSV Download
 // - Old Daily Entry functionality is NOT changed
@@ -138,7 +139,8 @@ function normalize(value) {
 
     return String(value ?? "")
         .trim()
-        .toLowerCase();
+        .toLowerCase()
+        .replace(/\s+/g, " ");
 
 }
 
@@ -159,6 +161,7 @@ function numberValue(value) {
 
     }
 
+
     const number =
         Number(
             String(value)
@@ -166,6 +169,7 @@ function numberValue(value) {
                 .replace(/₹/g, "")
                 .trim()
         );
+
 
     return Number.isFinite(number)
         ? number
@@ -194,8 +198,11 @@ function formatMoney(amount) {
 function getEmployeeCode(employee) {
 
     if (!employee) {
+
         return "";
+
     }
+
 
     return String(
 
@@ -221,8 +228,6 @@ function getEmployeeCode(employee) {
 
         employee.code ||
 
-        employee.id ||
-
         ""
 
     ).trim();
@@ -237,8 +242,11 @@ function getEmployeeCode(employee) {
 function getEntryEmployeeCode(entry) {
 
     if (!entry) {
+
         return "";
+
     }
+
 
     return String(
 
@@ -282,8 +290,11 @@ function getEntryEmployeeCode(entry) {
 function getEntryAmount(entry) {
 
     if (!entry) {
+
         return 0;
+
     }
+
 
     return numberValue(
 
@@ -321,8 +332,11 @@ function getEntryAmount(entry) {
 function getEntryDate(entry) {
 
     if (!entry) {
+
         return "";
+
     }
+
 
     return (
 
@@ -346,7 +360,7 @@ function getEntryDate(entry) {
 
 
 // ======================================================
-// FORMAT DATE FOR INPUT
+// FORMAT DATE
 // ======================================================
 
 function formatDateForInput(date) {
@@ -363,6 +377,7 @@ function formatDateForInput(date) {
         String(
             date.getDate()
         ).padStart(2, "0");
+
 
     return (
         year +
@@ -387,6 +402,7 @@ function normalizeDate(value) {
 
     }
 
+
     if (
         typeof value === "object" &&
         typeof value.toDate === "function"
@@ -397,6 +413,7 @@ function normalizeDate(value) {
         );
 
     }
+
 
     if (
         typeof value === "object" &&
@@ -411,8 +428,10 @@ function normalizeDate(value) {
 
     }
 
+
     const stringValue =
         String(value).trim();
+
 
     if (
         /^\d{4}-\d{2}-\d{2}$/
@@ -423,10 +442,12 @@ function normalizeDate(value) {
 
     }
 
+
     let match =
         stringValue.match(
             /^(\d{2})-(\d{2})-(\d{4})$/
         );
+
 
     if (match) {
 
@@ -439,12 +460,14 @@ function normalizeDate(value) {
         );
 
     }
+
 
     match =
         stringValue.match(
             /^(\d{2})\/(\d{2})\/(\d{4})$/
         );
 
+
     if (match) {
 
         return (
@@ -457,8 +480,10 @@ function normalizeDate(value) {
 
     }
 
+
     const parsed =
         new Date(stringValue);
+
 
     if (
         !Number.isNaN(
@@ -471,6 +496,7 @@ function normalizeDate(value) {
         );
 
     }
+
 
     return "";
 
@@ -493,7 +519,9 @@ async function loadCollectionData(
             )
         );
 
+
     const result = [];
+
 
     snapshot.forEach(
         (entryDoc) => {
@@ -513,6 +541,7 @@ async function loadCollectionData(
         }
     );
 
+
     return result;
 
 }
@@ -525,8 +554,11 @@ async function loadCollectionData(
 function getRegionUserName(regionUser) {
 
     if (!regionUser) {
+
         return "";
+
     }
+
 
     return String(
 
@@ -562,8 +594,11 @@ function getRegionUserName(regionUser) {
 function getRegionUserCode(regionUser) {
 
     if (!regionUser) {
+
         return "";
+
     }
+
 
     return String(
 
@@ -583,8 +618,6 @@ function getRegionUserCode(regionUser) {
 
         regionUser.region_user_code ||
 
-        regionUser.regionUserId ||
-
         ""
 
     ).trim();
@@ -593,362 +626,7 @@ function getRegionUserCode(regionUser) {
 
 
 // ======================================================
-// ADD EMPLOYEE CODE FROM ANY VALUE
-// ======================================================
-
-function addAssignedCode(
-    assignedCodes,
-    value
-) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return;
-
-    }
-
-    if (
-        typeof value === "string" ||
-        typeof value === "number"
-    ) {
-
-        const code =
-            String(value).trim();
-
-        if (code) {
-
-            assignedCodes.add(
-                normalize(code)
-            );
-
-        }
-
-        return;
-
-    }
-
-    if (
-        typeof value === "object"
-    ) {
-
-        const code =
-            getEmployeeCode(value);
-
-        if (code) {
-
-            assignedCodes.add(
-                normalize(code)
-            );
-
-        }
-
-    }
-
-}
-
-
-// ======================================================
-// RECURSIVELY EXTRACT ASSIGNED EMPLOYEE CODES
-// ======================================================
-//
-// This handles:
-// - employeeCodes: ["T001", "T002"]
-// - assignedEmployees: [{employeeCode:"T001"}]
-// - teachers: [{empCode:"T001"}]
-// - assignedTeachers
-// - teacherCodes
-// - employees
-// - nested objects/arrays
-// ======================================================
-
-function collectEmployeeCodesFromValue(
-    value,
-    assignedCodes,
-    depth = 0
-) {
-
-    if (
-        value === null ||
-        value === undefined ||
-        depth > 5
-    ) {
-
-        return;
-
-    }
-
-    if (
-        typeof value === "string" ||
-        typeof value === "number"
-    ) {
-
-        addAssignedCode(
-            assignedCodes,
-            value
-        );
-
-        return;
-
-    }
-
-    if (Array.isArray(value)) {
-
-        value.forEach(
-            (item) => {
-
-                collectEmployeeCodesFromValue(
-                    item,
-                    assignedCodes,
-                    depth + 1
-                );
-
-            }
-        );
-
-        return;
-
-    }
-
-    if (
-        typeof value === "object"
-    ) {
-
-        const directCode =
-            getEmployeeCode(value);
-
-        if (directCode) {
-
-            assignedCodes.add(
-                normalize(directCode)
-            );
-
-        }
-
-
-        const knownCodeFields = [
-
-            "employeeCode",
-            "employee_code",
-            "empCode",
-            "emp_code",
-            "employeeID",
-            "employeeId",
-            "userCode",
-            "user_code",
-            "teacherCode",
-            "teacher_code",
-            "code"
-
-        ];
-
-
-        knownCodeFields.forEach(
-            (field) => {
-
-                if (
-                    value[field] !==
-                    undefined
-                ) {
-
-                    addAssignedCode(
-                        assignedCodes,
-                        value[field]
-                    );
-
-                }
-
-            }
-        );
-
-
-        const nestedFields = [
-
-            "employeeCodes",
-            "employee_codes",
-
-            "assignedEmployees",
-            "assignedEmployeeCodes",
-            "assigned_employee_codes",
-
-            "assignedTeachers",
-            "assignedTeacherCodes",
-            "assigned_teacher_codes",
-
-            "teachers",
-            "teacherCodes",
-            "teacher_codes",
-
-            "employees",
-            "employeeList",
-            "teacherList",
-
-            "users",
-            "assignedUsers",
-
-            "members",
-            "assignedMembers"
-
-        ];
-
-
-        nestedFields.forEach(
-            (field) => {
-
-                if (
-                    value[field] !==
-                    undefined
-                ) {
-
-                    collectEmployeeCodesFromValue(
-                        value[field],
-                        assignedCodes,
-                        depth + 1
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-}
-
-
-// ======================================================
-// GET REGION USER EMPLOYEE CODES
-// ======================================================
-
-function getRegionUserAssignedCodes(
-    regionUser
-) {
-
-    const assignedCodes =
-        new Set();
-
-
-    if (!regionUser) {
-
-        return assignedCodes;
-
-    }
-
-
-    // ==============================================
-    // DIRECT / COMMON FIELDS
-    // ==============================================
-
-    const fields = [
-
-        "employeeCodes",
-        "employee_codes",
-
-        "assignedEmployees",
-        "assignedEmployeeCodes",
-        "assigned_employee_codes",
-
-        "assignedTeachers",
-        "assignedTeacherCodes",
-        "assigned_teacher_codes",
-
-        "teachers",
-        "teacherCodes",
-        "teacher_codes",
-
-        "employees",
-        "employeeList",
-        "teacherList",
-
-        "users",
-        "assignedUsers",
-
-        "members",
-        "assignedMembers"
-
-    ];
-
-
-    fields.forEach(
-        (field) => {
-
-            if (
-                regionUser[field] !==
-                undefined
-            ) {
-
-                collectEmployeeCodesFromValue(
-                    regionUser[field],
-                    assignedCodes
-                );
-
-            }
-
-        }
-    );
-
-
-    // ==============================================
-    // POSSIBLE ACCESS / RULE STRUCTURES
-    // ==============================================
-
-    const ruleFields = [
-
-        "accessRules",
-        "access_rules",
-
-        "rules",
-
-        "assigned",
-        "assignment",
-
-        "permissions"
-
-    ];
-
-
-    ruleFields.forEach(
-        (field) => {
-
-            if (
-                regionUser[field] !==
-                undefined
-            ) {
-
-                collectEmployeeCodesFromValue(
-                    regionUser[field],
-                    assignedCodes
-                );
-
-            }
-
-        }
-    );
-
-
-    // ==============================================
-    // REGION USER ITSELF MAY HAVE TEACHER CODE
-    // ==============================================
-
-    const ownCode =
-        getRegionUserCode(
-            regionUser
-        );
-
-
-    // Do NOT automatically use region-user code
-    // as teacher code. This avoids wrong matching.
-
-
-    return assignedCodes;
-
-}
-
-
-// ======================================================
-// GET EMPLOYEE REGION / STATE / CITY
+// GET EMPLOYEE REGION
 // ======================================================
 
 function getEmployeeRegion(employee) {
@@ -963,12 +641,20 @@ function getEmployeeRegion(employee) {
 
         employee?.assigned_region ||
 
+        employee?.regionName ||
+
+        employee?.region_name ||
+
         ""
 
     ).trim();
 
 }
 
+
+// ======================================================
+// GET EMPLOYEE STATE
+// ======================================================
 
 function getEmployeeState(employee) {
 
@@ -982,12 +668,20 @@ function getEmployeeState(employee) {
 
         employee?.assigned_state ||
 
+        employee?.stateName ||
+
+        employee?.state_name ||
+
         ""
 
     ).trim();
 
 }
 
+
+// ======================================================
+// GET EMPLOYEE CITY
+// ======================================================
 
 function getEmployeeCity(employee) {
 
@@ -1001,6 +695,10 @@ function getEmployeeCity(employee) {
 
         employee?.assigned_city ||
 
+        employee?.cityName ||
+
+        employee?.city_name ||
+
         ""
 
     ).trim();
@@ -1009,7 +707,7 @@ function getEmployeeCity(employee) {
 
 
 // ======================================================
-// GET REGION USER REGION / STATE / CITY
+// GET REGION USER REGION
 // ======================================================
 
 function getRegionUserRegion(regionUser) {
@@ -1035,21 +733,297 @@ function getRegionUserRegion(regionUser) {
 }
 
 
-function getRegionUserState(regionUser) {
+// ======================================================
+// GET REGION USER STATES
+// ======================================================
+
+function getRegionUserStates(regionUser) {
+
+    const states = [];
+
+
+    const possibleFields = [
+
+        "states",
+
+        "selectedStates",
+
+        "selected_states",
+
+        "assignedStates",
+
+        "assigned_states",
+
+        "state",
+
+        "State",
+
+        "assignedState",
+
+        "assigned_state",
+
+        "stateName",
+
+        "state_name"
+
+    ];
+
+
+    possibleFields.forEach(
+        (field) => {
+
+            const value =
+                regionUser?.[field];
+
+
+            if (
+                Array.isArray(value)
+            ) {
+
+                value.forEach(
+                    (item) => {
+
+                        if (
+                            item !== null &&
+                            item !== undefined &&
+                            String(item).trim()
+                        ) {
+
+                            states.push(
+                                String(item).trim()
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+            else if (
+                value !== null &&
+                value !== undefined &&
+                String(value).trim()
+            ) {
+
+                states.push(
+                    String(value).trim()
+                );
+
+            }
+
+        }
+    );
+
+
+    return [
+        ...new Set(
+            states.map(
+                (state) =>
+                    normalize(state)
+            )
+        )
+    ];
+
+}
+
+
+// ======================================================
+// GET REGION USER CITIES
+// ======================================================
+
+function getRegionUserCities(regionUser) {
+
+    const cities = [];
+
+
+    const possibleFields = [
+
+        "cities",
+
+        "selectedCities",
+
+        "selected_cities",
+
+        "assignedCities",
+
+        "assigned_cities",
+
+        "city",
+
+        "City",
+
+        "assignedCity",
+
+        "assigned_city",
+
+        "cityName",
+
+        "city_name"
+
+    ];
+
+
+    possibleFields.forEach(
+        (field) => {
+
+            const value =
+                regionUser?.[field];
+
+
+            if (
+                Array.isArray(value)
+            ) {
+
+                value.forEach(
+                    (item) => {
+
+                        if (
+                            item !== null &&
+                            item !== undefined &&
+                            String(item).trim()
+                        ) {
+
+                            cities.push(
+                                String(item).trim()
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+            else if (
+                value !== null &&
+                value !== undefined &&
+                String(value).trim()
+            ) {
+
+                cities.push(
+                    String(value).trim()
+                );
+
+            }
+
+        }
+    );
+
+
+    return [
+        ...new Set(
+            cities.map(
+                (city) =>
+                    normalize(city)
+            )
+        )
+    ];
+
+}
+
+
+// ======================================================
+// GET REGION USER ACCESS RULES
+// ======================================================
+
+function getRegionUserAccessRules(regionUser) {
+
+    const rules = [];
+
+
+    const possibleFields = [
+
+        "access",
+
+        "accessRules",
+
+        "access_rules",
+
+        "permissions",
+
+        "rules",
+
+        "assignedAccess",
+
+        "assigned_access"
+
+    ];
+
+
+    possibleFields.forEach(
+        (field) => {
+
+            const value =
+                regionUser?.[field];
+
+
+            if (
+                Array.isArray(value)
+            ) {
+
+                value.forEach(
+                    (item) => {
+
+                        if (
+                            item &&
+                            typeof item === "object"
+                        ) {
+
+                            rules.push(
+                                item
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+            else if (
+                value &&
+                typeof value === "object"
+            ) {
+
+                rules.push(
+                    value
+                );
+
+            }
+
+        }
+    );
+
+
+    return rules;
+
+}
+
+
+// ======================================================
+// GET RULE REGION
+// ======================================================
+
+function getRuleRegion(rule) {
+
+    if (!rule) {
+
+        return "";
+
+    }
+
 
     return String(
 
-        regionUser?.state ||
+        rule.region ||
 
-        regionUser?.State ||
+        rule.Region ||
 
-        regionUser?.assignedState ||
+        rule.assignedRegion ||
 
-        regionUser?.assigned_state ||
+        rule.assigned_region ||
 
-        regionUser?.stateName ||
+        rule.regionName ||
 
-        regionUser?.state_name ||
+        rule.region_name ||
 
         ""
 
@@ -1058,25 +1032,629 @@ function getRegionUserState(regionUser) {
 }
 
 
-function getRegionUserCity(regionUser) {
+// ======================================================
+// GET RULE STATES
+// ======================================================
 
-    return String(
+function getRuleStates(rule) {
 
-        regionUser?.city ||
+    const states = [];
 
-        regionUser?.City ||
 
-        regionUser?.assignedCity ||
+    if (!rule) {
 
-        regionUser?.assigned_city ||
+        return states;
 
-        regionUser?.cityName ||
+    }
 
-        regionUser?.city_name ||
 
-        ""
+    const fields = [
 
-    ).trim();
+        "states",
+
+        "selectedStates",
+
+        "selected_states",
+
+        "assignedStates",
+
+        "assigned_states",
+
+        "state",
+
+        "State",
+
+        "assignedState",
+
+        "assigned_state",
+
+        "stateName",
+
+        "state_name"
+
+    ];
+
+
+    fields.forEach(
+        (field) => {
+
+            const value =
+                rule[field];
+
+
+            if (
+                Array.isArray(value)
+            ) {
+
+                value.forEach(
+                    (item) => {
+
+                        if (
+                            item !== null &&
+                            item !== undefined &&
+                            String(item).trim()
+                        ) {
+
+                            states.push(
+                                normalize(item)
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+            else if (
+                value !== null &&
+                value !== undefined &&
+                String(value).trim()
+            ) {
+
+                states.push(
+                    normalize(value)
+                );
+
+            }
+
+        }
+    );
+
+
+    return [
+        ...new Set(states)
+    ];
+
+}
+
+
+// ======================================================
+// CHECK FULL REGION RULE
+// ======================================================
+
+function isFullRegionRule(rule) {
+
+    if (!rule) {
+
+        return false;
+
+    }
+
+
+    const accessType =
+        normalize(
+
+            rule.accessType ||
+
+            rule.access_type ||
+
+            rule.type ||
+
+            rule.scope ||
+
+            rule.level ||
+
+            ""
+
+        );
+
+
+    if (
+        accessType === "fullregion" ||
+        accessType === "full_region" ||
+        accessType === "full region" ||
+        accessType === "region"
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        rule.fullRegion === true ||
+        rule.full_region === true
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        rule.allStates === true ||
+        rule.all_states === true
+    ) {
+
+        return true;
+
+    }
+
+
+    return false;
+
+}
+
+
+// ======================================================
+// EMPLOYEE CODE ASSIGNMENT EXTRACTION
+// ======================================================
+
+function collectEmployeeCodes(
+    value,
+    result,
+    depth = 0
+) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        depth > 6
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        typeof value === "string" ||
+        typeof value === "number"
+    ) {
+
+        const code =
+            String(value).trim();
+
+
+        if (code) {
+
+            result.add(
+                normalize(code)
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    if (Array.isArray(value)) {
+
+        value.forEach(
+            (item) => {
+
+                collectEmployeeCodes(
+                    item,
+                    result,
+                    depth + 1
+                );
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        typeof value === "object"
+    ) {
+
+        const directCode =
+
+            value.employeeCode ||
+
+            value.employee_code ||
+
+            value.empCode ||
+
+            value.emp_code ||
+
+            value.employeeID ||
+
+            value.employeeId ||
+
+            value.userCode ||
+
+            value.user_code ||
+
+            value.teacherCode ||
+
+            value.teacher_code ||
+
+            value.code;
+
+
+        if (directCode) {
+
+            result.add(
+                normalize(
+                    directCode
+                )
+            );
+
+        }
+
+
+        const nestedFields = [
+
+            "employeeCodes",
+
+            "employee_codes",
+
+            "assignedEmployees",
+
+            "assignedEmployeeCodes",
+
+            "assigned_employee_codes",
+
+            "assignedTeachers",
+
+            "assignedTeacherCodes",
+
+            "assigned_teacher_codes",
+
+            "teachers",
+
+            "teacherCodes",
+
+            "teacher_codes",
+
+            "employees",
+
+            "employeeList",
+
+            "teacherList",
+
+            "users",
+
+            "assignedUsers",
+
+            "members",
+
+            "assignedMembers"
+
+        ];
+
+
+        nestedFields.forEach(
+            (field) => {
+
+                if (
+                    value[field] !==
+                    undefined
+                ) {
+
+                    collectEmployeeCodes(
+                        value[field],
+                        result,
+                        depth + 1
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// GET REGION USER ASSIGNED CODES
+// ======================================================
+
+function getRegionUserAssignedCodes(
+    regionUser
+) {
+
+    const result =
+        new Set();
+
+
+    if (!regionUser) {
+
+        return result;
+
+    }
+
+
+    const fields = [
+
+        "employeeCodes",
+
+        "employee_codes",
+
+        "assignedEmployees",
+
+        "assignedEmployeeCodes",
+
+        "assigned_employee_codes",
+
+        "assignedTeachers",
+
+        "assignedTeacherCodes",
+
+        "assigned_teacher_codes",
+
+        "teachers",
+
+        "teacherCodes",
+
+        "teacher_codes",
+
+        "employees",
+
+        "employeeList",
+
+        "teacherList",
+
+        "users",
+
+        "assignedUsers",
+
+        "members",
+
+        "assignedMembers"
+
+    ];
+
+
+    fields.forEach(
+        (field) => {
+
+            if (
+                regionUser[field] !==
+                undefined
+            ) {
+
+                collectEmployeeCodes(
+                    regionUser[field],
+                    result
+                );
+
+            }
+
+        }
+    );
+
+
+    const rules =
+        getRegionUserAccessRules(
+            regionUser
+        );
+
+
+    rules.forEach(
+        (rule) => {
+
+            collectEmployeeCodes(
+                rule,
+                result
+            );
+
+        }
+    );
+
+
+    return result;
+
+}
+
+
+// ======================================================
+// EMPLOYEE MATCH ACCESS RULE
+// ======================================================
+
+function employeeMatchesAccessRule(
+    employee,
+    rule
+) {
+
+    if (!rule) {
+
+        return false;
+
+    }
+
+
+    const employeeRegion =
+        normalize(
+            getEmployeeRegion(
+                employee
+            )
+        );
+
+
+    const employeeState =
+        normalize(
+            getEmployeeState(
+                employee
+            )
+        );
+
+
+    const employeeCity =
+        normalize(
+            getEmployeeCity(
+                employee
+            )
+        );
+
+
+    const ruleRegion =
+        normalize(
+            getRuleRegion(
+                rule
+            )
+        );
+
+
+    const ruleStates =
+        getRuleStates(
+            rule
+        );
+
+
+    // ==============================================
+    // REGION CHECK
+    // ==============================================
+
+    if (
+        ruleRegion &&
+        employeeRegion !==
+        ruleRegion
+    ) {
+
+        return false;
+
+    }
+
+
+    // ==============================================
+    // FULL REGION
+    // ==============================================
+
+    if (
+        isFullRegionRule(rule)
+    ) {
+
+        return true;
+
+    }
+
+
+    // ==============================================
+    // STATE CHECK
+    // ==============================================
+
+    if (
+        ruleStates.length > 0
+    ) {
+
+        if (
+            !ruleStates.includes(
+                employeeState
+            )
+        ) {
+
+            return false;
+
+        }
+
+    }
+
+
+    // ==============================================
+    // CITY CHECK
+    // ==============================================
+
+    const ruleCities = [];
+
+
+    [
+
+        "cities",
+
+        "selectedCities",
+
+        "selected_cities",
+
+        "assignedCities",
+
+        "assigned_cities",
+
+        "city",
+
+        "City",
+
+        "assignedCity",
+
+        "assigned_city"
+
+    ].forEach(
+        (field) => {
+
+            const value =
+                rule[field];
+
+
+            if (
+                Array.isArray(value)
+            ) {
+
+                value.forEach(
+                    (item) => {
+
+                        if (
+                            item !== null &&
+                            item !== undefined
+                        ) {
+
+                            ruleCities.push(
+                                normalize(item)
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+            else if (
+                value !== null &&
+                value !== undefined &&
+                String(value).trim()
+            ) {
+
+                ruleCities.push(
+                    normalize(value)
+                );
+
+            }
+
+        }
+    );
+
+
+    if (
+        ruleCities.length > 0 &&
+        !ruleCities.includes(
+            employeeCity
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    return true;
 
 }
 
@@ -1096,36 +1674,36 @@ function getRegionUserEmployees(
     }
 
 
+    // ==================================================
+    // 1. DIRECT EMPLOYEE ASSIGNMENT
+    // ==================================================
+
     const assignedCodes =
         getRegionUserAssignedCodes(
             regionUser
         );
 
 
-    // ==================================================
-    // FIX 1:
-    // ASSIGNED EMPLOYEE CODES FOUND
-    // ==================================================
-
     if (
         assignedCodes.size > 0
     ) {
 
-        const matchedEmployees =
+        const directEmployees =
             employees.filter(
                 (employee) => {
 
-                    const employeeCode =
+                    const code =
                         normalize(
                             getEmployeeCode(
                                 employee
                             )
                         );
 
+
                     return (
-                        employeeCode &&
+                        code &&
                         assignedCodes.has(
-                            employeeCode
+                            code
                         )
                     );
 
@@ -1133,282 +1711,172 @@ function getRegionUserEmployees(
             );
 
 
-        return matchedEmployees;
+        if (
+            directEmployees.length > 0
+        ) {
+
+            return directEmployees;
+
+        }
 
     }
 
 
     // ==================================================
-    // FALLBACK:
-    // REGION / STATE / CITY ACCESS
+    // 2. ACCESS RULES
+    // ==================================================
+
+    const rules =
+        getRegionUserAccessRules(
+            regionUser
+        );
+
+
+    if (
+        rules.length > 0
+    ) {
+
+        const ruleEmployees =
+            employees.filter(
+                (employee) => {
+
+                    return rules.some(
+                        (rule) =>
+                            employeeMatchesAccessRule(
+                                employee,
+                                rule
+                            )
+                    );
+
+                }
+            );
+
+
+        if (
+            ruleEmployees.length > 0
+        ) {
+
+            return ruleEmployees;
+
+        }
+
+    }
+
+
+    // ==================================================
+    // 3. DIRECT REGION / STATE / CITY
     // ==================================================
 
     const userRegion =
-        getRegionUserRegion(
-            regionUser
-        );
-
-    const userState =
-        getRegionUserState(
-            regionUser
-        );
-
-    const userCity =
-        getRegionUserCity(
-            regionUser
+        normalize(
+            getRegionUserRegion(
+                regionUser
+            )
         );
 
 
-    return employees.filter(
-        (employee) => {
-
-            const employeeRegion =
-                getEmployeeRegion(
-                    employee
-                );
-
-            const employeeState =
-                getEmployeeState(
-                    employee
-                );
-
-            const employeeCity =
-                getEmployeeCity(
-                    employee
-                );
+    const userStates =
+        getRegionUserStates(
+            regionUser
+        );
 
 
-            if (
-                userRegion &&
-                normalize(
-                    employeeRegion
-                ) !==
-                normalize(
+    const userCities =
+        getRegionUserCities(
+            regionUser
+        );
+
+
+    if (
+        userRegion ||
+        userStates.length > 0 ||
+        userCities.length > 0
+    ) {
+
+        return employees.filter(
+            (employee) => {
+
+                const employeeRegion =
+                    normalize(
+                        getEmployeeRegion(
+                            employee
+                        )
+                    );
+
+
+                const employeeState =
+                    normalize(
+                        getEmployeeState(
+                            employee
+                        )
+                    );
+
+
+                const employeeCity =
+                    normalize(
+                        getEmployeeCity(
+                            employee
+                        )
+                    );
+
+
+                if (
+                    userRegion &&
+                    employeeRegion !==
                     userRegion
-                )
-            ) {
+                ) {
 
-                return false;
+                    return false;
 
-            }
-
-
-            if (
-                userState &&
-                normalize(
-                    employeeState
-                ) !==
-                normalize(
-                    userState
-                )
-            ) {
-
-                return false;
-
-            }
+                }
 
 
-            if (
-                userCity &&
-                normalize(
-                    employeeCity
-                ) !==
-                normalize(
-                    userCity
-                )
-            ) {
+                if (
+                    userStates.length > 0 &&
+                    !userStates.includes(
+                        employeeState
+                    )
+                ) {
 
-                return false;
+                    return false;
+
+                }
+
+
+                if (
+                    userCities.length > 0 &&
+                    !userCities.includes(
+                        employeeCity
+                    )
+                ) {
+
+                    return false;
+
+                }
+
+
+                return true;
 
             }
+        );
+
+    }
 
 
-            return true;
+    // ==================================================
+    // 4. NOTHING MATCHED
+    // ==================================================
 
-        }
-    );
+    // IMPORTANT:
+    // Region User selected hai lekin uski assignment
+    // identify nahi hui to ALL teachers nahi dikhayenge.
+    return [];
 
 }
 
 
 // ======================================================
-// LOAD ALL DATA
-// ======================================================
-
-async function loadData() {
-
-    try {
-
-        if (tableBody) {
-
-            tableBody.innerHTML = `
-                <tr>
-                    <td
-                        colspan="11"
-                        class="loading"
-                    >
-                        Loading data...
-                    </td>
-                </tr>
-            `;
-
-        }
-
-
-        // ==============================================
-        // EMPLOYEES
-        // ==============================================
-
-        const employeeSnapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "employees"
-                )
-            );
-
-
-        employees = [];
-
-
-        employeeSnapshot.forEach(
-            (employeeDoc) => {
-
-                employees.push({
-
-                    id:
-                        employeeDoc.id,
-
-                    ...employeeDoc.data()
-
-                });
-
-            }
-        );
-
-
-        // ==============================================
-        // REGION USERS
-        // ==============================================
-
-        const regionUserSnapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "regionUsers"
-                )
-            );
-
-
-        regionUsers = [];
-
-
-        regionUserSnapshot.forEach(
-            (regionUserDoc) => {
-
-                regionUsers.push({
-
-                    id:
-                        regionUserDoc.id,
-
-                    ...regionUserDoc.data()
-
-                });
-
-            }
-        );
-
-
-        // ==============================================
-        // DAILY ENTRY
-        // ==============================================
-
-        dailyEntries =
-            await loadCollectionData(
-                "daily_entry"
-            );
-
-
-        // ==============================================
-        // TEACHER ENTRIES
-        // ==============================================
-
-        teacherEntries =
-            await loadCollectionData(
-                "teacher_entries"
-            );
-
-
-        // ==============================================
-        // MERGE
-        // ==============================================
-
-        allCollectionEntries = [
-
-            ...dailyEntries,
-
-            ...teacherEntries
-
-        ];
-
-
-        // ==============================================
-        // LOAD FILTERS
-        // ==============================================
-
-        loadRegionUserDropdown();
-
-        loadRegionDropdown();
-
-        updateStateDropdown();
-
-        updateCityDropdown();
-
-        loadEmployeeDropdown();
-
-
-        // ==============================================
-        // INITIAL DISPLAY
-        // ==============================================
-
-        applyCurrentFilter();
-
-    }
-    catch (error) {
-
-        console.error(
-            "Collection Summary Error:",
-            error
-        );
-
-
-        if (tableBody) {
-
-            tableBody.innerHTML = `
-                <tr>
-                    <td
-                        colspan="11"
-                        class="no-data"
-                        style="color:red;"
-                    >
-                        Data load nahi ho paaya.
-                        <br><br>
-                        ${escapeHTML(
-                            error.message
-                        )}
-                    </td>
-                </tr>
-            `;
-
-        }
-
-    }
-
-}
-
-
-// ======================================================
-// REGION USER DROPDOWN
+// LOAD REGION USER DROPDOWN
 // ======================================================
 
 function loadRegionUserDropdown() {
@@ -1421,20 +1889,32 @@ function loadRegionUserDropdown() {
 
 
     regionUserFilter.innerHTML = `
+
         <option value="">
             All Region Users
         </option>
+
     `;
 
 
     regionUsers
         .slice()
         .sort(
-            (a, b) =>
-                getRegionUserName(a)
-                    .localeCompare(
-                        getRegionUserName(b)
-                    )
+            (a, b) => {
+
+                const nameA =
+                    getRegionUserName(a) ||
+                    getRegionUserCode(a);
+
+                const nameB =
+                    getRegionUserName(b) ||
+                    getRegionUserCode(b);
+
+                return nameA.localeCompare(
+                    nameB
+                );
+
+            }
         )
         .forEach(
             (regionUser) => {
@@ -1451,7 +1931,10 @@ function loadRegionUserDropdown() {
                     );
 
 
-                if (!name && !code) {
+                if (
+                    !name &&
+                    !code
+                ) {
 
                     return;
 
@@ -1469,12 +1952,23 @@ function loadRegionUserDropdown() {
 
 
                 option.textContent =
-                    name +
-                    (
-                        code
-                            ? " - " + code
-                            : ""
-                    );
+
+                    name ||
+
+                    code;
+
+
+                if (
+                    name &&
+                    code
+                ) {
+
+                    option.textContent =
+                        name +
+                        " - " +
+                        code;
+
+                }
 
 
                 regionUserFilter.appendChild(
@@ -1488,7 +1982,7 @@ function loadRegionUserDropdown() {
 
 
 // ======================================================
-// REGION DROPDOWN
+// LOAD REGION DROPDOWN
 // ======================================================
 
 function loadRegionDropdown() {
@@ -1526,14 +2020,19 @@ function loadRegionDropdown() {
 
 
     regionFilter.innerHTML = `
+
         <option value="">
             All Regions
         </option>
+
     `;
 
 
     [...regions]
-        .sort()
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        )
         .forEach(
             (region) => {
 
@@ -1546,6 +2045,7 @@ function loadRegionDropdown() {
                 option.value =
                     region;
 
+
                 option.textContent =
                     region;
 
@@ -1556,6 +2056,45 @@ function loadRegionDropdown() {
 
             }
         );
+
+}
+
+
+// ======================================================
+// GET CURRENT REGION USER EMPLOYEES
+// ======================================================
+
+function getCurrentRegionUserEmployees() {
+
+    if (
+        !regionUserFilter?.value
+    ) {
+
+        return employees.slice();
+
+    }
+
+
+    const regionUser =
+        regionUsers.find(
+            (user) =>
+                String(user.id) ===
+                String(
+                    regionUserFilter.value
+                )
+        );
+
+
+    if (!regionUser) {
+
+        return [];
+
+    }
+
+
+    return getRegionUserEmployees(
+        regionUser
+    );
 
 }
 
@@ -1579,11 +2118,15 @@ function updateStateDropdown() {
         ).trim();
 
 
+    const baseEmployees =
+        getCurrentRegionUserEmployees();
+
+
     const states =
         new Set();
 
 
-    employees.forEach(
+    baseEmployees.forEach(
         (employee) => {
 
             const employeeRegion =
@@ -1626,14 +2169,19 @@ function updateStateDropdown() {
 
 
     stateFilter.innerHTML = `
+
         <option value="">
             All States
         </option>
+
     `;
 
 
     [...states]
-        .sort()
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        )
         .forEach(
             (state) => {
 
@@ -1645,6 +2193,7 @@ function updateStateDropdown() {
 
                 option.value =
                     state;
+
 
                 option.textContent =
                     state;
@@ -1685,11 +2234,15 @@ function updateCityDropdown() {
         ).trim();
 
 
+    const baseEmployees =
+        getCurrentRegionUserEmployees();
+
+
     const cities =
         new Set();
 
 
-    employees.forEach(
+    baseEmployees.forEach(
         (employee) => {
 
             const employeeRegion =
@@ -1753,14 +2306,19 @@ function updateCityDropdown() {
 
 
     cityFilter.innerHTML = `
+
         <option value="">
             All Cities
         </option>
+
     `;
 
 
     [...cities]
-        .sort()
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        )
         .forEach(
             (city) => {
 
@@ -1772,6 +2330,7 @@ function updateCityDropdown() {
 
                 option.value =
                     city;
+
 
                 option.textContent =
                     city;
@@ -1801,35 +2360,7 @@ function loadEmployeeDropdown() {
 
 
     let filteredEmployees =
-        employees.slice();
-
-
-    // ==============================================
-    // REGION USER
-    // ==============================================
-
-    if (regionUserFilter?.value) {
-
-        const regionUser =
-            regionUsers.find(
-                (user) =>
-                    String(user.id) ===
-                    String(
-                        regionUserFilter.value
-                    )
-            );
-
-
-        if (regionUser) {
-
-            filteredEmployees =
-                getRegionUserEmployees(
-                    regionUser
-                );
-
-        }
-
-    }
+        getCurrentRegionUserEmployees();
 
 
     const selectedRegion =
@@ -1905,9 +2436,11 @@ function loadEmployeeDropdown() {
 
 
     employeeFilter.innerHTML = `
+
         <option value="">
             All Employees
         </option>
+
     `;
 
 
@@ -1980,46 +2513,21 @@ function loadEmployeeDropdown() {
 function getFilteredEmployees() {
 
     let filteredEmployees =
-        employees.slice();
-
-
-    // ==============================================
-    // REGION USER
-    // ==============================================
-
-    if (regionUserFilter?.value) {
-
-        const selectedRegionUser =
-            regionUsers.find(
-                (user) =>
-                    String(user.id) ===
-                    String(
-                        regionUserFilter.value
-                    )
-            );
-
-
-        if (selectedRegionUser) {
-
-            filteredEmployees =
-                getRegionUserEmployees(
-                    selectedRegionUser
-                );
-
-        }
-
-    }
+        getCurrentRegionUserEmployees();
 
 
     // ==============================================
     // REGION
     // ==============================================
 
-    if (regionFilter?.value) {
+    if (
+        regionFilter?.value
+    ) {
 
         filteredEmployees =
             filteredEmployees.filter(
                 (employee) =>
+
                     normalize(
                         getEmployeeRegion(
                             employee
@@ -2028,6 +2536,7 @@ function getFilteredEmployees() {
                     normalize(
                         regionFilter.value
                     )
+
             );
 
     }
@@ -2037,11 +2546,14 @@ function getFilteredEmployees() {
     // STATE
     // ==============================================
 
-    if (stateFilter?.value) {
+    if (
+        stateFilter?.value
+    ) {
 
         filteredEmployees =
             filteredEmployees.filter(
                 (employee) =>
+
                     normalize(
                         getEmployeeState(
                             employee
@@ -2050,6 +2562,7 @@ function getFilteredEmployees() {
                     normalize(
                         stateFilter.value
                     )
+
             );
 
     }
@@ -2059,11 +2572,14 @@ function getFilteredEmployees() {
     // CITY
     // ==============================================
 
-    if (cityFilter?.value) {
+    if (
+        cityFilter?.value
+    ) {
 
         filteredEmployees =
             filteredEmployees.filter(
                 (employee) =>
+
                     normalize(
                         getEmployeeCity(
                             employee
@@ -2072,6 +2588,7 @@ function getFilteredEmployees() {
                     normalize(
                         cityFilter.value
                     )
+
             );
 
     }
@@ -2081,11 +2598,14 @@ function getFilteredEmployees() {
     // EMPLOYEE
     // ==============================================
 
-    if (employeeFilter?.value) {
+    if (
+        employeeFilter?.value
+    ) {
 
         filteredEmployees =
             filteredEmployees.filter(
                 (employee) =>
+
                     normalize(
                         getEmployeeCode(
                             employee
@@ -2094,32 +2614,13 @@ function getFilteredEmployees() {
                     normalize(
                         employeeFilter.value
                     )
+
             );
 
     }
 
 
     return filteredEmployees;
-
-}
-
-
-// ======================================================
-// APPLY CURRENT FILTER
-// ======================================================
-
-function applyCurrentFilter() {
-
-    const filteredEmployees =
-        getFilteredEmployees();
-
-
-    updateSelectedTitle();
-
-
-    displaySummary(
-        filteredEmployees
-    );
 
 }
 
@@ -2141,7 +2642,9 @@ function updateSelectedTitle() {
         "All Teachers";
 
 
-    if (employeeFilter?.value) {
+    if (
+        employeeFilter?.value
+    ) {
 
         const employee =
             employees.find(
@@ -2181,28 +2684,36 @@ function updateSelectedTitle() {
         }
 
     }
-    else if (cityFilter?.value) {
+    else if (
+        cityFilter?.value
+    ) {
 
         title =
             "City: " +
             cityFilter.value;
 
     }
-    else if (stateFilter?.value) {
+    else if (
+        stateFilter?.value
+    ) {
 
         title =
             "State: " +
             stateFilter.value;
 
     }
-    else if (regionFilter?.value) {
+    else if (
+        regionFilter?.value
+    ) {
 
         title =
             "Region: " +
             regionFilter.value;
 
     }
-    else if (regionUserFilter?.value) {
+    else if (
+        regionUserFilter?.value
+    ) {
 
         const regionUser =
             regionUsers.find(
@@ -2450,7 +2961,9 @@ function displaySummary(list) {
             let percentage = 0;
 
 
-            if (target > 0) {
+            if (
+                target > 0
+            ) {
 
                 percentage =
                     (
@@ -2505,7 +3018,9 @@ function displaySummary(list) {
     let totalPercentage = 0;
 
 
-    if (totalTarget > 0) {
+    if (
+        totalTarget > 0
+    ) {
 
         totalPercentage =
             (
@@ -2517,7 +3032,7 @@ function displaySummary(list) {
 
 
     // ==============================================
-    // SAVE FILTERED DATA
+    // SAVE CURRENT DATA
     // ==============================================
 
     currentRows =
@@ -2628,15 +3143,21 @@ function displayTable(
     if (!rows.length) {
 
         tableBody.innerHTML = `
+
             <tr>
+
                 <td
                     colspan="11"
                     class="no-data"
                 >
+
                     Is filter ke liye koi
                     Teacher nahi mila.
+
                 </td>
+
             </tr>
+
         `;
 
 
@@ -3066,9 +3587,14 @@ function downloadFilteredCSV() {
 // DOWNLOAD IMAGE
 // ======================================================
 //
-// FIX 2:
-// Full width capture.
-// Side se table/data cut nahi hogi.
+// FIX:
+// Do NOT capture the horizontally-scrolled visible area.
+//
+// A temporary clone is created.
+// Clone gets complete table width.
+// table-wrapper overflow becomes visible.
+// Original page is NOT changed.
+//
 // ======================================================
 
 async function downloadFilteredImage() {
@@ -3101,130 +3627,237 @@ async function downloadFilteredImage() {
     try {
 
         // ==============================================
-        // ORIGINAL STYLES SAVE
+        // FIND TABLE
         // ==============================================
 
-        const original = {
-
-            width:
-                downloadArea.style.width,
-
-            maxWidth:
-                downloadArea.style.maxWidth,
-
-            overflow:
-                downloadArea.style.overflow,
-
-            overflowX:
-                downloadArea.style.overflowX,
-
-            height:
-                downloadArea.style.height,
-
-            maxHeight:
-                downloadArea.style.maxHeight,
-
-            position:
-                downloadArea.style.position
-
-        };
-
-
-        // ==============================================
-        // FULL CONTENT WIDTH
-        // ==============================================
-
-        const fullWidth =
-            Math.max(
-
-                downloadArea.scrollWidth,
-
-                downloadArea.clientWidth,
-
-                downloadArea.offsetWidth
-
+        const table =
+            downloadArea.querySelector(
+                "table"
             );
 
 
-        const fullHeight =
-            Math.max(
-
-                downloadArea.scrollHeight,
-
-                downloadArea.clientHeight,
-
-                downloadArea.offsetHeight
-
+        const tableWrapper =
+            downloadArea.querySelector(
+                ".table-wrapper"
             );
 
 
         // ==============================================
-        // TEMPORARILY EXPAND AREA
+        // CALCULATE FULL WIDTH
         // ==============================================
 
-        downloadArea.style.width =
+        let fullWidth =
+            downloadArea.scrollWidth;
+
+
+        if (table) {
+
+            fullWidth =
+                Math.max(
+                    fullWidth,
+                    table.scrollWidth,
+                    table.offsetWidth
+                );
+
+        }
+
+
+        if (tableWrapper) {
+
+            fullWidth =
+                Math.max(
+                    fullWidth,
+                    tableWrapper.scrollWidth,
+                    tableWrapper.offsetWidth
+                );
+
+        }
+
+
+        // ==============================================
+        // MINIMUM WIDTH
+        // ==============================================
+
+        fullWidth =
+            Math.max(
+                fullWidth,
+                1250
+            );
+
+
+        // ==============================================
+        // CREATE CLONE
+        // ==============================================
+
+        const clone =
+            downloadArea.cloneNode(
+                true
+            );
+
+
+        clone.id =
+            "collectionSummaryImageClone";
+
+
+        clone.style.position =
+            "absolute";
+
+        clone.style.left =
+            "-100000px";
+
+        clone.style.top =
+            "0";
+
+        clone.style.width =
             fullWidth + "px";
 
-        downloadArea.style.maxWidth =
+        clone.style.maxWidth =
             "none";
 
-        downloadArea.style.overflow =
-            "visible";
+        clone.style.minWidth =
+            fullWidth + "px";
 
-        downloadArea.style.overflowX =
-            "visible";
-
-        downloadArea.style.height =
+        clone.style.height =
             "auto";
 
-        downloadArea.style.maxHeight =
+        clone.style.maxHeight =
             "none";
 
+        clone.style.overflow =
+            "visible";
+
+        clone.style.overflowX =
+            "visible";
+
+        clone.style.background =
+            "#ffffff";
+
 
         // ==============================================
-        // SMALL DELAY
-        // Allows browser to recalculate layout
+        // CLONE TABLE WRAPPER
         // ==============================================
 
-        await new Promise(
-            (resolve) =>
-                requestAnimationFrame(
-                    () =>
-                        requestAnimationFrame(
-                            resolve
-                        )
-                )
+        const cloneWrapper =
+            clone.querySelector(
+                ".table-wrapper"
+            );
+
+
+        if (cloneWrapper) {
+
+            cloneWrapper.style.width =
+                fullWidth + "px";
+
+            cloneWrapper.style.maxWidth =
+                "none";
+
+            cloneWrapper.style.overflow =
+                "visible";
+
+            cloneWrapper.style.overflowX =
+                "visible";
+
+            cloneWrapper.style.height =
+                "auto";
+
+            cloneWrapper.style.maxHeight =
+                "none";
+
+        }
+
+
+        // ==============================================
+        // CLONE TABLE
+        // ==============================================
+
+        const cloneTable =
+            clone.querySelector(
+                "table"
+            );
+
+
+        if (cloneTable) {
+
+            cloneTable.style.width =
+                "max-content";
+
+            cloneTable.style.minWidth =
+                "1250px";
+
+            cloneTable.style.maxWidth =
+                "none";
+
+        }
+
+
+        // ==============================================
+        // APPEND CLONE
+        // ==============================================
+
+        document.body.appendChild(
+            clone
         );
 
 
-        const finalWidth =
+        // ==============================================
+        // WAIT FOR LAYOUT
+        // ==============================================
+
+        await new Promise(
+            (resolve) => {
+
+                requestAnimationFrame(
+                    () => {
+
+                        requestAnimationFrame(
+                            resolve
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        // ==============================================
+        // FINAL CLONE WIDTH
+        // ==============================================
+
+        const captureWidth =
             Math.max(
 
-                downloadArea.scrollWidth,
+                fullWidth,
 
-                fullWidth
+                clone.scrollWidth,
+
+                clone.offsetWidth,
+
+                cloneTable
+                    ? cloneTable.scrollWidth
+                    : 0
 
             );
 
 
-        const finalHeight =
+        const captureHeight =
             Math.max(
 
-                downloadArea.scrollHeight,
+                clone.scrollHeight,
 
-                fullHeight
+                clone.offsetHeight
 
             );
 
 
         // ==============================================
-        // CAPTURE
+        // CAPTURE CLONE
         // ==============================================
 
         const canvas =
             await html2canvas(
 
-                downloadArea,
+                clone,
 
                 {
 
@@ -3238,16 +3871,16 @@ async function downloadFilteredImage() {
                         "#ffffff",
 
                     width:
-                        finalWidth,
+                        captureWidth,
 
                     height:
-                        finalHeight,
+                        captureHeight,
 
                     windowWidth:
-                        finalWidth,
+                        captureWidth,
 
                     windowHeight:
-                        finalHeight,
+                        captureHeight,
 
                     scrollX: 0,
 
@@ -3263,33 +3896,23 @@ async function downloadFilteredImage() {
 
 
         // ==============================================
-        // RESTORE ORIGINAL STYLE
+        // REMOVE CLONE
         // ==============================================
 
-        downloadArea.style.width =
-            original.width;
+        if (
+            clone &&
+            clone.parentNode
+        ) {
 
-        downloadArea.style.maxWidth =
-            original.maxWidth;
+            clone.parentNode.removeChild(
+                clone
+            );
 
-        downloadArea.style.overflow =
-            original.overflow;
-
-        downloadArea.style.overflowX =
-            original.overflowX;
-
-        downloadArea.style.height =
-            original.height;
-
-        downloadArea.style.maxHeight =
-            original.maxHeight;
-
-        downloadArea.style.position =
-            original.position;
+        }
 
 
         // ==============================================
-        // DOWNLOAD
+        // DOWNLOAD IMAGE
         // ==============================================
 
         const imageLink =
@@ -3336,25 +3959,20 @@ async function downloadFilteredImage() {
         );
 
 
-        // ==============================================
-        // TRY TO RESTORE LAYOUT
-        // ==============================================
+        const oldClone =
+            document.getElementById(
+                "collectionSummaryImageClone"
+            );
 
-        if (downloadArea) {
 
-            downloadArea.style.width = "";
+        if (
+            oldClone &&
+            oldClone.parentNode
+        ) {
 
-            downloadArea.style.maxWidth = "";
-
-            downloadArea.style.overflow = "";
-
-            downloadArea.style.overflowX = "";
-
-            downloadArea.style.height = "";
-
-            downloadArea.style.maxHeight = "";
-
-            downloadArea.style.position = "";
+            oldClone.parentNode.removeChild(
+                oldClone
+            );
 
         }
 
@@ -3379,7 +3997,7 @@ if (regionUserFilter) {
         function () {
 
             // ==========================================
-            // RESET LOWER FILTERS
+            // RESET OTHER FILTERS
             // ==========================================
 
             if (regionFilter) {
@@ -3415,10 +4033,8 @@ if (regionUserFilter) {
 
 
             // ==========================================
-            // REBUILD FILTER DROPDOWNS
+            // REBUILD DEPENDENT DROPDOWNS
             // ==========================================
-
-            loadRegionDropdown();
 
             updateStateDropdown();
 
@@ -3429,7 +4045,8 @@ if (regionUserFilter) {
 
             // ==========================================
             // IMPORTANT:
-            // DO NOT DISPLAY UNTIL APPLY FILTER
+            // REGION USER IS NOT APPLIED TO TABLE
+            // UNTIL APPLY FILTER IS CLICKED.
             // ==========================================
 
         }
@@ -3633,7 +4250,7 @@ if (resetFilter) {
 
 
 // ======================================================
-// DOWNLOAD CSV BUTTON
+// DOWNLOAD CSV
 // ======================================================
 
 if (downloadCSV) {
@@ -3647,7 +4264,7 @@ if (downloadCSV) {
 
 
 // ======================================================
-// DOWNLOAD IMAGE BUTTON
+// DOWNLOAD IMAGE
 // ======================================================
 
 if (downloadImage) {
@@ -3661,7 +4278,217 @@ if (downloadImage) {
 
 
 // ======================================================
+// APPLY CURRENT FILTER
+// ======================================================
+
+function applyCurrentFilter() {
+
+    const filteredEmployees =
+        getFilteredEmployees();
+
+
+    updateSelectedTitle();
+
+
+    displaySummary(
+        filteredEmployees
+    );
+
+}
+
+
+// ======================================================
 // START
 // ======================================================
 
 loadData();
+
+
+// ======================================================
+// LOAD DATA
+// ======================================================
+
+async function loadData() {
+
+    try {
+
+        if (tableBody) {
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="11"
+                        class="loading"
+                    >
+
+                        Loading data...
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        // ==============================================
+        // EMPLOYEES
+        // ==============================================
+
+        const employeeSnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "employees"
+                )
+            );
+
+
+        employees = [];
+
+
+        employeeSnapshot.forEach(
+            (employeeDoc) => {
+
+                employees.push({
+
+                    id:
+                        employeeDoc.id,
+
+                    ...employeeDoc.data()
+
+                });
+
+            }
+        );
+
+
+        // ==============================================
+        // REGION USERS
+        // ==============================================
+
+        const regionUserSnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "regionUsers"
+                )
+            );
+
+
+        regionUsers = [];
+
+
+        regionUserSnapshot.forEach(
+            (regionUserDoc) => {
+
+                regionUsers.push({
+
+                    id:
+                        regionUserDoc.id,
+
+                    ...regionUserDoc.data()
+
+                });
+
+            }
+        );
+
+
+        // ==============================================
+        // OLD DAILY ENTRY
+        // ==============================================
+
+        dailyEntries =
+            await loadCollectionData(
+                "daily_entry"
+            );
+
+
+        // ==============================================
+        // NEW TEACHER ENTRIES
+        // ==============================================
+
+        teacherEntries =
+            await loadCollectionData(
+                "teacher_entries"
+            );
+
+
+        // ==============================================
+        // MERGE
+        // ==============================================
+
+        allCollectionEntries = [
+
+            ...dailyEntries,
+
+            ...teacherEntries
+
+        ];
+
+
+        // ==============================================
+        // LOAD FILTERS
+        // ==============================================
+
+        loadRegionUserDropdown();
+
+        loadRegionDropdown();
+
+        updateStateDropdown();
+
+        updateCityDropdown();
+
+        loadEmployeeDropdown();
+
+
+        // ==============================================
+        // INITIAL DISPLAY
+        // ==============================================
+
+        applyCurrentFilter();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Collection Summary Error:",
+            error
+        );
+
+
+        if (tableBody) {
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="11"
+                        class="no-data"
+                        style="color:red;"
+                    >
+
+                        Data load nahi ho paaya.
+
+                        <br><br>
+
+                        ${escapeHTML(
+                            error.message
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+}
