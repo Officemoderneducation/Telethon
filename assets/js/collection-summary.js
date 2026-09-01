@@ -17,6 +17,10 @@
 // - Filtered Data Image Download
 // - Filtered Data CSV Download
 // - Old Daily Entry functionality is NOT changed
+//
+// COLLECTION SUMMARY CARD:
+// - ONLY Total Collection is displayed
+// - Total Target / Remaining Target / Achievement removed
 // ======================================================
 
 
@@ -71,17 +75,18 @@ const downloadArea =
 const selectedTitle =
     document.getElementById("selectedTitle");
 
-const totalTargetEl =
-    document.getElementById("totalTarget");
+
+// ======================================================
+// ONLY TOTAL COLLECTION CARD
+// ======================================================
 
 const totalCollectionEl =
     document.getElementById("totalCollection");
 
-const remainingTargetEl =
-    document.getElementById("remainingTarget");
 
-const percentageEl =
-    document.getElementById("percentage");
+// ======================================================
+// TABLE ELEMENTS
+// ======================================================
 
 const tableBody =
     document.getElementById("summaryTableBody");
@@ -360,7 +365,7 @@ function getEntryDate(entry) {
 
 
 // ======================================================
-// FORMAT DATE
+// FORMAT DATE FOR INPUT
 // ======================================================
 
 function formatDateForInput(date) {
@@ -1867,9 +1872,6 @@ function getRegionUserEmployees(
     // 4. NOTHING MATCHED
     // ==================================================
 
-    // IMPORTANT:
-    // Region User selected hai lekin uski assignment
-    // identify nahi hui to ALL teachers nahi dikhayenge.
     return [];
 
 }
@@ -1952,10 +1954,7 @@ function loadRegionUserDropdown() {
 
 
                 option.textContent =
-
-                    name ||
-
-                    code;
+                    name || code;
 
 
                 if (
@@ -3056,18 +3055,8 @@ function displaySummary(list) {
 
 
     // ==============================================
-    // CARDS
+    // ONLY COLLECTION CARD
     // ==============================================
-
-    if (totalTargetEl) {
-
-        totalTargetEl.textContent =
-            formatMoney(
-                totalTarget
-            );
-
-    }
-
 
     if (totalCollectionEl) {
 
@@ -3079,24 +3068,9 @@ function displaySummary(list) {
     }
 
 
-    if (remainingTargetEl) {
-
-        remainingTargetEl.textContent =
-            formatMoney(
-                totalRemaining
-            );
-
-    }
-
-
-    if (percentageEl) {
-
-        percentageEl.textContent =
-            totalPercentage.toFixed(2) +
-            "%";
-
-    }
-
+    // ==============================================
+    // TABLE
+    // ==============================================
 
     displayTable(
 
@@ -3586,16 +3560,6 @@ function downloadFilteredCSV() {
 // ======================================================
 // DOWNLOAD IMAGE
 // ======================================================
-//
-// FIX:
-// Do NOT capture the horizontally-scrolled visible area.
-//
-// A temporary clone is created.
-// Clone gets complete table width.
-// table-wrapper overflow becomes visible.
-// Original page is NOT changed.
-//
-// ======================================================
 
 async function downloadFilteredImage() {
 
@@ -4041,13 +4005,6 @@ if (regionUserFilter) {
             updateCityDropdown();
 
             loadEmployeeDropdown();
-
-
-            // ==========================================
-            // IMPORTANT:
-            // REGION USER IS NOT APPLIED TO TABLE
-            // UNTIL APPLY FILTER IS CLICKED.
-            // ==========================================
 
         }
     );
