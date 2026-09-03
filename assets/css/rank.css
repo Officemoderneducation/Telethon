@@ -429,7 +429,7 @@ body {
     display: grid;
 
     grid-template-columns:
-        repeat(5, minmax(150px, 1fr));
+        repeat(2, minmax(220px, 1fr));
 
     gap: 15px;
     margin-bottom: 18px;
@@ -470,21 +470,6 @@ body {
 .users-icon {
     background: #eff6ff;
     color: #2563eb;
-}
-
-.amount-icon {
-    background: #ecfdf5;
-    color: #059669;
-}
-
-.target-icon {
-    background: #fff7ed;
-    color: #ea580c;
-}
-
-.collection-icon {
-    background: #f5f3ff;
-    color: #7c3aed;
 }
 
 .winner-icon {
@@ -823,30 +808,6 @@ tbody tr.top-rank-row {
 
 
 /* =====================================================
-   FOOTER TABLE
-===================================================== */
-
-tfoot td {
-    background: #f8fafc;
-
-    padding: 14px 10px;
-
-    border-top: 2px solid #e2e8f0;
-
-    font-size: 12px;
-    font-weight: 800;
-
-    color: #172033;
-
-    white-space: nowrap;
-}
-
-tfoot td:first-child {
-    text-align: right;
-}
-
-
-/* =====================================================
    LOADING / ERROR
 ===================================================== */
 
@@ -921,7 +882,7 @@ tfoot td:first-child {
 
     .top-cards {
         grid-template-columns:
-            repeat(3, 1fr);
+            repeat(2, 1fr);
     }
 
     .filters-grid {
