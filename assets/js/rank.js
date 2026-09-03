@@ -1,4 +1,3 @@
-```javascript
 // ======================================================
 // TELETHON
 // RANK PAGE
@@ -118,20 +117,6 @@ const tableSubtitle =
 
 
 // ======================================================
-// DOWNLOAD DOM
-// ======================================================
-
-const downloadImageBtn =
-    document.getElementById("downloadImageBtn");
-
-const downloadCsvBtn =
-    document.getElementById("downloadCsvBtn");
-
-const rankTableCapture =
-    document.getElementById("rankTableCapture");
-
-
-// ======================================================
 // DATA
 // ======================================================
 
@@ -139,8 +124,6 @@ let employees = [];
 let dailyEntries = [];
 let teacherEntries = [];
 let allEntries = [];
-
-let currentRankRows = [];
 
 
 // ======================================================
@@ -1323,12 +1306,8 @@ function displayRows(rows) {
         return;
     }
 
-    currentRankRows = rows;
-
 
     if (!rows.length) {
-
-        currentRankRows = [];
 
         rankTableBody.innerHTML = `
             <tr>
@@ -1655,8 +1634,6 @@ function applyCurrentFilters() {
             "Ranking error:",
             error
         );
-
-        currentRankRows = [];
 
         rankTableBody.innerHTML = `
             <tr>
@@ -2085,259 +2062,6 @@ document
 
 
 // ======================================================
-// DOWNLOAD IMAGE
-// ======================================================
-
-if (downloadImageBtn) {
-
-    downloadImageBtn.addEventListener(
-        "click",
-        async () => {
-
-            if (
-                !currentRankRows.length ||
-                !rankTableCapture
-            ) {
-
-                alert(
-                    "Download ke liye ranking data available nahi hai."
-                );
-
-                return;
-            }
-
-            if (
-                typeof html2canvas ===
-                "undefined"
-            ) {
-
-                alert(
-                    "Image download library load nahi hui."
-                );
-
-                return;
-            }
-
-
-            downloadImageBtn.disabled =
-                true;
-
-            const oldText =
-                downloadImageBtn.innerHTML;
-
-            downloadImageBtn.innerHTML = `
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                Creating...
-            `;
-
-
-            try {
-
-                const canvas =
-                    await html2canvas(
-                        rankTableCapture,
-                        {
-                            backgroundColor:
-                                "#ffffff",
-
-                            scale: 2,
-
-                            useCORS: true,
-
-                            logging: false
-                        }
-                    );
-
-
-                const link =
-                    document.createElement("a");
-
-                link.download =
-                    "telethon-ranking.png";
-
-                link.href =
-                    canvas.toDataURL(
-                        "image/png"
-                    );
-
-                link.click();
-
-
-            } catch (error) {
-
-                console.error(
-                    "Image download error:",
-                    error
-                );
-
-                alert(
-                    "Image download nahi ho saki."
-                );
-
-            } finally {
-
-                downloadImageBtn.disabled =
-                    false;
-
-                downloadImageBtn.innerHTML =
-                    oldText;
-
-            }
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// DOWNLOAD CSV
-// ======================================================
-
-if (downloadCsvBtn) {
-
-    downloadCsvBtn.addEventListener(
-        "click",
-        () => {
-
-            if (
-                !currentRankRows.length
-            ) {
-
-                alert(
-                    "Download ke liye ranking data available nahi hai."
-                );
-
-                return;
-            }
-
-
-            const csvRows = [];
-
-
-            // --------------------------------------------------
-            // CSV HEADER
-            // --------------------------------------------------
-
-            csvRows.push([
-                "Rank",
-                "Region",
-                "State",
-                "City",
-                "Teachers Name",
-                "Employee Code",
-                "Collection"
-            ]);
-
-
-            // --------------------------------------------------
-            // CSV DATA
-            // --------------------------------------------------
-
-            currentRankRows.forEach(
-                (row, index) => {
-
-                    csvRows.push([
-                        index + 1,
-
-                        row.region || "",
-
-                        row.state || "",
-
-                        row.city || "",
-
-                        row.name || "",
-
-                        row.code || "",
-
-                        numberValue(
-                            row.collection
-                        )
-                    ]);
-
-                }
-            );
-
-
-            // --------------------------------------------------
-            // CSV ESCAPE
-            // --------------------------------------------------
-
-            const csvContent =
-                csvRows
-                    .map(row =>
-                        row
-                            .map(value => {
-
-                                const text =
-                                    String(
-                                        value ?? ""
-                                    );
-
-                                return `"${text.replace(
-                                    /"/g,
-                                    '""'
-                                )}"`;
-
-                            })
-                            .join(",")
-                    )
-                    .join("\r\n");
-
-
-            // --------------------------------------------------
-            // UTF-8 BOM
-            // --------------------------------------------------
-
-            const blob =
-                new Blob(
-                    [
-                        "\uFEFF" +
-                        csvContent
-                    ],
-                    {
-                        type:
-                            "text/csv;charset=utf-8;"
-                    }
-                );
-
-
-            const url =
-                URL.createObjectURL(
-                    blob
-                );
-
-
-            const link =
-                document.createElement("a");
-
-            link.href =
-                url;
-
-            link.download =
-                "telethon-ranking.csv";
-
-            document.body.appendChild(
-                link
-            );
-
-            link.click();
-
-            document.body.removeChild(
-                link
-            );
-
-            URL.revokeObjectURL(
-                url
-            );
-
-        }
-    );
-
-}
-
-
-// ======================================================
 // LOGOUT
 // ======================================================
 
@@ -2384,4 +2108,3 @@ if (customRankGroup) {
 }
 
 loadData();
-```
