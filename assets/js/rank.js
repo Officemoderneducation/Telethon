@@ -2,72 +2,27 @@
 // TELETHON
 // RANK PAGE
 //
-// RANK:
-// TEACHER WISE
+// RANKING = TEACHER WISE
 //
-// METRICS:
-// 1. Highest Amount
-// 2. Target Wise
-// 3. Highest Target %
+// TABLE:
+// Rank | Region | State | City | Teachers Name | Collection
 //
-// RANK LIMIT:
-// Top 3 / 5 / 10 / 26 / 50 / 100 / Custom
-//
-// FILTER:
-// Multiple Regions
-// Multiple States
-// Single City
-//
-// DATA:
+// DATA SOURCE:
+// employees
 // daily_entry
 // teacher_entries
-// employees
 //
 // SAME TEACHER + SAME DATE = SUM
 //
 // 1 UNIT = ₹7,000
 // ======================================================
 
-
-import {
-    db
-} from "./firebase-config.js";
-
+import { db } from "./firebase-config.js";
 
 import {
     collection,
     getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-
-// ======================================================
-// ADMIN ACCESS
-// ======================================================
-
-const userRole =
-    String(
-        localStorage.getItem("userRole") || ""
-    )
-        .trim()
-        .toLowerCase();
-
-
-if (userRole !== "admin") {
-
-    localStorage.removeItem(
-        "loggedInEmpCode"
-    );
-
-    localStorage.removeItem(
-        "userRole"
-    );
-
-    window.location.href =
-        "index.html";
-
-}
-
 
 
 // ======================================================
@@ -76,126 +31,89 @@ if (userRole !== "admin") {
 
 const UNIT_AMOUNT = 7000;
 
-const EMPLOYEES_COLLECTION =
-    "employees";
-
-const DAILY_ENTRY_COLLECTION =
-    "daily_entry";
-
-const TEACHER_ENTRIES_COLLECTION =
-    "teacher_entries";
-
+const EMPLOYEES_COLLECTION = "employees";
+const DAILY_ENTRY_COLLECTION = "daily_entry";
+const TEACHER_ENTRIES_COLLECTION = "teacher_entries";
 
 
 // ======================================================
-// HTML ELEMENTS
+// ADMIN CHECK
+// ======================================================
+
+const userRole =
+    localStorage.getItem("userRole") || "";
+
+if (userRole !== "admin") {
+    window.location.href = "index.html";
+}
+
+
+// ======================================================
+// DOM
 // ======================================================
 
 const rankBy =
-    document.getElementById(
-        "rankBy"
-    );
+    document.getElementById("rankBy");
 
 const rankMetric =
-    document.getElementById(
-        "rankMetric"
-    );
+    document.getElementById("rankMetric");
 
 const rankLimit =
-    document.getElementById(
-        "rankLimit"
-    );
+    document.getElementById("rankLimit");
 
 const customRank =
-    document.getElementById(
-        "customRank"
-    );
+    document.getElementById("customRank");
 
 const customRankGroup =
-    document.getElementById(
-        "customRankGroup"
-    );
+    document.getElementById("customRankGroup");
 
 const regionFilter =
-    document.getElementById(
-        "regionFilter"
-    );
+    document.getElementById("regionFilter");
 
 const stateFilter =
-    document.getElementById(
-        "stateFilter"
-    );
+    document.getElementById("stateFilter");
 
 const cityFilter =
-    document.getElementById(
-        "cityFilter"
-    );
+    document.getElementById("cityFilter");
 
 const fromDate =
-    document.getElementById(
-        "fromDate"
-    );
+    document.getElementById("fromDate");
 
 const toDate =
-    document.getElementById(
-        "toDate"
-    );
+    document.getElementById("toDate");
 
 const applyFilter =
-    document.getElementById(
-        "applyFilter"
-    );
+    document.getElementById("applyFilter");
 
 const resetFilter =
-    document.getElementById(
-        "resetFilter"
-    );
+    document.getElementById("resetFilter");
 
 const refreshBtn =
-    document.getElementById(
-        "refreshBtn"
-    );
+    document.getElementById("refreshBtn");
 
 const logoutBtn =
-    document.getElementById(
-        "logoutBtn"
-    );
+    document.getElementById("logoutBtn");
 
 const rankTableBody =
-    document.getElementById(
-        "rankTableBody"
-    );
+    document.getElementById("rankTableBody");
 
 const totalRanked =
-    document.getElementById(
-        "totalRanked"
-    );
+    document.getElementById("totalRanked");
 
 const rankOneName =
-    document.getElementById(
-        "rankOneName"
-    );
+    document.getElementById("rankOneName");
 
 const selectionText =
-    document.getElementById(
-        "selectionText"
-    );
+    document.getElementById("selectionText");
 
 const loadingStatus =
-    document.getElementById(
-        "loadingStatus"
-    );
+    document.getElementById("loadingStatus");
 
 const resultCount =
-    document.getElementById(
-        "resultCount"
-    );
+    document.getElementById("resultCount");
 
 const tableSubtitle =
-    document.getElementById(
-        "tableSubtitle"
-    );
-
+    document.getElementById("tableSubtitle");
 
 
 // ======================================================
@@ -203,26 +121,18 @@ const tableSubtitle =
 // ======================================================
 
 let employees = [];
-
 let dailyEntries = [];
-
 let teacherEntries = [];
-
 let allEntries = [];
-
-let currentRows = [];
-
 
 
 // ======================================================
-// NORMALIZE
+// UTILITY
 // ======================================================
 
 function normalize(value) {
 
-    return String(
-        value ?? ""
-    )
+    return String(value ?? "")
         .trim()
         .toLowerCase()
         .replace(/\s+/g, " ");
@@ -230,703 +140,340 @@ function normalize(value) {
 }
 
 
-
-// ======================================================
-// ESCAPE HTML
-// ======================================================
-
 function escapeHTML(value) {
 
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
-
-
-// ======================================================
-// NUMBER
-// ======================================================
 
 function numberValue(value) {
 
-    const number =
-        Number(
-            String(
-                value ?? ""
-            )
-                .replace(
-                    /,/g,
-                    ""
-                )
-                .replace(
-                    /₹/g,
-                    ""
-                )
-                .replace(
-                    /\s/g,
-                    ""
-                )
-                .trim()
-        );
+    if (typeof value === "number") {
+        return Number.isFinite(value) ? value : 0;
+    }
 
-    return Number.isFinite(number)
-        ? number
-        : 0;
+    if (typeof value === "string") {
 
+        const cleaned =
+            value
+                .replace(/₹/g, "")
+                .replace(/,/g, "")
+                .replace(/units?/gi, "")
+                .trim();
+
+        const num = Number(cleaned);
+
+        return Number.isFinite(num) ? num : 0;
+    }
+
+    return 0;
 }
 
-
-
-// ======================================================
-// MONEY
-// ======================================================
 
 function formatMoney(value) {
 
-    return (
-        "₹ " +
-        numberValue(value)
-            .toLocaleString(
-                "en-IN"
-            )
-    );
+    return "₹ " +
+        numberValue(value).toLocaleString("en-IN", {
+            maximumFractionDigits: 0
+        });
 
 }
 
-
-
-// ======================================================
-// UNIT
-// ======================================================
 
 function formatUnit(value) {
 
     const units =
-        numberValue(value) /
-        UNIT_AMOUNT;
+        numberValue(value) / UNIT_AMOUNT;
 
-    return (
-        units.toLocaleString(
-            "en-IN",
-            {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            }
-        ) +
-        " Unit"
-    );
-
+    return units.toLocaleString("en-IN", {
+        maximumFractionDigits: 2
+    }) + " Unit";
 }
 
 
+function getPercentage(collectionAmount, target) {
 
-// ======================================================
-// PERCENTAGE
-// ======================================================
+    const c = numberValue(collectionAmount);
+    const t = numberValue(target);
 
-function getPercentage(
-    collection,
-    target
-) {
-
-    collection =
-        numberValue(
-            collection
-        );
-
-    target =
-        numberValue(
-            target
-        );
-
-    if (target <= 0) {
-
+    if (t <= 0) {
         return 0;
-
     }
 
-    return (
-        collection /
-        target
-    ) * 100;
-
+    return (c / t) * 100;
 }
 
 
-
 // ======================================================
-// EMPLOYEE CODE
+// EMPLOYEE HELPERS
 // ======================================================
 
-function getEmployeeCode(
-    employee
-) {
+function getEmployeeCode(employee) {
 
     return String(
-
-        employee?.employeeCode ||
-
-        employee?.employee_code ||
-
-        employee?.empCode ||
-
-        employee?.emp_code ||
-
-        employee?.employeeID ||
-
-        employee?.employeeId ||
-
-        employee?.userCode ||
-
-        employee?.user_code ||
-
-        employee?.id ||
-
+        employee?.employeeCode ??
+        employee?.employee_code ??
+        employee?.empCode ??
+        employee?.emp_code ??
+        employee?.code ??
+        employee?.id ??
         ""
-
     ).trim();
 
 }
 
 
+function getEmployeeName(employee) {
 
-// ======================================================
-// ENTRY EMPLOYEE CODE
-// ======================================================
+    const directName =
+        employee?.name ??
+        employee?.teacherName ??
+        employee?.teacher_name ??
+        employee?.fullName ??
+        employee?.full_name ??
+        employee?.displayName ??
+        employee?.display_name ??
+        employee?.employeeName ??
+        employee?.employee_name;
 
-function getEntryEmployeeCode(
-    entry
-) {
+    if (directName) {
+        return String(directName).trim();
+    }
+
+    const first =
+        employee?.firstName ??
+        employee?.first_name ??
+        "";
+
+    const last =
+        employee?.lastName ??
+        employee?.last_name ??
+        "";
+
+    const combined =
+        `${first} ${last}`.trim();
+
+    return combined || "Unknown Teacher";
+}
+
+
+function getEmployeeRegion(employee) {
 
     return String(
-
-        entry?.employeeCode ||
-
-        entry?.employee_code ||
-
-        entry?.empCode ||
-
-        entry?.emp_code ||
-
-        entry?.employeeID ||
-
-        entry?.employeeId ||
-
-        entry?.userCode ||
-
-        entry?.user_code ||
-
-        entry?.emp_id ||
-
-        entry?.employee ||
-
-        entry?.teacherCode ||
-
-        entry?.teacher_code ||
-
-        entry?.code ||
-
+        employee?.region ??
+        employee?.regionName ??
+        employee?.region_name ??
+        employee?.assignedRegion ??
+        employee?.assigned_region ??
         ""
-
     ).trim();
 
 }
 
 
+function getEmployeeState(employee) {
 
-// ======================================================
-// ENTRY AMOUNT
-// ======================================================
+    return String(
+        employee?.state ??
+        employee?.stateName ??
+        employee?.state_name ??
+        ""
+    ).trim();
 
-function getEntryAmount(
-    entry
-) {
+}
+
+
+function getEmployeeCity(employee) {
+
+    return String(
+        employee?.city ??
+        employee?.cityName ??
+        employee?.city_name ??
+        ""
+    ).trim();
+
+}
+
+
+function getEmployeeTarget(employee) {
 
     return numberValue(
-
-        entry?.amount ||
-
-        entry?.collection ||
-
-        entry?.collectionAmount ||
-
-        entry?.collection_amount ||
-
-        entry?.totalCollection ||
-
-        entry?.total_collection ||
-
-        entry?.collectedAmount ||
-
-        entry?.collected_amount ||
-
-        entry?.dailyCollection ||
-
-        entry?.daily_collection ||
-
+        employee?.target ??
+        employee?.targetAmount ??
+        employee?.target_amount ??
+        employee?.monthlyTarget ??
+        employee?.monthly_target ??
         0
-
     );
 
 }
 
 
-
 // ======================================================
-// ENTRY DATE
+// ENTRY HELPERS
 // ======================================================
 
-function getEntryDate(
-    entry
-) {
+function getEntryEmployeeCode(entry) {
 
-    return (
-
-        entry?.date ||
-
-        entry?.entryDate ||
-
-        entry?.collectionDate ||
-
-        entry?.collection_date ||
-
-        entry?.createdDate ||
-
-        entry?.created_date ||
-
+    return String(
+        entry?.employeeCode ??
+        entry?.employee_code ??
+        entry?.empCode ??
+        entry?.emp_code ??
+        entry?.employeeId ??
+        entry?.employee_id ??
+        entry?.code ??
         ""
+    ).trim();
 
+}
+
+
+function getEntryAmount(entry) {
+
+    return numberValue(
+        entry?.amount ??
+        entry?.collection ??
+        entry?.collectionAmount ??
+        entry?.collection_amount ??
+        entry?.totalAmount ??
+        entry?.total_amount ??
+        0
     );
 
 }
 
 
+function getEntryDate(entry) {
 
-// ======================================================
-// DATE FORMAT
-// ======================================================
+    const value =
+        entry?.date ??
+        entry?.entryDate ??
+        entry?.entry_date ??
+        entry?.collectionDate ??
+        entry?.collection_date ??
+        "";
 
-function formatDateForInput(
-    date
-) {
+    if (!value) {
+        return "";
+    }
+
+    if (
+        typeof value === "object" &&
+        value?.toDate
+    ) {
+        return formatDateForInput(
+            value.toDate()
+        );
+    }
+
+    if (
+        typeof value === "object" &&
+        value?.seconds
+    ) {
+        return formatDateForInput(
+            new Date(value.seconds * 1000)
+        );
+    }
+
+    return normalizeDate(value);
+}
+
+
+function formatDateForInput(date) {
+
+    if (!(date instanceof Date) ||
+        Number.isNaN(date.getTime())) {
+        return "";
+    }
 
     const year =
         date.getFullYear();
 
     const month =
-        String(
-            date.getMonth() + 1
-        )
-            .padStart(
-                2,
-                "0"
-            );
+        String(date.getMonth() + 1)
+            .padStart(2, "0");
 
     const day =
-        String(
-            date.getDate()
-        )
-            .padStart(
-                2,
-                "0"
-            );
+        String(date.getDate())
+            .padStart(2, "0");
 
-    return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day
-    );
-
+    return `${year}-${month}-${day}`;
 }
 
 
-
-// ======================================================
-// NORMALIZE DATE
-// ======================================================
-
-function normalizeDate(
-    value
-) {
+function normalizeDate(value) {
 
     if (!value) {
-
         return "";
-
     }
 
+    const text =
+        String(value).trim();
 
-    if (
-        typeof value === "object" &&
-        typeof value.toDate === "function"
-    ) {
-
-        return formatDateForInput(
-            value.toDate()
-        );
-
+    if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+        return text;
     }
 
+    const date =
+        new Date(text);
 
-    if (
-        typeof value === "object" &&
-        value.seconds !== undefined
-    ) {
-
-        return formatDateForInput(
-
-            new Date(
-                Number(
-                    value.seconds
-                ) * 1000
-            )
-
-        );
-
+    if (!Number.isNaN(date.getTime())) {
+        return formatDateForInput(date);
     }
 
-
-    const stringValue =
-        String(
-            value
-        ).trim();
-
-
-    if (
-        /^\d{4}-\d{2}-\d{2}$/
-            .test(
-                stringValue
-            )
-    ) {
-
-        return stringValue;
-
-    }
-
-
-    let match =
-        stringValue.match(
-            /^(\d{2})-(\d{2})-(\d{4})$/
-        );
-
-
-    if (match) {
-
-        return (
-            match[3] +
-            "-" +
-            match[2] +
-            "-" +
-            match[1]
-        );
-
-    }
-
-
-    match =
-        stringValue.match(
-            /^(\d{2})\/(\d{2})\/(\d{4})$/
-        );
-
-
-    if (match) {
-
-        return (
-            match[3] +
-            "-" +
-            match[2] +
-            "-" +
-            match[1]
-        );
-
-    }
-
-
-    const parsed =
-        new Date(
-            stringValue
-        );
-
-
-    if (
-        !Number.isNaN(
-            parsed.getTime()
-        )
-    ) {
-
-        return formatDateForInput(
-            parsed
-        );
-
-    }
-
-
-    return "";
-
+    return text;
 }
-
-
-
-// ======================================================
-// EMPLOYEE REGION
-// ======================================================
-
-function getEmployeeRegion(
-    employee
-) {
-
-    return String(
-
-        employee?.region ||
-
-        employee?.regionName ||
-
-        employee?.region_name ||
-
-        ""
-
-    ).trim();
-
-}
-
-
-
-// ======================================================
-// EMPLOYEE STATE
-// ======================================================
-
-function getEmployeeState(
-    employee
-) {
-
-    return String(
-
-        employee?.state ||
-
-        employee?.stateName ||
-
-        employee?.state_name ||
-
-        ""
-
-    ).trim();
-
-}
-
-
-
-// ======================================================
-// EMPLOYEE CITY
-// ======================================================
-
-function getEmployeeCity(
-    employee
-) {
-
-    return String(
-
-        employee?.city ||
-
-        employee?.cityName ||
-
-        employee?.city_name ||
-
-        ""
-
-    ).trim();
-
-}
-
-
-
-// ======================================================
-// EMPLOYEE NAME
-// ======================================================
-
-function getEmployeeName(
-    employee
-) {
-
-    return String(
-
-        employee?.name ||
-
-        employee?.teacherName ||
-
-        employee?.teacher_name ||
-
-        employee?.employeeName ||
-
-        employee?.employee_name ||
-
-        employee?.fullName ||
-
-        employee?.full_name ||
-
-        employee?.displayName ||
-
-        employee?.display_name ||
-
-        employee?.userName ||
-
-        employee?.username ||
-
-        ""
-
-    ).trim();
-
-}
-
-
-
-// ======================================================
-// EMPLOYEE TARGET
-// ======================================================
-
-function getEmployeeTarget(
-    employee
-) {
-
-    return numberValue(
-
-        employee?.targetAmount ||
-
-        employee?.target ||
-
-        employee?.manualTarget ||
-
-        employee?.manual_target ||
-
-        0
-
-    );
-
-}
-
 
 
 // ======================================================
 // LOAD COLLECTION
 // ======================================================
 
-async function loadCollection(
-    collectionName
-) {
+async function loadCollection(name) {
 
     const snapshot =
         await getDocs(
-
-            collection(
-                db,
-                collectionName
-            )
-
+            collection(db, name)
         );
 
-
-    const result = [];
-
-
-    snapshot.forEach(
-        docSnapshot => {
-
-            result.push({
-
-                id:
-                    docSnapshot.id,
-
-                ...docSnapshot.data(),
-
-                _source:
-                    collectionName
-
-            });
-
-        }
-    );
-
-
-    return result;
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
 
 }
 
 
-
 // ======================================================
-// MULTI SELECT VALUES
-// ======================================================
-
-function getSelectedValues(
-    selectElement
-) {
-
-    if (!selectElement) {
-
-        return [];
-
-    }
-
-
-    return Array.from(
-        selectElement.selectedOptions
-    )
-        .map(
-            option =>
-                normalize(
-                    option.value
-                )
-        )
-        .filter(
-            value =>
-                value
-        );
-
-}
-
-
-
-// ======================================================
-// LOAD DATA
+// LOAD ALL DATA
 // ======================================================
 
 async function loadData() {
 
-    setLoading(
-        true,
-        "Loading Firebase Data..."
-    );
-
-
     try {
+
+        loadingStatus.textContent =
+            "Loading data...";
+
+        rankTableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="loading-cell">
+                    Loading ranking...
+                </td>
+            </tr>
+        `;
 
         const [
             employeeData,
-            oldEntries,
-            newEntries
+            dailyData,
+            teacherData
         ] = await Promise.all([
 
             loadCollection(
@@ -943,25 +490,14 @@ async function loadData() {
 
         ]);
 
-
-        employees =
-            employeeData;
-
-        dailyEntries =
-            oldEntries;
-
-        teacherEntries =
-            newEntries;
-
+        employees = employeeData;
+        dailyEntries = dailyData;
+        teacherEntries = teacherData;
 
         allEntries = [
-
             ...dailyEntries,
-
             ...teacherEntries
-
         ];
-
 
         loadRegionDropdown();
 
@@ -971,51 +507,29 @@ async function loadData() {
 
         applyCurrentFilters();
 
-    }
-    catch (error) {
+        loadingStatus.textContent =
+            "Data loaded";
+
+    } catch (error) {
 
         console.error(
-            "Rank Data Error:",
+            "Rank loading error:",
             error
         );
 
+        loadingStatus.textContent =
+            "Error loading data";
 
         rankTableBody.innerHTML = `
-
             <tr>
-
-                <td
-                    colspan="6"
-                    class="error-cell"
-                >
-
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-
-                    Data load nahi ho paaya.
-
-                    <br>
-
-                    ${escapeHTML(
-                        error.message
-                    )}
-
+                <td colspan="6" class="error-cell">
+                    Unable to load ranking data.
                 </td>
-
             </tr>
-
         `;
-
-    }
-    finally {
-
-        setLoading(
-            false
-        );
-
     }
 
 }
-
 
 
 // ======================================================
@@ -1024,78 +538,62 @@ async function loadData() {
 
 function loadRegionDropdown() {
 
-    const previous =
-        getSelectedValues(
-            regionFilter
-        );
-
+    if (!regionFilter) {
+        return;
+    }
 
     const regions =
         new Map();
 
+    employees.forEach(employee => {
 
-    employees.forEach(
-        employee => {
+        const region =
+            getEmployeeRegion(employee);
 
-            const region =
-                getEmployeeRegion(
-                    employee
-                );
-
-
-            if (region) {
-
-                regions.set(
-                    normalize(region),
-                    region
-                );
-
-            }
-
+        if (!region) {
+            return;
         }
-    );
 
+        const key =
+            normalize(region);
+
+        if (!regions.has(key)) {
+            regions.set(key, region);
+        }
+
+    });
+
+    const selected =
+        getSelectedValues(regionFilter);
 
     regionFilter.innerHTML = "";
 
-
-    Array.from(
-        regions.values()
-    )
-        .sort(
-            (a, b) =>
-                a.localeCompare(
-                    b
-                )
+    Array.from(regions.values())
+        .sort((a, b) =>
+            a.localeCompare(b)
         )
-        .forEach(
-            region => {
+        .forEach(region => {
 
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+            const option =
+                document.createElement("option");
 
-                option.value =
-                    region;
+            option.value = region;
+            option.textContent = region;
 
-                option.textContent =
-                    region;
-
-                option.selected =
-                    previous.includes(
+            if (
+                selected.some(
+                    value =>
+                        normalize(value) ===
                         normalize(region)
-                    );
-
-                regionFilter.appendChild(
-                    option
-                );
-
+                )
+            ) {
+                option.selected = true;
             }
-        );
+
+            regionFilter.appendChild(option);
+        });
 
 }
-
 
 
 // ======================================================
@@ -1104,103 +602,80 @@ function loadRegionDropdown() {
 
 function updateStateDropdown() {
 
+    if (!stateFilter) {
+        return;
+    }
+
     const selectedRegions =
-        getSelectedValues(
-            regionFilter
-        );
+        getSelectedValues(regionFilter);
 
-
-    const previousStates =
-        getSelectedValues(
-            stateFilter
-        );
-
+    const oldSelected =
+        getSelectedValues(stateFilter);
 
     const states =
         new Map();
 
+    employees.forEach(employee => {
 
-    employees.forEach(
-        employee => {
+        const region =
+            getEmployeeRegion(employee);
 
-            const region =
-                normalize(
-                    getEmployeeRegion(
-                        employee
-                    )
-                );
-
-            const state =
-                getEmployeeState(
-                    employee
-                );
-
-
-            if (
-                selectedRegions.length > 0 &&
-                !selectedRegions.includes(
-                    region
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            if (state) {
-
-                states.set(
-                    normalize(state),
-                    state
-                );
-
-            }
-
+        if (
+            selectedRegions.length &&
+            !selectedRegions.some(
+                value =>
+                    normalize(value) ===
+                    normalize(region)
+            )
+        ) {
+            return;
         }
-    );
 
+        const state =
+            getEmployeeState(employee);
+
+        if (!state) {
+            return;
+        }
+
+        const key =
+            normalize(state);
+
+        if (!states.has(key)) {
+            states.set(key, state);
+        }
+
+    });
 
     stateFilter.innerHTML = "";
 
-
-    Array.from(
-        states.values()
-    )
-        .sort(
-            (a, b) =>
-                a.localeCompare(
-                    b
-                )
+    Array.from(states.values())
+        .sort((a, b) =>
+            a.localeCompare(b)
         )
-        .forEach(
-            state => {
+        .forEach(state => {
 
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+            const option =
+                document.createElement("option");
 
-                option.value =
-                    state;
+            option.value = state;
+            option.textContent = state;
 
-                option.textContent =
-                    state;
-
-                option.selected =
-                    previousStates.includes(
+            if (
+                oldSelected.some(
+                    value =>
+                        normalize(value) ===
                         normalize(state)
-                    );
-
-                stateFilter.appendChild(
-                    option
-                );
-
+                )
+            ) {
+                option.selected = true;
             }
-        );
+
+            stateFilter.appendChild(option);
+
+        });
 
 }
-
 
 
 // ======================================================
@@ -1209,204 +684,147 @@ function updateStateDropdown() {
 
 function updateCityDropdown() {
 
-    const selectedRegions =
-        getSelectedValues(
-            regionFilter
-        );
+    if (!cityFilter) {
+        return;
+    }
 
+    const selectedRegions =
+        getSelectedValues(regionFilter);
 
     const selectedStates =
-        getSelectedValues(
-            stateFilter
-        );
+        getSelectedValues(stateFilter);
 
-
-    const previousCity =
-        normalize(
-            cityFilter.value
-        );
-
+    const oldCity =
+        cityFilter.value;
 
     const cities =
         new Map();
 
+    employees.forEach(employee => {
 
-    employees.forEach(
-        employee => {
+        const region =
+            getEmployeeRegion(employee);
 
-            const region =
-                normalize(
-                    getEmployeeRegion(
-                        employee
-                    )
-                );
+        const state =
+            getEmployeeState(employee);
 
-            const state =
-                normalize(
-                    getEmployeeState(
-                        employee
-                    )
-                );
-
-            const city =
-                getEmployeeCity(
-                    employee
-                );
-
-
-            if (
-                selectedRegions.length > 0 &&
-                !selectedRegions.includes(
-                    region
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                selectedStates.length > 0 &&
-                !selectedStates.includes(
-                    state
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            if (city) {
-
-                cities.set(
-                    normalize(city),
-                    city
-                );
-
-            }
-
-        }
-    );
-
-
-    cityFilter.innerHTML = `
-
-        <option value="">
-            All Cities
-        </option>
-
-    `;
-
-
-    Array.from(
-        cities.values()
-    )
-        .sort(
-            (a, b) =>
-                a.localeCompare(
-                    b
-                )
-        )
-        .forEach(
-            city => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    city;
-
-                option.textContent =
-                    city;
-
-                cityFilter.appendChild(
-                    option
-                );
-
-            }
-        );
-
-
-    if (
-        previousCity &&
-        Array.from(
-            cityFilter.options
-        )
-            .some(
-                option =>
-                    normalize(
-                        option.value
-                    ) === previousCity
+        if (
+            selectedRegions.length &&
+            !selectedRegions.some(
+                value =>
+                    normalize(value) ===
+                    normalize(region)
             )
-    ) {
+        ) {
+            return;
+        }
 
-        cityFilter.value =
-            previousCity;
+        if (
+            selectedStates.length &&
+            !selectedStates.some(
+                value =>
+                    normalize(value) ===
+                    normalize(state)
+            )
+        ) {
+            return;
+        }
 
-    }
+        const city =
+            getEmployeeCity(employee);
+
+        if (!city) {
+            return;
+        }
+
+        const key =
+            normalize(city);
+
+        if (!cities.has(key)) {
+            cities.set(key, city);
+        }
+
+    });
+
+    cityFilter.innerHTML =
+        `<option value="">All Cities</option>`;
+
+    Array.from(cities.values())
+        .sort((a, b) =>
+            a.localeCompare(b)
+        )
+        .forEach(city => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = city;
+            option.textContent = city;
+
+            if (
+                normalize(oldCity) ===
+                normalize(city)
+            ) {
+                option.selected = true;
+            }
+
+            cityFilter.appendChild(option);
+
+        });
 
 }
 
 
-
 // ======================================================
-// DATE RANGE
+// GET SELECTED MULTI VALUES
 // ======================================================
 
-function entryInDateRange(
-    entry
-) {
+function getSelectedValues(select) {
 
-    const entryDate =
-        normalizeDate(
-            getEntryDate(
-                entry
-            )
-        );
-
-
-    if (!entryDate) {
-
-        return false;
-
+    if (!select) {
+        return [];
     }
 
+    return Array.from(
+        select.selectedOptions || []
+    )
+        .map(option =>
+            String(option.value).trim()
+        )
+        .filter(Boolean);
+
+}
+
+
+// ======================================================
+// DATE FILTER
+// ======================================================
+
+function entryInDateRange(entry) {
+
+    const date =
+        getEntryDate(entry);
+
+    if (!date) {
+        return false;
+    }
 
     const from =
-        fromDate.value;
+        fromDate?.value || "";
 
     const to =
-        toDate.value;
+        toDate?.value || "";
 
-
-    if (
-        from &&
-        entryDate < from
-    ) {
-
+    if (from && date < from) {
         return false;
-
     }
 
-
-    if (
-        to &&
-        entryDate > to
-    ) {
-
+    if (to && date > to) {
         return false;
-
     }
-
 
     return true;
-
 }
-
 
 
 // ======================================================
@@ -1418,33 +836,24 @@ function buildEmployeeMap() {
     const map =
         new Map();
 
+    employees.forEach(employee => {
 
-    employees.forEach(
-        employee => {
+        const code =
+            getEmployeeCode(employee);
 
-            const code =
-                getEmployeeCode(
-                    employee
-                );
-
-
-            if (code) {
-
-                map.set(
-                    normalize(code),
-                    employee
-                );
-
-            }
-
+        if (!code) {
+            return;
         }
-    );
 
+        map.set(
+            normalize(code),
+            employee
+        );
+
+    });
 
     return map;
-
 }
-
 
 
 // ======================================================
@@ -1458,554 +867,352 @@ function buildTeacherCollections() {
     const teacherDateMap =
         new Map();
 
+    allEntries.forEach(entry => {
 
-    allEntries.forEach(
-        entry => {
+        if (!entryInDateRange(entry)) {
+            return;
+        }
 
-            if (
-                !entryInDateRange(
-                    entry
-                )
-            ) {
+        const code =
+            getEntryEmployeeCode(entry);
 
-                return;
+        if (!code) {
+            return;
+        }
 
-            }
+        const date =
+            getEntryDate(entry);
 
+        if (!date) {
+            return;
+        }
 
-            const code =
-                getEntryEmployeeCode(
-                    entry
-                );
+        const amount =
+            getEntryAmount(entry);
 
+        if (amount <= 0) {
+            return;
+        }
 
-            if (!code) {
+        const key =
+            normalize(code) +
+            "_" +
+            date;
 
-                return;
+        if (!teacherDateMap.has(key)) {
 
-            }
-
-
-            const employee =
-                employees.find(
-                    item =>
-                        normalize(
-                            getEmployeeCode(
-                                item
-                            )
-                        ) ===
-                        normalize(code)
-                );
-
-
-            if (!employee) {
-
-                return;
-
-            }
-
-
-            const date =
-                normalizeDate(
-                    getEntryDate(
-                        entry
-                    )
-                );
-
-
-            if (!date) {
-
-                return;
-
-            }
-
-
-            const key =
-                normalize(code) +
-                "_" +
-                date;
-
-
-            const amount =
-                getEntryAmount(
-                    entry
-                );
-
-
-            if (
-                !teacherDateMap.has(
-                    key
-                )
-            ) {
-
-                teacherDateMap.set(
-                    key,
-                    {
-
-                        code:
-                            code,
-
-                        employee:
-                            employee,
-
-                        date:
-                            date,
-
-                        amount:
-                            0
-
-                    }
-                );
-
-            }
-
-
-            teacherDateMap.get(
-                key
-            ).amount +=
-                amount;
+            teacherDateMap.set(key, {
+                code: code,
+                date: date,
+                amount: 0
+            });
 
         }
-    );
 
+        teacherDateMap.get(key).amount +=
+            amount;
+
+    });
 
     return Array.from(
         teacherDateMap.values()
     );
-
 }
 
 
-
 // ======================================================
-// FILTER EMPLOYEES
+// EMPLOYEE FILTER
 // ======================================================
 
-function employeeMatchesFilters(
-    employee
-) {
+function employeeMatchesFilters(employee) {
 
     const selectedRegions =
-        getSelectedValues(
-            regionFilter
-        );
-
+        getSelectedValues(regionFilter);
 
     const selectedStates =
-        getSelectedValues(
-            stateFilter
-        );
-
+        getSelectedValues(stateFilter);
 
     const selectedCity =
-        normalize(
-            cityFilter.value
-        );
+        cityFilter?.value || "";
 
+    const region =
+        getEmployeeRegion(employee);
 
-    const employeeRegion =
-        normalize(
-            getEmployeeRegion(
-                employee
-            )
-        );
+    const state =
+        getEmployeeState(employee);
 
-
-    const employeeState =
-        normalize(
-            getEmployeeState(
-                employee
-            )
-        );
-
-
-    const employeeCity =
-        normalize(
-            getEmployeeCity(
-                employee
-            )
-        );
+    const city =
+        getEmployeeCity(employee);
 
 
     if (
-        selectedRegions.length > 0 &&
-        !selectedRegions.includes(
-            employeeRegion
+        selectedRegions.length &&
+        !selectedRegions.some(
+            value =>
+                normalize(value) ===
+                normalize(region)
         )
     ) {
-
         return false;
-
     }
 
 
     if (
-        selectedStates.length > 0 &&
-        !selectedStates.includes(
-            employeeState
+        selectedStates.length &&
+        !selectedStates.some(
+            value =>
+                normalize(value) ===
+                normalize(state)
         )
     ) {
-
         return false;
-
     }
 
 
     if (
         selectedCity &&
-        employeeCity !==
-        selectedCity
+        normalize(selectedCity) !==
+        normalize(city)
     ) {
-
         return false;
-
     }
 
 
     return true;
-
 }
 
 
-
 // ======================================================
-// TEACHER WISE RANKING
+// BUILD TEACHER ROWS
+//
+// IMPORTANT:
+// EVERY ROW = ONE TEACHER
+//
+// NO REGION/STATE/CITY GROUPING
 // ======================================================
 
 function buildTeacherRows(
     teacherCollections
 ) {
 
+    const employeeMap =
+        buildEmployeeMap();
+
     const teacherMap =
         new Map();
 
 
-    // ==============================================
-    // COLLECTION
-    // ==============================================
+    // --------------------------------------------------
+    // FIRST ADD ALL FILTERED TEACHERS
+    // --------------------------------------------------
 
-    teacherCollections.forEach(
-        item => {
+    employees.forEach(employee => {
 
-            const employee =
-                item.employee;
+        if (
+            !employeeMatchesFilters(
+                employee
+            )
+        ) {
+            return;
+        }
 
+        const code =
+            getEmployeeCode(employee);
 
-            if (!employee) {
+        if (!code) {
+            return;
+        }
 
-                return;
+        const key =
+            normalize(code);
 
-            }
+        if (!teacherMap.has(key)) {
 
+            teacherMap.set(key, {
 
-            if (
-                !employeeMatchesFilters(
-                    employee
-                )
-            ) {
+                code: code,
 
-                return;
-
-            }
-
-
-            const code =
-                normalize(
-                    getEmployeeCode(
+                name:
+                    getEmployeeName(
                         employee
-                    )
-                );
+                    ),
 
+                region:
+                    getEmployeeRegion(
+                        employee
+                    ),
 
-            if (!code) {
+                state:
+                    getEmployeeState(
+                        employee
+                    ),
 
-                return;
+                city:
+                    getEmployeeCity(
+                        employee
+                    ),
 
-            }
+                target:
+                    getEmployeeTarget(
+                        employee
+                    ),
 
+                collection: 0
 
-            if (
-                !teacherMap.has(
-                    code
-                )
-            ) {
-
-                teacherMap.set(
-                    code,
-                    {
-
-                        code:
-                            getEmployeeCode(
-                                employee
-                            ),
-
-                        name:
-                            getEmployeeName(
-                                employee
-                            ) ||
-                            getEmployeeCode(
-                                employee
-                            ),
-
-                        region:
-                            getEmployeeRegion(
-                                employee
-                            ),
-
-                        state:
-                            getEmployeeState(
-                                employee
-                            ),
-
-                        city:
-                            getEmployeeCity(
-                                employee
-                            ),
-
-                        target:
-                            getEmployeeTarget(
-                                employee
-                            ),
-
-                        collection:
-                            0
-
-                    }
-                );
-
-            }
-
-
-            teacherMap.get(
-                code
-            ).collection +=
-                numberValue(
-                    item.amount
-                );
+            });
 
         }
-    );
+
+    });
 
 
-    // ==============================================
-    // ADD TEACHERS WITH ZERO COLLECTION
-    // ==============================================
+    // --------------------------------------------------
+    // ADD COLLECTION TO EACH TEACHER
+    // --------------------------------------------------
 
-    employees.forEach(
-        employee => {
+    teacherCollections.forEach(item => {
 
-            if (
-                !employeeMatchesFilters(
-                    employee
-                )
-            ) {
+        const key =
+            normalize(item.code);
 
-                return;
+        const employee =
+            employeeMap.get(key);
 
-            }
+        if (!employee) {
+            return;
+        }
 
+        if (
+            !employeeMatchesFilters(
+                employee
+            )
+        ) {
+            return;
+        }
 
-            const code =
-                normalize(
+        if (!teacherMap.has(key)) {
+
+            teacherMap.set(key, {
+
+                code:
                     getEmployeeCode(
                         employee
-                    )
-                );
+                    ),
 
+                name:
+                    getEmployeeName(
+                        employee
+                    ),
 
-            if (!code) {
+                region:
+                    getEmployeeRegion(
+                        employee
+                    ),
 
-                return;
+                state:
+                    getEmployeeState(
+                        employee
+                    ),
 
-            }
+                city:
+                    getEmployeeCity(
+                        employee
+                    ),
 
+                target:
+                    getEmployeeTarget(
+                        employee
+                    ),
 
-            if (
-                !teacherMap.has(
-                    code
-                )
-            ) {
+                collection: 0
 
-                teacherMap.set(
-                    code,
-                    {
-
-                        code:
-                            getEmployeeCode(
-                                employee
-                            ),
-
-                        name:
-                            getEmployeeName(
-                                employee
-                            ) ||
-                            getEmployeeCode(
-                                employee
-                            ),
-
-                        region:
-                            getEmployeeRegion(
-                                employee
-                            ),
-
-                        state:
-                            getEmployeeState(
-                                employee
-                            ),
-
-                        city:
-                            getEmployeeCity(
-                                employee
-                            ),
-
-                        target:
-                            getEmployeeTarget(
-                                employee
-                            ),
-
-                        collection:
-                            0
-
-                    }
-                );
-
-            }
+            });
 
         }
-    );
 
+        teacherMap.get(key).collection +=
+            numberValue(item.amount);
+
+    });
+
+
+    // --------------------------------------------------
+    // FINAL ROWS
+    // --------------------------------------------------
 
     return Array.from(
         teacherMap.values()
-    )
-        .map(
-            row => ({
+    ).map(row => ({
 
-                ...row,
+        ...row,
 
-                remaining:
-                    Math.max(
-                        row.target -
-                        row.collection,
-                        0
-                    ),
+        remaining:
+            Math.max(
+                numberValue(row.target) -
+                numberValue(row.collection),
+                0
+            ),
 
-                percentage:
-                    getPercentage(
-                        row.collection,
-                        row.target
-                    )
+        percentage:
+            getPercentage(
+                row.collection,
+                row.target
+            )
 
-            })
-        );
+    }));
 
 }
-
 
 
 // ======================================================
 // SORT
+//
+// Highest Amount
+// Target Wise
+// Highest Target %
+//
+// These are only sorting metrics.
+// They are NOT displayed as columns.
 // ======================================================
 
-function sortRows(
-    rows
-) {
+function sortRows(rows) {
 
     const metric =
-        rankMetric.value;
+        rankMetric?.value ||
+        "amount";
 
+    return rows.sort(
+        (a, b) => {
 
-    if (
-        metric === "target"
-    ) {
-
-        rows.sort(
-            (a, b) => {
-
-                if (
-                    b.target !==
-                    a.target
-                ) {
-
-                    return (
-                        b.target -
-                        a.target
-                    );
-
-                }
-
+            if (metric === "target") {
 
                 return (
-                    b.collection -
-                    a.collection
+                    numberValue(b.target) -
+                    numberValue(a.target)
                 );
 
             }
-        );
 
-    }
-    else if (
-        metric === "percentage"
-    ) {
-
-        rows.sort(
-            (a, b) => {
-
-                if (
-                    b.percentage !==
-                    a.percentage
-                ) {
-
-                    return (
-                        b.percentage -
-                        a.percentage
-                    );
-
-                }
-
+            if (
+                metric === "percentage"
+            ) {
 
                 return (
-                    b.collection -
-                    a.collection
+                    numberValue(b.percentage) -
+                    numberValue(a.percentage)
                 );
 
             }
-        );
 
-    }
-    else {
+            return (
+                numberValue(b.collection) -
+                numberValue(a.collection)
+            );
 
-        rows.sort(
-            (a, b) => {
-
-                if (
-                    b.collection !==
-                    a.collection
-                ) {
-
-                    return (
-                        b.collection -
-                        a.collection
-                    );
-
-                }
-
-
-                return (
-                    b.percentage -
-                    a.percentage
-                );
-
-            }
-        );
-
-    }
-
-
-    return rows;
+        }
+    );
 
 }
-
 
 
 // ======================================================
@@ -2014,265 +1221,192 @@ function sortRows(
 
 function getRankLimit() {
 
-    if (
-        rankLimit.value ===
-        "custom"
-    ) {
+    const value =
+        rankLimit?.value || "3";
 
-        const value =
+    if (value === "custom") {
+
+        const custom =
             parseInt(
-                customRank.value,
+                customRank?.value || "3",
                 10
             );
 
-
-        if (
-            Number.isFinite(value) &&
-            value > 0
-        ) {
-
-            return value;
-
-        }
-
-
-        return 3;
-
-    }
-
-
-    const value =
-        parseInt(
-            rankLimit.value,
-            10
+        return Math.max(
+            1,
+            custom || 3
         );
-
-
-    if (
-        Number.isFinite(value) &&
-        value > 0
-    ) {
-
-        return value;
-
     }
 
-
-    return 3;
+    return Math.max(
+        1,
+        parseInt(value, 10) || 3
+    );
 
 }
-
 
 
 // ======================================================
 // RANK BADGE
 // ======================================================
 
-function rankBadge(
-    rank
-) {
+function rankBadge(rank) {
+
+    let className =
+        "rank-badge";
+
+    let icon =
+        rank;
 
     if (rank === 1) {
 
-        return `
+        className +=
+            " rank-one";
 
-            <div class="rank-badge rank-one">
+        icon = "🏆";
 
-                <i class="fa-solid fa-trophy"></i>
+    } else if (rank === 2) {
 
-                1
+        className +=
+            " rank-two";
 
-            </div>
+    } else if (rank === 3) {
 
-        `;
-
-    }
-
-
-    if (rank === 2) {
-
-        return `
-
-            <div class="rank-badge rank-two">
-
-                2
-
-            </div>
-
-        `;
+        className +=
+            " rank-three";
 
     }
-
-
-    if (rank === 3) {
-
-        return `
-
-            <div class="rank-badge rank-three">
-
-                3
-
-            </div>
-
-        `;
-
-    }
-
 
     return `
-
-        <div class="rank-badge">
-
-            ${rank}
-
-        </div>
-
+        <span class="${className}">
+            ${icon}
+        </span>
     `;
 
 }
 
 
-
 // ======================================================
-// DISPLAY
+// DISPLAY ROWS
 //
-// COLUMNS:
-// Rank
-// Region
-// State
-// City
-// Teachers Name
-// Collection
+// FINAL COLUMNS:
+//
+// 1. Rank
+// 2. Region
+// 3. State
+// 4. City
+// 5. Teachers Name
+// 6. Collection
+//
 // ======================================================
 
-function displayRows(
-    rows
-) {
+function displayRows(rows) {
 
-    currentRows =
-        rows;
-
-
-    totalRanked.textContent =
-        rows.length;
-
-
-    resultCount.textContent =
-        rows.length;
+    if (!rankTableBody) {
+        return;
+    }
 
 
     if (!rows.length) {
 
         rankTableBody.innerHTML = `
-
             <tr>
-
                 <td
                     colspan="6"
                     class="no-data-cell"
                 >
-
-                    <i class="fa-solid fa-inbox"></i>
+                    <i class="fa-solid fa-ranking-star"></i>
 
                     <div>
-                        No ranking data found.
+                        No teacher ranking data found.
                     </div>
-
                 </td>
-
             </tr>
-
         `;
 
+        if (totalRanked) {
+            totalRanked.textContent = "0";
+        }
 
-        rankOneName.textContent =
-            "-";
+        if (rankOneName) {
+            rankOneName.textContent = "—";
+        }
+
+        if (resultCount) {
+            resultCount.textContent =
+                "0 Results";
+        }
 
         return;
-
     }
 
 
-    let html = "";
-
-
-    rows.forEach(
-        (row, index) => {
+    rankTableBody.innerHTML =
+        rows.map((row, index) => {
 
             const rank =
                 index + 1;
 
-
-            html += `
-
+            return `
                 <tr
-                    class="${
-                        rank <= 3
-                            ? "top-rank-row"
-                            : ""
-                    }"
+                    class="${rank <= 3
+                        ? "top-rank-row"
+                        : ""}"
                 >
 
                     <!-- RANK -->
-
                     <td class="rank-cell">
-
-                        ${rankBadge(
-                            rank
-                        )}
-
+                        ${rankBadge(rank)}
                     </td>
 
 
                     <!-- REGION -->
-
-                    <td>
-
+                    <td class="region-column">
                         ${escapeHTML(
-                            row.region ||
-                            "-"
+                            row.region || "—"
                         )}
-
                     </td>
 
 
                     <!-- STATE -->
-
-                    <td>
-
+                    <td class="state-column">
                         ${escapeHTML(
-                            row.state ||
-                            "-"
+                            row.state || "—"
                         )}
-
                     </td>
 
 
                     <!-- CITY -->
-
-                    <td>
-
+                    <td class="city-column">
                         ${escapeHTML(
-                            row.city ||
-                            "-"
+                            row.city || "—"
                         )}
-
                     </td>
 
 
                     <!-- TEACHER NAME -->
-
-                    <td>
+                    <td class="teacher-column">
 
                         <div class="name-cell">
 
                             <strong>
-
                                 ${escapeHTML(
-                                    row.name
+                                    row.name ||
+                                    "Unknown Teacher"
                                 )}
-
                             </strong>
+
+                            ${
+                                row.code
+                                    ? `
+                                    <small>
+                                        ${escapeHTML(
+                                            row.code
+                                        )}
+                                    </small>
+                                    `
+                                    : ""
+                            }
 
                         </div>
 
@@ -2280,21 +1414,20 @@ function displayRows(
 
 
                     <!-- COLLECTION -->
+                    <td class="collection-column">
 
-                    <td>
+                        <div class="money-cell">
 
-                        <div class="money-cell collection-value">
-
-                            ${formatMoney(
-                                row.collection
-                            )}
+                            <span class="collection-value">
+                                ${formatMoney(
+                                    row.collection
+                                )}
+                            </span>
 
                             <small>
-
                                 ${formatUnit(
                                     row.collection
                                 )}
-
                             </small>
 
                         </div>
@@ -2302,67 +1435,36 @@ function displayRows(
                     </td>
 
                 </tr>
-
             `;
 
-        }
-    );
+        }).join("");
 
 
-    rankTableBody.innerHTML =
-        html;
+    if (totalRanked) {
+
+        totalRanked.textContent =
+            rows.length;
+
+    }
 
 
-    rankOneName.textContent =
-        rows[0]?.name ||
-        "-";
+    if (rankOneName) {
 
-}
+        rankOneName.textContent =
+            rows[0]?.name ||
+            "—";
 
-
-
-// ======================================================
-// APPLY FILTERS
-// ======================================================
-
-function applyCurrentFilters() {
-
-    const teacherCollections =
-        buildTeacherCollections();
+    }
 
 
-    let rows =
-        buildTeacherRows(
-            teacherCollections
-        );
+    if (resultCount) {
 
+        resultCount.textContent =
+            `${rows.length} Results`;
 
-    rows =
-        sortRows(
-            rows
-        );
-
-
-    const limit =
-        getRankLimit();
-
-
-    rows =
-        rows.slice(
-            0,
-            limit
-        );
-
-
-    displayRows(
-        rows
-    );
-
-
-    updateSelectionText();
+    }
 
 }
-
 
 
 // ======================================================
@@ -2371,57 +1473,30 @@ function applyCurrentFilters() {
 
 function updateSelectionText() {
 
-    const metricText = {
-
-        amount:
-            "Highest Amount",
-
-        target:
-            "Target Wise",
-
-        percentage:
-            "Highest Target %"
-
-    };
-
-
-    let dateText =
-        "All Time";
-
-
-    if (
-        fromDate.value &&
-        toDate.value
-    ) {
-
-        dateText =
-            fromDate.value +
-            " → " +
-            toDate.value;
-
-    }
-    else if (
-        fromDate.value
-    ) {
-
-        dateText =
-            "From " +
-            fromDate.value;
-
-    }
-    else if (
-        toDate.value
-    ) {
-
-        dateText =
-            "Up To " +
-            toDate.value;
-
-    }
-
-
     const limit =
         getRankLimit();
+
+    const metric =
+        rankMetric?.value ||
+        "amount";
+
+
+    let metricText =
+        "Highest Amount";
+
+    if (metric === "target") {
+        metricText =
+            "Highest Target";
+    }
+
+    if (metric === "percentage") {
+        metricText =
+            "Highest Target %";
+    }
+
+
+    let locationText =
+        "All Locations";
 
 
     const selectedRegions =
@@ -2429,325 +1504,260 @@ function updateSelectionText() {
             regionFilter
         );
 
-
     const selectedStates =
         getSelectedValues(
             stateFilter
         );
 
-
-    let locationText =
-        "";
-
-
-    if (
-        selectedRegions.length
-    ) {
-
-        locationText +=
-            " • " +
-            selectedRegions.length +
-            (
-                selectedRegions.length === 1
-                    ? " Region Selected"
-                    : " Regions Selected"
-            );
-
-    }
+    const selectedCity =
+        cityFilter?.value || "";
 
 
-    if (
+    if (selectedCity) {
+
+        locationText =
+            selectedCity;
+
+    } else if (
         selectedStates.length
     ) {
 
-        locationText +=
-            " • " +
-            selectedStates.length +
-            (
-                selectedStates.length === 1
-                    ? " State Selected"
-                    : " States Selected"
-            );
+        locationText =
+            `${selectedStates.length} State${
+                selectedStates.length > 1
+                    ? "s"
+                    : ""
+            }`;
+
+    } else if (
+        selectedRegions.length
+    ) {
+
+        locationText =
+            `${selectedRegions.length} Region${
+                selectedRegions.length > 1
+                    ? "s"
+                    : ""
+            }`;
 
     }
+
+
+    let dateText =
+        "All Time";
 
 
     if (
-        cityFilter.value
+        fromDate?.value &&
+        toDate?.value
     ) {
 
-        locationText +=
-            " • City: " +
-            cityFilter.value;
+        dateText =
+            `${fromDate.value} to ${toDate.value}`;
+
+    } else if (
+        fromDate?.value
+    ) {
+
+        dateText =
+            `From ${fromDate.value}`;
+
+    } else if (
+        toDate?.value
+    ) {
+
+        dateText =
+            `Up to ${toDate.value}`;
 
     }
 
 
-    selectionText.textContent =
+    if (selectionText) {
 
-        "Teacher Wise" +
-
-        " • " +
-
-        metricText[
-            rankMetric.value
-        ] +
-
-        " • Top " +
-
-        limit +
-
-        locationText +
-
-        " • " +
-
-        dateText;
-
-
-    tableSubtitle.textContent =
-
-        "Top " +
-
-        limit +
-
-        " • Teacher Wise • " +
-
-        metricText[
-            rankMetric.value
-        ];
-
-}
-
-
-
-// ======================================================
-// LOADING
-// ======================================================
-
-function setLoading(
-    loading,
-    message = "Loading..."
-) {
-
-    if (loading) {
-
-        loadingStatus.innerHTML = `
-
-            <i class="
-                fa-solid
-                fa-spinner
-                fa-spin
-            "></i>
-
-            ${escapeHTML(
-                message
-            )}
-
-        `;
+        selectionText.textContent =
+            `Teacher Wise • ${metricText} • Top ${limit} • ${locationText} • ${dateText}`;
 
     }
-    else {
 
-        loadingStatus.innerHTML = `
 
-            <i class="
-                fa-solid
-                fa-circle-check
-            "></i>
+    if (tableSubtitle) {
 
-            Data Ready
-
-        `;
+        tableSubtitle.textContent =
+            `Top ${limit} • Teacher Wise • ${metricText}`;
 
     }
 
 }
 
+
+// ======================================================
+// APPLY FILTERS
+// ======================================================
+
+function applyCurrentFilters() {
+
+    try {
+
+        const teacherCollections =
+            buildTeacherCollections();
+
+
+        let rows =
+            buildTeacherRows(
+                teacherCollections
+            );
+
+
+        rows =
+            sortRows(rows);
+
+
+        const limit =
+            getRankLimit();
+
+
+        rows =
+            rows.slice(
+                0,
+                limit
+            );
+
+
+        displayRows(rows);
+
+        updateSelectionText();
+
+
+    } catch (error) {
+
+        console.error(
+            "Ranking error:",
+            error
+        );
+
+        rankTableBody.innerHTML = `
+            <tr>
+                <td
+                    colspan="6"
+                    class="error-cell"
+                >
+                    Error creating ranking.
+                </td>
+            </tr>
+        `;
+
+    }
+
+}
 
 
 // ======================================================
 // RANK LIMIT CHANGE
 // ======================================================
 
-rankLimit.addEventListener(
-    "change",
-    () => {
+if (rankLimit) {
 
-        if (
-            rankLimit.value ===
-            "custom"
-        ) {
+    rankLimit.addEventListener(
+        "change",
+        () => {
 
-            customRankGroup.style.display =
-                "block";
+            if (
+                customRankGroup
+            ) {
 
-            customRank.focus();
+                customRankGroup.style.display =
+                    rankLimit.value ===
+                    "custom"
+                        ? "flex"
+                        : "none";
 
-        }
-        else {
-
-            customRankGroup.style.display =
-                "none";
-
-        }
-
-
-        applyCurrentFilters();
-
-    }
-);
-
-
-
-// ======================================================
-// CUSTOM RANK CHANGE
-// ======================================================
-
-customRank.addEventListener(
-    "input",
-    () => {
-
-        if (
-            rankLimit.value ===
-            "custom"
-        ) {
+            }
 
             applyCurrentFilters();
 
         }
+    );
 
-    }
-);
-
+}
 
 
 // ======================================================
-// APPLY
+// RANK BY
+// ======================================================
+//
+// Teacher Wise ONLY
+//
+// If old HTML contains Rank By,
+// it will automatically stay Teacher Wise.
 // ======================================================
 
-applyFilter.addEventListener(
-    "click",
-    () => {
+if (rankBy) {
 
-        if (
-            fromDate.value &&
-            toDate.value &&
-            fromDate.value >
-            toDate.value
-        ) {
+    rankBy.value = "teacher";
 
-            alert(
-                "From Date To Date se pehle honi chahiye."
-            );
+    rankBy.addEventListener(
+        "change",
+        () => {
 
-            return;
+            rankBy.value = "teacher";
+
+            applyCurrentFilters();
 
         }
+    );
 
-
-        if (
-            rankLimit.value ===
-            "custom"
-        ) {
-
-            const limit =
-                parseInt(
-                    customRank.value,
-                    10
-                );
-
-
-            if (
-                !Number.isFinite(limit) ||
-                limit < 1
-            ) {
-
-                alert(
-                    "Custom Rank mein 1 ya usse zyada number enter karein."
-                );
-
-                customRank.focus();
-
-                return;
-
-            }
-
-        }
-
-
-        applyCurrentFilters();
-
-    }
-);
-
+}
 
 
 // ======================================================
 // REGION CHANGE
 // ======================================================
 
-regionFilter.addEventListener(
-    "change",
-    () => {
+if (regionFilter) {
 
-        updateStateDropdown();
+    regionFilter.addEventListener(
+        "change",
+        () => {
 
-        updateCityDropdown();
+            updateStateDropdown();
 
-        applyCurrentFilters();
+            updateCityDropdown();
 
-    }
-);
+            applyCurrentFilters();
 
+        }
+    );
+
+}
 
 
 // ======================================================
 // STATE CHANGE
 // ======================================================
 
-stateFilter.addEventListener(
-    "change",
-    () => {
+if (stateFilter) {
 
-        updateCityDropdown();
+    stateFilter.addEventListener(
+        "change",
+        () => {
 
-        applyCurrentFilters();
+            updateCityDropdown();
 
-    }
-);
+            applyCurrentFilters();
 
+        }
+    );
+
+}
 
 
 // ======================================================
 // CITY CHANGE
 // ======================================================
 
-cityFilter.addEventListener(
-    "change",
-    () => {
+if (cityFilter) {
 
-        applyCurrentFilters();
-
-    }
-);
-
-
-
-// ======================================================
-// RANK TYPE CHANGE
-//
-// Rank is always Teacher Wise.
-// This listener is kept only for compatibility
-// if the HTML still contains rankBy.
-// ======================================================
-
-if (rankBy) {
-
-    rankBy.value =
-        "teacher";
-
-
-    rankBy.addEventListener(
+    cityFilter.addEventListener(
         "change",
         () => {
 
@@ -2759,282 +1769,317 @@ if (rankBy) {
 }
 
 
+// ======================================================
+// RANK METRIC CHANGE
+// ======================================================
+
+if (rankMetric) {
+
+    rankMetric.addEventListener(
+        "change",
+        () => {
+
+            applyCurrentFilters();
+
+        }
+    );
+
+}
+
 
 // ======================================================
-// METRIC CHANGE
+// APPLY BUTTON
 // ======================================================
 
-rankMetric.addEventListener(
-    "change",
-    () => {
+if (applyFilter) {
 
-        applyCurrentFilters();
+    applyFilter.addEventListener(
+        "click",
+        () => {
 
-    }
-);
+            applyCurrentFilters();
 
+        }
+    );
+
+}
 
 
 // ======================================================
 // RESET
 // ======================================================
 
-resetFilter.addEventListener(
-    "click",
-    () => {
+if (resetFilter) {
 
-        // Teacher Wise ranking
+    resetFilter.addEventListener(
+        "click",
+        () => {
 
-        if (rankBy) {
+            if (rankBy) {
+                rankBy.value =
+                    "teacher";
+            }
 
-            rankBy.value =
-                "teacher";
+            if (rankMetric) {
+                rankMetric.value =
+                    "amount";
+            }
 
-        }
+            if (rankLimit) {
+                rankLimit.value =
+                    "3";
+            }
 
+            if (customRank) {
+                customRank.value =
+                    "3";
+            }
 
-        rankMetric.value =
-            "amount";
+            if (customRankGroup) {
+                customRankGroup.style.display =
+                    "none";
+            }
 
+            if (regionFilter) {
 
-        rankLimit.value =
-            "3";
+                Array.from(
+                    regionFilter.options
+                ).forEach(
+                    option =>
+                        option.selected =
+                            false
+                );
 
+            }
 
-        customRank.value =
-            "";
+            if (stateFilter) {
 
+                Array.from(
+                    stateFilter.options
+                ).forEach(
+                    option =>
+                        option.selected =
+                            false
+                );
 
-        customRankGroup.style.display =
-            "none";
+            }
 
+            if (cityFilter) {
 
-        Array.from(
-            regionFilter.options
-        )
-            .forEach(
-                option => {
+                cityFilter.value =
+                    "";
 
-                    option.selected =
-                        false;
+            }
 
-                }
-            );
+            if (fromDate) {
+                fromDate.value =
+                    "";
+            }
 
-
-        Array.from(
-            stateFilter.options
-        )
-            .forEach(
-                option => {
-
-                    option.selected =
-                        false;
-
-                }
-            );
-
-
-        cityFilter.value =
-            "";
-
-
-        fromDate.value =
-            "";
-
-        toDate.value =
-            "";
-
-
-        updateStateDropdown();
-
-        updateCityDropdown();
-
-        applyCurrentFilters();
-
-    }
-);
+            if (toDate) {
+                toDate.value =
+                    "";
+            }
 
 
+            updateStateDropdown();
 
-// ======================================================
-// QUICK DATE
-// ======================================================
+            updateCityDropdown();
 
-document
-    .querySelectorAll(
-        ".quick-date-btn"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    setQuickDate(
-                        button.dataset.range
-                    );
-
-                }
-            );
+            applyCurrentFilters();
 
         }
     );
 
-
-
-// ======================================================
-// QUICK DATE FUNCTION
-// ======================================================
-
-function setQuickDate(
-    range
-) {
-
-    const today =
-        new Date();
-
-
-    const todayString =
-        formatDateForInput(
-            today
-        );
-
-
-    if (
-        range === "today"
-    ) {
-
-        fromDate.value =
-            todayString;
-
-        toDate.value =
-            todayString;
-
-    }
-
-
-    if (
-        range === "week"
-    ) {
-
-        const date =
-            new Date(
-                today
-            );
-
-
-        const day =
-            date.getDay();
-
-
-        const difference =
-            day === 0
-                ? 6
-                : day - 1;
-
-
-        date.setDate(
-            date.getDate() -
-            difference
-        );
-
-
-        fromDate.value =
-            formatDateForInput(
-                date
-            );
-
-        toDate.value =
-            todayString;
-
-    }
-
-
-    if (
-        range === "month"
-    ) {
-
-        const date =
-            new Date(
-                today.getFullYear(),
-                today.getMonth(),
-                1
-            );
-
-
-        fromDate.value =
-            formatDateForInput(
-                date
-            );
-
-        toDate.value =
-            todayString;
-
-    }
-
-
-    if (
-        range === "all"
-    ) {
-
-        fromDate.value =
-            "";
-
-        toDate.value =
-            "";
-
-    }
-
-
-    applyCurrentFilters();
-
 }
-
 
 
 // ======================================================
 // REFRESH
 // ======================================================
 
-refreshBtn.addEventListener(
-    "click",
-    async () => {
+if (refreshBtn) {
 
-        await loadData();
+    refreshBtn.addEventListener(
+        "click",
+        async () => {
 
-    }
-);
+            refreshBtn.disabled =
+                true;
 
+            try {
+
+                await loadData();
+
+            } finally {
+
+                refreshBtn.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+}
+
+
+// ======================================================
+// QUICK DATE BUTTONS
+// ======================================================
+
+document
+    .querySelectorAll(
+        ".quick-date-btn"
+    )
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const type =
+                    button.dataset.range;
+
+                const today =
+                    new Date();
+
+                let from =
+                    new Date(today);
+
+                let to =
+                    new Date(today);
+
+
+                if (type === "today") {
+
+                    from =
+                        new Date(today);
+
+                    to =
+                        new Date(today);
+
+                }
+
+
+                else if (
+                    type === "yesterday"
+                ) {
+
+                    from.setDate(
+                        today.getDate() - 1
+                    );
+
+                    to =
+                        new Date(from);
+
+                }
+
+
+                else if (
+                    type === "7days"
+                ) {
+
+                    from.setDate(
+                        today.getDate() - 6
+                    );
+
+                }
+
+
+                else if (
+                    type === "30days"
+                ) {
+
+                    from.setDate(
+                        today.getDate() - 29
+                    );
+
+                }
+
+
+                else if (
+                    type === "thismonth"
+                ) {
+
+                    from =
+                        new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            1
+                        );
+
+                }
+
+
+                else if (
+                    type === "lastmonth"
+                ) {
+
+                    from =
+                        new Date(
+                            today.getFullYear(),
+                            today.getMonth() - 1,
+                            1
+                        );
+
+                    to =
+                        new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            0
+                        );
+
+                }
+
+
+                if (fromDate) {
+
+                    fromDate.value =
+                        formatDateForInput(
+                            from
+                        );
+
+                }
+
+
+                if (toDate) {
+
+                    toDate.value =
+                        formatDateForInput(
+                            to
+                        );
+
+                }
+
+
+                applyCurrentFilters();
+
+            }
+        );
+
+    });
 
 
 // ======================================================
 // LOGOUT
 // ======================================================
 
-logoutBtn.addEventListener(
-    "click",
-    event => {
+if (logoutBtn) {
 
-        event.preventDefault();
+    logoutBtn.addEventListener(
+        "click",
+        () => {
 
+            localStorage.clear();
 
-        localStorage.removeItem(
-            "loggedInEmpCode"
-        );
+            window.location.href =
+                "index.html";
 
-        localStorage.removeItem(
-            "userRole"
-        );
+        }
+    );
 
-
-        window.location.href =
-            "index.html";
-
-    }
-);
-
+}
 
 
 // ======================================================
@@ -3042,15 +2087,24 @@ logoutBtn.addEventListener(
 // ======================================================
 
 if (rankBy) {
-
-    rankBy.value =
-        "teacher";
-
+    rankBy.value = "teacher";
 }
 
+if (rankMetric) {
+    rankMetric.value = "amount";
+}
 
-rankLimit.value =
-    "3";
+if (rankLimit) {
+    rankLimit.value = "3";
+}
 
+if (customRank) {
+    customRank.value = "3";
+}
+
+if (customRankGroup) {
+    customRankGroup.style.display =
+        "none";
+}
 
 loadData();
