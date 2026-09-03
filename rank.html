@@ -12,20 +12,10 @@
 
     <title>Rank | Telethon Management System</title>
 
-
-    <!-- =========================================
-         FONT AWESOME
-    ========================================== -->
-
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
-
-
-    <!-- =========================================
-         RANK CSS
-    ========================================== -->
 
     <link
         rel="stylesheet"
@@ -66,62 +56,50 @@
                 <span>Dashboard</span>
             </a>
 
-
             <a href="register.html">
                 <i class="fa-solid fa-user-plus"></i>
                 <span>Registration Form</span>
             </a>
-
 
             <a href="users.html">
                 <i class="fa-solid fa-users"></i>
                 <span>Teachers List</span>
             </a>
 
-
             <a href="region-user-management.html">
                 <i class="fa-solid fa-user-shield"></i>
                 <span>Region User Management</span>
             </a>
-
 
             <a href="region-user.html">
                 <i class="fa-solid fa-user-shield"></i>
                 <span>Region Users</span>
             </a>
 
-
             <a href="daily-entry.html">
                 <i class="fa-solid fa-file-circle-plus"></i>
                 <span>Daily Collection</span>
             </a>
-
 
             <a href="all-entry.html">
                 <i class="fa-solid fa-list"></i>
                 <span>All Entry</span>
             </a>
 
-
             <a href="collection-summary.html">
                 <i class="fa-solid fa-chart-pie"></i>
                 <span>Collection Summary</span>
             </a>
-
 
             <a href="target-management.html">
                 <i class="fa-solid fa-bullseye"></i>
                 <span>Target Management</span>
             </a>
 
-
             <a href="reports.html">
                 <i class="fa-solid fa-chart-column"></i>
                 <span>Reports</span>
             </a>
-
-
-            <!-- RANK -->
 
             <a
                 href="rank.html"
@@ -130,7 +108,6 @@
                 <i class="fa-solid fa-ranking-star"></i>
                 <span>Rank</span>
             </a>
-
 
             <a
                 href="#"
@@ -153,20 +130,13 @@
     <main class="main-content">
 
 
-        <!-- =====================================
-             TOP HEADER
-        ====================================== -->
-
         <header class="top-header">
 
             <div>
 
                 <h1>
-
                     <i class="fa-solid fa-ranking-star"></i>
-
                     Rank
-
                 </h1>
 
                 <p>
@@ -292,22 +262,46 @@
 
 
 
-                <!-- REGION -->
+                <!-- RANK LIMIT -->
 
                 <div class="filter-group">
 
-                    <label for="regionFilter">
+                    <label for="rankLimit">
 
-                        <i class="fa-solid fa-location-dot"></i>
+                        <i class="fa-solid fa-list-ol"></i>
 
-                        Region
+                        Rank Limit
 
                     </label>
 
-                    <select id="regionFilter">
+                    <select id="rankLimit">
 
-                        <option value="">
-                            All Regions
+                        <option value="3">
+                            Top 3
+                        </option>
+
+                        <option value="5">
+                            Top 5
+                        </option>
+
+                        <option value="10">
+                            Top 10
+                        </option>
+
+                        <option value="26">
+                            Top 26
+                        </option>
+
+                        <option value="50">
+                            Top 50
+                        </option>
+
+                        <option value="100">
+                            Top 100
+                        </option>
+
+                        <option value="custom">
+                            Custom
                         </option>
 
                     </select>
@@ -316,11 +310,67 @@
 
 
 
-                <!-- STATE -->
+                <!-- CUSTOM RANK -->
+
+                <div
+                    class="filter-group"
+                    id="customRankGroup"
+                    style="display:none;"
+                >
+
+                    <label for="customRank">
+
+                        <i class="fa-solid fa-pen"></i>
+
+                        Custom Rank
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="customRank"
+                        min="1"
+                        step="1"
+                        placeholder="Enter number"
+                    >
+
+                </div>
+
+
+
+                <!-- REGION MULTI SELECT -->
 
                 <div class="filter-group">
 
-                    <label for="stateFilter">
+                    <label>
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        Region
+
+                    </label>
+
+                    <select
+                        id="regionFilter"
+                        multiple
+                        size="4"
+                    >
+
+                    </select>
+
+                    <small class="filter-help">
+                        Ctrl + Click se multiple Regions select karein
+                    </small>
+
+                </div>
+
+
+
+                <!-- STATE MULTI SELECT -->
+
+                <div class="filter-group">
+
+                    <label>
 
                         <i class="fa-solid fa-map"></i>
 
@@ -328,13 +378,17 @@
 
                     </label>
 
-                    <select id="stateFilter">
-
-                        <option value="">
-                            All States
-                        </option>
+                    <select
+                        id="stateFilter"
+                        multiple
+                        size="4"
+                    >
 
                     </select>
+
+                    <small class="filter-help">
+                        Ctrl + Click se multiple States select karein
+                    </small>
 
                 </div>
 
@@ -440,6 +494,7 @@
             </div>
 
 
+
             <!-- QUICK DATE -->
 
             <div class="quick-date-row">
@@ -447,7 +502,6 @@
                 <span class="quick-label">
                     Quick Date:
                 </span>
-
 
                 <button
                     type="button"
@@ -457,7 +511,6 @@
                     Today
                 </button>
 
-
                 <button
                     type="button"
                     class="quick-date-btn"
@@ -466,7 +519,6 @@
                     This Week
                 </button>
 
-
                 <button
                     type="button"
                     class="quick-date-btn"
@@ -474,7 +526,6 @@
                 >
                     This Month
                 </button>
-
 
                 <button
                     type="button"
@@ -491,20 +542,16 @@
 
 
         <!-- =========================================
-             TOP PERFORMANCE CARDS
+             TOP CARDS
         ========================================== -->
 
         <section class="top-cards">
 
 
-            <!-- NUMBER OF RESULTS -->
-
             <div class="stat-card">
 
                 <div class="stat-icon users-icon">
-
                     <i class="fa-solid fa-users"></i>
-
                 </div>
 
                 <div>
@@ -523,14 +570,10 @@
 
 
 
-            <!-- HIGHEST AMOUNT -->
-
             <div class="stat-card">
 
                 <div class="stat-icon amount-icon">
-
                     <i class="fa-solid fa-indian-rupee-sign"></i>
-
                 </div>
 
                 <div>
@@ -549,14 +592,10 @@
 
 
 
-            <!-- TOTAL TARGET -->
-
             <div class="stat-card">
 
                 <div class="stat-icon target-icon">
-
                     <i class="fa-solid fa-bullseye"></i>
-
                 </div>
 
                 <div>
@@ -575,14 +614,10 @@
 
 
 
-            <!-- TOTAL COLLECTION -->
-
             <div class="stat-card">
 
                 <div class="stat-icon collection-icon">
-
                     <i class="fa-solid fa-money-bill-trend-up"></i>
-
                 </div>
 
                 <div>
@@ -601,14 +636,10 @@
 
 
 
-            <!-- TOP RANK -->
-
             <div class="stat-card winner-card">
 
                 <div class="stat-icon winner-icon">
-
                     <i class="fa-solid fa-trophy"></i>
-
                 </div>
 
                 <div>
@@ -640,7 +671,7 @@
                 <i class="fa-solid fa-circle-info"></i>
 
                 <span id="selectionText">
-                    User Wise • Highest Amount • All Time
+                    User Wise • Highest Amount • Top 3 • All Time
                 </span>
 
             </div>
@@ -711,7 +742,7 @@
                             </th>
 
                             <th>
-                                User / Location
+                                Name
                             </th>
 
                             <th>
@@ -803,10 +834,6 @@
 
 
 
-        <!-- =========================================
-             FOOTER
-        ========================================== -->
-
         <footer class="page-footer">
 
             <span>
@@ -823,10 +850,6 @@
     </main>
 
 
-
-    <!-- =========================================
-         RANK JS
-    ========================================== -->
 
     <script
         type="module"
