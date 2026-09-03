@@ -1,33 +1,48 @@
+// ======================================================
+// TELETHON - SEPARATE COMPETITION ADMIN
+// ======================================================
+
+import {
+    initializeApp,
+    getApps
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
 import {
     getAuth,
-    onAuthStateChanged,
     signOut,
     createUserWithEmailAndPassword
-} from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
     doc,
     getDoc,
     setDoc,
     onSnapshot,
-    serverTimestamp
-} from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    serverTimestamp,
+    deleteField
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 import { auth, db } from "./firebase-config.js";
 
 
-/*
-====================================================
-COMPETITION ADMIN
-====================================================
-*/
+// ======================================================
+// FIREBASE CONFIG
+// ======================================================
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCj3BBjywNWl4ScDJUyrmslg4bHrlMiu_Q",
+    authDomain: "telethoon.firebaseapp.com",
+    projectId: "telethoon",
+    storageBucket: "telethoon.firebasestorage.app",
+    messagingSenderId: "853450341855",
+    appId: "1:853450341855:web:356f9ec0e9a6f88c75d86a",
+    measurementId: "G-EWP905EGQ1"
+};
 
 
-const competitionRef =
-    doc(db, "competitionAdmin", "main");
-
+// ======================================================
+// DOM
+// ======================================================
 
 const competitionName =
     document.getElementById("competitionName");
@@ -38,7 +53,6 @@ const competitionDate =
 const competitionEndTime =
     document.getElementById("competitionEndTime");
 
-
 const teamAName =
     document.getElementById("teamAName");
 
@@ -47,7 +61,6 @@ const teamAId =
 
 const teamAPassword =
     document.getElementById("teamAPassword");
-
 
 const teamBName =
     document.getElementById("teamBName");
@@ -58,7 +71,6 @@ const teamBId =
 const teamBPassword =
     document.getElementById("teamBPassword");
 
-
 const teamCName =
     document.getElementById("teamCName");
 
@@ -68,94 +80,121 @@ const teamCId =
 const teamCPassword =
     document.getElementById("teamCPassword");
 
-
 const saveBtn =
     document.getElementById("saveBtn");
 
-const status =
+const statusBox =
     document.getElementById("status");
 
 
-function makeEmail(id) {
+// ======================================================
+// FIRESTORE
+// ======================================================
+
+const competitionRef =
+    doc(db, "competitionAdmin", "main");
+
+
+// ======================================================
+// SECONDARY AUTH
+// ======================================================
+
+const secondaryAppName =
+    "TelethonCompetitionAuth";
+
+let secondaryApp;
+
+const existingApps = getApps();
+
+const foundApp =
+    existingApps.find(
+        app => app.name === secondaryAppName
+    );
+
+if (foundApp) {
+
+    secondaryApp = foundApp;
+
+} else {
+
+    secondaryApp =
+        initializeApp(
+            firebaseConfig,
+            secondaryAppName
+        );
+
+}
+
+const secondaryAuth =
+    getAuth(secondaryApp);
+
+
+// ======================================================
+// INTERNAL EMAIL
+// ======================================================
+
+function makeEmail(loginId) {
 
     return (
-        id.trim().toLowerCase()
-        + "@telethoncompetition.local"
+        loginId
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .replace(/[^a-z0-9._-]/g, "")
+        + "@telethoncompetition.com"
     );
 
 }
 
+
+// ======================================================
+// MONEY
+// ======================================================
 
 function money(value) {
 
     return "₹" +
         Number(value || 0)
-        .toLocaleString("en-IN");
+            .toLocaleString("en-IN");
 
 }
 
 
-function setValue(element, value) {
+// ======================================================
+// LOAD FORM
+// ======================================================
 
-    if (element) {
+function loadForm(data) {
 
-        element.value =
-            value || "";
+    competitionName.value =
+        data.name || "";
 
-    }
+    competitionDate.value =
+        data.date || "";
 
-}
-
-
-function loadCompetition(data) {
-
-    setValue(
-        competitionName,
-        data.name
-    );
-
-    setValue(
-        competitionDate,
-        data.date
-    );
-
-    setValue(
-        competitionEndTime,
-        data.endTime
-    );
+    competitionEndTime.value =
+        data.endTime || "";
 
 
-    setValue(
-        teamAName,
-        data.teamA?.name
-    );
+    teamAName.value =
+        data.teamA?.name || "";
 
-    setValue(
-        teamAId,
-        data.teamA?.loginId
-    );
+    teamAId.value =
+        data.teamA?.loginId || "";
 
 
-    setValue(
-        teamBName,
-        data.teamB?.name
-    );
+    teamBName.value =
+        data.teamB?.name || "";
 
-    setValue(
-        teamBId,
-        data.teamB?.loginId
-    );
+    teamBId.value =
+        data.teamB?.loginId || "";
 
 
-    setValue(
-        teamCName,
-        data.teamC?.name
-    );
+    teamCName.value =
+        data.teamC?.name || "";
 
-    setValue(
-        teamCId,
-        data.teamC?.loginId
-    );
+    teamCId.value =
+        data.teamC?.loginId || "";
 
 
     updateLive(data);
@@ -163,64 +202,64 @@ function loadCompetition(data) {
 }
 
 
+// ======================================================
+// LIVE DISPLAY
+// ======================================================
+
 function updateLive(data) {
 
-    const a =
-        data.teamA || {};
-
-    const b =
-        data.teamB || {};
-
-    const c =
-        data.teamC || {};
+    const A = data.teamA || {};
+    const B = data.teamB || {};
+    const C = data.teamC || {};
 
 
     document.getElementById("liveAName")
         .textContent =
-        a.name || "Team A";
+        A.name || "Team A";
 
     document.getElementById("liveBName")
         .textContent =
-        b.name || "Team B";
+        B.name || "Team B";
 
     document.getElementById("liveCName")
         .textContent =
-        c.name || "Team C";
+        C.name || "Team C";
 
 
     document.getElementById("liveAAmount")
         .textContent =
-        money(a.amount);
+        money(A.amount);
 
     document.getElementById("liveBAmount")
         .textContent =
-        money(b.amount);
+        money(B.amount);
 
     document.getElementById("liveCAmount")
         .textContent =
-        money(c.amount);
+        money(C.amount);
 
 
-    const amounts = [
+    const a =
+        Number(A.amount || 0);
 
-        Number(a.amount || 0),
-        Number(b.amount || 0),
-        Number(c.amount || 0)
+    const b =
+        Number(B.amount || 0);
 
-    ];
+    const c =
+        Number(C.amount || 0);
 
 
     const max =
-        Math.max(...amounts);
+        Math.max(a, b, c);
 
 
-    const winnerElement =
+    const winner =
         document.getElementById("winner");
 
 
     if (max === 0) {
 
-        winnerElement.textContent =
+        winner.textContent =
             "Winner: -";
 
         return;
@@ -230,41 +269,24 @@ function updateLive(data) {
     const winners = [];
 
 
-    if (amounts[0] === max) {
+    if (a === max)
+        winners.push(A.name || "Team A");
 
-        winners.push(
-            a.name || "Team A"
-        );
+    if (b === max)
+        winners.push(B.name || "Team B");
 
-    }
-
-
-    if (amounts[1] === max) {
-
-        winners.push(
-            b.name || "Team B"
-        );
-
-    }
-
-
-    if (amounts[2] === max) {
-
-        winners.push(
-            c.name || "Team C"
-        );
-
-    }
+    if (c === max)
+        winners.push(C.name || "Team C");
 
 
     if (winners.length > 1) {
 
-        winnerElement.textContent =
+        winner.textContent =
             "Result: DRAW";
 
     } else {
 
-        winnerElement.textContent =
+        winner.textContent =
             "Winner: " + winners[0];
 
     }
@@ -272,87 +294,46 @@ function updateLive(data) {
 }
 
 
-/*
-====================================================
-CREATE TEAM AUTH ACCOUNT
-====================================================
-*/
+// ======================================================
+// CREATE FIREBASE AUTH USER
+// ======================================================
 
-async function createTeamAccount(
-    id,
+async function createTeamUser(
+    loginId,
     password,
     team,
     teamName
 ) {
 
-    if (!id || !password) {
+    const email =
+        makeEmail(loginId);
 
-        return null;
+
+    if (!loginId || !password) {
+
+        throw new Error(
+            `Team ${team} ID and Password required.`
+        );
 
     }
 
 
-    const email =
-        makeEmail(id);
+    if (password.length < 6) {
 
-
-    /*
-    Secondary Firebase app prevents
-    signing out the Admin account.
-    */
-
-    const { initializeApp } =
-        await import(
-            "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js"
+        throw new Error(
+            `Team ${team} password must be at least 6 characters.`
         );
 
-
-    const { getAuth: getSecondaryAuth } =
-        await import(
-            "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js"
-        );
+    }
 
 
-    const firebaseConfig = {
-
-        apiKey:
-            "AIzaSyCj3BBjywNWl4ScDJUyrmslg4bHrlMiu_Q",
-
-        authDomain:
-            "telethoon.firebaseapp.com",
-
-        projectId:
-            "telethoon",
-
-        storageBucket:
-            "telethoon.firebasestorage.app",
-
-        messagingSenderId:
-            "853450341855",
-
-        appId:
-            "1:853450341855:web:356f9ec0e9a6f88c75d86a",
-
-        measurementId:
-            "G-EWP905EGQ1"
-
-    };
+    console.log(
+        `Creating Team ${team}:`,
+        email
+    );
 
 
-    const secondaryApp =
-        initializeApp(
-            firebaseConfig,
-            "competitionTeam_" + team
-        );
-
-
-    const secondaryAuth =
-        getSecondaryAuth(
-            secondaryApp
-        );
-
-
-    const credential =
+    const result =
         await createUserWithEmailAndPassword(
             secondaryAuth,
             email,
@@ -360,16 +341,20 @@ async function createTeamAccount(
         );
 
 
+    const uid =
+        result.user.uid;
+
+
     await setDoc(
         doc(
             db,
             "competitionTeams",
-            credential.user.uid
+            uid
         ),
         {
             team: team,
-            teamName: teamName,
-            loginId: id,
+            teamName: teamName || `Team ${team}`,
+            loginId: loginId,
             role: "competition_team",
             active: true,
             createdAt: serverTimestamp()
@@ -377,16 +362,14 @@ async function createTeamAccount(
     );
 
 
-    return credential.user.uid;
+    return uid;
 
 }
 
 
-/*
-====================================================
-SAVE
-====================================================
-*/
+// ======================================================
+// SAVE COMPETITION
+// ======================================================
 
 saveBtn.addEventListener(
     "click",
@@ -394,42 +377,42 @@ saveBtn.addEventListener(
 
         saveBtn.disabled = true;
 
-        status.textContent =
+        statusBox.textContent =
             "Saving...";
 
 
         try {
 
-            const existing =
+            const oldSnap =
                 await getDoc(
                     competitionRef
                 );
 
 
-            let existingData =
-                existing.exists()
-                    ? existing.data()
+            const oldData =
+                oldSnap.exists()
+                    ? oldSnap.data()
                     : {};
 
 
-            /*
-            ========================================
-            TEAM A ACCOUNT
-            ========================================
-            */
-
             let teamAUid =
-                existingData.teamA?.uid || null;
+                oldData.teamA?.uid || null;
+
+            let teamBUid =
+                oldData.teamB?.uid || null;
+
+            let teamCUid =
+                oldData.teamC?.uid || null;
 
 
-            if (
-                !teamAUid &&
-                teamAId.value.trim() &&
-                teamAPassword.value
-            ) {
+            // ==================================================
+            // CREATE TEAM A ACCOUNT
+            // ==================================================
+
+            if (!teamAUid) {
 
                 teamAUid =
-                    await createTeamAccount(
+                    await createTeamUser(
                         teamAId.value,
                         teamAPassword.value,
                         "A",
@@ -439,24 +422,14 @@ saveBtn.addEventListener(
             }
 
 
-            /*
-            ========================================
-            TEAM B ACCOUNT
-            ========================================
-            */
+            // ==================================================
+            // CREATE TEAM B ACCOUNT
+            // ==================================================
 
-            let teamBUid =
-                existingData.teamB?.uid || null;
-
-
-            if (
-                !teamBUid &&
-                teamBId.value.trim() &&
-                teamBPassword.value
-            ) {
+            if (!teamBUid) {
 
                 teamBUid =
-                    await createTeamAccount(
+                    await createTeamUser(
                         teamBId.value,
                         teamBPassword.value,
                         "B",
@@ -466,24 +439,14 @@ saveBtn.addEventListener(
             }
 
 
-            /*
-            ========================================
-            TEAM C ACCOUNT
-            ========================================
-            */
+            // ==================================================
+            // CREATE TEAM C ACCOUNT
+            // ==================================================
 
-            let teamCUid =
-                existingData.teamC?.uid || null;
-
-
-            if (
-                !teamCUid &&
-                teamCId.value.trim() &&
-                teamCPassword.value
-            ) {
+            if (!teamCUid) {
 
                 teamCUid =
-                    await createTeamAccount(
+                    await createTeamUser(
                         teamCId.value,
                         teamCPassword.value,
                         "C",
@@ -493,81 +456,94 @@ saveBtn.addEventListener(
             }
 
 
-            const competitionData = {
-
-                name:
-                    competitionName.value.trim(),
-
-                date:
-                    competitionDate.value,
-
-                endTime:
-                    competitionEndTime.value,
-
-                teamA: {
-
-                    name:
-                        teamAName.value.trim(),
-
-                    loginId:
-                        teamAId.value.trim(),
-
-                    uid:
-                        teamAUid,
-
-                    amount:
-                        Number(
-                            existingData.teamA?.amount || 0
-                        )
-
-                },
-
-                teamB: {
-
-                    name:
-                        teamBName.value.trim(),
-
-                    loginId:
-                        teamBId.value.trim(),
-
-                    uid:
-                        teamBUid,
-
-                    amount:
-                        Number(
-                            existingData.teamB?.amount || 0
-                        )
-
-                },
-
-                teamC: {
-
-                    name:
-                        teamCName.value.trim(),
-
-                    loginId:
-                        teamCId.value.trim(),
-
-                    uid:
-                        teamCUid,
-
-                    amount:
-                        Number(
-                            existingData.teamC?.amount || 0
-                        )
-
-                },
-
-                updatedAt:
-                    serverTimestamp()
-
-            };
-
+            // ==================================================
+            // SAVE COMPETITION
+            // ==================================================
 
             await setDoc(
                 competitionRef,
-                competitionData,
-                { merge: true }
+                {
+
+                    name:
+                        competitionName.value.trim(),
+
+                    date:
+                        competitionDate.value,
+
+                    endTime:
+                        competitionEndTime.value,
+
+
+                    teamA: {
+
+                        name:
+                            teamAName.value.trim(),
+
+                        loginId:
+                            teamAId.value.trim(),
+
+                        uid:
+                            teamAUid,
+
+                        amount:
+                            Number(
+                                oldData.teamA?.amount || 0
+                            )
+
+                    },
+
+
+                    teamB: {
+
+                        name:
+                            teamBName.value.trim(),
+
+                        loginId:
+                            teamBId.value.trim(),
+
+                        uid:
+                            teamBUid,
+
+                        amount:
+                            Number(
+                                oldData.teamB?.amount || 0
+                            )
+
+                    },
+
+
+                    teamC: {
+
+                        name:
+                            teamCName.value.trim(),
+
+                        loginId:
+                            teamCId.value.trim(),
+
+                        uid:
+                            teamCUid,
+
+                        amount:
+                            Number(
+                                oldData.teamC?.amount || 0
+                            )
+
+                    },
+
+
+                    updatedAt:
+                        serverTimestamp(),
+
+                    // Remove old plaintext passwords
+                    password: deleteField(),
+                    "teamA.password": deleteField(),
+                    "teamB.password": deleteField(),
+                    "teamC.password": deleteField()
+
+                },
+                {
+                    merge: true
+                }
             );
 
 
@@ -576,17 +552,53 @@ saveBtn.addEventListener(
             teamCPassword.value = "";
 
 
-            status.textContent =
+            statusBox.textContent =
                 "Competition saved successfully.";
+
+            statusBox.style.color =
+                "green";
 
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "COMPETITION ERROR:",
+                error
+            );
 
-            status.textContent =
+
+            let msg =
                 error.message ||
-                "Save failed.";
+                "Something went wrong.";
+
+
+            if (
+                error.code ===
+                "auth/email-already-in-use"
+            ) {
+
+                msg =
+                    "This Team ID already exists in Firebase Authentication.";
+
+            }
+
+
+            if (
+                error.code ===
+                "auth/operation-not-allowed"
+            ) {
+
+                msg =
+                    "Firebase Console me Email/Password Authentication Enable karo.";
+
+            }
+
+
+            statusBox.textContent =
+                msg;
+
+            statusBox.style.color =
+                "red";
 
         }
 
@@ -597,65 +609,37 @@ saveBtn.addEventListener(
 );
 
 
-/*
-====================================================
-LIVE DATA
-====================================================
-*/
+// ======================================================
+// REAL-TIME LISTENER
+// ======================================================
 
 onSnapshot(
     competitionRef,
     snapshot => {
 
-        if (
-            snapshot.exists()
-        ) {
+        if (snapshot.exists()) {
 
-            loadCompetition(
+            loadForm(
                 snapshot.data()
             );
 
         }
 
-    }
-);
+    },
+    error => {
 
+        console.error(error);
 
-/*
-====================================================
-ADMIN CHECK
-====================================================
-
-This page expects the existing Admin login
-to already be authenticated.
-*/
-
-onAuthStateChanged(
-    auth,
-    user => {
-
-        if (!user) {
-
-            /*
-            If your existing admin authentication
-            is required, redirect here.
-            */
-
-            console.log(
-                "Competition Admin: no Firebase user."
-            );
-
-        }
+        statusBox.textContent =
+            "Unable to load competition.";
 
     }
 );
 
 
-/*
-====================================================
-LOGOUT
-====================================================
-*/
+// ======================================================
+// LOGOUT
+// ======================================================
 
 document.getElementById("logoutBtn")
     .addEventListener(
