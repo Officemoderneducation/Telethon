@@ -1,71 +1,47 @@
-// ======================================================
-// TELETHON
-// RANK PAGE
-//
-// RANKING = TEACHER WISE
-//
-// TABLE:
-// Rank | Region | State | City | Teachers Name | Collection
-//
-// DATA SOURCE:
-// employees
-// daily_entry
-// teacher_entries
-//
-// SAME TEACHER + SAME DATE = SUM
-//
-// 1 UNIT = ₹7,000
-// ======================================================
+/* =====================================================
+   TELETHON RANK PAGE
+   TEACHER WISE RANKING
+===================================================== */
 
 import { db } from "./firebase-config.js";
 
 import {
     collection,
     getDocs
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-// ======================================================
-// CONSTANTS
-// ======================================================
 
-const UNIT_AMOUNT = 7000;
+/* =====================================================
+   GLOBAL DATA
+===================================================== */
 
-const EMPLOYEES_COLLECTION = "employees";
-const DAILY_ENTRY_COLLECTION = "daily_entry";
-const TEACHER_ENTRIES_COLLECTION = "teacher_entries";
+let employees = [];
+let dailyEntries = [];
+let teacherEntries = [];
 
-
-// ======================================================
-// ADMIN CHECK
-// ======================================================
-
-const userRole =
-    localStorage.getItem("userRole") || "";
-
-if (userRole !== "admin") {
-    window.location.href = "index.html";
-}
+let currentRows = [];
 
 
-// ======================================================
-// DOM
-// ======================================================
+
+/* =====================================================
+   DOM ELEMENTS
+===================================================== */
+
+const rankingMetric =
+    document.getElementById("rankingMetric");
 
 const rankBy =
     document.getElementById("rankBy");
 
-const rankMetric =
-    document.getElementById("rankMetric");
-
 const rankLimit =
     document.getElementById("rankLimit");
 
-const customRank =
-    document.getElementById("customRank");
+const customLimit =
+    document.getElementById("customLimit");
 
-const customRankGroup =
-    document.getElementById("customRankGroup");
+const customLimitGroup =
+    document.getElementById("customLimitGroup");
 
 const regionFilter =
     document.getElementById("regionFilter");
@@ -82,11 +58,11 @@ const fromDate =
 const toDate =
     document.getElementById("toDate");
 
-const applyFilter =
-    document.getElementById("applyFilter");
+const applyFilterBtn =
+    document.getElementById("applyFilterBtn");
 
-const resetFilter =
-    document.getElementById("resetFilter");
+const resetFilterBtn =
+    document.getElementById("resetFilterBtn");
 
 const refreshBtn =
     document.getElementById("refreshBtn");
@@ -96,6 +72,9 @@ const logoutBtn =
 
 const rankTableBody =
     document.getElementById("rankTableBody");
+
+const resultCount =
+    document.getElementById("resultCount");
 
 const totalRanked =
     document.getElementById("totalRanked");
@@ -109,353 +88,368 @@ const selectionText =
 const loadingStatus =
     document.getElementById("loadingStatus");
 
-const resultCount =
-    document.getElementById("resultCount");
+const captureFilterText =
+    document.getElementById("captureFilterText");
 
-const tableSubtitle =
-    document.getElementById("tableSubtitle");
+const downloadImageBtn =
+    document.getElementById("downloadImageBtn");
 
-
-// ======================================================
-// DATA
-// ======================================================
-
-let employees = [];
-let dailyEntries = [];
-let teacherEntries = [];
-let allEntries = [];
+const downloadCsvBtn =
+    document.getElementById("downloadCsvBtn");
 
 
-// ======================================================
-// UTILITY
-// ======================================================
 
-function normalize(value) {
+/* =====================================================
+   ADMIN CHECK
+===================================================== */
 
-    return String(value ?? "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, " ");
+const userRole =
+    localStorage.getItem("userRole");
+
+if (userRole !== "admin") {
+
+    window.location.href = "index.html";
 
 }
 
 
-function escapeHTML(value) {
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
 
-}
+document.addEventListener("DOMContentLoaded", async () => {
 
-
-function numberValue(value) {
-
-    if (typeof value === "number") {
-        return Number.isFinite(value) ? value : 0;
+    if (rankBy) {
+        rankBy.value = "teacher";
     }
 
-    if (typeof value === "string") {
+    setupEvents();
 
-        const cleaned =
-            value
-                .replace(/₹/g, "")
-                .replace(/,/g, "")
-                .replace(/units?/gi, "")
-                .trim();
+    await loadAllData();
 
-        const num = Number(cleaned);
+});
 
-        return Number.isFinite(num) ? num : 0;
+
+
+/* =====================================================
+   SETUP EVENTS
+===================================================== */
+
+function setupEvents() {
+
+
+    /* -----------------------------------------------
+       APPLY FILTER
+    ------------------------------------------------ */
+
+    if (applyFilterBtn) {
+
+        applyFilterBtn.addEventListener(
+            "click",
+            () => {
+                applyCurrentFilters();
+            }
+        );
+
     }
 
-    return 0;
-}
 
 
-function formatMoney(value) {
+    /* -----------------------------------------------
+       RESET FILTER
+    ------------------------------------------------ */
 
-    return "₹ " +
-        numberValue(value).toLocaleString("en-IN", {
-            maximumFractionDigits: 0
+    if (resetFilterBtn) {
+
+        resetFilterBtn.addEventListener(
+            "click",
+            resetFilters
+        );
+
+    }
+
+
+
+    /* -----------------------------------------------
+       REFRESH
+    ------------------------------------------------ */
+
+    if (refreshBtn) {
+
+        refreshBtn.addEventListener(
+            "click",
+            async () => {
+
+                refreshBtn.disabled = true;
+
+                await loadAllData();
+
+                refreshBtn.disabled = false;
+
+            }
+        );
+
+    }
+
+
+
+    /* -----------------------------------------------
+       LOGOUT
+    ------------------------------------------------ */
+
+    if (logoutBtn) {
+
+        logoutBtn.addEventListener(
+            "click",
+            () => {
+
+                localStorage.removeItem("userRole");
+
+                window.location.href =
+                    "index.html";
+
+            }
+        );
+
+    }
+
+
+
+    /* -----------------------------------------------
+       RANK LIMIT
+    ------------------------------------------------ */
+
+    if (rankLimit) {
+
+        rankLimit.addEventListener(
+            "change",
+            () => {
+
+                if (
+                    rankLimit.value === "custom"
+                ) {
+
+                    customLimitGroup.style.display =
+                        "block";
+
+                } else {
+
+                    customLimitGroup.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+    }
+
+
+
+    /* -----------------------------------------------
+       REGION
+    ------------------------------------------------ */
+
+    if (regionFilter) {
+
+        regionFilter.addEventListener(
+            "change",
+            () => {
+
+                updateStateDropdown();
+
+                updateCityDropdown();
+
+            }
+        );
+
+    }
+
+
+
+    /* -----------------------------------------------
+       STATE
+    ------------------------------------------------ */
+
+    if (stateFilter) {
+
+        stateFilter.addEventListener(
+            "change",
+            () => {
+
+                updateCityDropdown();
+
+            }
+        );
+
+    }
+
+
+
+    /* -----------------------------------------------
+       QUICK DATE BUTTONS
+    ------------------------------------------------ */
+
+    document
+        .querySelectorAll(".quick-date-btn")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const type =
+                        button.dataset.range;
+
+                    const today =
+                        new Date();
+
+                    let from = "";
+                    let to = "";
+
+
+                    /* TODAY */
+
+                    if (type === "today") {
+
+                        from =
+                            formatDateForInput(today);
+
+                        to =
+                            formatDateForInput(today);
+
+                    }
+
+
+                    /* THIS WEEK */
+
+                    else if (type === "week") {
+
+                        const start =
+                            new Date(today);
+
+                        const day =
+                            start.getDay();
+
+                        const diff =
+                            day === 0
+                                ? 6
+                                : day - 1;
+
+                        start.setDate(
+                            start.getDate() - diff
+                        );
+
+                        from =
+                            formatDateForInput(start);
+
+                        to =
+                            formatDateForInput(today);
+
+                    }
+
+
+                    /* THIS MONTH */
+
+                    else if (type === "month") {
+
+                        const start =
+                            new Date(
+                                today.getFullYear(),
+                                today.getMonth(),
+                                1
+                            );
+
+                        from =
+                            formatDateForInput(start);
+
+                        to =
+                            formatDateForInput(today);
+
+                    }
+
+
+                    /* ALL TIME */
+
+                    else if (type === "all") {
+
+                        from = "";
+                        to = "";
+
+                    }
+
+
+                    fromDate.value = from;
+                    toDate.value = to;
+
+                    applyCurrentFilters();
+
+                }
+            );
+
         });
 
-}
 
 
-function formatUnit(value) {
+    /* -----------------------------------------------
+       RANK BY
+    ------------------------------------------------ */
 
-    const units =
-        numberValue(value) / UNIT_AMOUNT;
+    if (rankBy) {
 
-    return units.toLocaleString("en-IN", {
-        maximumFractionDigits: 2
-    }) + " Unit";
-}
+        rankBy.addEventListener(
+            "change",
+            () => {
 
+                rankBy.value = "teacher";
 
-function getPercentage(collectionAmount, target) {
+                applyCurrentFilters();
 
-    const c = numberValue(collectionAmount);
-    const t = numberValue(target);
-
-    if (t <= 0) {
-        return 0;
-    }
-
-    return (c / t) * 100;
-}
-
-
-// ======================================================
-// EMPLOYEE HELPERS
-// ======================================================
-
-function getEmployeeCode(employee) {
-
-    return String(
-        employee?.employeeCode ??
-        employee?.employee_code ??
-        employee?.empCode ??
-        employee?.emp_code ??
-        employee?.code ??
-        employee?.id ??
-        ""
-    ).trim();
-
-}
-
-
-function getEmployeeName(employee) {
-
-    const directName =
-        employee?.name ??
-        employee?.teacherName ??
-        employee?.teacher_name ??
-        employee?.fullName ??
-        employee?.full_name ??
-        employee?.displayName ??
-        employee?.display_name ??
-        employee?.employeeName ??
-        employee?.employee_name;
-
-    if (directName) {
-        return String(directName).trim();
-    }
-
-    const first =
-        employee?.firstName ??
-        employee?.first_name ??
-        "";
-
-    const last =
-        employee?.lastName ??
-        employee?.last_name ??
-        "";
-
-    const combined =
-        `${first} ${last}`.trim();
-
-    return combined || "Unknown Teacher";
-}
-
-
-function getEmployeeRegion(employee) {
-
-    return String(
-        employee?.region ??
-        employee?.regionName ??
-        employee?.region_name ??
-        employee?.assignedRegion ??
-        employee?.assigned_region ??
-        ""
-    ).trim();
-
-}
-
-
-function getEmployeeState(employee) {
-
-    return String(
-        employee?.state ??
-        employee?.stateName ??
-        employee?.state_name ??
-        ""
-    ).trim();
-
-}
-
-
-function getEmployeeCity(employee) {
-
-    return String(
-        employee?.city ??
-        employee?.cityName ??
-        employee?.city_name ??
-        ""
-    ).trim();
-
-}
-
-
-function getEmployeeTarget(employee) {
-
-    return numberValue(
-        employee?.target ??
-        employee?.targetAmount ??
-        employee?.target_amount ??
-        employee?.monthlyTarget ??
-        employee?.monthly_target ??
-        0
-    );
-
-}
-
-
-// ======================================================
-// ENTRY HELPERS
-// ======================================================
-
-function getEntryEmployeeCode(entry) {
-
-    return String(
-        entry?.employeeCode ??
-        entry?.employee_code ??
-        entry?.empCode ??
-        entry?.emp_code ??
-        entry?.employeeId ??
-        entry?.employee_id ??
-        entry?.code ??
-        ""
-    ).trim();
-
-}
-
-
-function getEntryAmount(entry) {
-
-    return numberValue(
-        entry?.amount ??
-        entry?.collection ??
-        entry?.collectionAmount ??
-        entry?.collection_amount ??
-        entry?.totalAmount ??
-        entry?.total_amount ??
-        0
-    );
-
-}
-
-
-function getEntryDate(entry) {
-
-    const value =
-        entry?.date ??
-        entry?.entryDate ??
-        entry?.entry_date ??
-        entry?.collectionDate ??
-        entry?.collection_date ??
-        "";
-
-    if (!value) {
-        return "";
-    }
-
-    if (
-        typeof value === "object" &&
-        value?.toDate
-    ) {
-        return formatDateForInput(
-            value.toDate()
-        );
-    }
-
-    if (
-        typeof value === "object" &&
-        value?.seconds
-    ) {
-        return formatDateForInput(
-            new Date(value.seconds * 1000)
-        );
-    }
-
-    return normalizeDate(value);
-}
-
-
-function formatDateForInput(date) {
-
-    if (!(date instanceof Date) ||
-        Number.isNaN(date.getTime())) {
-        return "";
-    }
-
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(date.getMonth() + 1)
-            .padStart(2, "0");
-
-    const day =
-        String(date.getDate())
-            .padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-}
-
-
-function normalizeDate(value) {
-
-    if (!value) {
-        return "";
-    }
-
-    const text =
-        String(value).trim();
-
-    if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
-        return text;
-    }
-
-    const date =
-        new Date(text);
-
-    if (!Number.isNaN(date.getTime())) {
-        return formatDateForInput(date);
-    }
-
-    return text;
-}
-
-
-// ======================================================
-// LOAD COLLECTION
-// ======================================================
-
-async function loadCollection(name) {
-
-    const snapshot =
-        await getDocs(
-            collection(db, name)
+            }
         );
 
-    return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
+    }
+
+
+
+    /* -----------------------------------------------
+       DOWNLOAD IMAGE
+    ------------------------------------------------ */
+
+    if (downloadImageBtn) {
+
+        downloadImageBtn.addEventListener(
+            "click",
+            downloadRankingImage
+        );
+
+    }
+
+
+
+    /* -----------------------------------------------
+       DOWNLOAD CSV
+    ------------------------------------------------ */
+
+    if (downloadCsvBtn) {
+
+        downloadCsvBtn.addEventListener(
+            "click",
+            downloadRankingCSV
+        );
+
+    }
 
 }
 
 
-// ======================================================
-// LOAD ALL DATA
-// ======================================================
 
-async function loadData() {
+/* =====================================================
+   LOAD ALL DATA
+===================================================== */
+
+async function loadAllData() {
 
     try {
 
@@ -465,39 +459,60 @@ async function loadData() {
         rankTableBody.innerHTML = `
             <tr>
                 <td colspan="6" class="loading-cell">
-                    Loading ranking...
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Loading Ranking...
                 </td>
             </tr>
         `;
 
-        const [
-            employeeData,
-            dailyData,
-            teacherData
-        ] = await Promise.all([
 
-            loadCollection(
-                EMPLOYEES_COLLECTION
-            ),
+        /* EMPLOYEES */
 
-            loadCollection(
-                DAILY_ENTRY_COLLECTION
-            ),
+        const employeeSnapshot =
+            await getDocs(
+                collection(db, "employees")
+            );
 
-            loadCollection(
-                TEACHER_ENTRIES_COLLECTION
-            )
+        employees =
+            employeeSnapshot.docs.map(
+                doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })
+            );
 
-        ]);
 
-        employees = employeeData;
-        dailyEntries = dailyData;
-        teacherEntries = teacherData;
+        /* DAILY ENTRIES */
 
-        allEntries = [
-            ...dailyEntries,
-            ...teacherEntries
-        ];
+        const dailySnapshot =
+            await getDocs(
+                collection(db, "daily_entry")
+            );
+
+        dailyEntries =
+            dailySnapshot.docs.map(
+                doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })
+            );
+
+
+        /* TEACHER ENTRIES */
+
+        const teacherSnapshot =
+            await getDocs(
+                collection(db, "teacher_entries")
+            );
+
+        teacherEntries =
+            teacherSnapshot.docs.map(
+                doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })
+            );
+
 
         loadRegionDropdown();
 
@@ -507,13 +522,15 @@ async function loadData() {
 
         applyCurrentFilters();
 
+
         loadingStatus.textContent =
-            "Data loaded";
+            "Data loaded successfully";
+
 
     } catch (error) {
 
         console.error(
-            "Rank loading error:",
+            "Rank data loading error:",
             error
         );
 
@@ -523,170 +540,131 @@ async function loadData() {
         rankTableBody.innerHTML = `
             <tr>
                 <td colspan="6" class="error-cell">
+                    <i class="fa-solid fa-circle-exclamation"></i>
                     Unable to load ranking data.
                 </td>
             </tr>
         `;
+
     }
 
 }
 
 
-// ======================================================
-// REGION DROPDOWN
-// ======================================================
+
+/* =====================================================
+   REGION DROPDOWN
+===================================================== */
 
 function loadRegionDropdown() {
 
-    if (!regionFilter) {
-        return;
-    }
+    if (!regionFilter) return;
 
     const regions =
-        new Map();
-
-    employees.forEach(employee => {
-
-        const region =
-            getEmployeeRegion(employee);
-
-        if (!region) {
-            return;
-        }
-
-        const key =
-            normalize(region);
-
-        if (!regions.has(key)) {
-            regions.set(key, region);
-        }
-
-    });
-
-    const selected =
-        getSelectedValues(regionFilter);
+        [...new Set(
+            employees
+                .map(emp => emp.region)
+                .filter(Boolean)
+        )]
+        .sort();
 
     regionFilter.innerHTML = "";
 
-    Array.from(regions.values())
-        .sort((a, b) =>
-            a.localeCompare(b)
-        )
-        .forEach(region => {
+    regions.forEach(region => {
 
-            const option =
-                document.createElement("option");
+        const option =
+            document.createElement("option");
 
-            option.value = region;
-            option.textContent = region;
+        option.value = region;
 
-            if (
-                selected.some(
-                    value =>
-                        normalize(value) ===
-                        normalize(region)
-                )
-            ) {
-                option.selected = true;
-            }
+        option.textContent = region;
 
-            regionFilter.appendChild(option);
-        });
+        regionFilter.appendChild(option);
+
+    });
 
 }
 
 
-// ======================================================
-// STATE DROPDOWN
-// ======================================================
+
+/* =====================================================
+   GET SELECTED VALUES
+===================================================== */
+
+function getSelectedValues(select) {
+
+    if (!select) return [];
+
+    return [...select.selectedOptions]
+        .map(option => option.value)
+        .filter(Boolean);
+
+}
+
+
+
+/* =====================================================
+   UPDATE STATE DROPDOWN
+===================================================== */
 
 function updateStateDropdown() {
 
-    if (!stateFilter) {
-        return;
-    }
+    if (!stateFilter) return;
 
     const selectedRegions =
         getSelectedValues(regionFilter);
 
-    const oldSelected =
-        getSelectedValues(stateFilter);
+    let filteredEmployees =
+        employees;
+
+    if (selectedRegions.length > 0) {
+
+        filteredEmployees =
+            employees.filter(
+                employee =>
+                    selectedRegions.includes(
+                        employee.region
+                    )
+            );
+
+    }
+
 
     const states =
-        new Map();
+        [...new Set(
+            filteredEmployees
+                .map(emp => emp.state)
+                .filter(Boolean)
+        )]
+        .sort();
 
-    employees.forEach(employee => {
-
-        const region =
-            getEmployeeRegion(employee);
-
-        if (
-            selectedRegions.length &&
-            !selectedRegions.some(
-                value =>
-                    normalize(value) ===
-                    normalize(region)
-            )
-        ) {
-            return;
-        }
-
-        const state =
-            getEmployeeState(employee);
-
-        if (!state) {
-            return;
-        }
-
-        const key =
-            normalize(state);
-
-        if (!states.has(key)) {
-            states.set(key, state);
-        }
-
-    });
 
     stateFilter.innerHTML = "";
 
-    Array.from(states.values())
-        .sort((a, b) =>
-            a.localeCompare(b)
-        )
-        .forEach(state => {
+    states.forEach(state => {
 
-            const option =
-                document.createElement("option");
+        const option =
+            document.createElement("option");
 
-            option.value = state;
-            option.textContent = state;
+        option.value = state;
 
-            if (
-                oldSelected.some(
-                    value =>
-                        normalize(value) ===
-                        normalize(state)
-                )
-            ) {
-                option.selected = true;
-            }
+        option.textContent = state;
 
-            stateFilter.appendChild(option);
+        stateFilter.appendChild(option);
 
-        });
+    });
 
 }
 
 
-// ======================================================
-// CITY DROPDOWN
-// ======================================================
+
+/* =====================================================
+   UPDATE CITY DROPDOWN
+===================================================== */
 
 function updateCityDropdown() {
 
-    if (!cityFilter) {
-        return;
-    }
+    if (!cityFilter) return;
 
     const selectedRegions =
         getSelectedValues(regionFilter);
@@ -694,237 +672,217 @@ function updateCityDropdown() {
     const selectedStates =
         getSelectedValues(stateFilter);
 
-    const oldCity =
-        cityFilter.value;
+    let filteredEmployees =
+        employees;
+
+
+    if (selectedRegions.length > 0) {
+
+        filteredEmployees =
+            filteredEmployees.filter(
+                employee =>
+                    selectedRegions.includes(
+                        employee.region
+                    )
+            );
+
+    }
+
+
+    if (selectedStates.length > 0) {
+
+        filteredEmployees =
+            filteredEmployees.filter(
+                employee =>
+                    selectedStates.includes(
+                        employee.state
+                    )
+            );
+
+    }
+
 
     const cities =
-        new Map();
+        [...new Set(
+            filteredEmployees
+                .map(emp => emp.city)
+                .filter(Boolean)
+        )]
+        .sort();
 
-    employees.forEach(employee => {
 
-        const region =
-            getEmployeeRegion(employee);
+    cityFilter.innerHTML = `
+        <option value="">
+            All Cities
+        </option>
+    `;
 
-        const state =
-            getEmployeeState(employee);
 
-        if (
-            selectedRegions.length &&
-            !selectedRegions.some(
-                value =>
-                    normalize(value) ===
-                    normalize(region)
-            )
-        ) {
-            return;
-        }
+    cities.forEach(city => {
 
-        if (
-            selectedStates.length &&
-            !selectedStates.some(
-                value =>
-                    normalize(value) ===
-                    normalize(state)
-            )
-        ) {
-            return;
-        }
+        const option =
+            document.createElement("option");
 
-        const city =
-            getEmployeeCity(employee);
+        option.value = city;
 
-        if (!city) {
-            return;
-        }
+        option.textContent = city;
 
-        const key =
-            normalize(city);
-
-        if (!cities.has(key)) {
-            cities.set(key, city);
-        }
+        cityFilter.appendChild(option);
 
     });
 
-    cityFilter.innerHTML =
-        `<option value="">All Cities</option>`;
+}
 
-    Array.from(cities.values())
-        .sort((a, b) =>
-            a.localeCompare(b)
-        )
-        .forEach(city => {
 
-            const option =
-                document.createElement("option");
 
-            option.value = city;
-            option.textContent = city;
+/* =====================================================
+   APPLY CURRENT FILTERS
+===================================================== */
 
-            if (
-                normalize(oldCity) ===
-                normalize(city)
-            ) {
-                option.selected = true;
-            }
+function applyCurrentFilters() {
 
-            cityFilter.appendChild(option);
+    let rows =
+        buildTeacherRows();
 
-        });
+
+    rows =
+        sortRows(rows);
+
+
+    const limit =
+        getRankLimit();
+
+
+    rows =
+        rows.slice(0, limit);
+
+
+    currentRows =
+        rows;
+
+
+    displayRows(rows);
+
+
+    updateSummary(rows);
+
+
+    updateSelectionText();
 
 }
 
 
-// ======================================================
-// GET SELECTED MULTI VALUES
-// ======================================================
 
-function getSelectedValues(select) {
+/* =====================================================
+   BUILD TEACHER COLLECTIONS
+===================================================== */
 
-    if (!select) {
-        return [];
-    }
-
-    return Array.from(
-        select.selectedOptions || []
-    )
-        .map(option =>
-            String(option.value).trim()
-        )
-        .filter(Boolean);
-
-}
-
-
-// ======================================================
-// DATE FILTER
-// ======================================================
-
-function entryInDateRange(entry) {
-
-    const date =
-        getEntryDate(entry);
-
-    if (!date) {
-        return false;
-    }
-
-    const from =
-        fromDate?.value || "";
-
-    const to =
-        toDate?.value || "";
-
-    if (from && date < from) {
-        return false;
-    }
-
-    if (to && date > to) {
-        return false;
-    }
-
-    return true;
-}
-
-
-// ======================================================
-// EMPLOYEE MAP
-// ======================================================
-
-function buildEmployeeMap() {
+function buildTeacherCollections() {
 
     const map =
         new Map();
 
-    employees.forEach(employee => {
 
-        const code =
-            getEmployeeCode(employee);
+    /* -----------------------------------------------
+       DAILY ENTRY
+    ------------------------------------------------ */
 
-        if (!code) {
-            return;
-        }
+    dailyEntries.forEach(entry => {
 
-        map.set(
-            normalize(code),
-            employee
-        );
+        const employeeCode =
+            getEmployeeCode(entry);
 
-    });
+        if (!employeeCode) return;
 
-    return map;
-}
-
-
-// ======================================================
-// TEACHER COLLECTION
-//
-// SAME TEACHER + SAME DATE = SUM
-// ======================================================
-
-function buildTeacherCollections() {
-
-    const teacherDateMap =
-        new Map();
-
-    allEntries.forEach(entry => {
-
-        if (!entryInDateRange(entry)) {
-            return;
-        }
-
-        const code =
-            getEntryEmployeeCode(entry);
-
-        if (!code) {
-            return;
-        }
 
         const date =
             getEntryDate(entry);
 
-        if (!date) {
-            return;
-        }
+        if (!date) return;
+
 
         const amount =
-            getEntryAmount(entry);
+            getAmount(entry);
 
-        if (amount <= 0) {
-            return;
-        }
 
         const key =
-            normalize(code) +
-            "_" +
-            date;
+            `${employeeCode}__${date}`;
 
-        if (!teacherDateMap.has(key)) {
 
-            teacherDateMap.set(key, {
-                code: code,
-                date: date,
+        if (!map.has(key)) {
+
+            map.set(key, {
+                employeeCode,
+                date,
                 amount: 0
             });
 
         }
 
-        teacherDateMap.get(key).amount +=
-            amount;
+
+        map.get(key).amount += amount;
 
     });
 
-    return Array.from(
-        teacherDateMap.values()
-    );
+
+
+    /* -----------------------------------------------
+       TEACHER ENTRY
+    ------------------------------------------------ */
+
+    teacherEntries.forEach(entry => {
+
+        const employeeCode =
+            getEmployeeCode(entry);
+
+        if (!employeeCode) return;
+
+
+        const date =
+            getEntryDate(entry);
+
+        if (!date) return;
+
+
+        const amount =
+            getAmount(entry);
+
+
+        const key =
+            `${employeeCode}__${date}`;
+
+
+        if (!map.has(key)) {
+
+            map.set(key, {
+                employeeCode,
+                date,
+                amount: 0
+            });
+
+        }
+
+
+        map.get(key).amount += amount;
+
+    });
+
+
+    return [...map.values()];
+
 }
 
 
-// ======================================================
-// EMPLOYEE FILTER
-// ======================================================
 
-function employeeMatchesFilters(employee) {
+/* =====================================================
+   BUILD TEACHER ROWS
+===================================================== */
+
+function buildTeacherRows() {
+
+    const collections =
+        buildTeacherCollections();
+
 
     const selectedRegions =
         getSelectedValues(regionFilter);
@@ -933,24 +891,169 @@ function employeeMatchesFilters(employee) {
         getSelectedValues(stateFilter);
 
     const selectedCity =
-        cityFilter?.value || "";
+        cityFilter
+            ? cityFilter.value
+            : "";
 
-    const region =
-        getEmployeeRegion(employee);
 
-    const state =
-        getEmployeeState(employee);
+    const from =
+        fromDate
+            ? fromDate.value
+            : "";
 
-    const city =
-        getEmployeeCity(employee);
+    const to =
+        toDate
+            ? toDate.value
+            : "";
 
+
+    const map =
+        new Map();
+
+
+    /* -----------------------------------------------
+       EMPLOYEES
+    ------------------------------------------------ */
+
+    employees.forEach(employee => {
+
+        if (
+            !employeeMatchesFilters(
+                employee,
+                selectedRegions,
+                selectedStates,
+                selectedCity
+            )
+        ) {
+            return;
+        }
+
+
+        const employeeCode =
+            getEmployeeCode(employee);
+
+        if (!employeeCode) return;
+
+
+        map.set(
+            employeeCode,
+            {
+                employee,
+                amount: 0,
+                target:
+                    Number(employee.target) || 0
+            }
+        );
+
+    });
+
+
+
+    /* -----------------------------------------------
+       COLLECTIONS
+    ------------------------------------------------ */
+
+    collections.forEach(item => {
+
+        if (from && item.date < from) {
+            return;
+        }
+
+        if (to && item.date > to) {
+            return;
+        }
+
+
+        const existing =
+            map.get(item.employeeCode);
+
+        if (!existing) return;
+
+
+        existing.amount +=
+            Number(item.amount) || 0;
+
+    });
+
+
+
+    /* -----------------------------------------------
+       CREATE ROWS
+    ------------------------------------------------ */
+
+    const rows = [];
+
+
+    map.forEach(data => {
+
+        const employee =
+            data.employee;
+
+        const amount =
+            data.amount;
+
+        const target =
+            data.target;
+
+
+        const percentage =
+            target > 0
+                ? (amount / target) * 100
+                : 0;
+
+
+        rows.push({
+
+            employeeCode:
+                getEmployeeCode(employee),
+
+            region:
+                employee.region || "-",
+
+            state:
+                employee.state || "-",
+
+            city:
+                employee.city || "-",
+
+            teacherName:
+                employee.teacherName ||
+                employee.name ||
+                employee.teacher_name ||
+                "-",
+
+            amount,
+
+            target,
+
+            percentage
+
+        });
+
+    });
+
+
+    return rows;
+
+}
+
+
+
+/* =====================================================
+   EMPLOYEE FILTER
+===================================================== */
+
+function employeeMatchesFilters(
+    employee,
+    selectedRegions,
+    selectedStates,
+    selectedCity
+) {
 
     if (
-        selectedRegions.length &&
-        !selectedRegions.some(
-            value =>
-                normalize(value) ===
-                normalize(region)
+        selectedRegions.length > 0 &&
+        !selectedRegions.includes(
+            employee.region
         )
     ) {
         return false;
@@ -958,11 +1061,9 @@ function employeeMatchesFilters(employee) {
 
 
     if (
-        selectedStates.length &&
-        !selectedStates.some(
-            value =>
-                normalize(value) ===
-                normalize(state)
+        selectedStates.length > 0 &&
+        !selectedStates.includes(
+            employee.state
         )
     ) {
         return false;
@@ -971,243 +1072,50 @@ function employeeMatchesFilters(employee) {
 
     if (
         selectedCity &&
-        normalize(selectedCity) !==
-        normalize(city)
+        employee.city !== selectedCity
     ) {
         return false;
     }
 
 
     return true;
-}
-
-
-// ======================================================
-// BUILD TEACHER ROWS
-//
-// IMPORTANT:
-// EVERY ROW = ONE TEACHER
-//
-// NO REGION/STATE/CITY GROUPING
-// ======================================================
-
-function buildTeacherRows(
-    teacherCollections
-) {
-
-    const employeeMap =
-        buildEmployeeMap();
-
-    const teacherMap =
-        new Map();
-
-
-    // --------------------------------------------------
-    // FIRST ADD ALL FILTERED TEACHERS
-    // --------------------------------------------------
-
-    employees.forEach(employee => {
-
-        if (
-            !employeeMatchesFilters(
-                employee
-            )
-        ) {
-            return;
-        }
-
-        const code =
-            getEmployeeCode(employee);
-
-        if (!code) {
-            return;
-        }
-
-        const key =
-            normalize(code);
-
-        if (!teacherMap.has(key)) {
-
-            teacherMap.set(key, {
-
-                code: code,
-
-                name:
-                    getEmployeeName(
-                        employee
-                    ),
-
-                region:
-                    getEmployeeRegion(
-                        employee
-                    ),
-
-                state:
-                    getEmployeeState(
-                        employee
-                    ),
-
-                city:
-                    getEmployeeCity(
-                        employee
-                    ),
-
-                target:
-                    getEmployeeTarget(
-                        employee
-                    ),
-
-                collection: 0
-
-            });
-
-        }
-
-    });
-
-
-    // --------------------------------------------------
-    // ADD COLLECTION TO EACH TEACHER
-    // --------------------------------------------------
-
-    teacherCollections.forEach(item => {
-
-        const key =
-            normalize(item.code);
-
-        const employee =
-            employeeMap.get(key);
-
-        if (!employee) {
-            return;
-        }
-
-        if (
-            !employeeMatchesFilters(
-                employee
-            )
-        ) {
-            return;
-        }
-
-        if (!teacherMap.has(key)) {
-
-            teacherMap.set(key, {
-
-                code:
-                    getEmployeeCode(
-                        employee
-                    ),
-
-                name:
-                    getEmployeeName(
-                        employee
-                    ),
-
-                region:
-                    getEmployeeRegion(
-                        employee
-                    ),
-
-                state:
-                    getEmployeeState(
-                        employee
-                    ),
-
-                city:
-                    getEmployeeCity(
-                        employee
-                    ),
-
-                target:
-                    getEmployeeTarget(
-                        employee
-                    ),
-
-                collection: 0
-
-            });
-
-        }
-
-        teacherMap.get(key).collection +=
-            numberValue(item.amount);
-
-    });
-
-
-    // --------------------------------------------------
-    // FINAL ROWS
-    // --------------------------------------------------
-
-    return Array.from(
-        teacherMap.values()
-    ).map(row => ({
-
-        ...row,
-
-        remaining:
-            Math.max(
-                numberValue(row.target) -
-                numberValue(row.collection),
-                0
-            ),
-
-        percentage:
-            getPercentage(
-                row.collection,
-                row.target
-            )
-
-    }));
 
 }
 
 
-// ======================================================
-// SORT
-//
-// Highest Amount
-// Target Wise
-// Highest Target %
-//
-// These are only sorting metrics.
-// They are NOT displayed as columns.
-// ======================================================
+
+/* =====================================================
+   SORT ROWS
+===================================================== */
 
 function sortRows(rows) {
 
     const metric =
-        rankMetric?.value ||
-        "amount";
+        rankingMetric
+            ? rankingMetric.value
+            : "amount";
+
 
     return rows.sort(
         (a, b) => {
 
             if (metric === "target") {
 
-                return (
-                    numberValue(b.target) -
-                    numberValue(a.target)
-                );
+                return b.target - a.target;
 
             }
 
-            if (
-                metric === "percentage"
-            ) {
 
-                return (
-                    numberValue(b.percentage) -
-                    numberValue(a.percentage)
-                );
+            if (metric === "percentage") {
+
+                return b.percentage -
+                       a.percentage;
 
             }
 
-            return (
-                numberValue(b.collection) -
-                numberValue(a.collection)
-            );
+
+            return b.amount -
+                   a.amount;
 
         }
     );
@@ -1215,96 +1123,58 @@ function sortRows(rows) {
 }
 
 
-// ======================================================
-// RANK LIMIT
-// ======================================================
+
+/* =====================================================
+   GET RANK LIMIT
+===================================================== */
 
 function getRankLimit() {
 
-    const value =
-        rankLimit?.value || "3";
+    if (!rankLimit) {
+        return 26;
+    }
 
-    if (value === "custom") {
+
+    if (
+        rankLimit.value === "custom"
+    ) {
 
         const custom =
-            parseInt(
-                customRank?.value || "3",
-                10
+            Number(
+                customLimit.value
             );
 
-        return Math.max(
-            1,
-            custom || 3
-        );
+
+        if (
+            !custom ||
+            custom < 1
+        ) {
+
+            return 26;
+
+        }
+
+
+        return custom;
+
     }
 
-    return Math.max(
-        1,
-        parseInt(value, 10) || 3
-    );
+
+    return Number(
+        rankLimit.value
+    ) || 26;
 
 }
 
 
-// ======================================================
-// RANK BADGE
-// ======================================================
 
-function rankBadge(rank) {
-
-    let className =
-        "rank-badge";
-
-    let icon =
-        rank;
-
-    if (rank === 1) {
-
-        className +=
-            " rank-one";
-
-        icon = "🏆";
-
-    } else if (rank === 2) {
-
-        className +=
-            " rank-two";
-
-    } else if (rank === 3) {
-
-        className +=
-            " rank-three";
-
-    }
-
-    return `
-        <span class="${className}">
-            ${icon}
-        </span>
-    `;
-
-}
-
-
-// ======================================================
-// DISPLAY ROWS
-//
-// FINAL COLUMNS:
-//
-// 1. Rank
-// 2. Region
-// 3. State
-// 4. City
-// 5. Teachers Name
-// 6. Collection
-//
-// ======================================================
+/* =====================================================
+   DISPLAY ROWS
+===================================================== */
 
 function displayRows(rows) {
 
-    if (!rankTableBody) {
-        return;
-    }
+    if (!rankTableBody) return;
 
 
     if (!rows.length) {
@@ -1315,130 +1185,148 @@ function displayRows(rows) {
                     colspan="6"
                     class="no-data-cell"
                 >
-                    <i class="fa-solid fa-ranking-star"></i>
-
-                    <div>
-                        No teacher ranking data found.
-                    </div>
+                    <i class="fa-solid fa-inbox"></i>
+                    No ranking data found.
                 </td>
             </tr>
         `;
 
-        if (totalRanked) {
-            totalRanked.textContent = "0";
-        }
-
-        if (rankOneName) {
-            rankOneName.textContent = "—";
-        }
-
-        if (resultCount) {
-            resultCount.textContent =
-                "0 Results";
-        }
-
         return;
+
     }
 
 
-    rankTableBody.innerHTML =
-        rows.map((row, index) => {
+    rankTableBody.innerHTML = "";
+
+
+    rows.forEach(
+        (row, index) => {
 
             const rank =
                 index + 1;
 
-            return `
-                <tr
-                    class="${rank <= 3
-                        ? "top-rank-row"
-                        : ""}"
-                >
 
-                    <!-- RANK -->
-                    <td class="rank-cell">
-                        ${rankBadge(rank)}
-                    </td>
+            const tr =
+                document.createElement("tr");
 
 
-                    <!-- REGION -->
-                    <td class="region-column">
-                        ${escapeHTML(
-                            row.region || "—"
-                        )}
-                    </td>
+            tr.innerHTML = `
+
+                <td class="rank-cell">
+
+                    ${getRankBadge(rank)}
+
+                </td>
 
 
-                    <!-- STATE -->
-                    <td class="state-column">
-                        ${escapeHTML(
-                            row.state || "—"
-                        )}
-                    </td>
+                <td>
+                    ${escapeHtml(row.region)}
+                </td>
 
 
-                    <!-- CITY -->
-                    <td class="city-column">
-                        ${escapeHTML(
-                            row.city || "—"
-                        )}
-                    </td>
+                <td>
+                    ${escapeHtml(row.state)}
+                </td>
 
 
-                    <!-- TEACHER NAME -->
-                    <td class="teacher-column">
-
-                        <div class="name-cell">
-
-                            <strong>
-                                ${escapeHTML(
-                                    row.name ||
-                                    "Unknown Teacher"
-                                )}
-                            </strong>
-
-                            ${
-                                row.code
-                                    ? `
-                                    <small>
-                                        ${escapeHTML(
-                                            row.code
-                                        )}
-                                    </small>
-                                    `
-                                    : ""
-                            }
-
-                        </div>
-
-                    </td>
+                <td>
+                    ${escapeHtml(row.city)}
+                </td>
 
 
-                    <!-- COLLECTION -->
-                    <td class="collection-column">
+                <td class="teacher-cell">
 
-                        <div class="money-cell">
+                    <strong>
+                        ${escapeHtml(row.teacherName)}
+                    </strong>
 
-                            <span class="collection-value">
-                                ${formatMoney(
-                                    row.collection
-                                )}
-                            </span>
+                    <small>
+                        Code:
+                        ${escapeHtml(row.employeeCode)}
+                    </small>
 
-                            <small>
-                                ${formatUnit(
-                                    row.collection
-                                )}
-                            </small>
+                </td>
 
-                        </div>
 
-                    </td>
+                <td class="collection-cell">
 
-                </tr>
+                    <strong>
+                        ₹${formatNumber(row.amount)}
+                    </strong>
+
+                    <small>
+                        ${formatUnits(row.amount)} Units
+                    </small>
+
+                </td>
+
             `;
 
-        }).join("");
 
+            rankTableBody.appendChild(tr);
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   RANK BADGE
+===================================================== */
+
+function getRankBadge(rank) {
+
+    if (rank === 1) {
+
+        return `
+            <span class="rank-badge rank-1">
+                <i class="fa-solid fa-trophy"></i>
+                1
+            </span>
+        `;
+
+    }
+
+
+    if (rank === 2) {
+
+        return `
+            <span class="rank-badge rank-2">
+                2
+            </span>
+        `;
+
+    }
+
+
+    if (rank === 3) {
+
+        return `
+            <span class="rank-badge rank-3">
+                3
+            </span>
+        `;
+
+    }
+
+
+    return `
+        <span class="rank-badge">
+            ${rank}
+        </span>
+    `;
+
+}
+
+
+
+/* =====================================================
+   UPDATE SUMMARY
+===================================================== */
+
+function updateSummary(rows) {
 
     if (totalRanked) {
 
@@ -1451,8 +1339,9 @@ function displayRows(rows) {
     if (rankOneName) {
 
         rankOneName.textContent =
-            rows[0]?.name ||
-            "—";
+            rows.length
+                ? rows[0].teacherName
+                : "-";
 
     }
 
@@ -1460,114 +1349,73 @@ function displayRows(rows) {
     if (resultCount) {
 
         resultCount.textContent =
-            `${rows.length} Results`;
+            rows.length;
 
     }
 
 }
 
 
-// ======================================================
-// SELECTION TEXT
-// ======================================================
+
+/* =====================================================
+   UPDATE SELECTION TEXT
+===================================================== */
 
 function updateSelectionText() {
 
-    const limit =
-        getRankLimit();
+    const regions =
+        getSelectedValues(regionFilter);
 
-    const metric =
-        rankMetric?.value ||
-        "amount";
+    const states =
+        getSelectedValues(stateFilter);
 
-
-    let metricText =
-        "Highest Amount";
-
-    if (metric === "target") {
-        metricText =
-            "Highest Target";
-    }
-
-    if (metric === "percentage") {
-        metricText =
-            "Highest Target %";
-    }
+    const city =
+        cityFilter
+            ? cityFilter.value
+            : "";
 
 
-    let locationText =
-        "All Locations";
+    let text =
+        "Teacher Wise Ranking";
 
 
-    const selectedRegions =
-        getSelectedValues(
-            regionFilter
-        );
+    if (regions.length) {
 
-    const selectedStates =
-        getSelectedValues(
-            stateFilter
-        );
-
-    const selectedCity =
-        cityFilter?.value || "";
-
-
-    if (selectedCity) {
-
-        locationText =
-            selectedCity;
-
-    } else if (
-        selectedStates.length
-    ) {
-
-        locationText =
-            `${selectedStates.length} State${
-                selectedStates.length > 1
-                    ? "s"
-                    : ""
-            }`;
-
-    } else if (
-        selectedRegions.length
-    ) {
-
-        locationText =
-            `${selectedRegions.length} Region${
-                selectedRegions.length > 1
-                    ? "s"
-                    : ""
-            }`;
+        text +=
+            " | Region: " +
+            regions.join(", ");
 
     }
 
 
-    let dateText =
-        "All Time";
+    if (states.length) {
+
+        text +=
+            " | State: " +
+            states.join(", ");
+
+    }
+
+
+    if (city) {
+
+        text +=
+            " | City: " +
+            city;
+
+    }
 
 
     if (
-        fromDate?.value &&
-        toDate?.value
+        fromDate.value ||
+        toDate.value
     ) {
 
-        dateText =
-            `${fromDate.value} to ${toDate.value}`;
-
-    } else if (
-        fromDate?.value
-    ) {
-
-        dateText =
-            `From ${fromDate.value}`;
-
-    } else if (
-        toDate?.value
-    ) {
-
-        dateText =
-            `Up to ${toDate.value}`;
+        text +=
+            " | Date: " +
+            (fromDate.value || "Start") +
+            " to " +
+            (toDate.value || "Today");
 
     }
 
@@ -1575,536 +1423,539 @@ function updateSelectionText() {
     if (selectionText) {
 
         selectionText.textContent =
-            `Teacher Wise • ${metricText} • Top ${limit} • ${locationText} • ${dateText}`;
+            text;
 
     }
 
 
-    if (tableSubtitle) {
+    if (captureFilterText) {
 
-        tableSubtitle.textContent =
-            `Top ${limit} • Teacher Wise • ${metricText}`;
+        captureFilterText.textContent =
+            text;
 
     }
 
 }
 
 
-// ======================================================
-// APPLY FILTERS
-// ======================================================
 
-function applyCurrentFilters() {
+/* =====================================================
+   RESET FILTERS
+===================================================== */
+
+function resetFilters() {
+
+    rankingMetric.value =
+        "amount";
+
+
+    rankBy.value =
+        "teacher";
+
+
+    rankLimit.value =
+        "26";
+
+
+    customLimit.value =
+        "";
+
+
+    customLimitGroup.style.display =
+        "none";
+
+
+    [...regionFilter.options]
+        .forEach(
+            option =>
+                option.selected = false
+        );
+
+
+    [...stateFilter.options]
+        .forEach(
+            option =>
+                option.selected = false
+        );
+
+
+    cityFilter.value =
+        "";
+
+
+    fromDate.value =
+        "";
+
+
+    toDate.value =
+        "";
+
+
+    updateStateDropdown();
+
+    updateCityDropdown();
+
+    applyCurrentFilters();
+
+}
+
+
+
+/* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatDateForInput(date) {
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+
+/* =====================================================
+   GET ENTRY DATE
+===================================================== */
+
+function getEntryDate(entry) {
+
+    const value =
+        entry.date ||
+        entry.entryDate ||
+        entry.collectionDate ||
+        entry.createdDate;
+
+
+    if (!value) return "";
+
+
+    if (
+        value &&
+        typeof value.toDate === "function"
+    ) {
+
+        return formatDateForInput(
+            value.toDate()
+        );
+
+    }
+
+
+    if (
+        value &&
+        typeof value === "object" &&
+        value.seconds
+    ) {
+
+        return formatDateForInput(
+            new Date(
+                value.seconds * 1000
+            )
+        );
+
+    }
+
+
+    if (typeof value === "string") {
+
+        return value.substring(0, 10);
+
+    }
+
+
+    return "";
+
+}
+
+
+
+/* =====================================================
+   GET EMPLOYEE CODE
+===================================================== */
+
+function getEmployeeCode(data) {
+
+    return String(
+        data.employeeCode ||
+        data.employCode ||
+        data.employee_code ||
+        data.code ||
+        ""
+    ).trim();
+
+}
+
+
+
+/* =====================================================
+   GET AMOUNT
+===================================================== */
+
+function getAmount(data) {
+
+    return Number(
+        data.amount ||
+        data.collection ||
+        data.totalAmount ||
+        0
+    ) || 0;
+
+}
+
+
+
+/* =====================================================
+   FORMAT NUMBER
+===================================================== */
+
+function formatNumber(number) {
+
+    return Number(number || 0)
+        .toLocaleString("en-IN");
+
+}
+
+
+
+/* =====================================================
+   FORMAT UNITS
+   1 UNIT = ₹7,000
+===================================================== */
+
+function formatUnits(amount) {
+
+    return (
+        Number(amount || 0) / 7000
+    ).toFixed(2);
+
+}
+
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+
+/* =====================================================
+   DOWNLOAD CSV
+===================================================== */
+
+function downloadRankingCSV() {
+
+    if (!currentRows.length) {
+
+        alert(
+            "Download karne ke liye ranking data available nahi hai."
+        );
+
+        return;
+
+    }
+
+
+    const headers = [
+        "Rank",
+        "Region",
+        "State",
+        "City",
+        "Teacher Name",
+        "Employee Code",
+        "Collection",
+        "Units",
+        "Target",
+        "Target %"
+    ];
+
+
+    const csvRows = [];
+
+
+    csvRows.push(
+        headers.map(csvEscape).join(",")
+    );
+
+
+    currentRows.forEach(
+        (row, index) => {
+
+            const values = [
+
+                index + 1,
+
+                row.region,
+
+                row.state,
+
+                row.city,
+
+                row.teacherName,
+
+                row.employeeCode,
+
+                row.amount,
+
+                formatUnits(row.amount),
+
+                row.target,
+
+                row.percentage.toFixed(2) + "%"
+
+            ];
+
+
+            csvRows.push(
+                values
+                    .map(csvEscape)
+                    .join(",")
+            );
+
+        }
+    );
+
+
+    const csvContent =
+        "\uFEFF" +
+        csvRows.join("\r\n");
+
+
+    const blob =
+        new Blob(
+            [csvContent],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        `Telethon-Ranking-${formatDateForInput(new Date())}.csv`;
+
+
+    document.body.appendChild(link);
+
+
+    link.click();
+
+
+    document.body.removeChild(link);
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+
+/* =====================================================
+   CSV ESCAPE
+===================================================== */
+
+function csvEscape(value) {
+
+    const text =
+        String(value ?? "");
+
+
+    if (
+        text.includes(",") ||
+        text.includes('"') ||
+        text.includes("\n")
+    ) {
+
+        return `"${text.replace(
+            /"/g,
+            '""'
+        )}"`;
+
+    }
+
+
+    return text;
+
+}
+
+
+
+/* =====================================================
+   DOWNLOAD IMAGE
+===================================================== */
+
+async function downloadRankingImage() {
+
+    if (!currentRows.length) {
+
+        alert(
+            "Download karne ke liye ranking data available nahi hai."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        typeof html2canvas ===
+        "undefined"
+    ) {
+
+        alert(
+            "Image download library load nahi hui. Page refresh karke dobara try karein."
+        );
+
+        return;
+
+    }
+
+
+    const target =
+        document.getElementById(
+            "rankingTableCapture"
+        );
+
+
+    if (!target) {
+
+        alert(
+            "Ranking table nahi mili."
+        );
+
+        return;
+
+    }
+
 
     try {
 
-        const teacherCollections =
-            buildTeacherCollections();
+        downloadImageBtn.disabled =
+            true;
 
 
-        let rows =
-            buildTeacherRows(
-                teacherCollections
+        const oldText =
+            downloadImageBtn.innerHTML;
+
+
+        downloadImageBtn.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            Creating Image...
+        `;
+
+
+        const canvas =
+            await html2canvas(
+                target,
+                {
+                    scale: 2,
+
+                    useCORS: true,
+
+                    backgroundColor:
+                        "#ffffff",
+
+                    logging: false
+
+                }
             );
 
 
-        rows =
-            sortRows(rows);
-
-
-        const limit =
-            getRankLimit();
-
-
-        rows =
-            rows.slice(
-                0,
-                limit
+        const image =
+            canvas.toDataURL(
+                "image/png"
             );
 
 
-        displayRows(rows);
+        const link =
+            document.createElement("a");
 
-        updateSelectionText();
+
+        link.href =
+            image;
+
+
+        link.download =
+            `Telethon-Ranking-${formatDateForInput(new Date())}.png`;
+
+
+        document.body.appendChild(link);
+
+
+        link.click();
+
+
+        document.body.removeChild(link);
+
+
+        downloadImageBtn.innerHTML =
+            oldText;
+
+
+        downloadImageBtn.disabled =
+            false;
 
 
     } catch (error) {
 
         console.error(
-            "Ranking error:",
+            "Image download error:",
             error
         );
 
-        rankTableBody.innerHTML = `
-            <tr>
-                <td
-                    colspan="6"
-                    class="error-cell"
-                >
-                    Error creating ranking.
-                </td>
-            </tr>
+
+        alert(
+            "Image download nahi ho saki."
+        );
+
+
+        downloadImageBtn.disabled =
+            false;
+
+
+        downloadImageBtn.innerHTML = `
+            <i class="fa-solid fa-image"></i>
+            Download Image
         `;
 
     }
 
 }
-
-
-// ======================================================
-// RANK LIMIT CHANGE
-// ======================================================
-
-if (rankLimit) {
-
-    rankLimit.addEventListener(
-        "change",
-        () => {
-
-            if (
-                customRankGroup
-            ) {
-
-                customRankGroup.style.display =
-                    rankLimit.value ===
-                    "custom"
-                        ? "flex"
-                        : "none";
-
-            }
-
-            applyCurrentFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// RANK BY
-// ======================================================
-//
-// Teacher Wise ONLY
-//
-// If old HTML contains Rank By,
-// it will automatically stay Teacher Wise.
-// ======================================================
-
-if (rankBy) {
-
-    rankBy.value = "teacher";
-
-    rankBy.addEventListener(
-        "change",
-        () => {
-
-            rankBy.value = "teacher";
-
-            applyCurrentFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// REGION CHANGE
-// ======================================================
-
-if (regionFilter) {
-
-    regionFilter.addEventListener(
-        "change",
-        () => {
-
-            updateStateDropdown();
-
-            updateCityDropdown();
-
-            applyCurrentFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// STATE CHANGE
-// ======================================================
-
-if (stateFilter) {
-
-    stateFilter.addEventListener(
-        "change",
-        () => {
-
-            updateCityDropdown();
-
-            applyCurrentFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// CITY CHANGE
-// ======================================================
-
-if (cityFilter) {
-
-    cityFilter.addEventListener(
-        "change",
-        () => {
-
-            applyCurrentFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// RANK METRIC CHANGE
-// ======================================================
-
-if (rankMetric) {
-
-    rankMetric.addEventListener(
-        "change",
-        () => {
-
-            applyCurrentFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// APPLY BUTTON
-// ======================================================
-
-if (applyFilter) {
-
-    applyFilter.addEventListener(
-        "click",
-        () => {
-
-            applyCurrentFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// RESET
-// ======================================================
-
-if (resetFilter) {
-
-    resetFilter.addEventListener(
-        "click",
-        () => {
-
-            if (rankBy) {
-                rankBy.value =
-                    "teacher";
-            }
-
-            if (rankMetric) {
-                rankMetric.value =
-                    "amount";
-            }
-
-            if (rankLimit) {
-                rankLimit.value =
-                    "3";
-            }
-
-            if (customRank) {
-                customRank.value =
-                    "3";
-            }
-
-            if (customRankGroup) {
-                customRankGroup.style.display =
-                    "none";
-            }
-
-            if (regionFilter) {
-
-                Array.from(
-                    regionFilter.options
-                ).forEach(
-                    option =>
-                        option.selected =
-                            false
-                );
-
-            }
-
-            if (stateFilter) {
-
-                Array.from(
-                    stateFilter.options
-                ).forEach(
-                    option =>
-                        option.selected =
-                            false
-                );
-
-            }
-
-            if (cityFilter) {
-
-                cityFilter.value =
-                    "";
-
-            }
-
-            if (fromDate) {
-                fromDate.value =
-                    "";
-            }
-
-            if (toDate) {
-                toDate.value =
-                    "";
-            }
-
-
-            updateStateDropdown();
-
-            updateCityDropdown();
-
-            applyCurrentFilters();
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// REFRESH
-// ======================================================
-
-if (refreshBtn) {
-
-    refreshBtn.addEventListener(
-        "click",
-        async () => {
-
-            refreshBtn.disabled =
-                true;
-
-            try {
-
-                await loadData();
-
-            } finally {
-
-                refreshBtn.disabled =
-                    false;
-
-            }
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// QUICK DATE BUTTONS
-// ======================================================
-
-document
-    .querySelectorAll(
-        ".quick-date-btn"
-    )
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                const type =
-                    button.dataset.range;
-
-                const today =
-                    new Date();
-
-                let from =
-                    new Date(today);
-
-                let to =
-                    new Date(today);
-
-
-                if (type === "today") {
-
-                    from =
-                        new Date(today);
-
-                    to =
-                        new Date(today);
-
-                }
-
-
-                else if (
-                    type === "yesterday"
-                ) {
-
-                    from.setDate(
-                        today.getDate() - 1
-                    );
-
-                    to =
-                        new Date(from);
-
-                }
-
-
-                else if (
-                    type === "7days"
-                ) {
-
-                    from.setDate(
-                        today.getDate() - 6
-                    );
-
-                }
-
-
-                else if (
-                    type === "30days"
-                ) {
-
-                    from.setDate(
-                        today.getDate() - 29
-                    );
-
-                }
-
-
-                else if (
-                    type === "thismonth"
-                ) {
-
-                    from =
-                        new Date(
-                            today.getFullYear(),
-                            today.getMonth(),
-                            1
-                        );
-
-                }
-
-
-                else if (
-                    type === "lastmonth"
-                ) {
-
-                    from =
-                        new Date(
-                            today.getFullYear(),
-                            today.getMonth() - 1,
-                            1
-                        );
-
-                    to =
-                        new Date(
-                            today.getFullYear(),
-                            today.getMonth(),
-                            0
-                        );
-
-                }
-
-
-                if (fromDate) {
-
-                    fromDate.value =
-                        formatDateForInput(
-                            from
-                        );
-
-                }
-
-
-                if (toDate) {
-
-                    toDate.value =
-                        formatDateForInput(
-                            to
-                        );
-
-                }
-
-
-                applyCurrentFilters();
-
-            }
-        );
-
-    });
-
-
-// ======================================================
-// LOGOUT
-// ======================================================
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-        "click",
-        () => {
-
-            localStorage.clear();
-
-            window.location.href =
-                "index.html";
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// INITIAL LOAD
-// ======================================================
-
-if (rankBy) {
-    rankBy.value = "teacher";
-}
-
-if (rankMetric) {
-    rankMetric.value = "amount";
-}
-
-if (rankLimit) {
-    rankLimit.value = "3";
-}
-
-if (customRank) {
-    customRank.value = "3";
-}
-
-if (customRankGroup) {
-    customRankGroup.style.display =
-        "none";
-}
-
-loadData();
