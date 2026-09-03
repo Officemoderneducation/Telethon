@@ -135,8 +135,11 @@
             <div>
 
                 <h1>
+
                     <i class="fa-solid fa-ranking-star"></i>
+
                     Rank
+
                 </h1>
 
                 <p>
@@ -207,10 +210,6 @@
                     </label>
 
                     <select id="rankBy">
-
-                        <option value="user">
-                            User Wise
-                        </option>
 
                         <option value="region">
                             Region Wise
@@ -338,11 +337,11 @@
 
 
 
-                <!-- REGION MULTI SELECT -->
+                <!-- REGION -->
 
                 <div class="filter-group">
 
-                    <label>
+                    <label for="regionFilter">
 
                         <i class="fa-solid fa-location-dot"></i>
 
@@ -355,22 +354,21 @@
                         multiple
                         size="4"
                     >
-
                     </select>
 
                     <small class="filter-help">
-                        Ctrl + Click se multiple Regions select karein
+                        Multiple Regions ke liye Ctrl + Click karein
                     </small>
 
                 </div>
 
 
 
-                <!-- STATE MULTI SELECT -->
+                <!-- STATE -->
 
                 <div class="filter-group">
 
-                    <label>
+                    <label for="stateFilter">
 
                         <i class="fa-solid fa-map"></i>
 
@@ -383,11 +381,10 @@
                         multiple
                         size="4"
                     >
-
                     </select>
 
                     <small class="filter-help">
-                        Ctrl + Click se multiple States select karein
+                        Multiple States ke liye Ctrl + Click karein
                     </small>
 
                 </div>
@@ -548,10 +545,14 @@
         <section class="top-cards">
 
 
+            <!-- TOTAL RANKED -->
+
             <div class="stat-card">
 
                 <div class="stat-icon users-icon">
-                    <i class="fa-solid fa-users"></i>
+
+                    <i class="fa-solid fa-ranking-star"></i>
+
                 </div>
 
                 <div>
@@ -570,76 +571,14 @@
 
 
 
-            <div class="stat-card">
-
-                <div class="stat-icon amount-icon">
-                    <i class="fa-solid fa-indian-rupee-sign"></i>
-                </div>
-
-                <div>
-
-                    <span class="stat-label">
-                        Highest Amount
-                    </span>
-
-                    <strong id="highestAmount">
-                        ₹ 0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon target-icon">
-                    <i class="fa-solid fa-bullseye"></i>
-                </div>
-
-                <div>
-
-                    <span class="stat-label">
-                        Total Target
-                    </span>
-
-                    <strong id="totalTarget">
-                        ₹ 0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon collection-icon">
-                    <i class="fa-solid fa-money-bill-trend-up"></i>
-                </div>
-
-                <div>
-
-                    <span class="stat-label">
-                        Total Collection
-                    </span>
-
-                    <strong id="totalCollection">
-                        ₹ 0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
+            <!-- RANK #1 -->
 
             <div class="stat-card winner-card">
 
                 <div class="stat-icon winner-icon">
+
                     <i class="fa-solid fa-trophy"></i>
+
                 </div>
 
                 <div>
@@ -656,6 +595,7 @@
 
             </div>
 
+
         </section>
 
 
@@ -671,7 +611,7 @@
                 <i class="fa-solid fa-circle-info"></i>
 
                 <span id="selectionText">
-                    User Wise • Highest Amount • Top 3 • All Time
+                    Region Wise • Highest Amount • Top 3 • All Time
                 </span>
 
             </div>
@@ -709,7 +649,7 @@
                     </h3>
 
                     <p id="tableSubtitle">
-                        Highest collection performers
+                        Top Region ranking
                     </p>
 
                 </div>
@@ -796,35 +736,6 @@
                         </tr>
 
                     </tbody>
-
-
-                    <tfoot id="rankTableFoot">
-
-                        <tr>
-
-                            <td colspan="5">
-                                TOTAL
-                            </td>
-
-                            <td id="footerTarget">
-                                ₹ 0
-                            </td>
-
-                            <td id="footerCollection">
-                                ₹ 0
-                            </td>
-
-                            <td id="footerRemaining">
-                                ₹ 0
-                            </td>
-
-                            <td id="footerPercentage">
-                                0%
-                            </td>
-
-                        </tr>
-
-                    </tfoot>
 
                 </table>
 
