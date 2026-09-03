@@ -2,10 +2,8 @@
 // TELETHON
 // RANK PAGE
 //
-// RANK TYPES:
-// 1. Region Wise
-// 2. State Wise
-// 3. City Wise
+// RANK:
+// TEACHER WISE
 //
 // METRICS:
 // 1. Highest Amount
@@ -766,6 +764,46 @@ function getEmployeeCity(
 
 
 // ======================================================
+// EMPLOYEE NAME
+// ======================================================
+
+function getEmployeeName(
+    employee
+) {
+
+    return String(
+
+        employee?.name ||
+
+        employee?.teacherName ||
+
+        employee?.teacher_name ||
+
+        employee?.employeeName ||
+
+        employee?.employee_name ||
+
+        employee?.fullName ||
+
+        employee?.full_name ||
+
+        employee?.displayName ||
+
+        employee?.display_name ||
+
+        employee?.userName ||
+
+        employee?.username ||
+
+        ""
+
+    ).trim();
+
+}
+
+
+
+// ======================================================
 // EMPLOYEE TARGET
 // ======================================================
 
@@ -947,7 +985,7 @@ async function loadData() {
             <tr>
 
                 <td
-                    colspan="9"
+                    colspan="6"
                     class="error-cell"
                 >
 
@@ -1417,10 +1455,6 @@ function buildEmployeeMap() {
 
 function buildTeacherCollections() {
 
-    const employeeMap =
-        buildEmployeeMap();
-
-
     const teacherDateMap =
         new Map();
 
@@ -1453,8 +1487,14 @@ function buildTeacherCollections() {
 
 
             const employee =
-                employeeMap.get(
-                    normalize(code)
+                employees.find(
+                    item =>
+                        normalize(
+                            getEmployeeCode(
+                                item
+                            )
+                        ) ===
+                        normalize(code)
                 );
 
 
@@ -1629,31 +1669,26 @@ function employeeMatchesFilters(
 
 
 // ======================================================
-// LOCATION RANKING
+// TEACHER WISE RANKING
 // ======================================================
 
-function buildLocationRows(
-    teacherCollections,
-    type
+function buildTeacherRows(
+    teacherCollections
 ) {
 
-    const employeeMap =
-        buildEmployeeMap();
-
-
-    const locationMap =
+    const teacherMap =
         new Map();
 
+
+    // ==============================================
+    // COLLECTION
+    // ==============================================
 
     teacherCollections.forEach(
         item => {
 
             const employee =
-                employeeMap.get(
-                    normalize(
-                        item.code
-                    )
-                );
+                item.employee;
 
 
             if (!employee) {
@@ -1674,48 +1709,15 @@ function buildLocationRows(
             }
 
 
-            let name = "";
-
-
-            if (
-                type === "region"
-            ) {
-
-                name =
-                    getEmployeeRegion(
-                        employee
-                    );
-
-            }
-            else if (
-                type === "state"
-            ) {
-
-                name =
-                    getEmployeeState(
-                        employee
-                    );
-
-            }
-            else if (
-                type === "city"
-            ) {
-
-                name =
-                    getEmployeeCity(
-                        employee
-                    );
-
-            }
-
-
-            const key =
+            const code =
                 normalize(
-                    name
+                    getEmployeeCode(
+                        employee
+                    )
                 );
 
 
-            if (!key) {
+            if (!code) {
 
                 return;
 
@@ -1723,23 +1725,27 @@ function buildLocationRows(
 
 
             if (
-                !locationMap.has(
-                    key
+                !teacherMap.has(
+                    code
                 )
             ) {
 
-                locationMap.set(
-                    key,
+                teacherMap.set(
+                    code,
                     {
 
+                        code:
+                            getEmployeeCode(
+                                employee
+                            ),
+
                         name:
-                            name,
-
-                        target:
-                            0,
-
-                        collection:
-                            0,
+                            getEmployeeName(
+                                employee
+                            ) ||
+                            getEmployeeCode(
+                                employee
+                            ),
 
                         region:
                             getEmployeeRegion(
@@ -1754,7 +1760,15 @@ function buildLocationRows(
                         city:
                             getEmployeeCity(
                                 employee
-                            )
+                            ),
+
+                        target:
+                            getEmployeeTarget(
+                                employee
+                            ),
+
+                        collection:
+                            0
 
                     }
                 );
@@ -1762,18 +1776,19 @@ function buildLocationRows(
             }
 
 
-            locationMap.get(
-                key
+            teacherMap.get(
+                code
             ).collection +=
-                item.amount;
+                numberValue(
+                    item.amount
+                );
 
         }
     );
 
 
-
     // ==============================================
-    // ADD EMPLOYEE TARGETS
+    // ADD TEACHERS WITH ZERO COLLECTION
     // ==============================================
 
     employees.forEach(
@@ -1790,48 +1805,15 @@ function buildLocationRows(
             }
 
 
-            let name = "";
-
-
-            if (
-                type === "region"
-            ) {
-
-                name =
-                    getEmployeeRegion(
-                        employee
-                    );
-
-            }
-            else if (
-                type === "state"
-            ) {
-
-                name =
-                    getEmployeeState(
-                        employee
-                    );
-
-            }
-            else if (
-                type === "city"
-            ) {
-
-                name =
-                    getEmployeeCity(
-                        employee
-                    );
-
-            }
-
-
-            const key =
+            const code =
                 normalize(
-                    name
+                    getEmployeeCode(
+                        employee
+                    )
                 );
 
 
-            if (!key) {
+            if (!code) {
 
                 return;
 
@@ -1839,23 +1821,27 @@ function buildLocationRows(
 
 
             if (
-                !locationMap.has(
-                    key
+                !teacherMap.has(
+                    code
                 )
             ) {
 
-                locationMap.set(
-                    key,
+                teacherMap.set(
+                    code,
                     {
 
+                        code:
+                            getEmployeeCode(
+                                employee
+                            ),
+
                         name:
-                            name,
-
-                        target:
-                            0,
-
-                        collection:
-                            0,
+                            getEmployeeName(
+                                employee
+                            ) ||
+                            getEmployeeCode(
+                                employee
+                            ),
 
                         region:
                             getEmployeeRegion(
@@ -1870,27 +1856,27 @@ function buildLocationRows(
                         city:
                             getEmployeeCity(
                                 employee
-                            )
+                            ),
+
+                        target:
+                            getEmployeeTarget(
+                                employee
+                            ),
+
+                        collection:
+                            0
 
                     }
                 );
 
             }
 
-
-            locationMap.get(
-                key
-            ).target +=
-                getEmployeeTarget(
-                    employee
-                );
-
         }
     );
 
 
     return Array.from(
-        locationMap.values()
+        teacherMap.values()
     )
         .map(
             row => ({
@@ -1934,9 +1920,27 @@ function sortRows(
     ) {
 
         rows.sort(
-            (a, b) =>
-                b.target -
-                a.target
+            (a, b) => {
+
+                if (
+                    b.target !==
+                    a.target
+                ) {
+
+                    return (
+                        b.target -
+                        a.target
+                    );
+
+                }
+
+
+                return (
+                    b.collection -
+                    a.collection
+                );
+
+            }
         );
 
     }
@@ -1945,18 +1949,54 @@ function sortRows(
     ) {
 
         rows.sort(
-            (a, b) =>
-                b.percentage -
-                a.percentage
+            (a, b) => {
+
+                if (
+                    b.percentage !==
+                    a.percentage
+                ) {
+
+                    return (
+                        b.percentage -
+                        a.percentage
+                    );
+
+                }
+
+
+                return (
+                    b.collection -
+                    a.collection
+                );
+
+            }
         );
 
     }
     else {
 
         rows.sort(
-            (a, b) =>
-                b.collection -
-                a.collection
+            (a, b) => {
+
+                if (
+                    b.collection !==
+                    a.collection
+                ) {
+
+                    return (
+                        b.collection -
+                        a.collection
+                    );
+
+                }
+
+
+                return (
+                    b.percentage -
+                    a.percentage
+                );
+
+            }
         );
 
     }
@@ -2095,6 +2135,14 @@ function rankBadge(
 
 // ======================================================
 // DISPLAY
+//
+// COLUMNS:
+// Rank
+// Region
+// State
+// City
+// Teachers Name
+// Collection
 // ======================================================
 
 function displayRows(
@@ -2120,7 +2168,7 @@ function displayRows(
             <tr>
 
                 <td
-                    colspan="9"
+                    colspan="6"
                     class="no-data-cell"
                 >
 
@@ -2155,46 +2203,6 @@ function displayRows(
                 index + 1;
 
 
-            const percentage =
-                row.percentage;
-
-
-            let percentageClass =
-                "normal";
-
-
-            if (
-                percentage >= 100
-            ) {
-
-                percentageClass =
-                    "excellent";
-
-            }
-            else if (
-                percentage >= 75
-            ) {
-
-                percentageClass =
-                    "good";
-
-            }
-            else if (
-                percentage >= 50
-            ) {
-
-                percentageClass =
-                    "average";
-
-            }
-            else {
-
-                percentageClass =
-                    "low";
-
-            }
-
-
             html += `
 
                 <tr
@@ -2205,6 +2213,8 @@ function displayRows(
                     }"
                 >
 
+                    <!-- RANK -->
+
                     <td class="rank-cell">
 
                         ${rankBadge(
@@ -2213,6 +2223,44 @@ function displayRows(
 
                     </td>
 
+
+                    <!-- REGION -->
+
+                    <td>
+
+                        ${escapeHTML(
+                            row.region ||
+                            "-"
+                        )}
+
+                    </td>
+
+
+                    <!-- STATE -->
+
+                    <td>
+
+                        ${escapeHTML(
+                            row.state ||
+                            "-"
+                        )}
+
+                    </td>
+
+
+                    <!-- CITY -->
+
+                    <td>
+
+                        ${escapeHTML(
+                            row.city ||
+                            "-"
+                        )}
+
+                    </td>
+
+
+                    <!-- TEACHER NAME -->
 
                     <td>
 
@@ -2231,56 +2279,7 @@ function displayRows(
                     </td>
 
 
-                    <td>
-
-                        ${escapeHTML(
-                            row.region ||
-                            "-"
-                        )}
-
-                    </td>
-
-
-                    <td>
-
-                        ${escapeHTML(
-                            row.state ||
-                            "-"
-                        )}
-
-                    </td>
-
-
-                    <td>
-
-                        ${escapeHTML(
-                            row.city ||
-                            "-"
-                        )}
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="money-cell">
-
-                            ${formatMoney(
-                                row.target
-                            )}
-
-                            <small>
-
-                                ${formatUnit(
-                                    row.target
-                                )}
-
-                            </small>
-
-                        </div>
-
-                    </td>
-
+                    <!-- COLLECTION -->
 
                     <td>
 
@@ -2297,57 +2296,6 @@ function displayRows(
                                 )}
 
                             </small>
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="money-cell">
-
-                            ${formatMoney(
-                                row.remaining
-                            )}
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="percentage-wrapper">
-
-                            <strong
-                                class="${percentageClass}"
-                            >
-
-                                ${percentage.toLocaleString(
-                                    "en-IN",
-                                    {
-                                        minimumFractionDigits: 0,
-                                        maximumFractionDigits: 2
-                                    }
-                                )}%
-
-                            </strong>
-
-
-                            <div class="progress">
-
-                                <div
-                                    class="progress-bar ${percentageClass}"
-                                    style="
-                                        width:${Math.min(
-                                            percentage,
-                                            100
-                                        )}%;
-                                    "
-                                ></div>
-
-                            </div>
 
                         </div>
 
@@ -2383,14 +2331,9 @@ function applyCurrentFilters() {
         buildTeacherCollections();
 
 
-    const type =
-        rankBy.value;
-
-
     let rows =
-        buildLocationRows(
-            teacherCollections,
-            type
+        buildTeacherRows(
+            teacherCollections
         );
 
 
@@ -2427,20 +2370,6 @@ function applyCurrentFilters() {
 // ======================================================
 
 function updateSelectionText() {
-
-    const typeText = {
-
-        region:
-            "Region Wise",
-
-        state:
-            "State Wise",
-
-        city:
-            "City Wise"
-
-    };
-
 
     const metricText = {
 
@@ -2518,7 +2447,11 @@ function updateSelectionText() {
         locationText +=
             " • " +
             selectedRegions.length +
-            " Region Selected";
+            (
+                selectedRegions.length === 1
+                    ? " Region Selected"
+                    : " Regions Selected"
+            );
 
     }
 
@@ -2530,16 +2463,29 @@ function updateSelectionText() {
         locationText +=
             " • " +
             selectedStates.length +
-            " State Selected";
+            (
+                selectedStates.length === 1
+                    ? " State Selected"
+                    : " States Selected"
+            );
+
+    }
+
+
+    if (
+        cityFilter.value
+    ) {
+
+        locationText +=
+            " • City: " +
+            cityFilter.value;
 
     }
 
 
     selectionText.textContent =
 
-        typeText[
-            rankBy.value
-        ] +
+        "Teacher Wise" +
 
         " • " +
 
@@ -2564,13 +2510,7 @@ function updateSelectionText() {
 
         limit +
 
-        " • " +
-
-        typeText[
-            rankBy.value
-        ] +
-
-        " • " +
+        " • Teacher Wise • " +
 
         metricText[
             rankMetric.value
@@ -2795,16 +2735,28 @@ cityFilter.addEventListener(
 
 // ======================================================
 // RANK TYPE CHANGE
+//
+// Rank is always Teacher Wise.
+// This listener is kept only for compatibility
+// if the HTML still contains rankBy.
 // ======================================================
 
-rankBy.addEventListener(
-    "change",
-    () => {
+if (rankBy) {
 
-        applyCurrentFilters();
+    rankBy.value =
+        "teacher";
 
-    }
-);
+
+    rankBy.addEventListener(
+        "change",
+        () => {
+
+            applyCurrentFilters();
+
+        }
+    );
+
+}
 
 
 
@@ -2831,10 +2783,14 @@ resetFilter.addEventListener(
     "click",
     () => {
 
-        // Default = Region Wise
+        // Teacher Wise ranking
 
-        rankBy.value =
-            "region";
+        if (rankBy) {
+
+            rankBy.value =
+                "teacher";
+
+        }
 
 
         rankMetric.value =
@@ -3085,8 +3041,12 @@ logoutBtn.addEventListener(
 // INITIAL LOAD
 // ======================================================
 
-rankBy.value =
-    "region";
+if (rankBy) {
+
+    rankBy.value =
+        "teacher";
+
+}
 
 
 rankLimit.value =
