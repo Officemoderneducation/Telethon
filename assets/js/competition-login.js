@@ -1,5 +1,6 @@
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+// ======================================================
+// SEPARATE COMPETITION TEAM LOGIN
+// ======================================================
 
 import {
     getAuth,
@@ -9,31 +10,16 @@ import {
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-    getFirestore,
     doc,
     getDoc
 } from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-import { db } from "./firebase-config.js";
+import {
+    auth,
+    db
+} from "./firebase-config.js";
 
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCj3BBjywNWl4ScDJUyrmslg4bHrlMiu_Q",
-    authDomain: "telethoon.firebaseapp.com",
-    projectId: "telethoon",
-    storageBucket: "telethoon.firebasestorage.app",
-    messagingSenderId: "853450341855",
-    appId: "1:853450341855:web:356f9ec0e9a6f88c75d86a",
-    measurementId: "G-EWP905EGQ1"
-};
-
-const app = initializeApp(
-    firebaseConfig,
-    "competitionLoginApp"
-);
-
-const auth = getAuth(app);
 
 const loginId =
     document.getElementById("loginId");
@@ -48,111 +34,199 @@ const message =
     document.getElementById("message");
 
 
+// ======================================================
+// SAME EMAIL FORMAT USED BY ADMIN
+// ======================================================
+
 function makeEmail(id) {
 
     return (
-        id.trim().toLowerCase()
-        + "@telethoncompetition.local"
+        id
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .replace(/[^a-z0-9._-]/g, "")
+        + "@telethoncompetition.com"
     );
 
 }
 
 
-loginBtn.addEventListener("click", async () => {
+// ======================================================
+// LOGIN
+// ======================================================
 
-    const id = loginId.value.trim();
-    const pass = password.value;
+loginBtn.addEventListener(
+    "click",
+    async () => {
 
-    if (!id || !pass) {
+        const id =
+            loginId.value.trim();
 
-        message.textContent =
-            "Team ID and Password required.";
+        const pass =
+            password.value;
 
-        return;
-    }
 
-    message.textContent = "Logging in...";
-
-    try {
-
-        const email = makeEmail(id);
-
-        const result =
-            await signInWithEmailAndPassword(
-                auth,
-                email,
-                pass
-            );
-
-        const uid = result.user.uid;
-
-        const teamDoc =
-            await getDoc(
-                doc(db, "competitionTeams", uid)
-            );
-
-        if (!teamDoc.exists()) {
-
-            await auth.signOut();
+        if (!id || !pass) {
 
             message.textContent =
-                "Competition team account not configured.";
+                "Team ID and Password required.";
 
             return;
+
         }
 
-        const data = teamDoc.data();
 
-        if (
-            data.role !== "competition_team" ||
-            data.active === false
-        ) {
-
-            await auth.signOut();
-
-            message.textContent =
-                "This team account is inactive.";
-
-            return;
-        }
-
-        window.location.href =
-            "competition-team.html";
-
-    } catch (error) {
-
-        console.error(error);
+        loginBtn.disabled = true;
 
         message.textContent =
-            "Invalid Team ID or Password.";
-
-    }
-
-});
+            "Logging in...";
 
 
-onAuthStateChanged(auth, async (user) => {
+        try {
 
-    if (!user) return;
+            const email =
+                makeEmail(id);
 
-    try {
 
-        const snap =
-            await getDoc(
-                doc(db, "competitionTeams", user.uid)
-            );
+            const result =
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    pass
+                );
 
-        if (snap.exists()) {
+
+            const uid =
+                result.user.uid;
+
+
+            const teamRef =
+                doc(
+                    db,
+                    "competitionTeams",
+                    uid
+                );
+
+
+            const teamSnap =
+                await getDoc(teamRef);
+
+
+            if (!teamSnap.exists()) {
+
+                await auth.signOut();
+
+                throw new Error(
+                    "Team account is not configured."
+                );
+
+            }
+
+
+            const team =
+                teamSnap.data();
+
+
+            if (
+                team.role !==
+                    "competition_team"
+            ) {
+
+                await auth.signOut();
+
+                throw new Error(
+                    "Invalid competition account."
+                );
+
+            }
+
+
+            if (
+                team.active === false
+            ) {
+
+                await auth.signOut();
+
+                throw new Error(
+                    "This team account is inactive."
+                );
+
+            }
+
 
             window.location.href =
                 "competition-team.html";
 
+
+        } catch (error) {
+
+            console.error(
+                "LOGIN ERROR:",
+                error
+            );
+
+
+            if (
+                error.code ===
+                "auth/invalid-credential"
+            ) {
+
+                message.textContent =
+                    "Invalid Team ID or Password.";
+
+            } else {
+
+                message.textContent =
+                    error.message ||
+                    "Invalid Team ID or Password.";
+
+            }
+
         }
 
-    } catch (error) {
 
-        console.error(error);
+        loginBtn.disabled = false;
 
     }
+);
 
-});
+
+// ======================================================
+// ALREADY LOGGED IN
+// ======================================================
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        if (!user) return;
+
+
+        try {
+
+            const snap =
+                await getDoc(
+                    doc(
+                        db,
+                        "competitionTeams",
+                        user.uid
+                    )
+                );
+
+
+            if (snap.exists()) {
+
+                window.location.href =
+                    "competition-team.html";
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+);
