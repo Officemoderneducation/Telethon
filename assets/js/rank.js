@@ -13,6 +13,14 @@
 // 2. Target Wise
 // 3. Highest Target %
 //
+// RANK LIMIT:
+// Top 3 / 5 / 10 / 26 / 50 / 100 / Custom
+//
+// FILTER:
+// Multiple Regions
+// Multiple States
+// Single City
+//
 // DATA:
 // daily_entry
 // teacher_entries
@@ -61,6 +69,7 @@ if (userRole !== "admin") {
 
     window.location.href =
         "index.html";
+
 }
 
 
@@ -97,6 +106,21 @@ const rankBy =
 const rankMetric =
     document.getElementById(
         "rankMetric"
+    );
+
+const rankLimit =
+    document.getElementById(
+        "rankLimit"
+    );
+
+const customRank =
+    document.getElementById(
+        "customRank"
+    );
+
+const customRankGroup =
+    document.getElementById(
+        "customRankGroup"
     );
 
 const regionFilter =
@@ -600,8 +624,6 @@ function normalizeDate(
     }
 
 
-    // FIRESTORE TIMESTAMP
-
     if (
         typeof value === "object" &&
         typeof value.toDate === "function"
@@ -613,8 +635,6 @@ function normalizeDate(
 
     }
 
-
-    // FIRESTORE TIMESTAMP OBJECT
 
     if (
         typeof value === "object" &&
@@ -640,8 +660,6 @@ function normalizeDate(
         ).trim();
 
 
-    // YYYY-MM-DD
-
     if (
         /^\d{4}-\d{2}-\d{2}$/
             .test(
@@ -653,8 +671,6 @@ function normalizeDate(
 
     }
 
-
-    // DD-MM-YYYY
 
     let match =
         stringValue.match(
@@ -674,8 +690,6 @@ function normalizeDate(
 
     }
 
-
-    // DD/MM/YYYY
 
     match =
         stringValue.match(
@@ -1003,6 +1017,32 @@ async function loadCollection(
 
 
 // ======================================================
+// GET SELECTED MULTIPLE VALUES
+// ======================================================
+
+function getSelectedValues(
+    selectElement
+) {
+
+    return Array.from(
+        selectElement.selectedOptions
+    )
+        .map(
+            option =>
+                normalize(
+                    option.value
+                )
+        )
+        .filter(
+            value =>
+                value
+        );
+
+}
+
+
+
+// ======================================================
 // LOAD ALL DATA
 // ======================================================
 
@@ -1066,12 +1106,9 @@ async function loadData() {
 
         loadRegionDropdown();
 
-
         updateStateDropdown();
 
-
         updateCityDropdown();
-
 
         applyCurrentFilters();
 
@@ -1128,6 +1165,12 @@ async function loadData() {
 
 function loadRegionDropdown() {
 
+    const previous =
+        getSelectedValues(
+            regionFilter
+        );
+
+
     const regions =
         new Map();
 
@@ -1154,13 +1197,7 @@ function loadRegionDropdown() {
     );
 
 
-    regionFilter.innerHTML = `
-
-        <option value="">
-            All Regions
-        </option>
-
-    `;
+    regionFilter.innerHTML = "";
 
 
     Array.from(
@@ -1186,6 +1223,11 @@ function loadRegionDropdown() {
                 option.textContent =
                     region;
 
+                option.selected =
+                    previous.includes(
+                        normalize(region)
+                    );
+
                 regionFilter.appendChild(
                     option
                 );
@@ -1199,13 +1241,22 @@ function loadRegionDropdown() {
 
 // ======================================================
 // STATE DROPDOWN
+//
+// Multiple states allowed.
+// States are based on selected Regions.
 // ======================================================
 
 function updateStateDropdown() {
 
-    const selectedRegion =
-        normalize(
-            regionFilter.value
+    const selectedRegions =
+        getSelectedValues(
+            regionFilter
+        );
+
+
+    const previousStates =
+        getSelectedValues(
+            stateFilter
         );
 
 
@@ -1217,8 +1268,10 @@ function updateStateDropdown() {
         employee => {
 
             const region =
-                getEmployeeRegion(
-                    employee
+                normalize(
+                    getEmployeeRegion(
+                        employee
+                    )
                 );
 
             const state =
@@ -1228,9 +1281,10 @@ function updateStateDropdown() {
 
 
             if (
-                selectedRegion &&
-                normalize(region) !==
-                selectedRegion
+                selectedRegions.length > 0 &&
+                !selectedRegions.includes(
+                    region
+                )
             ) {
 
                 return;
@@ -1251,13 +1305,7 @@ function updateStateDropdown() {
     );
 
 
-    stateFilter.innerHTML = `
-
-        <option value="">
-            All States
-        </option>
-
-    `;
+    stateFilter.innerHTML = "";
 
 
     Array.from(
@@ -1283,6 +1331,11 @@ function updateStateDropdown() {
                 option.textContent =
                     state;
 
+                option.selected =
+                    previousStates.includes(
+                        normalize(state)
+                    );
+
                 stateFilter.appendChild(
                     option
                 );
@@ -1300,14 +1353,21 @@ function updateStateDropdown() {
 
 function updateCityDropdown() {
 
-    const selectedRegion =
-        normalize(
-            regionFilter.value
+    const selectedRegions =
+        getSelectedValues(
+            regionFilter
         );
 
-    const selectedState =
+
+    const selectedStates =
+        getSelectedValues(
+            stateFilter
+        );
+
+
+    const previousCity =
         normalize(
-            stateFilter.value
+            cityFilter.value
         );
 
 
@@ -1319,13 +1379,17 @@ function updateCityDropdown() {
         employee => {
 
             const region =
-                getEmployeeRegion(
-                    employee
+                normalize(
+                    getEmployeeRegion(
+                        employee
+                    )
                 );
 
             const state =
-                getEmployeeState(
-                    employee
+                normalize(
+                    getEmployeeState(
+                        employee
+                    )
                 );
 
             const city =
@@ -1335,9 +1399,10 @@ function updateCityDropdown() {
 
 
             if (
-                selectedRegion &&
-                normalize(region) !==
-                selectedRegion
+                selectedRegions.length > 0 &&
+                !selectedRegions.includes(
+                    region
+                )
             ) {
 
                 return;
@@ -1346,9 +1411,10 @@ function updateCityDropdown() {
 
 
             if (
-                selectedState &&
-                normalize(state) !==
-                selectedState
+                selectedStates.length > 0 &&
+                !selectedStates.includes(
+                    state
+                )
             ) {
 
                 return;
@@ -1407,6 +1473,25 @@ function updateCityDropdown() {
 
             }
         );
+
+
+    if (
+        previousCity &&
+        Array.from(
+            cityFilter.options
+        )
+            .some(
+                option =>
+                    normalize(
+                        option.value
+                    ) === previousCity
+            )
+    ) {
+
+        cityFilter.value =
+            previousCity;
+
+    }
 
 }
 
@@ -1469,7 +1554,7 @@ function entryInDateRange(
 
 
 // ======================================================
-// GET EMPLOYEE MAP
+// EMPLOYEE MAP
 // ======================================================
 
 function buildEmployeeMap() {
@@ -1638,15 +1723,17 @@ function employeeMatchesFilters(
     employee
 ) {
 
-    const selectedRegion =
-        normalize(
-            regionFilter.value
+    const selectedRegions =
+        getSelectedValues(
+            regionFilter
         );
 
-    const selectedState =
-        normalize(
-            stateFilter.value
+
+    const selectedStates =
+        getSelectedValues(
+            stateFilter
         );
+
 
     const selectedCity =
         normalize(
@@ -1661,12 +1748,14 @@ function employeeMatchesFilters(
             )
         );
 
+
     const employeeState =
         normalize(
             getEmployeeState(
                 employee
             )
         );
+
 
     const employeeCity =
         normalize(
@@ -1676,10 +1765,13 @@ function employeeMatchesFilters(
         );
 
 
+    // Multiple Region filter
+
     if (
-        selectedRegion &&
-        employeeRegion !==
-        selectedRegion
+        selectedRegions.length > 0 &&
+        !selectedRegions.includes(
+            employeeRegion
+        )
     ) {
 
         return false;
@@ -1687,16 +1779,21 @@ function employeeMatchesFilters(
     }
 
 
+    // Multiple State filter
+
     if (
-        selectedState &&
-        employeeState !==
-        selectedState
+        selectedStates.length > 0 &&
+        !selectedStates.includes(
+            employeeState
+        )
     ) {
 
         return false;
 
     }
 
+
+    // City filter
 
     if (
         selectedCity &&
@@ -1717,10 +1814,6 @@ function employeeMatchesFilters(
 
 // ======================================================
 // USER WISE RANKING
-//
-// User = Region User
-//
-// Collection is calculated from assigned teachers.
 // ======================================================
 
 function buildUserRows(
@@ -1755,6 +1848,7 @@ function buildUserRows(
 
 
             employeeCollectionMap.set(
+
                 code,
 
                 employeeCollectionMap.get(
@@ -1865,9 +1959,6 @@ function buildUserRows(
                 }
             );
 
-
-            // If no direct assignment,
-            // use region/state/city.
 
             let assignedEmployees =
                 [];
@@ -2104,9 +2195,6 @@ function buildUserRows(
 
 // ======================================================
 // LOCATION RANKING
-//
-// Target = Sum of targets of employees
-// Collection = Sum of teacher collections
 // ======================================================
 
 function buildLocationRows(
@@ -2165,11 +2253,6 @@ function buildLocationRows(
                         employee
                     );
 
-                key =
-                    normalize(
-                        name
-                    );
-
             }
 
 
@@ -2180,11 +2263,6 @@ function buildLocationRows(
                 name =
                     getEmployeeState(
                         employee
-                    );
-
-                key =
-                    normalize(
-                        name
                     );
 
             }
@@ -2199,12 +2277,13 @@ function buildLocationRows(
                         employee
                     );
 
-                key =
-                    normalize(
-                        name
-                    );
-
             }
+
+
+            key =
+                normalize(
+                    name
+                );
 
 
             if (!key) {
@@ -2267,7 +2346,7 @@ function buildLocationRows(
     );
 
 
-    // Add target from employees.
+    // Add employee targets
 
     employees.forEach(
         employee => {
@@ -2432,10 +2511,8 @@ function sortRows(
 
         rows.sort(
             (a, b) =>
-
                 b.target -
                 a.target
-
         );
 
     }
@@ -2445,10 +2522,8 @@ function sortRows(
 
         rows.sort(
             (a, b) =>
-
                 b.percentage -
                 a.percentage
-
         );
 
     }
@@ -2456,16 +2531,70 @@ function sortRows(
 
         rows.sort(
             (a, b) =>
-
                 b.collection -
                 a.collection
-
         );
 
     }
 
 
     return rows;
+
+}
+
+
+
+// ======================================================
+// GET RANK LIMIT
+// ======================================================
+
+function getRankLimit() {
+
+    if (
+        rankLimit.value ===
+        "custom"
+    ) {
+
+        const value =
+            parseInt(
+                customRank.value,
+                10
+            );
+
+
+        if (
+            Number.isFinite(value) &&
+            value > 0
+        ) {
+
+            return value;
+
+        }
+
+
+        return 3;
+
+    }
+
+
+    const value =
+        parseInt(
+            rankLimit.value,
+            10
+        );
+
+
+    if (
+        Number.isFinite(value) &&
+        value > 0
+    ) {
+
+        return value;
+
+    }
+
+
+    return 3;
 
 }
 
@@ -2482,10 +2611,15 @@ function rankBadge(
     if (rank === 1) {
 
         return `
+
             <div class="rank-badge rank-one">
+
                 <i class="fa-solid fa-trophy"></i>
+
                 1
+
             </div>
+
         `;
 
     }
@@ -2494,9 +2628,13 @@ function rankBadge(
     if (rank === 2) {
 
         return `
+
             <div class="rank-badge rank-two">
+
                 2
+
             </div>
+
         `;
 
     }
@@ -2505,18 +2643,26 @@ function rankBadge(
     if (rank === 3) {
 
         return `
+
             <div class="rank-badge rank-three">
+
                 3
+
             </div>
+
         `;
 
     }
 
 
     return `
+
         <div class="rank-badge">
+
             ${rank}
+
         </div>
+
     `;
 
 }
@@ -2658,11 +2804,15 @@ function displayRows(
                             ${
                                 row.id
                                     ? `
+
                                         <small>
+
                                             ${escapeHTML(
                                                 row.id
                                             )}
+
                                         </small>
+
                                       `
                                     : ""
                             }
@@ -2673,32 +2823,38 @@ function displayRows(
 
 
                     <td>
+
                         ${
                             escapeHTML(
                                 row.region ||
                                 "-"
                             )
                         }
+
                     </td>
 
 
                     <td>
+
                         ${
                             escapeHTML(
                                 row.state ||
                                 "-"
                             )
                         }
+
                     </td>
 
 
                     <td>
+
                         ${
                             escapeHTML(
                                 row.city ||
                                 "-"
                             )
                         }
+
                     </td>
 
 
@@ -2711,9 +2867,11 @@ function displayRows(
                             )}
 
                             <small>
+
                                 ${formatUnit(
                                     row.target
                                 )}
+
                             </small>
 
                         </div>
@@ -2730,9 +2888,11 @@ function displayRows(
                             )}
 
                             <small>
+
                                 ${formatUnit(
                                     row.collection
                                 )}
+
                             </small>
 
                         </div>
@@ -2758,10 +2918,9 @@ function displayRows(
                         <div class="percentage-wrapper">
 
                             <strong
-                                class="${
-                                    percentageClass
-                                }"
+                                class="${percentageClass}"
                             >
+
                                 ${
                                     percentage.toLocaleString(
                                         "en-IN",
@@ -2771,15 +2930,14 @@ function displayRows(
                                         }
                                     )
                                 }%
+
                             </strong>
 
 
                             <div class="progress">
 
                                 <div
-                                    class="progress-bar ${
-                                        percentageClass
-                                    }"
+                                    class="progress-bar ${percentageClass}"
                                     style="
                                         width:${Math.min(
                                             percentage,
@@ -3012,14 +3170,27 @@ function applyCurrentFilters() {
         );
 
 
+    // ==============================================
+    // APPLY CUSTOM / TOP N LIMIT
+    // ==============================================
+
+    const limit =
+        getRankLimit();
+
+
+    rows =
+        rows.slice(
+            0,
+            limit
+        );
+
+
     displayRows(
         rows
     );
 
 
-    updateSelectionText(
-        rows
-    );
+    updateSelectionText();
 
 }
 
@@ -3097,6 +3268,50 @@ function updateSelectionText() {
     }
 
 
+    const limit =
+        getRankLimit();
+
+
+    const selectedRegions =
+        getSelectedValues(
+            regionFilter
+        );
+
+
+    const selectedStates =
+        getSelectedValues(
+            stateFilter
+        );
+
+
+    let locationText =
+        "";
+
+
+    if (
+        selectedRegions.length
+    ) {
+
+        locationText +=
+            " • " +
+            selectedRegions.length +
+            " Region Selected";
+
+    }
+
+
+    if (
+        selectedStates.length
+    ) {
+
+        locationText +=
+            " • " +
+            selectedStates.length +
+            " State Selected";
+
+    }
+
+
     selectionText.textContent =
 
         typeText[
@@ -3109,12 +3324,24 @@ function updateSelectionText() {
             rankMetric.value
         ] +
 
+        " • Top " +
+
+        limit +
+
+        locationText +
+
         " • " +
 
         dateText;
 
 
     tableSubtitle.textContent =
+
+        "Top " +
+
+        limit +
+
+        " • " +
 
         metricText[
             rankMetric.value
@@ -3172,6 +3399,62 @@ function setLoading(
 
 
 // ======================================================
+// RANK LIMIT CHANGE
+// ======================================================
+
+rankLimit.addEventListener(
+    "change",
+    () => {
+
+        if (
+            rankLimit.value ===
+            "custom"
+        ) {
+
+            customRankGroup.style.display =
+                "block";
+
+            customRank.focus();
+
+        }
+        else {
+
+            customRankGroup.style.display =
+                "none";
+
+        }
+
+
+        applyCurrentFilters();
+
+    }
+);
+
+
+
+// ======================================================
+// CUSTOM RANK CHANGE
+// ======================================================
+
+customRank.addEventListener(
+    "input",
+    () => {
+
+        if (
+            rankLimit.value ===
+            "custom"
+        ) {
+
+            applyCurrentFilters();
+
+        }
+
+    }
+);
+
+
+
+// ======================================================
 // APPLY BUTTON
 // ======================================================
 
@@ -3191,6 +3474,36 @@ applyFilter.addEventListener(
             );
 
             return;
+
+        }
+
+
+        if (
+            rankLimit.value ===
+            "custom"
+        ) {
+
+            const limit =
+                parseInt(
+                    customRank.value,
+                    10
+                );
+
+
+            if (
+                !Number.isFinite(limit) ||
+                limit < 1
+            ) {
+
+                alert(
+                    "Custom Rank mein 1 ya usse zyada number enter karein."
+                );
+
+                customRank.focus();
+
+                return;
+
+            }
 
         }
 
@@ -3278,18 +3591,46 @@ resetFilter.addEventListener(
         rankMetric.value =
             "amount";
 
-        regionFilter.value =
+        rankLimit.value =
+            "3";
+
+        customRank.value =
             "";
+
+        customRankGroup.style.display =
+            "none";
+
+
+        Array.from(
+            regionFilter.options
+        )
+            .forEach(
+                option => {
+                    option.selected =
+                        false;
+                }
+            );
+
+
+        Array.from(
+            stateFilter.options
+        )
+            .forEach(
+                option => {
+                    option.selected =
+                        false;
+                }
+            );
+
 
         updateStateDropdown();
 
-        stateFilter.value =
-            "";
-
         updateCityDropdown();
+
 
         cityFilter.value =
             "";
+
 
         fromDate.value =
             "";
