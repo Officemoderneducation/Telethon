@@ -1,5 +1,8 @@
+// ======================================================
+// SEPARATE COMPETITION TEAM
+// ======================================================
+
 import {
-    getAuth,
     onAuthStateChanged,
     signOut
 } from
@@ -7,20 +10,32 @@ import {
 
 import {
     doc,
+    getDoc,
     onSnapshot,
     updateDoc
 } from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-import { auth, db } from "./firebase-config.js";
+import {
+    auth,
+    db
+} from "./firebase-config.js";
 
 
 const competitionRef =
-    doc(db, "competitionAdmin", "main");
+    doc(
+        db,
+        "competitionAdmin",
+        "main"
+    );
 
 
 let currentTeam = null;
 
+
+// ======================================================
+// DOM
+// ======================================================
 
 const teamTitle =
     document.getElementById("teamTitle");
@@ -47,39 +62,44 @@ const winner =
     document.getElementById("winner");
 
 
-document.getElementById("logoutBtn")
-    .addEventListener("click", async () => {
-
-        await signOut(auth);
-
-        window.location.href =
-            "competition-login.html";
-
-    });
-
+// ======================================================
+// MONEY
+// ======================================================
 
 function money(value) {
 
     return "₹" +
         Number(value || 0)
-        .toLocaleString("en-IN");
+            .toLocaleString("en-IN");
 
 }
 
 
+// ======================================================
+// WINNER
+// ======================================================
+
 function calculateWinner(data) {
 
-    const a =
-        Number(data.teamA?.amount || 0);
+    const A =
+        Number(
+            data.teamA?.amount || 0
+        );
 
-    const b =
-        Number(data.teamB?.amount || 0);
+    const B =
+        Number(
+            data.teamB?.amount || 0
+        );
 
-    const c =
-        Number(data.teamC?.amount || 0);
+    const C =
+        Number(
+            data.teamC?.amount || 0
+        );
+
 
     const max =
-        Math.max(a, b, c);
+        Math.max(A, B, C);
+
 
     if (max === 0) {
 
@@ -87,21 +107,42 @@ function calculateWinner(data) {
             "Winner: -";
 
         return;
+
     }
+
 
     const winners = [];
 
-    if (a === max) winners.push(
-        data.teamA?.name || "Team A"
-    );
 
-    if (b === max) winners.push(
-        data.teamB?.name || "Team B"
-    );
+    if (A === max) {
 
-    if (c === max) winners.push(
-        data.teamC?.name || "Team C"
-    );
+        winners.push(
+            data.teamA?.name ||
+            "Team A"
+        );
+
+    }
+
+
+    if (B === max) {
+
+        winners.push(
+            data.teamB?.name ||
+            "Team B"
+        );
+
+    }
+
+
+    if (C === max) {
+
+        winners.push(
+            data.teamC?.name ||
+            "Team C"
+        );
+
+    }
+
 
     if (winners.length > 1) {
 
@@ -111,93 +152,157 @@ function calculateWinner(data) {
     } else {
 
         winner.textContent =
-            "Winner: " + winners[0];
+            "Winner: " +
+            winners[0];
 
     }
 
 }
 
 
+// ======================================================
+// DISPLAY COMPETITION
+// ======================================================
+
 function showCompetition(data) {
 
     competitionName.textContent =
-        data.name || "Competition";
+        data.name ||
+        "Competition";
+
 
     competitionDate.textContent =
-        data.date || "-";
+        data.date ||
+        "-";
 
 
-    const a =
+    const A =
         data.teamA || {};
 
-    const b =
+    const B =
         data.teamB || {};
 
-    const c =
+    const C =
         data.teamC || {};
 
 
-    document.getElementById("teamAName")
-        .textContent = a.name || "Team A";
-
-    document.getElementById("teamBName")
-        .textContent = b.name || "Team B";
-
-    document.getElementById("teamCName")
-        .textContent = c.name || "Team C";
+    document.getElementById(
+        "teamAName"
+    ).textContent =
+        A.name ||
+        "Team A";
 
 
-    document.getElementById("teamAAmount")
-        .textContent = money(a.amount);
+    document.getElementById(
+        "teamBName"
+    ).textContent =
+        B.name ||
+        "Team B";
 
-    document.getElementById("teamBAmount")
-        .textContent = money(b.amount);
 
-    document.getElementById("teamCAmount")
-        .textContent = money(c.amount);
+    document.getElementById(
+        "teamCName"
+    ).textContent =
+        C.name ||
+        "Team C";
+
+
+    document.getElementById(
+        "teamAAmount"
+    ).textContent =
+        money(A.amount);
+
+
+    document.getElementById(
+        "teamBAmount"
+    ).textContent =
+        money(B.amount);
+
+
+    document.getElementById(
+        "teamCAmount"
+    ).textContent =
+        money(C.amount);
 
 
     let amount = 0;
 
+
     if (currentTeam === "A") {
-        amount = a.amount || 0;
+
+        amount =
+            A.amount || 0;
+
     }
+
 
     if (currentTeam === "B") {
-        amount = b.amount || 0;
+
+        amount =
+            B.amount || 0;
+
     }
 
+
     if (currentTeam === "C") {
-        amount = c.amount || 0;
+
+        amount =
+            C.amount || 0;
+
     }
+
 
     myAmount.textContent =
         money(amount);
+
 
     calculateWinner(data);
 
 }
 
 
+// ======================================================
+// UPDATE OWN TEAM AMOUNT
+// ======================================================
+
 async function updateAmount() {
 
-    if (!currentTeam) return;
+    if (!currentTeam) {
+
+        alert(
+            "Team information not loaded."
+        );
+
+        return;
+
+    }
+
 
     const value =
-        Number(amountInput.value);
+        Number(
+            amountInput.value
+        );
+
 
     if (
-        Number.isNaN(value) ||
+        !Number.isFinite(value) ||
         value < 0
     ) {
 
-        alert("Please enter a valid amount.");
+        alert(
+            "Please enter a valid amount."
+        );
 
         return;
+
     }
 
 
     updateBtn.disabled = true;
+
+    updateBtn.textContent =
+        "Updating...";
+
 
     try {
 
@@ -206,40 +311,50 @@ async function updateAmount() {
             await updateDoc(
                 competitionRef,
                 {
-                    "teamA.amount": value
+                    "teamA.amount":
+                        value
                 }
             );
 
         }
+
 
         if (currentTeam === "B") {
 
             await updateDoc(
                 competitionRef,
                 {
-                    "teamB.amount": value
+                    "teamB.amount":
+                        value
                 }
             );
 
         }
+
 
         if (currentTeam === "C") {
 
             await updateDoc(
                 competitionRef,
                 {
-                    "teamC.amount": value
+                    "teamC.amount":
+                        value
                 }
             );
 
-
         }
+
 
         amountInput.value = "";
 
+
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "AMOUNT UPDATE ERROR:",
+            error
+        );
+
 
         alert(
             "Amount update failed."
@@ -247,10 +362,18 @@ async function updateAmount() {
 
     }
 
+
     updateBtn.disabled = false;
+
+    updateBtn.textContent =
+        "Update My Amount";
 
 }
 
+
+// ======================================================
+// UPDATE BUTTON
+// ======================================================
 
 updateBtn.addEventListener(
     "click",
@@ -258,9 +381,32 @@ updateBtn.addEventListener(
 );
 
 
+// ======================================================
+// LOGOUT
+// ======================================================
+
+document.getElementById(
+    "logoutBtn"
+).addEventListener(
+    "click",
+    async () => {
+
+        await signOut(auth);
+
+        window.location.href =
+            "competition-login.html";
+
+    }
+);
+
+
+// ======================================================
+// AUTH CHECK
+// ======================================================
+
 onAuthStateChanged(
     auth,
-    async (user) => {
+    async user => {
 
         if (!user) {
 
@@ -268,64 +414,108 @@ onAuthStateChanged(
                 "competition-login.html";
 
             return;
+
         }
 
 
-        const teamSnap =
-            await import(
-                "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js"
-            ).then(m =>
-                m.getDoc(
+        try {
+
+            const teamSnap =
+                await getDoc(
                     doc(
                         db,
                         "competitionTeams",
                         user.uid
                     )
-                )
+                );
+
+
+            if (!teamSnap.exists()) {
+
+                await signOut(auth);
+
+                window.location.href =
+                    "competition-login.html";
+
+                return;
+
+            }
+
+
+            const teamData =
+                teamSnap.data();
+
+
+            if (
+                teamData.role !==
+                "competition_team"
+            ) {
+
+                await signOut(auth);
+
+                window.location.href =
+                    "competition-login.html";
+
+                return;
+
+            }
+
+
+            currentTeam =
+                teamData.team;
+
+
+            teamTitle.textContent =
+                teamData.teamName ||
+                "Team " + currentTeam;
+
+
+            loginInfo.textContent =
+                "Team " +
+                currentTeam;
+
+
+            // ==========================================
+            // LIVE FIRESTORE
+            // ==========================================
+
+            onSnapshot(
+                competitionRef,
+                snapshot => {
+
+                    if (
+                        snapshot.exists()
+                    ) {
+
+                        showCompetition(
+                            snapshot.data()
+                        );
+
+                    }
+
+                },
+                error => {
+
+                    console.error(
+                        error
+                    );
+
+                }
             );
 
 
-        if (!teamSnap.exists()) {
+        } catch (error) {
+
+            console.error(
+                error
+            );
 
             await signOut(auth);
 
             window.location.href =
                 "competition-login.html";
 
-            return;
         }
-
-
-        const teamData =
-            teamSnap.data();
-
-        currentTeam =
-            teamData.team;
-
-
-        teamTitle.textContent =
-            teamData.teamName ||
-            ("Team " + currentTeam);
-
-
-        loginInfo.textContent =
-            "Team " + currentTeam;
-
-
-        onSnapshot(
-            competitionRef,
-            snapshot => {
-
-                if (snapshot.exists()) {
-
-                    showCompetition(
-                        snapshot.data()
-                    );
-
-                }
-
-            }
-        );
 
     }
 );
