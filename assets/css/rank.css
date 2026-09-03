@@ -1,4 +1,3 @@
-```css
 /* =====================================================
    TELETHON RANK PAGE
 ===================================================== */
@@ -603,62 +602,6 @@ body {
 
 
 /* =====================================================
-   DOWNLOAD BUTTONS
-===================================================== */
-
-.table-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.download-image-btn,
-.download-csv-btn {
-    border: none;
-
-    padding: 8px 12px;
-
-    border-radius: 7px;
-
-    cursor: pointer;
-
-    font-size: 11px;
-    font-weight: 600;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 6px;
-}
-
-.download-image-btn {
-    background: #2563eb;
-    color: #ffffff;
-}
-
-.download-image-btn:hover {
-    background: #1d4ed8;
-}
-
-.download-csv-btn {
-    background: #059669;
-    color: #ffffff;
-}
-
-.download-csv-btn:hover {
-    background: #047857;
-}
-
-.download-image-btn:disabled,
-.download-csv-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-
-/* =====================================================
    TABLE
    COLUMNS:
    Rank | Region | State | City | Teachers Name | Collection
@@ -1013,15 +956,6 @@ tbody tr.top-rank-row {
         flex-direction: column;
     }
 
-    .table-actions {
-        width: 100%;
-    }
-
-    .download-image-btn,
-    .download-csv-btn {
-        flex: 1;
-    }
-
     .page-footer {
         flex-direction: column;
         gap: 5px;
@@ -1032,4 +966,3 @@ tbody tr.top-rank-row {
     }
 
 }
-```
