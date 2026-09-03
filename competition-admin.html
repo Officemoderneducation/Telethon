@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Competition Admin | Telethon</title>
+
+    <!-- =========================================
+         FONT AWESOME
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+
+        /* =========================================
+           RESET
+        ========================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* =========================================
+           HEADER
+        ========================================== */
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 18px 25px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title i {
+            font-size: 24px;
+            color: #2563eb;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        /* =========================================
+           MAIN
+        ========================================== */
+
+        .container {
+            width: 100%;
+            max-width: 1250px;
+            margin: auto;
+            padding: 25px;
+        }
+
+        /* =========================================
+           CARD
+        ========================================== */
+
+        .card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 22px;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-bottom: 20px;
+        }
+
+        .card-title i {
+            color: #2563eb;
+        }
+
+        /* =========================================
+           FORM
+        ========================================== */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        input,
+        select {
+            width: 100%;
+
+            height: 44px;
+
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+
+            padding: 0 13px;
+
+            outline: none;
+
+            font-size: 14px;
+
+            background: #ffffff;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        /* =========================================
+           TEAMS
+        ========================================== */
+
+        .teams-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 20px;
+        }
+
+        .team-card {
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            background: #fafbfc;
+        }
+
+        .team-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .team-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .team-a {
+            color: #2563eb;
+        }
+
+        .team-b {
+            color: #16a34a;
+        }
+
+        .team-c {
+            color: #9333ea;
+        }
+
+        .team-letter {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #ffffff;
+
+            border: 1px solid #e5e7eb;
+
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .team-form {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        /* =========================================
+           BUTTONS
+        ========================================== */
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+        button {
+            border: none;
+
+            height: 44px;
+
+            padding: 0 20px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        /* =========================================
+           LIVE COMPARISON
+        ========================================== */
+
+        .comparison {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 20px;
+        }
+
+        .comparison-card {
+            background: #ffffff;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            text-align: center;
+
+            position: relative;
+        }
+
+        .comparison-card.winner {
+            border: 2px solid #f59e0b;
+
+            box-shadow:
+                0 8px 25px rgba(245, 158, 11, 0.15);
+        }
+
+        .winner-badge {
+            position: absolute;
+
+            top: -12px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            background: #f59e0b;
+            color: #ffffff;
+
+            padding: 5px 12px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .comparison-name {
+            font-size: 17px;
+            font-weight: 700;
+
+            margin-bottom: 12px;
+        }
+
+        .comparison-amount {
+            font-size: 30px;
+            font-weight: 800;
+
+            margin-bottom: 6px;
+        }
+
+        .comparison-unit {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* =========================================
+           WINNER
+        ========================================== */
+
+        .winner-box {
+            margin-top: 22px;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            background: #fffbeb;
+
+            border: 1px solid #fde68a;
+
+            text-align: center;
+        }
+
+        .winner-box i {
+            color: #f59e0b;
+            font-size: 26px;
+
+            margin-bottom: 8px;
+        }
+
+        .winner-box h2 {
+            font-size: 20px;
+        }
+
+        .winner-box p {
+            margin-top: 5px;
+
+            font-size: 13px;
+
+            color: #6b7280;
+        }
+
+        /* =========================================
+           STATUS
+        ========================================== */
+
+        .status {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-ended {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* =========================================
+           MESSAGE
+        ========================================== */
+
+        #message {
+            display: none;
+
+            padding: 12px 15px;
+
+            border-radius: 8px;
+
+            margin-bottom: 18px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+        .success {
+            display: block !important;
+
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block !important;
+
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* =========================================
+           MOBILE
+        ========================================== */
+
+        @media (max-width: 900px) {
+
+            .teams-grid,
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .container {
+                padding: 15px;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     HEADER
+========================================== -->
+
+<header class="header">
+
+    <div class="header-title">
+
+        <i class="fa-solid fa-trophy"></i>
+
+        <div>
+
+            <h1>Competition Management</h1>
+
+            <p>Admin Panel</p>
+
+        </div>
+
+    </div>
+
+    <div id="statusBadge"></div>
+
+</header>
+
+
+<!-- =========================================
+     MAIN
+========================================== -->
+
+<main class="container">
+
+
+    <div id="message"></div>
+
+
+    <!-- ======================================
+         COMPETITION SETTINGS
+    ======================================= -->
+
+    <section class="card">
+
+        <div class="card-title">
+
+            <i class="fa-solid fa-sliders"></i>
+
+            Competition Settings
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group full">
+
+                <label>
+                    Competition Name
+                </label>
+
+                <input
+                    type="text"
+                    id="competitionName"
+                    placeholder="Example: A V/S B V/S C"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Competition Date
+                </label>
+
+                <input
+                    type="date"
+                    id="competitionDate"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Competition End Time
+                </label>
+
+                <input
+                    type="time"
+                    id="competitionEndTime"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="competitionStatus">
+
+                    <option value="active">
+                        Active
+                    </option>
+
+                    <option value="ended">
+                        Ended
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ======================================
+         TEAMS
+    ======================================= -->
+
+    <section class="card">
+
+        <div class="card-title">
+
+            <i class="fa-solid fa-users"></i>
+
+            Team Management
+
+        </div>
+
+
+        <div class="teams-grid">
+
+
+            <!-- =================================
+                 TEAM A
+            ================================== -->
+
+            <div class="team-card">
+
+                <div class="team-header">
+
+                    <div class="team-title team-a">
+                        Team A
+                    </div>
+
+                    <div class="team-letter team-a">
+                        A
+                    </div>
+
+                </div>
+
+
+                <div class="team-form">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Team Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="teamAName"
+                            placeholder="Team A"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Team Login ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="teamAId"
+                            placeholder="Team A ID"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Team Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="teamAPassword"
+                            placeholder="Team A Password"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Amount
+                        </label>
+
+                        <input
+                            type="number"
+                            id="teamAAmount"
+                            min="0"
+                            step="1"
+                            placeholder="0"
+                        >
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 TEAM B
+            ================================== -->
+
+            <div class="team-card">
+
+                <div class="team-header">
+
+                    <div class="team-title team-b">
+                        Team B
+                    </div>
+
+                    <div class="team-letter team-b">
+                        B
+                    </div>
+
+                </div>
+
+
+                <div class="team-form">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Team Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="teamBName"
+                            placeholder="Team B"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Team Login ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="teamBId"
+                            placeholder="Team B ID"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Team Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="teamBPassword"
+                            placeholder="Team B Password"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Amount
+                        </label>
+
+                        <input
+                            type="number"
+                            id="teamBAmount"
+                            min="0"
+                            step="1"
+                            placeholder="0"
+                        >
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 TEAM C
+            ================================== -->
+
+            <div class="team-card">
+
+                <div class="team-header">
+
+                    <div class="team-title team-c">
+                        Team C
+                    </div>
+
+                    <div class="team-letter team-c">
+                        C
+                    </div>
+
+                </div>
+
+
+                <div class="team-form">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Team Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="teamCName"
+                            placeholder="Team C"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Team Login ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="teamCId"
+                            placeholder="Team C ID"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Team Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="teamCPassword"
+                            placeholder="Team C Password"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Amount
+                        </label>
+
+                        <input
+                            type="number"
+                            id="teamCAmount"
+                            min="0"
+                            step="1"
+                            placeholder="0"
+                        >
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                type="button"
+                class="btn-secondary"
+                id="resetBtn"
+            >
+
+                <i class="fa-solid fa-rotate-left"></i>
+
+                Reset
+
+            </button>
+
+
+            <button
+                type="button"
+                class="btn-primary"
+                id="saveBtn"
+            >
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Save Competition
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ======================================
+         LIVE COMPARISON
+    ======================================= -->
+
+    <section class="card">
+
+        <div class="card-title">
+
+            <i class="fa-solid fa-chart-column"></i>
+
+            Live Competition
+
+        </div>
+
+
+        <div class="comparison">
+
+
+            <!-- TEAM A -->
+
+            <div
+                class="comparison-card"
+                id="comparisonA"
+            >
+
+                <div
+                    class="comparison-name"
+                    id="displayTeamA"
+                >
+                    Team A
+                </div>
+
+                <div
+                    class="comparison-amount"
+                    id="displayAmountA"
+                >
+                    ₹0
+                </div>
+
+                <div
+                    class="comparison-unit"
+                    id="displayUnitA"
+                >
+                    0 Units
+                </div>
+
+            </div>
+
+
+            <!-- TEAM B -->
+
+            <div
+                class="comparison-card"
+                id="comparisonB"
+            >
+
+                <div
+                    class="comparison-name"
+                    id="displayTeamB"
+                >
+                    Team B
+                </div>
+
+                <div
+                    class="comparison-amount"
+                    id="displayAmountB"
+                >
+                    ₹0
+                </div>
+
+                <div
+                    class="comparison-unit"
+                    id="displayUnitB"
+                >
+                    0 Units
+                </div>
+
+            </div>
+
+
+            <!-- TEAM C -->
+
+            <div
+                class="comparison-card"
+                id="comparisonC"
+            >
+
+                <div
+                    class="comparison-name"
+                    id="displayTeamC"
+                >
+                    Team C
+                </div>
+
+                <div
+                    class="comparison-amount"
+                    id="displayAmountC"
+                >
+                    ₹0
+                </div>
+
+                <div
+                    class="comparison-unit"
+                    id="displayUnitC"
+                >
+                    0 Units
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- WINNER -->
+
+        <div class="winner-box">
+
+            <i class="fa-solid fa-trophy"></i>
+
+            <h2 id="winnerText">
+                No Winner Yet
+            </h2>
+
+            <p id="winnerAmount">
+                Update team amounts to calculate the winner.
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =========================================
+     FIREBASE
+========================================== -->
+
+<script type="module">
+
+    import {
+        db
+    } from "./firebase-config.js";
+
+
+    import {
+        doc,
+        getDoc,
+        setDoc,
+        serverTimestamp
+    } from
+        "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+
+    /* =========================================
+       DOCUMENT
+    ========================================== */
+
+    const competitionRef =
+        doc(
+            db,
+            "competitionAdmin",
+            "main"
+        );
+
+
+
+    /* =========================================
+       ELEMENTS
+    ========================================== */
+
+    const competitionName =
+        document.getElementById(
+            "competitionName"
+        );
+
+    const competitionDate =
+        document.getElementById(
+            "competitionDate"
+        );
+
+    const competitionEndTime =
+        document.getElementById(
+            "competitionEndTime"
+        );
+
+    const competitionStatus =
+        document.getElementById(
+            "competitionStatus"
+        );
+
+
+    const teamAName =
+        document.getElementById(
+            "teamAName"
+        );
+
+    const teamAId =
+        document.getElementById(
+            "teamAId"
+        );
+
+    const teamAPassword =
+        document.getElementById(
+            "teamAPassword"
+        );
+
+    const teamAAmount =
+        document.getElementById(
+            "teamAAmount"
+        );
+
+
+    const teamBName =
+        document.getElementById(
+            "teamBName"
+        );
+
+    const teamBId =
+        document.getElementById(
+            "teamBId"
+        );
+
+    const teamBPassword =
+        document.getElementById(
+            "teamBPassword"
+        );
+
+    const teamBAmount =
+        document.getElementById(
+            "teamBAmount"
+        );
+
+
+    const teamCName =
+        document.getElementById(
+            "teamCName"
+        );
+
+    const teamCId =
+        document.getElementById(
+            "teamCId"
+        );
+
+    const teamCPassword =
+        document.getElementById(
+            "teamCPassword"
+        );
+
+    const teamCAmount =
+        document.getElementById(
+            "teamCAmount"
+        );
+
+
+
+    /* =========================================
+       MESSAGE
+    ========================================== */
+
+    function showMessage(
+        text,
+        type
+    ) {
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+        message.textContent =
+            text;
+
+        message.className =
+            type;
+
+        setTimeout(
+            () => {
+
+                message.className = "";
+
+            },
+            3000
+        );
+
+    }
+
+
+
+    /* =========================================
+       NUMBER
+    ========================================== */
+
+    function numberValue(
+        value
+    ) {
+
+        const number =
+            Number(value);
+
+        return Number.isFinite(number)
+            ? number
+            : 0;
+
+    }
+
+
+
+    /* =========================================
+       FORMAT AMOUNT
+    ========================================== */
+
+    function formatAmount(
+        amount
+    ) {
+
+        return "₹" +
+            numberValue(amount)
+                .toLocaleString(
+                    "en-IN"
+                );
+
+    }
+
+
+
+    /* =========================================
+       UNITS
+       1 UNIT = ₹7,000
+    ========================================== */
+
+    function getUnits(
+        amount
+    ) {
+
+        return (
+            numberValue(amount) /
+            7000
+        );
+
+    }
+
+
+
+    /* =========================================
+       UPDATE LIVE VIEW
+    ========================================== */
+
+    function updateComparison() {
+
+        const a =
+            numberValue(
+                teamAAmount.value
+            );
+
+        const b =
+            numberValue(
+                teamBAmount.value
+            );
+
+        const c =
+            numberValue(
+                teamCAmount.value
+            );
+
+
+        document.getElementById(
+            "displayTeamA"
+        ).textContent =
+            teamAName.value ||
+            "Team A";
+
+
+        document.getElementById(
+            "displayTeamB"
+        ).textContent =
+            teamBName.value ||
+            "Team B";
+
+
+        document.getElementById(
+            "displayTeamC"
+        ).textContent =
+            teamCName.value ||
+            "Team C";
+
+
+        document.getElementById(
+            "displayAmountA"
+        ).textContent =
+            formatAmount(a);
+
+
+        document.getElementById(
+            "displayAmountB"
+        ).textContent =
+            formatAmount(b);
+
+
+        document.getElementById(
+            "displayAmountC"
+        ).textContent =
+            formatAmount(c);
+
+
+        document.getElementById(
+            "displayUnitA"
+        ).textContent =
+            getUnits(a).toFixed(2) +
+            " Units";
+
+
+        document.getElementById(
+            "displayUnitB"
+        ).textContent =
+            getUnits(b).toFixed(2) +
+            " Units";
+
+
+        document.getElementById(
+            "displayUnitC"
+        ).textContent =
+            getUnits(c).toFixed(2) +
+            " Units";
+
+
+        /* ===============================
+           RESET WINNER
+        =============================== */
+
+        document
+            .getElementById(
+                "comparisonA"
+            )
+            .classList
+            .remove("winner");
+
+
+        document
+            .getElementById(
+                "comparisonB"
+            )
+            .classList
+            .remove("winner");
+
+
+        document
+            .getElementById(
+                "comparisonC"
+            )
+            .classList
+            .remove("winner");
+
+
+        const winnerText =
+            document.getElementById(
+                "winnerText"
+            );
+
+        const winnerAmount =
+            document.getElementById(
+                "winnerAmount"
+            );
+
+
+        const max =
+            Math.max(a, b, c);
+
+
+        if (max === 0) {
+
+            winnerText.textContent =
+                "No Winner Yet";
+
+            winnerAmount.textContent =
+                "Update team amounts to calculate the winner.";
+
+            return;
+
+        }
+
+
+        const winners = [];
+
+
+        if (a === max)
+            winners.push("A");
+
+
+        if (b === max)
+            winners.push("B");
+
+
+        if (c === max)
+            winners.push("C");
+
+
+        if (winners.length > 1) {
+
+            winnerText.textContent =
+                "DRAW";
+
+            winnerAmount.textContent =
+                "Two or more teams have the same highest amount.";
+
+        } else {
+
+            const winner =
+                winners[0];
+
+
+            let name = "";
+
+
+            if (winner === "A") {
+
+                name =
+                    teamAName.value ||
+                    "Team A";
+
+                document
+                    .getElementById(
+                        "comparisonA"
+                    )
+                    .classList
+                    .add("winner");
+
+            }
+
+
+            if (winner === "B") {
+
+                name =
+                    teamBName.value ||
+                    "Team B";
+
+                document
+                    .getElementById(
+                        "comparisonB"
+                    )
+                    .classList
+                    .add("winner");
+
+            }
+
+
+            if (winner === "C") {
+
+                name =
+                    teamCName.value ||
+                    "Team C";
+
+                document
+                    .getElementById(
+                        "comparisonC"
+                    )
+                    .classList
+                    .add("winner");
+
+            }
+
+
+            winnerText.textContent =
+                name +
+                " WINNER";
+
+
+            winnerAmount.textContent =
+                "Winning Amount: " +
+                formatAmount(max);
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       SAVE
+    ========================================== */
+
+    async function saveCompetition() {
+
+        try {
+
+            const data = {
+
+                name:
+                    competitionName.value.trim(),
+
+                date:
+                    competitionDate.value,
+
+                endTime:
+                    competitionEndTime.value,
+
+                status:
+                    competitionStatus.value,
+
+
+                teamA: {
+
+                    name:
+                        teamAName.value.trim(),
+
+                    loginId:
+                        teamAId.value.trim(),
+
+                    password:
+                        teamAPassword.value,
+
+                    amount:
+                        numberValue(
+                            teamAAmount.value
+                        )
+
+                },
+
+
+                teamB: {
+
+                    name:
+                        teamBName.value.trim(),
+
+                    loginId:
+                        teamBId.value.trim(),
+
+                    password:
+                        teamBPassword.value,
+
+                    amount:
+                        numberValue(
+                            teamBAmount.value
+                        )
+
+                },
+
+
+                teamC: {
+
+                    name:
+                        teamCName.value.trim(),
+
+                    loginId:
+                        teamCId.value.trim(),
+
+                    password:
+                        teamCPassword.value,
+
+                    amount:
+                        numberValue(
+                            teamCAmount.value
+                        )
+
+                },
+
+
+                updatedAt:
+                    serverTimestamp()
+
+            };
+
+
+            await setDoc(
+                competitionRef,
+                data,
+                {
+                    merge: true
+                }
+            );
+
+
+            showMessage(
+                "Competition saved successfully.",
+                "success"
+            );
+
+
+            updateComparison();
+
+
+        } catch (error) {
+
+            console.error(
+                "Save Error:",
+                error
+            );
+
+            showMessage(
+                "Competition save nahi ho saki.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       LOAD
+    ========================================== */
+
+    async function loadCompetition() {
+
+        try {
+
+            const snapshot =
+                await getDoc(
+                    competitionRef
+                );
+
+
+            if (!snapshot.exists()) {
+
+                updateComparison();
+
+                return;
+
+            }
+
+
+            const data =
+                snapshot.data();
+
+
+            competitionName.value =
+                data.name || "";
+
+
+            competitionDate.value =
+                data.date || "";
+
+
+            competitionEndTime.value =
+                data.endTime || "";
+
+
+            competitionStatus.value =
+                data.status ||
+                "active";
+
+
+            /* ===============================
+               TEAM A
+            =============================== */
+
+            const a =
+                data.teamA || {};
+
+
+            teamAName.value =
+                a.name || "";
+
+
+            teamAId.value =
+                a.loginId || "";
+
+
+            teamAPassword.value =
+                a.password || "";
+
+
+            teamAAmount.value =
+                a.amount || 0;
+
+
+            /* ===============================
+               TEAM B
+            =============================== */
+
+            const b =
+                data.teamB || {};
+
+
+            teamBName.value =
+                b.name || "";
+
+
+            teamBId.value =
+                b.loginId || "";
+
+
+            teamBPassword.value =
+                b.password || "";
+
+
+            teamBAmount.value =
+                b.amount || 0;
+
+
+            /* ===============================
+               TEAM C
+            =============================== */
+
+            const c =
+                data.teamC || {};
+
+
+            teamCName.value =
+                c.name || "";
+
+
+            teamCId.value =
+                c.loginId || "";
+
+
+            teamCPassword.value =
+                c.password || "";
+
+
+            teamCAmount.value =
+                c.amount || 0;
+
+
+            updateComparison();
+
+
+            updateStatus();
+
+
+        } catch (error) {
+
+            console.error(
+                "Load Error:",
+                error
+            );
+
+            showMessage(
+                "Competition data load nahi hua.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       STATUS
+    ========================================== */
+
+    function updateStatus() {
+
+        const badge =
+            document.getElementById(
+                "statusBadge"
+            );
+
+
+        if (
+            competitionStatus.value ===
+            "active"
+        ) {
+
+            badge.innerHTML =
+                `
+                <span class="status status-active">
+                    <i class="fa-solid fa-circle"></i>
+                    Active
+                </span>
+                `;
+
+        } else {
+
+            badge.innerHTML =
+                `
+                <span class="status status-ended">
+                    <i class="fa-solid fa-circle"></i>
+                    Ended
+                </span>
+                `;
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       RESET
+    ========================================== */
+
+    function resetForm() {
+
+        competitionName.value =
+            "";
+
+        competitionDate.value =
+            "";
+
+        competitionEndTime.value =
+            "";
+
+        competitionStatus.value =
+            "active";
+
+
+        teamAName.value =
+            "Team A";
+
+        teamAId.value =
+            "";
+
+        teamAPassword.value =
+            "";
+
+        teamAAmount.value =
+            0;
+
+
+        teamBName.value =
+            "Team B";
+
+        teamBId.value =
+            "";
+
+        teamBPassword.value =
+            "";
+
+        teamBAmount.value =
+            0;
+
+
+        teamCName.value =
+            "Team C";
+
+        teamCId.value =
+            "";
+
+        teamCPassword.value =
+            "";
+
+        teamCAmount.value =
+            0;
+
+
+        updateComparison();
+
+        updateStatus();
+
+    }
+
+
+
+    /* =========================================
+       EVENTS
+    ========================================== */
+
+    document
+        .getElementById(
+            "saveBtn"
+        )
+        .addEventListener(
+            "click",
+            saveCompetition
+        );
+
+
+    document
+        .getElementById(
+            "resetBtn"
+        )
+        .addEventListener(
+            "click",
+            resetForm
+        );
+
+
+    competitionStatus
+        .addEventListener(
+            "change",
+            updateStatus
+        );
+
+
+    [
+        teamAName,
+        teamAAmount,
+        teamBName,
+        teamBAmount,
+        teamCName,
+        teamCAmount
+    ]
+        .forEach(
+            element => {
+
+                element.addEventListener(
+                    "input",
+                    updateComparison
+                );
+
+            }
+        );
+
+
+
+    /* =========================================
+       START
+    ========================================== */
+
+    loadCompetition();
+
+</script>
+
+
+</body>
+
+</html>
