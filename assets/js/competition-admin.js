@@ -1,31 +1,33 @@
-// ======================================
-// TELETHON - COMPETITION ADMIN
-// ======================================
-
-import { db } from "./firebase-config.js";
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut,
+    createUserWithEmailAndPassword
+} from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
     doc,
     getDoc,
     setDoc,
+    onSnapshot,
     serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+} from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import { auth, db } from "./firebase-config.js";
 
 
-// ======================================
-// FIRESTORE DOCUMENT
-// ======================================
-
-const competitionRef = doc(
-    db,
-    "competitionAdmin",
-    "main"
-);
+/*
+====================================================
+COMPETITION ADMIN
+====================================================
+*/
 
 
-// ======================================
-// HTML ELEMENTS
-// ======================================
+const competitionRef =
+    doc(db, "competitionAdmin", "main");
+
 
 const competitionName =
     document.getElementById("competitionName");
@@ -36,11 +38,6 @@ const competitionDate =
 const competitionEndTime =
     document.getElementById("competitionEndTime");
 
-const competitionStatus =
-    document.getElementById("competitionStatus");
-
-
-// Team A
 
 const teamAName =
     document.getElementById("teamAName");
@@ -51,11 +48,6 @@ const teamAId =
 const teamAPassword =
     document.getElementById("teamAPassword");
 
-const teamAAmount =
-    document.getElementById("teamAAmount");
-
-
-// Team B
 
 const teamBName =
     document.getElementById("teamBName");
@@ -66,11 +58,6 @@ const teamBId =
 const teamBPassword =
     document.getElementById("teamBPassword");
 
-const teamBAmount =
-    document.getElementById("teamBAmount");
-
-
-// Team C
 
 const teamCName =
     document.getElementById("teamCName");
@@ -81,723 +68,604 @@ const teamCId =
 const teamCPassword =
     document.getElementById("teamCPassword");
 
-const teamCAmount =
-    document.getElementById("teamCAmount");
+
+const saveBtn =
+    document.getElementById("saveBtn");
+
+const status =
+    document.getElementById("status");
 
 
-// ======================================
-// MESSAGE
-// ======================================
+function makeEmail(id) {
 
-function showMessage(text, type) {
-
-    const message =
-        document.getElementById("message");
-
-    message.textContent = text;
-
-    message.className = type;
-
-    setTimeout(() => {
-
-        message.className = "";
-
-    }, 3000);
+    return (
+        id.trim().toLowerCase()
+        + "@telethoncompetition.local"
+    );
 
 }
 
 
-// ======================================
-// NUMBER VALUE
-// ======================================
-
-function numberValue(value) {
-
-    const number = Number(value);
-
-    return Number.isFinite(number)
-        ? number
-        : 0;
-
-}
-
-
-// ======================================
-// FORMAT AMOUNT
-// ======================================
-
-function formatAmount(amount) {
+function money(value) {
 
     return "₹" +
-        numberValue(amount)
-            .toLocaleString("en-IN");
+        Number(value || 0)
+        .toLocaleString("en-IN");
 
 }
 
 
-// ======================================
-// UNIT
-// 1 UNIT = ₹7,000
-// ======================================
+function setValue(element, value) {
 
-function getUnits(amount) {
+    if (element) {
 
-    return numberValue(amount) / 7000;
+        element.value =
+            value || "";
+
+    }
 
 }
 
 
-// ======================================
-// UPDATE LIVE COMPARISON
-// ======================================
+function loadCompetition(data) {
 
-function updateComparison() {
+    setValue(
+        competitionName,
+        data.name
+    );
+
+    setValue(
+        competitionDate,
+        data.date
+    );
+
+    setValue(
+        competitionEndTime,
+        data.endTime
+    );
+
+
+    setValue(
+        teamAName,
+        data.teamA?.name
+    );
+
+    setValue(
+        teamAId,
+        data.teamA?.loginId
+    );
+
+
+    setValue(
+        teamBName,
+        data.teamB?.name
+    );
+
+    setValue(
+        teamBId,
+        data.teamB?.loginId
+    );
+
+
+    setValue(
+        teamCName,
+        data.teamC?.name
+    );
+
+    setValue(
+        teamCId,
+        data.teamC?.loginId
+    );
+
+
+    updateLive(data);
+
+}
+
+
+function updateLive(data) {
 
     const a =
-        numberValue(teamAAmount.value);
+        data.teamA || {};
 
     const b =
-        numberValue(teamBAmount.value);
+        data.teamB || {};
 
     const c =
-        numberValue(teamCAmount.value);
+        data.teamC || {};
 
 
-    // ----------------------------------
-    // TEAM NAMES
-    // ----------------------------------
+    document.getElementById("liveAName")
+        .textContent =
+        a.name || "Team A";
 
-    document.getElementById(
-        "displayTeamA"
-    ).textContent =
-        teamAName.value.trim() ||
-        "Team A";
+    document.getElementById("liveBName")
+        .textContent =
+        b.name || "Team B";
 
-
-    document.getElementById(
-        "displayTeamB"
-    ).textContent =
-        teamBName.value.trim() ||
-        "Team B";
+    document.getElementById("liveCName")
+        .textContent =
+        c.name || "Team C";
 
 
-    document.getElementById(
-        "displayTeamC"
-    ).textContent =
-        teamCName.value.trim() ||
-        "Team C";
+    document.getElementById("liveAAmount")
+        .textContent =
+        money(a.amount);
+
+    document.getElementById("liveBAmount")
+        .textContent =
+        money(b.amount);
+
+    document.getElementById("liveCAmount")
+        .textContent =
+        money(c.amount);
 
 
-    // ----------------------------------
-    // AMOUNTS
-    // ----------------------------------
+    const amounts = [
 
-    document.getElementById(
-        "displayAmountA"
-    ).textContent =
-        formatAmount(a);
+        Number(a.amount || 0),
+        Number(b.amount || 0),
+        Number(c.amount || 0)
 
-
-    document.getElementById(
-        "displayAmountB"
-    ).textContent =
-        formatAmount(b);
+    ];
 
 
-    document.getElementById(
-        "displayAmountC"
-    ).textContent =
-        formatAmount(c);
+    const max =
+        Math.max(...amounts);
 
 
-    // ----------------------------------
-    // UNITS
-    // ----------------------------------
-
-    document.getElementById(
-        "displayUnitA"
-    ).textContent =
-        getUnits(a).toFixed(2) +
-        " Units";
+    const winnerElement =
+        document.getElementById("winner");
 
 
-    document.getElementById(
-        "displayUnitB"
-    ).textContent =
-        getUnits(b).toFixed(2) +
-        " Units";
+    if (max === 0) {
 
-
-    document.getElementById(
-        "displayUnitC"
-    ).textContent =
-        getUnits(c).toFixed(2) +
-        " Units";
-
-
-    // ----------------------------------
-    // REMOVE OLD WINNER
-    // ----------------------------------
-
-    document
-        .getElementById("comparisonA")
-        .classList
-        .remove("winner");
-
-    document
-        .getElementById("comparisonB")
-        .classList
-        .remove("winner");
-
-    document
-        .getElementById("comparisonC")
-        .classList
-        .remove("winner");
-
-
-    const winnerText =
-        document.getElementById(
-            "winnerText"
-        );
-
-    const winnerAmount =
-        document.getElementById(
-            "winnerAmount"
-        );
-
-
-    // ----------------------------------
-    // NO AMOUNT
-    // ----------------------------------
-
-    if (a === 0 && b === 0 && c === 0) {
-
-        winnerText.textContent =
-            "No Winner Yet";
-
-        winnerAmount.textContent =
-            "Update team amounts to calculate the winner.";
+        winnerElement.textContent =
+            "Winner: -";
 
         return;
     }
 
-
-    // ----------------------------------
-    // FIND HIGHEST
-    // ----------------------------------
-
-    const max =
-        Math.max(a, b, c);
 
     const winners = [];
 
 
-    if (a === max) {
-        winners.push("A");
-    }
+    if (amounts[0] === max) {
 
-    if (b === max) {
-        winners.push("B");
-    }
+        winners.push(
+            a.name || "Team A"
+        );
 
-    if (c === max) {
-        winners.push("C");
     }
 
 
-    // ----------------------------------
-    // DRAW
-    // ----------------------------------
+    if (amounts[1] === max) {
+
+        winners.push(
+            b.name || "Team B"
+        );
+
+    }
+
+
+    if (amounts[2] === max) {
+
+        winners.push(
+            c.name || "Team C"
+        );
+
+    }
+
 
     if (winners.length > 1) {
 
-        winnerText.textContent =
-            "DRAW";
-
-        winnerAmount.textContent =
-            "Two or more teams have the same highest amount.";
-
-        return;
-    }
-
-
-    // ----------------------------------
-    // WINNER
-    // ----------------------------------
-
-    const winner =
-        winners[0];
-
-    let winnerName = "";
-
-
-    if (winner === "A") {
-
-        winnerName =
-            teamAName.value.trim() ||
-            "Team A";
-
-        document
-            .getElementById("comparisonA")
-            .classList
-            .add("winner");
-
-    }
-
-
-    if (winner === "B") {
-
-        winnerName =
-            teamBName.value.trim() ||
-            "Team B";
-
-        document
-            .getElementById("comparisonB")
-            .classList
-            .add("winner");
-
-    }
-
-
-    if (winner === "C") {
-
-        winnerName =
-            teamCName.value.trim() ||
-            "Team C";
-
-        document
-            .getElementById("comparisonC")
-            .classList
-            .add("winner");
-
-    }
-
-
-    winnerText.textContent =
-        winnerName + " WINNER";
-
-
-    winnerAmount.textContent =
-        "Winning Amount: " +
-        formatAmount(max);
-
-}
-
-
-// ======================================
-// SAVE COMPETITION
-// ======================================
-
-async function saveCompetition() {
-
-    try {
-
-        const data = {
-
-            name:
-                competitionName.value.trim(),
-
-            date:
-                competitionDate.value,
-
-            endTime:
-                competitionEndTime.value,
-
-            status:
-                competitionStatus.value,
-
-
-            teamA: {
-
-                name:
-                    teamAName.value.trim(),
-
-                loginId:
-                    teamAId.value.trim(),
-
-                password:
-                    teamAPassword.value,
-
-                amount:
-                    numberValue(
-                        teamAAmount.value
-                    )
-
-            },
-
-
-            teamB: {
-
-                name:
-                    teamBName.value.trim(),
-
-                loginId:
-                    teamBId.value.trim(),
-
-                password:
-                    teamBPassword.value,
-
-                amount:
-                    numberValue(
-                        teamBAmount.value
-                    )
-
-            },
-
-
-            teamC: {
-
-                name:
-                    teamCName.value.trim(),
-
-                loginId:
-                    teamCId.value.trim(),
-
-                password:
-                    teamCPassword.value,
-
-                amount:
-                    numberValue(
-                        teamCAmount.value
-                    )
-
-            },
-
-
-            updatedAt:
-                serverTimestamp()
-
-        };
-
-
-        await setDoc(
-            competitionRef,
-            data,
-            {
-                merge: true
-            }
-        );
-
-
-        showMessage(
-            "Competition saved successfully.",
-            "success"
-        );
-
-
-        updateComparison();
-
-
-    } catch (error) {
-
-        console.error(
-            "Competition Save Error:",
-            error
-        );
-
-        showMessage(
-            "Competition save nahi ho saki.",
-            "error"
-        );
-
-    }
-
-}
-
-
-// ======================================
-// LOAD COMPETITION
-// ======================================
-
-async function loadCompetition() {
-
-    try {
-
-        const snapshot =
-            await getDoc(
-                competitionRef
-            );
-
-
-        if (!snapshot.exists()) {
-
-            // Default names
-
-            teamAName.value =
-                "Team A";
-
-            teamBName.value =
-                "Team B";
-
-            teamCName.value =
-                "Team C";
-
-
-            teamAAmount.value = 0;
-            teamBAmount.value = 0;
-            teamCAmount.value = 0;
-
-
-            updateComparison();
-
-            updateStatus();
-
-            return;
-        }
-
-
-        const data =
-            snapshot.data();
-
-
-        // ----------------------------------
-        // COMPETITION
-        // ----------------------------------
-
-        competitionName.value =
-            data.name || "";
-
-        competitionDate.value =
-            data.date || "";
-
-        competitionEndTime.value =
-            data.endTime || "";
-
-        competitionStatus.value =
-            data.status || "active";
-
-
-        // ----------------------------------
-        // TEAM A
-        // ----------------------------------
-
-        const a =
-            data.teamA || {};
-
-        teamAName.value =
-            a.name || "Team A";
-
-        teamAId.value =
-            a.loginId || "";
-
-        teamAPassword.value =
-            a.password || "";
-
-        teamAAmount.value =
-            numberValue(a.amount);
-
-
-        // ----------------------------------
-        // TEAM B
-        // ----------------------------------
-
-        const b =
-            data.teamB || {};
-
-        teamBName.value =
-            b.name || "Team B";
-
-        teamBId.value =
-            b.loginId || "";
-
-        teamBPassword.value =
-            b.password || "";
-
-        teamBAmount.value =
-            numberValue(b.amount);
-
-
-        // ----------------------------------
-        // TEAM C
-        // ----------------------------------
-
-        const c =
-            data.teamC || {};
-
-        teamCName.value =
-            c.name || "Team C";
-
-        teamCId.value =
-            c.loginId || "";
-
-        teamCPassword.value =
-            c.password || "";
-
-        teamCAmount.value =
-            numberValue(c.amount);
-
-
-        updateComparison();
-
-        updateStatus();
-
-
-    } catch (error) {
-
-        console.error(
-            "Competition Load Error:",
-            error
-        );
-
-        showMessage(
-            "Competition data load nahi hua.",
-            "error"
-        );
-
-    }
-
-}
-
-
-// ======================================
-// STATUS
-// ======================================
-
-function updateStatus() {
-
-    const badge =
-        document.getElementById(
-            "statusBadge"
-        );
-
-
-    if (
-        competitionStatus.value ===
-        "active"
-    ) {
-
-        badge.innerHTML = `
-            <span class="status status-active">
-                <i class="fa-solid fa-circle"></i>
-                Active
-            </span>
-        `;
+        winnerElement.textContent =
+            "Result: DRAW";
 
     } else {
 
-        badge.innerHTML = `
-            <span class="status status-ended">
-                <i class="fa-solid fa-circle"></i>
-                Ended
-            </span>
-        `;
+        winnerElement.textContent =
+            "Winner: " + winners[0];
 
     }
 
 }
 
 
-// ======================================
-// RESET FORM
-// ======================================
+/*
+====================================================
+CREATE TEAM AUTH ACCOUNT
+====================================================
+*/
 
-function resetForm() {
+async function createTeamAccount(
+    id,
+    password,
+    team,
+    teamName
+) {
 
-    competitionName.value = "";
+    if (!id || !password) {
 
-    competitionDate.value = "";
+        return null;
 
-    competitionEndTime.value = "";
-
-    competitionStatus.value =
-        "active";
-
-
-    teamAName.value =
-        "Team A";
-
-    teamAId.value = "";
-
-    teamAPassword.value = "";
-
-    teamAAmount.value = 0;
+    }
 
 
-    teamBName.value =
-        "Team B";
-
-    teamBId.value = "";
-
-    teamBPassword.value = "";
-
-    teamBAmount.value = 0;
+    const email =
+        makeEmail(id);
 
 
-    teamCName.value =
-        "Team C";
+    /*
+    Secondary Firebase app prevents
+    signing out the Admin account.
+    */
 
-    teamCId.value = "";
+    const { initializeApp } =
+        await import(
+            "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js"
+        );
 
-    teamCPassword.value = "";
 
-    teamCAmount.value = 0;
+    const { getAuth: getSecondaryAuth } =
+        await import(
+            "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js"
+        );
 
 
-    updateComparison();
+    const firebaseConfig = {
 
-    updateStatus();
+        apiKey:
+            "AIzaSyCj3BBjywNWl4ScDJUyrmslg4bHrlMiu_Q",
+
+        authDomain:
+            "telethoon.firebaseapp.com",
+
+        projectId:
+            "telethoon",
+
+        storageBucket:
+            "telethoon.firebasestorage.app",
+
+        messagingSenderId:
+            "853450341855",
+
+        appId:
+            "1:853450341855:web:356f9ec0e9a6f88c75d86a",
+
+        measurementId:
+            "G-EWP905EGQ1"
+
+    };
+
+
+    const secondaryApp =
+        initializeApp(
+            firebaseConfig,
+            "competitionTeam_" + team
+        );
+
+
+    const secondaryAuth =
+        getSecondaryAuth(
+            secondaryApp
+        );
+
+
+    const credential =
+        await createUserWithEmailAndPassword(
+            secondaryAuth,
+            email,
+            password
+        );
+
+
+    await setDoc(
+        doc(
+            db,
+            "competitionTeams",
+            credential.user.uid
+        ),
+        {
+            team: team,
+            teamName: teamName,
+            loginId: id,
+            role: "competition_team",
+            active: true,
+            createdAt: serverTimestamp()
+        }
+    );
+
+
+    return credential.user.uid;
 
 }
 
 
-// ======================================
-// SAVE BUTTON
-// ======================================
+/*
+====================================================
+SAVE
+====================================================
+*/
 
-document
-    .getElementById("saveBtn")
+saveBtn.addEventListener(
+    "click",
+    async () => {
+
+        saveBtn.disabled = true;
+
+        status.textContent =
+            "Saving...";
+
+
+        try {
+
+            const existing =
+                await getDoc(
+                    competitionRef
+                );
+
+
+            let existingData =
+                existing.exists()
+                    ? existing.data()
+                    : {};
+
+
+            /*
+            ========================================
+            TEAM A ACCOUNT
+            ========================================
+            */
+
+            let teamAUid =
+                existingData.teamA?.uid || null;
+
+
+            if (
+                !teamAUid &&
+                teamAId.value.trim() &&
+                teamAPassword.value
+            ) {
+
+                teamAUid =
+                    await createTeamAccount(
+                        teamAId.value,
+                        teamAPassword.value,
+                        "A",
+                        teamAName.value
+                    );
+
+            }
+
+
+            /*
+            ========================================
+            TEAM B ACCOUNT
+            ========================================
+            */
+
+            let teamBUid =
+                existingData.teamB?.uid || null;
+
+
+            if (
+                !teamBUid &&
+                teamBId.value.trim() &&
+                teamBPassword.value
+            ) {
+
+                teamBUid =
+                    await createTeamAccount(
+                        teamBId.value,
+                        teamBPassword.value,
+                        "B",
+                        teamBName.value
+                    );
+
+            }
+
+
+            /*
+            ========================================
+            TEAM C ACCOUNT
+            ========================================
+            */
+
+            let teamCUid =
+                existingData.teamC?.uid || null;
+
+
+            if (
+                !teamCUid &&
+                teamCId.value.trim() &&
+                teamCPassword.value
+            ) {
+
+                teamCUid =
+                    await createTeamAccount(
+                        teamCId.value,
+                        teamCPassword.value,
+                        "C",
+                        teamCName.value
+                    );
+
+            }
+
+
+            const competitionData = {
+
+                name:
+                    competitionName.value.trim(),
+
+                date:
+                    competitionDate.value,
+
+                endTime:
+                    competitionEndTime.value,
+
+                teamA: {
+
+                    name:
+                        teamAName.value.trim(),
+
+                    loginId:
+                        teamAId.value.trim(),
+
+                    uid:
+                        teamAUid,
+
+                    amount:
+                        Number(
+                            existingData.teamA?.amount || 0
+                        )
+
+                },
+
+                teamB: {
+
+                    name:
+                        teamBName.value.trim(),
+
+                    loginId:
+                        teamBId.value.trim(),
+
+                    uid:
+                        teamBUid,
+
+                    amount:
+                        Number(
+                            existingData.teamB?.amount || 0
+                        )
+
+                },
+
+                teamC: {
+
+                    name:
+                        teamCName.value.trim(),
+
+                    loginId:
+                        teamCId.value.trim(),
+
+                    uid:
+                        teamCUid,
+
+                    amount:
+                        Number(
+                            existingData.teamC?.amount || 0
+                        )
+
+                },
+
+                updatedAt:
+                    serverTimestamp()
+
+            };
+
+
+            await setDoc(
+                competitionRef,
+                competitionData,
+                { merge: true }
+            );
+
+
+            teamAPassword.value = "";
+            teamBPassword.value = "";
+            teamCPassword.value = "";
+
+
+            status.textContent =
+                "Competition saved successfully.";
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            status.textContent =
+                error.message ||
+                "Save failed.";
+
+        }
+
+
+        saveBtn.disabled = false;
+
+    }
+);
+
+
+/*
+====================================================
+LIVE DATA
+====================================================
+*/
+
+onSnapshot(
+    competitionRef,
+    snapshot => {
+
+        if (
+            snapshot.exists()
+        ) {
+
+            loadCompetition(
+                snapshot.data()
+            );
+
+        }
+
+    }
+);
+
+
+/*
+====================================================
+ADMIN CHECK
+====================================================
+
+This page expects the existing Admin login
+to already be authenticated.
+*/
+
+onAuthStateChanged(
+    auth,
+    user => {
+
+        if (!user) {
+
+            /*
+            If your existing admin authentication
+            is required, redirect here.
+            */
+
+            console.log(
+                "Competition Admin: no Firebase user."
+            );
+
+        }
+
+    }
+);
+
+
+/*
+====================================================
+LOGOUT
+====================================================
+*/
+
+document.getElementById("logoutBtn")
     .addEventListener(
         "click",
-        saveCompetition
+        async () => {
+
+            await signOut(auth);
+
+            window.location.href =
+                "index.html";
+
+        }
     );
-
-
-// ======================================
-// RESET BUTTON
-// ======================================
-
-document
-    .getElementById("resetBtn")
-    .addEventListener(
-        "click",
-        resetForm
-    );
-
-
-// ======================================
-// STATUS CHANGE
-// ======================================
-
-competitionStatus
-    .addEventListener(
-        "change",
-        updateStatus
-    );
-
-
-// ======================================
-// LIVE UPDATE
-// ======================================
-
-[
-    teamAName,
-    teamAAmount,
-    teamBName,
-    teamBAmount,
-    teamCName,
-    teamCAmount
-].forEach(element => {
-
-    element.addEventListener(
-        "input",
-        updateComparison
-    );
-
-});
-
-
-// ======================================
-// START
-// ======================================
-
-loadCompetition();
