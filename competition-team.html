@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competition Team</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f7fb;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.topbar{
+    background:#fff;
+    padding:18px 22px;
+    border-radius:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.logout{
+    background:#dc3545;
+    color:#fff;
+    border:0;
+    padding:9px 15px;
+    border-radius:7px;
+    cursor:pointer;
+}
+
+.card{
+    background:#fff;
+    padding:25px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+h2{margin-bottom:8px}
+h3{margin-bottom:15px}
+
+.info{
+    color:#666;
+    margin-bottom:20px;
+}
+
+.amount{
+    font-size:42px;
+    font-weight:bold;
+    text-align:center;
+    margin:20px 0;
+}
+
+input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:18px;
+}
+
+.update{
+    width:100%;
+    padding:13px;
+    margin-top:12px;
+    border:0;
+    border-radius:8px;
+    background:#198754;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.teams{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.team{
+    padding:20px;
+    background:#f8f9fa;
+    border-radius:10px;
+    text-align:center;
+}
+
+.team-name{
+    font-weight:bold;
+    font-size:18px;
+}
+
+.team-amount{
+    font-size:25px;
+    margin-top:10px;
+}
+
+.winner{
+    text-align:center;
+    font-size:25px;
+    font-weight:bold;
+    margin-top:20px;
+}
+
+@media(max-width:700px){
+    .teams{grid-template-columns:1fr}
+    .topbar{gap:10px;flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="topbar">
+        <div>
+            <h2 id="teamTitle">Competition Team</h2>
+            <div id="loginInfo"></div>
+        </div>
+
+        <button class="logout" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="card">
+        <h2 id="competitionName">Competition</h2>
+        <div class="info">
+            Date: <span id="competitionDate">-</span>
+        </div>
+
+        <h3>Your Collection</h3>
+
+        <div class="amount" id="myAmount">₹0</div>
+
+        <input
+            id="amountInput"
+            type="number"
+            min="0"
+            placeholder="Enter total amount"
+        >
+
+        <button class="update" id="updateBtn">
+            Update My Amount
+        </button>
+    </div>
+
+    <div class="card">
+        <h3>Live Competition</h3>
+
+        <div class="teams">
+
+            <div class="team">
+                <div class="team-name" id="teamAName">Team A</div>
+                <div class="team-amount" id="teamAAmount">₹0</div>
+            </div>
+
+            <div class="team">
+                <div class="team-name" id="teamBName">Team B</div>
+                <div class="team-amount" id="teamBAmount">₹0</div>
+            </div>
+
+            <div class="team">
+                <div class="team-name" id="teamCName">Team C</div>
+                <div class="team-amount" id="teamCAmount">₹0</div>
+            </div>
+
+        </div>
+
+        <div class="winner" id="winner">-</div>
+    </div>
+
+</div>
+
+<script type="module" src="assets/js/competition-team.js"></script>
+
+</body>
+</html>
