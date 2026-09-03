@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Rank | Telethon Management System</title>
+
+
+    <!-- =========================================
+         FONT AWESOME
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- =========================================
+         RANK CSS
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="assets/css/rank.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <img
+                src="assets/images/logo.png"
+                alt="Telethon Logo"
+                class="sidebar-logo"
+            >
+
+            <h2>Telethon</h2>
+
+            <p>Management System</p>
+
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a href="dashboard.html">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a href="register.html">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Registration Form</span>
+            </a>
+
+
+            <a href="users.html">
+                <i class="fa-solid fa-users"></i>
+                <span>Teachers List</span>
+            </a>
+
+
+            <a href="region-user-management.html">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Region User Management</span>
+            </a>
+
+
+            <a href="region-user.html">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Region Users</span>
+            </a>
+
+
+            <a href="daily-entry.html">
+                <i class="fa-solid fa-file-circle-plus"></i>
+                <span>Daily Collection</span>
+            </a>
+
+
+            <a href="all-entry.html">
+                <i class="fa-solid fa-list"></i>
+                <span>All Entry</span>
+            </a>
+
+
+            <a href="collection-summary.html">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Collection Summary</span>
+            </a>
+
+
+            <a href="target-management.html">
+                <i class="fa-solid fa-bullseye"></i>
+                <span>Target Management</span>
+            </a>
+
+
+            <a href="reports.html">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Reports</span>
+            </a>
+
+
+            <!-- RANK -->
+
+            <a
+                href="rank.html"
+                class="active"
+            >
+                <i class="fa-solid fa-ranking-star"></i>
+                <span>Rank</span>
+            </a>
+
+
+            <a
+                href="#"
+                id="logoutBtn"
+            >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =====================================
+             TOP HEADER
+        ====================================== -->
+
+        <header class="top-header">
+
+            <div>
+
+                <h1>
+
+                    <i class="fa-solid fa-ranking-star"></i>
+
+                    Rank
+
+                </h1>
+
+                <p>
+                    Collection Performance Ranking
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="refresh-btn"
+                id="refreshBtn"
+            >
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+            </button>
+
+        </header>
+
+
+
+        <!-- =========================================
+             FILTER CARD
+        ========================================== -->
+
+        <section class="filter-card">
+
+
+            <div class="filter-title">
+
+                <div class="filter-icon">
+
+                    <i class="fa-solid fa-filter"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>Rank Filters</h3>
+
+                    <p>
+                        Select how you want to see the ranking
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="filters-grid">
+
+
+                <!-- RANK BY -->
+
+                <div class="filter-group">
+
+                    <label for="rankBy">
+
+                        <i class="fa-solid fa-ranking-star"></i>
+
+                        Rank By
+
+                    </label>
+
+                    <select id="rankBy">
+
+                        <option value="user">
+                            User Wise
+                        </option>
+
+                        <option value="region">
+                            Region Wise
+                        </option>
+
+                        <option value="state">
+                            State Wise
+                        </option>
+
+                        <option value="city">
+                            City Wise
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- PERFORMANCE -->
+
+                <div class="filter-group">
+
+                    <label for="rankMetric">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        Ranking Metric
+
+                    </label>
+
+                    <select id="rankMetric">
+
+                        <option value="amount">
+                            Highest Amount
+                        </option>
+
+                        <option value="target">
+                            Target Wise
+                        </option>
+
+                        <option value="percentage">
+                            Highest Target %
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- REGION -->
+
+                <div class="filter-group">
+
+                    <label for="regionFilter">
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        Region
+
+                    </label>
+
+                    <select id="regionFilter">
+
+                        <option value="">
+                            All Regions
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- STATE -->
+
+                <div class="filter-group">
+
+                    <label for="stateFilter">
+
+                        <i class="fa-solid fa-map"></i>
+
+                        State
+
+                    </label>
+
+                    <select id="stateFilter">
+
+                        <option value="">
+                            All States
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- CITY -->
+
+                <div class="filter-group">
+
+                    <label for="cityFilter">
+
+                        <i class="fa-solid fa-city"></i>
+
+                        City
+
+                    </label>
+
+                    <select id="cityFilter">
+
+                        <option value="">
+                            All Cities
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- DATE FROM -->
+
+                <div class="filter-group">
+
+                    <label for="fromDate">
+
+                        <i class="fa-regular fa-calendar"></i>
+
+                        From Date
+
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fromDate"
+                    >
+
+                </div>
+
+
+
+                <!-- DATE TO -->
+
+                <div class="filter-group">
+
+                    <label for="toDate">
+
+                        <i class="fa-regular fa-calendar"></i>
+
+                        To Date
+
+                    </label>
+
+                    <input
+                        type="date"
+                        id="toDate"
+                    >
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="filter-buttons">
+
+                    <button
+                        type="button"
+                        id="applyFilter"
+                        class="apply-btn"
+                    >
+
+                        <i class="fa-solid fa-filter"></i>
+
+                        Apply Filter
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="resetFilter"
+                        class="reset-btn"
+                    >
+
+                        <i class="fa-solid fa-rotate-left"></i>
+
+                        Reset
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUICK DATE -->
+
+            <div class="quick-date-row">
+
+                <span class="quick-label">
+                    Quick Date:
+                </span>
+
+
+                <button
+                    type="button"
+                    class="quick-date-btn"
+                    data-range="today"
+                >
+                    Today
+                </button>
+
+
+                <button
+                    type="button"
+                    class="quick-date-btn"
+                    data-range="week"
+                >
+                    This Week
+                </button>
+
+
+                <button
+                    type="button"
+                    class="quick-date-btn"
+                    data-range="month"
+                >
+                    This Month
+                </button>
+
+
+                <button
+                    type="button"
+                    class="quick-date-btn"
+                    data-range="all"
+                >
+                    All Time
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================================
+             TOP PERFORMANCE CARDS
+        ========================================== -->
+
+        <section class="top-cards">
+
+
+            <!-- NUMBER OF RESULTS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon users-icon">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Total Ranked
+                    </span>
+
+                    <strong id="totalRanked">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- HIGHEST AMOUNT -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon amount-icon">
+
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Highest Amount
+                    </span>
+
+                    <strong id="highestAmount">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL TARGET -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon target-icon">
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Total Target
+                    </span>
+
+                    <strong id="totalTarget">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL COLLECTION -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon collection-icon">
+
+                    <i class="fa-solid fa-money-bill-trend-up"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Total Collection
+                    </span>
+
+                    <strong id="totalCollection">
+                        ₹ 0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOP RANK -->
+
+            <div class="stat-card winner-card">
+
+                <div class="stat-icon winner-icon">
+
+                    <i class="fa-solid fa-trophy"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Rank #1
+                    </span>
+
+                    <strong id="rankOneName">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================================
+             SELECTED FILTER INFO
+        ========================================== -->
+
+        <section class="selection-info">
+
+            <div>
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <span id="selectionText">
+                    User Wise • Highest Amount • All Time
+                </span>
+
+            </div>
+
+
+            <div id="loadingStatus">
+
+                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                Loading...
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================================
+             RANK TABLE
+        ========================================== -->
+
+        <section class="table-card">
+
+
+            <div class="table-header">
+
+                <div>
+
+                    <h3>
+
+                        <i class="fa-solid fa-ranking-star"></i>
+
+                        Ranking
+
+                    </h3>
+
+                    <p id="tableSubtitle">
+                        Highest collection performers
+                    </p>
+
+                </div>
+
+
+                <div class="result-badge">
+
+                    <span id="resultCount">
+                        0
+                    </span>
+
+                    Results
+
+                </div>
+
+            </div>
+
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th class="rank-column">
+                                Rank
+                            </th>
+
+                            <th>
+                                User / Location
+                            </th>
+
+                            <th>
+                                Region
+                            </th>
+
+                            <th>
+                                State
+                            </th>
+
+                            <th>
+                                City
+                            </th>
+
+                            <th>
+                                Target
+                            </th>
+
+                            <th>
+                                Collection
+                            </th>
+
+                            <th>
+                                Remaining
+                            </th>
+
+                            <th>
+                                Achievement
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="rankTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="loading-cell"
+                            >
+
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                                Loading Rank Data...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                    <tfoot id="rankTableFoot">
+
+                        <tr>
+
+                            <td colspan="5">
+                                TOTAL
+                            </td>
+
+                            <td id="footerTarget">
+                                ₹ 0
+                            </td>
+
+                            <td id="footerCollection">
+                                ₹ 0
+                            </td>
+
+                            <td id="footerRemaining">
+                                ₹ 0
+                            </td>
+
+                            <td id="footerPercentage">
+                                0%
+                            </td>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================================
+             FOOTER
+        ========================================== -->
+
+        <footer class="page-footer">
+
+            <span>
+                Telethon Management System
+            </span>
+
+            <span>
+                Rank Page
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- =========================================
+         RANK JS
+    ========================================== -->
+
+    <script
+        type="module"
+        src="assets/js/rank.js"
+    ></script>
+
+
+</body>
+
+</html>
