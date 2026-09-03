@@ -423,6 +423,9 @@ body {
 
 /* =====================================================
    STAT CARDS
+   ONLY:
+   1. TOTAL RANKED
+   2. RANK #1
 ===================================================== */
 
 .top-cards {
@@ -600,6 +603,8 @@ body {
 
 /* =====================================================
    TABLE
+   COLUMNS:
+   Rank | Region | State | City | Teachers Name | Collection
 ===================================================== */
 
 .table-wrapper {
@@ -609,9 +614,10 @@ body {
 
 table {
     width: 100%;
-    min-width: 1050px;
+    min-width: 800px;
 
     border-collapse: collapse;
+    table-layout: auto;
 }
 
 thead th {
@@ -651,12 +657,38 @@ tbody tr.top-rank-row {
     background: #fbfdff;
 }
 
+
+/* =====================================================
+   COLUMN WIDTHS
+===================================================== */
+
 .rank-column {
     width: 75px;
 }
 
 .rank-cell {
+    width: 75px;
     text-align: center;
+}
+
+.region-column {
+    min-width: 120px;
+}
+
+.state-column {
+    min-width: 120px;
+}
+
+.city-column {
+    min-width: 110px;
+}
+
+.teacher-column {
+    min-width: 210px;
+}
+
+.collection-column {
+    min-width: 145px;
 }
 
 
@@ -699,7 +731,7 @@ tbody tr.top-rank-row {
 
 
 /* =====================================================
-   NAME
+   TEACHER NAME
 ===================================================== */
 
 .name-cell {
@@ -720,7 +752,7 @@ tbody tr.top-rank-row {
 
 
 /* =====================================================
-   MONEY
+   MONEY / COLLECTION
 ===================================================== */
 
 .money-cell {
@@ -746,69 +778,7 @@ tbody tr.top-rank-row {
 
 
 /* =====================================================
-   PERCENTAGE
-===================================================== */
-
-.percentage-wrapper {
-    min-width: 100px;
-}
-
-.percentage-wrapper strong {
-    font-size: 12px;
-}
-
-.percentage-wrapper strong.excellent {
-    color: #059669;
-}
-
-.percentage-wrapper strong.good {
-    color: #2563eb;
-}
-
-.percentage-wrapper strong.average {
-    color: #d97706;
-}
-
-.percentage-wrapper strong.low {
-    color: #dc2626;
-}
-
-.progress {
-    height: 5px;
-
-    background: #e5e7eb;
-
-    border-radius: 20px;
-
-    margin-top: 6px;
-
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    border-radius: 20px;
-}
-
-.progress-bar.excellent {
-    background: #059669;
-}
-
-.progress-bar.good {
-    background: #2563eb;
-}
-
-.progress-bar.average {
-    background: #d97706;
-}
-
-.progress-bar.low {
-    background: #dc2626;
-}
-
-
-/* =====================================================
-   LOADING / ERROR
+   LOADING / ERROR / NO DATA
 ===================================================== */
 
 .loading-cell,
